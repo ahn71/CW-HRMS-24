@@ -18,11 +18,12 @@ namespace SigmaERP
                     HttpCookie getCookies = Request.Cookies["userInfo"];
                     if (getCookies == null || getCookies.Value == "")
                     {
-                        Response.Redirect("~/ControlPanel/Login.aspx");
+                      //  Response.Redirect("~/ControlPanel/Login.aspx");
+                        Response.Redirect("~/hrms/UI/auth/login.aspx");
                     }
                     else
                     {
-
+                        Response.Redirect("~/hrms/dashboard.aspx");
                         if (Session["__IsCompliance__"].ToString().Equals("True"))
                         {
                             try

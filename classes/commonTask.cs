@@ -217,8 +217,8 @@ namespace SigmaERP.classes
         {
             try
             {
-                da = new SqlDataAdapter("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo", sqlDB.connection);
-                da.Fill(dt = new DataTable());
+                dt = new DataTable();
+                dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo");
                 dl.DataValueField = "CompanyId";
                 dl.DataTextField = "CompanyName";
                 dl.DataSource = dt;

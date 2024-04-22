@@ -24,7 +24,8 @@ namespace SigmaERP
                     HttpCookie getCookies = Request.Cookies["userInfo"];
                     if (getCookies == null || getCookies.Value == "")
                     {
-                        Response.Redirect("~/ControlPanel/Login.aspx");
+                       // Response.Redirect("~/ControlPanel/Login.aspx");
+                        Response.Redirect("~/hrms/UI/auth/login.aspx");
                     }
                     else
                     {
@@ -106,7 +107,8 @@ namespace SigmaERP
                 }
                 catch (Exception ex)
                 {
-                    Response.Redirect("~/ControlPanel/Login.aspx");
+                    //Response.Redirect("~/ControlPanel/Login.aspx");
+                    Response.Redirect("~/hrms/UI/auth/login.aspx");
                 }
             }
         }
@@ -196,7 +198,8 @@ namespace SigmaERP
                 setCookies.Expires = DateTime.Now.AddDays(-1d);
                 Response.Cookies.Add(setCookies);
                 FormsAuthentication.SignOut();
-                Response.Redirect("~/ControlPanel/Login.aspx",false);
+               // Response.Redirect("~/ControlPanel/Login.aspx",false);
+                Response.Redirect("~/hrms/UI/auth/login.aspx", false);
             }
             catch (Exception ex) { }
         }
