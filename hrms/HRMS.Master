@@ -456,19 +456,19 @@
                   </li>
 
                   <li class="has-subMenu">
-                     <a href="#" class="">Users
+                     <a href="#" class="">Access Control
                      </a>
                      <ul class="subMenu">
                         <li>
                            <a href="editors.html" class="">
                               
-                              <span class="menu-text">User Account</span>
+                              <span class="menu-text">Create User</span>
                            </a>
                         </li>
                         <li>
                            <a href="editors.html" class="">
                               
-                              <span class="menu-text">C. Password</span>
+                              <span class="menu-text">User List</span>
                            </a>
                         </li>
                         <li>
@@ -480,7 +480,8 @@
                         <li>
                            <a href="editors.html" class="">
                               
-                              <span class="menu-text">Auth Access </span>
+                              <%--<span class="menu-text">Authorization Committee</span>--%>
+                              <span class="menu-text">Approval Panel</span>
                            </a>
                         </li> 
                      </ul>
