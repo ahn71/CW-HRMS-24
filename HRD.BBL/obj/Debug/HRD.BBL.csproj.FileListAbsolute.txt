@@ -365,3 +365,14 @@ D:\Running projects github\cw_rsshrm\HRD.BBL\obj\Debug\HRD.BBL.csproj.CopyComple
 D:\Running projects github\cw_rsshrm\HRD.BBL\obj\Debug\HRD.BBL.dll
 D:\Running projects github\cw_rsshrm\HRD.BBL\obj\Debug\HRD.BBL.pdb
 D:\Running projects github\cw_rsshrm\HRD.BBL\obj\Debug\HRD.BBL.csprojResolveAssemblyReference.cache
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\bin\Debug\HRD.BBL.dll
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\bin\Debug\HRD.BBL.pdb
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\bin\Debug\HRD.DAL.dll
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\bin\Debug\HRD.ModelEntities.dll
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\bin\Debug\HRD.DAL.pdb
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\bin\Debug\HRD.ModelEntities.pdb
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\obj\Debug\HRD.BBL.csprojResolveAssemblyReference.cache
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\obj\Debug\HRD.BBL.csproj.CoreCompileInputs.cache
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\obj\Debug\HRD.BBL.csproj.CopyComplete
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\obj\Debug\HRD.BBL.dll
+S:\CW_Official_Project\CW-HRMS-24\HRD.BBL\obj\Debug\HRD.BBL.pdb

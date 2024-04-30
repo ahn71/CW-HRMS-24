@@ -2,7 +2,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">  
-   
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
       <%--<div class="Dashbord">--%>
          <div class="crm mb-25">
             <div class="container-fluid">
@@ -20,7 +20,7 @@
                                  <a href="#"><img class="svg" src="img/svg/calendar.svg" alt="calendar"></a>
                               </div>
                            </div>
-                           <button style="line-height: 32px; display: block;" class="btn btn-info btn-default btn-squared "><i class="fas fa-search"></i>
+                           <button style="line-height: 32px; display: block;" onclick="SearchData()" class="btn btn-info btn-default btn-squared "><i class="fas fa-search"></i>
                            </button>
                         </div>
                      </form>
@@ -35,10 +35,10 @@
                               <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold">Total Employee</p>
-                                    <h1>50</h1>
+                                    <h1 id="totalEmp"></h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-success"><i class="las la-arrow-up"></i>
-                                          <strong>10%</strong></span>
+                                          <strong id="totalEmpRatio">10%</strong></span>
                                        <small></small>
                                     </div>
                                  </div>
@@ -56,10 +56,10 @@
                               <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold">Today's Present</p>
-                                    <h1>25</h1>
+                                    <h1 id="todayPresent"></h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-success"><i class="las la-arrow-up"></i>
-                                          <strong>50%</strong></span>
+                                          <strong id="todayPresentRatio"></strong></span>
                                     </div>
                                  </div>
                                  <div class="ap-po-details__icon-area color-success">
@@ -75,15 +75,15 @@
                               <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold">Today's Absent</p>
-                                    <h1>25</h1>
+                                    <h1 id="todayAbsent"></h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-danger"><i class="las la-arrow-up"></i>
-                                          <strong>50%</strong></span>
+                                          <strong id="todayAbsentRatio"></strong></span>
                                     </div>
                                  </div>
                                  <div class="ap-po-details__icon-area color-danger">
                                     <i class="uil uil-user-minus"></i>
-                                 </div>
+                                 </div> 
                               </div>
                            </div>
                            <!-- Card 2 End  -->
@@ -95,10 +95,10 @@
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold"> Today's Late
                                     </p>
-                                    <h1>25</h1>
+                                    <h1 id="todayLate"></h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-danger"><i class="las la-arrow-down"></i>
-                                          <strong>5%</strong></span>
+                                          <strong id="todayLateRatio"></strong></span>
                                     </div>
                                  </div>
                                  <div class="ap-po-details__icon-area color-warning">
@@ -115,10 +115,10 @@
                               <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold">Today's Leave</p>
-                                    <h1>5</h1>
+                                    <h1 id="todayLeave"></h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-success"><i class="las la-arrow-up"></i>
-                                          <strong>2%</strong></span>
+                                          <strong id="todayLeaveRatio"></strong></span>
                                     </div>
                                  </div>
                                  <div class="ap-po-details__icon-area color-primary">
@@ -136,7 +136,7 @@
                               <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold">W/H Off Duty</p>
-                                    <h1>5</h1>
+                                    <h1></h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-success"><i class="las la-arrow-up"></i>
                                           <strong>2%</strong></span>
@@ -197,7 +197,7 @@
                                  aria-labelledby="t_selling-today-tab">
                                  <div class="selling-table-wrap">
                                     <div class="table-responsive">
-                                       <table class="table table-border">
+                                       <table class="table table-border " id="tblDailyAttSummary">
                                           <thead>
                                              <tr>
                                                 <th>Department </th>
@@ -440,7 +440,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2>530</h2>
+                                       <h2 id="RegularEmp">530</h2>
                                        <p class="mt-1 mb-0">Regular Emp
                                        </p>
                                     </div>
@@ -480,7 +480,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2>540</h2>
+                                       <h2 id="totalEmpReg">540</h2>
                                        <p class="mt-1 mb-0">Total</p>
                                     </div>
 <!--    
@@ -500,7 +500,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2>250</h2>
+                                       <h2 id="male">250</h2>
                                        <p class="mt-1 mb-0">Male</p>
                                     </div>
    
@@ -520,7 +520,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-25">
-                                    <h2>280</h2>
+                                    <h2 id="female">280</h2>
                                     <p class="mt-1 mb-0">Female</p>
                                  </div>
 
@@ -539,7 +539,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-25">
-                                    <h2>497</h2>
+                                    <h2 id="overtime">497</h2>
                                     <p class="mt-1 mb-0">Over Time</p>
                                  </div>
 
@@ -609,7 +609,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-10">
-                                    <h1>7,000Tk</h2>
+                                    <h1 id="TodaySalaryAmt"></h1>
                                        <p class="mt-1 mb-0">Today’s Salary</p>
                                  </div>
 
@@ -628,7 +628,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-10">
-                                    <h1>3,500Tk</h1>
+                                    <h1 id="todayOtAmount"></h1>
                                     <p class="mt-1 mb-0">Today's OT Amount</p>
                                  </div>
 
@@ -647,7 +647,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-10">
-                                    <h1>80,200Tk</h1>
+                                    <h1 id="LastMonthCosting"></h1>
                                     <p class="mt-1 mb-0">Last Month Costing</p>
                                  </div>
                                  <!-- <div class="ap-po-details bg-none">
@@ -665,7 +665,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-10">
-                                    <h1>40,000Tk</h1>
+                                    <h1 id="lastMonthOtAmount"></h1>
                                     <p class="mt-1 mb-0">Last Month OT Amount
                                     </p>
                                  </div>
@@ -724,7 +724,7 @@
                                                       <td>Regular OT Hour : <br> <strong>7H</strong></td>
                                                    </tr>
                                                    <tr>
-                                                      <td>OT Amount : <br><strong>3,200T  k</strong></td>
+                                                      <td>OT Amount : <br><strong>3,200Tk</strong></td>
                                                    </tr>
                                                 </table>
                                              </td>
@@ -828,6 +828,256 @@
             </div>
          </div>
       </div>
- <%--</div>--%>
+<script>
+
+    $(document).ready(function () {
+        console.log("Hello");
+        var DailyAttUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendanceStatus';
+        var DailyAttSumUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendanceSummary';
+        var CurrentEmpStatusUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/currentEmployeeStaus';
+        var GetTodaysCostingUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/getTodaysCosting';
+        var GetMonthlyCostingUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/getlastMonthCosting';
+        var GetLast7DaysPARatio = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendancehistory';
+
+        var companyId = '0001'; 
+        var date = '2024-02-01';
+
+       var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTM5MzIxOTYsImV4cCI6MTc0NTQ2ODE5NiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.letXzwpes_YaMFumZsklIowaTR80FXr3m5h8mwCABCQ';
+
+        ApiCall(DailyAttUrl, companyId, date, token).then(function (response) {
+            $('#totalEmp').text(response.total);
+            $('#totalEmpRatio').text(response.total);
+            $('#todayPresent').text(response.present);
+            $('#todayPresentRatio').text(response.pressentRatio);
+            $('#todayAbsent').text(response.absent);
+            $('#todayAbsentRatio').text(response.absentRatio);
+            $('#todayLate').text(response.late);
+            $('#todayLateRatio').text(response.lateRatio);
+            $('#todayLeave').text(response.leave);
+            $('#todayLeaveRatio').text(response.leavePers);
+        }).catch(function (error) {
+            console.error('Error occurred while fetching data:', error);
+            });
+
+
+
+       ApiCall(GetLast7DaysPARatio, companyId, date, token)
+    .then(function (response) {
+        var GetLast7DaysPARatioData = response;
+        console.log(GetLast7DaysPARatioData); // Log the entire response
+        var p = [];
+
+        var a = []
+        var w = [];
+        var i = 0;
+        // Loop through the last 7 days
+        for (i ; i < GetLast7DaysPARatioData.length; i++) {
+
+            p.push(GetLast7DaysPARatioData[i].present)
+            a.push(GetLast7DaysPARatioData[i].absent)
+            w.push(GetLast7DaysPARatioData[i].weekDay)
+          
+             console.log("present", GetLast7DaysPARatioData[i].present);     
+             console.log("absent", GetLast7DaysPARatioData[i].absent); 
+        }   
+        console.log("present", p); 
+         console.log("absent", a); 
+        // Call the chartjsBarChart function with the obtained data
+        chartjsBarChart(
+            "salesGrowthToday",
+            p, // Pass the 'data' array here
+            a, // Assuming this is the data for another dataset (e.g., historical data)
+            w,
+            350,
+            "Presnt",
+            "Absent"
+        );
+
+        console.log('Hello PA');
+    })
+    .catch(function (error) {
+        console.error('Error occurred while fetching data:', error);
+    });
+
+
+
+       
+
+
+
+        //ApiCall(GetLast7DaysPARatio, companyId, date, token)
+        //    .then(function (response) {
+        //        var GetLast7DaysPARatioData = response;
+
+        //        // Extract the sales growth data from the response
+        //        var salesGrowthData = GetLast7DaysPARatioData.map(function (item) {
+        //            return item.salesGrowth; // Assuming salesGrowth is the property containing the sales growth data
+        //        });
+
+        //        // Update the chart with the new data
+        //        chartjsBarChart(
+        //            "salesGrowthToday",
+        //            salesGrowthData,
+        //            [10, 30, 8, 11, 21, 32, 11], // Assuming this is the data for another dataset (e.g., historical data)
+        //            [
+        //                "Sat",
+        //                "Sun",
+        //                "Mon",
+        //                "Tue",
+        //                "Wed",
+        //                "Thu",
+        //                "Fri",
+        //            ],
+        //            350,
+        //            "Presnt",
+        //            "Absent"
+        //        );
+        //    })
+        //    .catch(function (error) {
+        //        console.error('Error occurred while fetching data:', error);
+        //    });
+
+
+
+
+        ApiCall(DailyAttSumUrl, companyId, date, token)
+            .then(function (responsedata) {
+                var tableBody = $('#tblDailyAttSummary tbody');
+                tableBody.empty(); 
+                var newRow = '';
+                responsedata.forEach(item => {
+                    newRow += `<tr>
+                        <td>${item.department}</td>
+                        <td>${item.totalEmployee}</td>
+                        <td>${item.male}</td>
+                        <td>${item.female}</td>
+                        <td>${item.present}</td>
+                        <td>${item.presentRatio}</td>
+                        <td>${item.absent}</td>
+                        <td>${item.absentRatio}</td>
+                        <td>${item.leave}</td>
+                        <td>${item.leaveRatio}</td>
+                        <td>${item.late}</td>
+                        <td>${item.lateRatio}</td>
+                        <td>${item.offDay}</td>
+                        <td>${item.offdayRatio}</td>
+                    </tr>`;
+                   
+                });
+                tableBody.append(newRow);
+            })
+            .catch(function (error) {
+                console.error('Error occurred while fetching data:', error);
+            });
+
+
+        ApiCallSam(CurrentEmpStatusUrl, companyId, token).then(function (response) {
+                $('#totalEmpReg').text(response.totalEmployee);
+                $('#male').text(response.male);
+                $('#female').text(response.female);
+                $('#overtime').text(response.overTime);
+
+        }).catch(function (error) {
+         console.error('Error occurred while fetching data:', error);
+            });
+
+
+
+        ApiCallGetCosting(GetTodaysCostingUrl, date, token).then(function (response) {
+            var responseData = response[0];
+            $('#TodaySalaryAmt').text(responseData.dailySalaryAmnt +'Tk');
+            $('#todayOtAmount').text(responseData.dailyOTPay +'Tk');
+        }).catch(function (error) {
+            console.error('Error occurred while fetching data:', error);
+            });
+
+
+        ApiCallGetCosting(GetMonthlyCostingUrl, date, token).then(function (response) {
+
+            var GetDataFromArray = response[0];
+            $('#LastMonthCosting').text(GetDataFromArray.monthlyPaySalaryamnt +'Tk');
+            $('#lastMonthOtAmount').text(GetDataFromArray.monthlyOTPay +'Tk');
+        }).catch(function (error) {
+            console.error('Error occurred while fetching data:', error);
+            });
+
+
+        function ApiCall(url, companyId, date, token) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token  // Corrected header field
+                    },
+                    data: {
+                        companyId: companyId,
+                        date: date
+                    },
+                    success: function (data) {
+                        resolve(data);
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred while fetching data:', status, error);
+                        reject(error);
+                    }
+                });
+            });
+        }
+    });
+
+
+    function ApiCallSam(url, companyId, token) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token  // Corrected header field
+                },
+                data: {
+                    companyId: companyId,
+                },
+                success: function (data) {
+                    resolve(data);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error occurred while fetching data:', status, error);
+                    reject(error);
+                }
+            });
+        });
+    }
+
+       function ApiCallGetCosting(url, date, token) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token  // Corrected header field
+                },
+                data: {
+                    date: date,
+                },
+                success: function (data) {
+                    resolve(data);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error occurred while fetching data:', status, error);
+                    reject(error);
+                }
+            });
+        });
+    }
+   
+
+</script>
    
 </asp:Content>
