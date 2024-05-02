@@ -206,12 +206,8 @@ function DonutChart(idName, series, width, height, label, colors, size) {
         new ApexCharts(document.querySelector(idName), optionsPie).render();
     }
 }
-DonutChart('.StapWorkerRatio', [30, 40], '100%', 180, ['Sales', 'Products'], [ '#00AAFF', '#FA8B0C'], "60%");
 
 
-
-
-DonutChart('.salesDonutToday', [30, 40], '100%', 180, ['Sales', 'Products'], [ '#00AAFF', '#FA8B0C'], "60%");
 DonutChart('.salesDonutWeek', [30, 40, 30], '100%', 150, ['Revenue', 'Sales', 'Products'], ['#8231D3', '#00AAFF', '#FA8B0C'], "60%");
 DonutChart('.salesDonutMonth', [40, 30, 30], '100%', 150, ['Revenue', 'Sales', 'Products'], ['#8231D3', '#00AAFF', '#FA8B0C'], "60%");
 DonutChart('.performance_overview', [30, 40], '100%', 150, ['Target', 'Completed'], ['#00AAFF', '#FA8B0C'], "80%");
@@ -290,53 +286,53 @@ radialChart('.performanceDetails', [90, 80, 70], '100%', 280);
 
 /* Apex Page */
 
-//basics bar
-function barChart(idName, width, height = "100") {
-    var optionRadial = {
-        series: [{
-            data: [10000, 13000, 14800, 17990, 20940, 25580, 96990, 38700, 40990, 48099,40990,79900]
-        }],
-        colors: ['#8231D3'],
-        chart: {
-            width: width,
-            height: height,
-            type: 'bar',
-        },
-        legend: {
-            show: false
-        },
-        plotOptions: {
-            bar: {
-                borderRadius: 4,
-                horizontal: false,
-            }
-        },
-        dataLabels: {
-            enabled: false
-        },
-        xaxis: {
-            categories: ["Jan",
-                "Feb",
-                "Mar",
-                "Apr",
-                "May",
-                "Jun",
-                "Jul",
-                "Aug",
-                "Sep",
-                "Oct",
-                "Nov",
-                "Dec"
+////basics bar
+//function barChart(idName, width, height = "100") {
+//    var optionRadial = {
+//        series: [{
+//            data: [10000, 13000, 14800, 17990, 20940, 25580, 96990, 38700, 40990, 48099,40990,79900]
+//        }],
+//        colors: ['#8231D3'],
+//        chart: {
+//            width: width,
+//            height: height,
+//            type: 'bar',
+//        },
+//        legend: {
+//            show: false
+//        },
+//        plotOptions: {
+//            bar: {
+//                borderRadius: 4,
+//                horizontal: false,
+//            }
+//        },
+//        dataLabels: {
+//            enabled: false
+//        },
+//        xaxis: {
+//            categories: ["Jan",
+//                "Feb",
+//                "Mar",
+//                "Apr",
+//                "May",
+//                "Jun",
+//                "Jul",
+//                "Aug",
+//                "Sep",
+//                "Oct",
+//                "Nov",
+//                "Dec"
           
-            ],
-        }
+//            ],
+//        }
 
-    };
-    if ($(idName).length > 0) {
-        new ApexCharts(document.querySelector(idName), optionRadial).render();
-    }
-}
-barChart('.barChart', '100%', 180);
+//    };
+//    if ($(idName).length > 0) {
+//        new ApexCharts(document.querySelector(idName), optionRadial).render();
+//    }
+//}
+//barChart('.barChart', '100%', 180);
 
 //group bar
 function groupBarChart(idName, width, height = "270") {

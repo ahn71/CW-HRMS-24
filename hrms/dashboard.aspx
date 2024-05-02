@@ -136,7 +136,7 @@
                               <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                  <div class="ap-po-details__titlebar">
                                     <p class="fs-6 fw-bold">W/H Off Duty</p>
-                                    <h1></h1>
+                                    <h1>NA</h1>
                                     <div class="ap-po-details-time">
                                        <span class="color-success"><i class="las la-arrow-up"></i>
                                           <strong>2%</strong></span>
@@ -348,7 +348,7 @@
                                           <div class="device-pieChart-wrap position-relative">
       
                                              <div class="">
-                                                <div class="salesDonutToday"></div>
+                                                <div class="MaleFemaleRatio"></div>
                                              </div>
       
                                           </div>
@@ -440,7 +440,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2 id="RegularEmp">530</h2>
+                                       <h2 id="RegularEmp"></h2>
                                        <p class="mt-1 mb-0">Regular Emp
                                        </p>
                                     </div>
@@ -460,7 +460,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2>10</h2>
+                                       <h2></h2>
                                        <p class="mt-1 mb-0">Released</p>
                                     </div>
    
@@ -480,7 +480,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2 id="totalEmpReg">540</h2>
+                                       <h2 id="totalEmpReg"></h2>
                                        <p class="mt-1 mb-0">Total</p>
                                     </div>
 <!--    
@@ -500,7 +500,7 @@
                                  </div>
                                  <div class="d-flex align-items-start flex-wrap">
                                     <div class="me-25">
-                                       <h2 id="male">250</h2>
+                                       <h2 id="male"></h2>
                                        <p class="mt-1 mb-0">Male</p>
                                     </div>
    
@@ -520,7 +520,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-25">
-                                    <h2 id="female">280</h2>
+                                    <h2 id="female"></h2>
                                     <p class="mt-1 mb-0">Female</p>
                                  </div>
 
@@ -539,7 +539,7 @@
                               </div>
                               <div class="d-flex align-items-start flex-wrap">
                                  <div class="me-25">
-                                    <h2 id="overtime">497</h2>
+                                    <h2 id="overtime"></h2>
                                     <p class="mt-1 mb-0">Over Time</p>
                                  </div>
 
@@ -566,7 +566,7 @@
                               <div class="card-body">
          
                                  <div class="">
-                                    <div class="barChart"></div>
+                                    <div class="SalaryComparisonChart"></div>
                                  </div>
          
                               </div>
@@ -832,19 +832,23 @@
 
     $(document).ready(function () {
         console.log("Hello");
-        var DailyAttUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendanceStatus';
-        var DailyAttSumUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendanceSummary';
-        var CurrentEmpStatusUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/currentEmployeeStaus';
-        var GetTodaysCostingUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/getTodaysCosting';
-        var GetMonthlyCostingUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/getlastMonthCosting';
-        var GetLast7DaysPARatio = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendancehistory';
+        var DailyAttUrl = 'http://localhost:8021/api/DailyAttendance/dailyAttendanceStatus';
+        var DailyAttSumUrl = 'http://localhost:8021/api/DailyAttendance/dailyAttendanceSummary';
+        var CurrentEmpStatusUrl = 'http://localhost:8021/api/DailyAttendance/currentEmployeeStaus';
+        var GetTodaysCostingUrl = 'http://localhost:8021/api/DailyAttendance/getTodaysCosting';
+        var GetMonthlyCostingUrl = 'http://localhost:8021/api/DailyAttendance/getlastMonthCosting';
+        var GetLast7DaysPARatio = 'http://localhost:8021/api/DailyAttendance/dailyAttendancehistory';
+        var GetNewJoinAndRelease = 'http://localhost:8021/api/DailyAttendance/newJoinReleaseHistory';
+        var GetSalaryComparisonLast12Month = 'http://localhost:8021/api/DailyAttendance/salaryComparison';
 
         var companyId = '0001'; 
-        var date = '2024-02-01';
+        var date = '2024-01-01';
 
-       var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTM5MzIxOTYsImV4cCI6MTc0NTQ2ODE5NiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.letXzwpes_YaMFumZsklIowaTR80FXr3m5h8mwCABCQ';
+       var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
         ApiCall(DailyAttUrl, companyId, date, token).then(function (response) {
+            console.log('attendance status success');
+            console.log(response);
             $('#totalEmp').text(response.total);
             $('#totalEmpRatio').text(response.total);
             $('#todayPresent').text(response.present);
@@ -860,146 +864,187 @@
             });
 
 
+        ApiCall(GetMonthlyCostingUrl, companyId, date, token).then(function (response) {
+            var GetDataFromArray = response[0];
+            console.log(GetDataFromArray);
 
-       ApiCall(GetLast7DaysPARatio, companyId, date, token)
-    .then(function (response) {
-        var GetLast7DaysPARatioData = response;
-        console.log(GetLast7DaysPARatioData); // Log the entire response
-        var p = [];
+            $('#LastMonthCosting').text(GetDataFromArray.monthlyPaySalaryamnt + 'Tk');
+            $('#lastMonthOtAmount').text(GetDataFromArray.monthlyOTPay + 'Tk');
+        }).catch(function (error) {
+            console.error('Error occurred while fetching data:', error);
+            });
 
-        var a = []
-        var w = [];
-        var i = 0;
-        // Loop through the last 7 days
-        for (i ; i < GetLast7DaysPARatioData.length; i++) {
-
-            p.push(GetLast7DaysPARatioData[i].present)
-            a.push(GetLast7DaysPARatioData[i].absent)
-            w.push(GetLast7DaysPARatioData[i].weekDay)
-          
-             console.log("present", GetLast7DaysPARatioData[i].present);     
-             console.log("absent", GetLast7DaysPARatioData[i].absent); 
-        }   
-        console.log("present", p); 
-         console.log("absent", a); 
-        // Call the chartjsBarChart function with the obtained data
-        chartjsBarChart(
-            "salesGrowthToday",
-            p, // Pass the 'data' array here
-            a, // Assuming this is the data for another dataset (e.g., historical data)
-            w,
-            350,
-            "Presnt",
-            "Absent"
-        );
-
-        console.log('Hello PA');
-    })
-    .catch(function (error) {
-        console.error('Error occurred while fetching data:', error);
-    });
+        ApiCall(GetTodaysCostingUrl, companyId, date, token).then(function (response) {
+            var responseData = response[0];
+            $('#TodaySalaryAmt').text(responseData.dailySalaryAmnt +'Tk');
+            $('#todayOtAmount').text(responseData.dailyOTPay +'Tk');
+        }).catch(function (error) {
+            console.error('Error occurred while fetching data:', error);
+        });
 
 
+        ApiCall(GetLast7DaysPARatio, companyId, date, token)
+            .then(function (response) {
+                var GetLast7DaysPARatioData = response;
+                console.log(GetLast7DaysPARatioData);
+                var p = [];
+                var a = [];
+                var w = [];
+                var i = 0;
+                for (i; i < GetLast7DaysPARatioData.length; i++) {
+                    p.push(GetLast7DaysPARatioData[i].present);
+                    a.push(GetLast7DaysPARatioData[i].absent);
+                    w.push(GetLast7DaysPARatioData[i].weekDay.substring(0, 3));
+                }
+                console.log("present", p);
+                console.log("absent", a);
+                chartjsBarChart(
+                    "salesGrowthToday",
+                    p,
+                    a,
+                    w,
+                    350,
+                    "Present",
+                    "Absent"
+                );
+                console.log('Hello PA');
+            })
+            .catch(function (error) {
+                console.error('Error occurred while fetching data:', error);
+            });
 
-       
+        ApiCall(GetNewJoinAndRelease, companyId, date, token)
+            .then(function (response) {
+                var GetNewJoinAndRelease = response;
+                console.log(GetNewJoinAndRelease);
+                var NewJoin = [];
+                var Release = [];
+                var Month = [];
+                var i = 0;
+                for (i; i < GetNewJoinAndRelease.length; i++) {
+                    NewJoin.push(GetNewJoinAndRelease[i].newJoin);
+                    Release.push(GetNewJoinAndRelease[i].release);
+                    Month.push(GetNewJoinAndRelease[i].month);
+                }
 
+                chartjsBarChart(
+                    "profitGrowthToday",
+                    NewJoin,
+                    Release,
+                    Month,
 
+                    140,
+                    "New Join",
+                    "Released"
+                );
 
-        //ApiCall(GetLast7DaysPARatio, companyId, date, token)
-        //    .then(function (response) {
-        //        var GetLast7DaysPARatioData = response;
+                //console.log("present", p);
+                //console.log("absent", a);
+                //chartjsBarChart(
+                //    "salesGrowthToday",
+                //    p,
+                //    a,
+                //    w,
+                //    350,
+                //    "Present",
+                //    "Absent"
+                //);
+                
+            })
+            .catch(function (error) {
+                console.error('Error occurred while fetching data:', error);
+            });
 
-        //        // Extract the sales growth data from the response
-        //        var salesGrowthData = GetLast7DaysPARatioData.map(function (item) {
-        //            return item.salesGrowth; // Assuming salesGrowth is the property containing the sales growth data
-        //        });
-
-        //        // Update the chart with the new data
-        //        chartjsBarChart(
-        //            "salesGrowthToday",
-        //            salesGrowthData,
-        //            [10, 30, 8, 11, 21, 32, 11], // Assuming this is the data for another dataset (e.g., historical data)
-        //            [
-        //                "Sat",
-        //                "Sun",
-        //                "Mon",
-        //                "Tue",
-        //                "Wed",
-        //                "Thu",
-        //                "Fri",
-        //            ],
-        //            350,
-        //            "Presnt",
-        //            "Absent"
-        //        );
-        //    })
-        //    .catch(function (error) {
-        //        console.error('Error occurred while fetching data:', error);
-        //    });
-
-
-
-
-        ApiCall(DailyAttSumUrl, companyId, date, token)
-            .then(function (responsedata) {
-                var tableBody = $('#tblDailyAttSummary tbody');
-                tableBody.empty(); 
-                var newRow = '';
-                responsedata.forEach(item => {
-                    newRow += `<tr>
-                        <td>${item.department}</td>
-                        <td>${item.totalEmployee}</td>
-                        <td>${item.male}</td>
-                        <td>${item.female}</td>
-                        <td>${item.present}</td>
-                        <td>${item.presentRatio}</td>
-                        <td>${item.absent}</td>
-                        <td>${item.absentRatio}</td>
-                        <td>${item.leave}</td>
-                        <td>${item.leaveRatio}</td>
-                        <td>${item.late}</td>
-                        <td>${item.lateRatio}</td>
-                        <td>${item.offDay}</td>
-                        <td>${item.offdayRatio}</td>
-                    </tr>`;
-                   
-                });
-                tableBody.append(newRow);
+        ApiCall(GetSalaryComparisonLast12Month, companyId, date, token)
+            .then(function (response) {
+                var GetSalaryComparison = response;
+                var salary = [];
+                var monthname = [];
+                for (var i = 0; i < GetSalaryComparison.length; i++) {
+                    salary.push(GetSalaryComparison[i].salary);
+                    monthname.push(GetSalaryComparison[i].monthname);
+                }
+                SalaryComparisonChart('.SalaryComparisonChart', '100%', 180, salary, monthname);
             })
             .catch(function (error) {
                 console.error('Error occurred while fetching data:', error);
             });
 
 
-        ApiCallSam(CurrentEmpStatusUrl, companyId, token).then(function (response) {
+        /* demo 3*/
+
+        //basics bar
+        function SalaryComparisonChart(idName, width, height = "100", salaryData, monthData) {
+            var optionRadial = {
+                series: [{
+                    data: salaryData // Use the salary data here
+                }],
+                colors: ['#8231D3'],
+                chart: {
+                    width: width,
+                    height: height,
+                    type: 'bar',
+                },
+                legend: {
+                    show: false
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: false,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: monthData // Use the month data here
+                }
+            };
+
+            if ($(idName).length > 0) {
+                new ApexCharts(document.querySelector(idName), optionRadial).render();
+            }
+        }
+
+
+
+
+
+        ApiCallSam(CurrentEmpStatusUrl, companyId, token)
+            .then(function (response) {
+                // Update HTML elements with API response data
                 $('#totalEmpReg').text(response.totalEmployee);
                 $('#male').text(response.male);
                 $('#female').text(response.female);
                 $('#overtime').text(response.overTime);
 
-        }).catch(function (error) {
-         console.error('Error occurred while fetching data:', error);
+                // Calculate the percentages for male and female
+                var totalEmployees = response.male + response.female;
+                var malePercentage = (response.male / totalEmployees) * 100;
+                var femalePercentage = (response.female / totalEmployees) * 100;
+                var maleFemaleRatio = [malePercentage, femalePercentage];
+
+                // Pass the array to the DonutChart function
+                DonutChart('.MaleFemaleRatio', maleFemaleRatio, 180, 180, ['Male', 'Female'], ['#00AAFF', '#FA8B0C'], "60%");
+         
+                var staffPercentage = (response.staff / totalEmployees) * 100;
+                var workerPercentage = (response.worker / totalEmployees) * 100;
+                var StaffWorkerRatio = [staffPercentage, workerPercentage];
+                DonutChart('.StapWorkerRatio', StaffWorkerRatio, '100%', 180, ['Sales', 'Products'], ['#00AAFF', '#FA8B0C'], "60%");
+
+
+
+            })
+            .catch(function (error) {
+                console.error('Error occurred while fetching data:', error);
             });
 
 
 
-        ApiCallGetCosting(GetTodaysCostingUrl, date, token).then(function (response) {
-            var responseData = response[0];
-            $('#TodaySalaryAmt').text(responseData.dailySalaryAmnt +'Tk');
-            $('#todayOtAmount').text(responseData.dailyOTPay +'Tk');
-        }).catch(function (error) {
-            console.error('Error occurred while fetching data:', error);
-            });
 
+      
 
-        ApiCallGetCosting(GetMonthlyCostingUrl, date, token).then(function (response) {
-
-            var GetDataFromArray = response[0];
-            $('#LastMonthCosting').text(GetDataFromArray.monthlyPaySalaryamnt +'Tk');
-            $('#lastMonthOtAmount').text(GetDataFromArray.monthlyOTPay +'Tk');
-        }).catch(function (error) {
-            console.error('Error occurred while fetching data:', error);
-            });
 
 
         function ApiCall(url, companyId, date, token) {

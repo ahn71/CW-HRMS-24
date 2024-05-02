@@ -569,23 +569,7 @@ chartjsBarChart(
 );
 
 
-/* demo 3*/
-chartjsBarChart(
-    "profitGrowthToday",
-    (data = [35, 55, 25, 60, 42, 80]),
-    (data = [10, 30, 8, 30, 22, 38]),
-    labels = [
-        "Nov-23",
-        "Dec-23",
-        "Jan-24",
-        "Feb-24",
-        "Mar-24",
-        "Apr-24",
-    ],
-    140,
-    "New Join",
-    "Relased"
-);
+
 
 function chartjsLineChart(selector, height, dataCur, labels, labelName, fill) {
     let delayed;
