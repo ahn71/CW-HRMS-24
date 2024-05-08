@@ -49,7 +49,10 @@
 
    <link rel="stylesheet" href="style.css">
   
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
 
    <!-- endinject -->
 
@@ -86,7 +89,157 @@
                         </a>
                      </li>
                   </li>  
-                     <li class="has-subMenu">
+
+                   <li class="mega-item has-subMenu">
+                     <a href="#" class="">Attendance
+                     </a>
+                     <ul  class="megaMenu-wrapper megaMenu-small">
+                        <li class="bordered">
+                           <span class="mega-title">Attendance</span>
+                           <ul>
+                              <li class="l_sidebar">
+                                 <a href="../attendance/monthly_setup.aspx" class="">
+      
+                                    <span class="menu-text">Month Setup</span>
+                                 </a>
+                              </li>
+                              <li class="l_sidebar">
+                                 <a href="../attendance/AttendanceProcessing.aspx" class="">
+      
+                                    <span class="menu-text">Shrink Data</span>
+                                 </a>
+                              </li>
+      
+                              <li class="l_sidebar">
+                                 <a href="../attendance/attendance.aspx" class="">
+      
+                                    <span class="menu-text">Manually Count</span>
+                                 </a>
+                              </li>
+      
+                              <li class="l_sidebar">
+                                  <a href="../attendance/attendance_list.aspx" class="">
+      
+                                    <span class="menu-text">Attendance List</span>
+                                 </a>
+                              </li>
+      
+                              <li class="l_sidebar">
+                                 <a href="../attendance/attendance_summary.aspx" class="">
+      
+                                    <span class="menu-text">Att Summary</span>
+                                 </a>
+                              </li>
+      
+                              <li class="l_sidebar">
+                                 <a href="../attendance/daily_movement.aspx" class="">
+      
+                                    <span class="menu-text">In-Out Report</span>
+                                 </a>
+                              </li>
+      
+                              <li class="l_sidebar">
+                                 <a href="../attendance/daily_manualAttendance_report.aspx" class="">
+      
+                                    <span class="menu-text">Manual Report</span>
+                                 </a>
+                              </li>
+                              <li class="l_sidebar">
+                                 <a href="../attendance/monthly_in_out_report.aspx" class="">
+      
+                                    <span class="menu-text">Monthly Status</span>
+                                 </a>
+                              </li>
+                               <li class="l_sidebar">
+                                   <a href="../attendance/attendance_summary_manpower.aspx" class="">
+
+                                       <span class="menu-text">Manpower Wise Attendance</span>
+                                   </a>
+                               </li>
+                           </ul>
+                        </li>
+                        <li class="bordered">
+                           <span class="mega-title">Out Duty</span>
+                           <ul>
+                              <li>
+                                 <a href="../attendance/out_duty_app.aspx" class="">
+                                   
+                                    <span class="menu-text">Out Duty</span>
+                                 </a>
+                              </li>
+                              <li>
+                                 <a href="../attendance/out_duty_list.aspx" class="">
+      
+                                    <span class="menu-text">Out Duty List</span>
+                                 </a>
+                              </li>
+                               <li>
+                                   <a href="../attendance/out_duty_approval.aspx" class="">
+
+                                       <span class="menu-text">Out Duty Approval</span>
+                                   </a>
+                              </li>
+                              <li>
+                                 <a href="../attendance/outduty_report.aspx" class="">
+      
+                                    <span class="menu-text">Out Duty Report</span>
+                                 </a>
+                              </li>
+
+                               <li>
+                                   <a href="../attendance/absent_notification_log.aspx" class="">
+
+                                       <span class="menu-text">Absent Notification</span>
+                                   </a>
+                              </li> 
+                               <li>
+                                   <a href="../attendance/ManpowerStatement.aspx" class="">
+
+                                       <span class="menu-text">Manpower Statement</span>
+                                   </a>
+                              </li>   
+                               <li>
+                                   <a href="../attendance/absent_notification_log.aspx" class="">
+
+                                       <span class="menu-text">Absent Notification</span>
+                                   </a>
+                              </li>
+                              <li>
+                                 <a href="../attendance/ManpowerStatement.aspx" class="">
+      
+                                    <span class="menu-text">Manpower Statement</span>
+                                 </a>
+                              </li>
+                               <li>
+                                   <a href="../attendance/weekend-set-emp-wise.aspx" class="">
+
+                                       <span class="menu-text">Weekend Setup</span>
+                                   </a>
+                               </li>
+
+                               <li>
+                                   <a href="../attendance/GeneralDay.aspx" class="">
+
+                                       <span class="menu-text">General Day Setup</span>
+                                   </a>
+                               </li>
+                                 <li>
+                                   <a href="../attendance/WeekendInfoReport.aspx" class="">
+
+                                       <span class="menu-text"> Weekend Info Report</span>
+                                   </a>
+                               </li>
+                               <li>
+                                   <a href="../attendance/attendance_analysis_report.aspx" class="">
+
+                                       <span class="menu-text">Analysis Report</span>
+                                   </a>
+                               </li>
+                           </ul>
+                        </li>
+                     </ul>
+                  </li>
+<%--                     <li class="has-subMenu">
                         <a href="#" class="">Attendance
                         </a>
                         <ul class="subMenu">
@@ -184,7 +337,7 @@
                            </li>
 
                         </ul>
-                     </li>
+                     </li>--%>
                      
                   <li class="has-subMenu">
                      <a href="#" class="">Leave</a>
@@ -231,7 +384,176 @@
                      </ul>
                   </li>
 
-                  <li class="mega-item has-subMenu">
+                   <li class="mega-item has-subMenu">
+                       <a href="#" class="">Payroll</a>
+                       <ul class="megaMenu-wrapper megaMenu-wide">
+                           <li class="bordered">
+                               <span class="mega-title">Salary</span>
+                               <ul>
+                                   <li>
+                                 <a class="" href="../payroll/payroll_entry_panel.aspx">Salary Set Entry Panel</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../payroll/allowance_calculation_settings.aspx">Allowance Calculation</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../payroll/salary/salary_processing.aspx">Sallery Processing</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../payroll/separation_generation_rss.aspx">Seperation Generate</a>
+                              </li>
+                             <li>
+                                 <a class="" href="../payroll/salary_sheet_Report.aspx">Salary Sheet</a>
+                              </li>
+                         
+                              <li>
+                                 <a class="" href="../payroll/summary_of_salary.aspx"> Salary Summary</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../payroll/ot_payment_sheet.aspx">Only Overtime Sheet</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../payroll/salary/ot_payment.aspx">Overtime payment </a>
+                              </li>
+                              <li>
+                                 <a class="" href="../payroll/separation_pmt_sheet.aspx">Seperation Salary Sheet</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/promotion.aspx">Promotion Entry Panel</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/promotion_sheet.aspx">Promotion List Report</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/salary_increment.aspx">Increment Entry Panel</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/increment_sheet.aspx">Increment List Report</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../payroll/pay_slip.aspx">Pay Slip</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../payroll/earnleave_payment_generation.aspx">Earn Leave Generation</a>
+                              </li>
+                                <li>
+                                 <a class="" href="../payroll/earnleave_payment_sheet.aspx">Earn Leave Payment Sheet</a>
+                                </li>
+                               </ul>
+                           </li>
+                           <li class="bordered">
+                               <span class="mega-title">Advance</span>
+                               <ul>
+                                   <li>
+                                       <a class="" href="../payroll/advance/advance_entry.aspx">Advance Entry Panel
+                                       </a>
+                                   </li>
+                                   <li>
+                                       <a class="" href="../payroll/advance/advance_monthly_installment_setup.aspx">Advance Settings</a>
+                                   </li>
+                                   <li>
+                                       <a class="" href="../payroll/advance/advance_info.aspx">Advance Reports</a>
+                                   </li>
+                                   <li>
+                                       <a class="" href="../payroll/advance/advance_list.aspx">Advance List</a>
+                                   </li>
+                                   <li>
+                                       <span class="mega-title">Provident Fund(PF)
+                                       </span>
+                                       <ul>
+                                           <li>
+                                               <a class="" href="../pf/pf_settings.aspx">PF Setting</a>
+                                           </li>
+                                           <li>
+                                               <a class="" href="../pf/pfentrypanel.aspx">PF Entry Panel</a>
+                                           </li>
+                                           <li>
+                                               <a class="" href="../pf/pf_ManualEntry.aspx">Manualy Entry</a>
+                                           </li>
+                                           <li>
+                                               <a class="" href="../pf/pf_FDR.aspx">Investment</a>
+                                           </li>
+                                           <li>
+                                               <a class="" href="../pf/pf_interestentry.aspx">Investment Withdraw</a>
+                                           </li>  
+                                           <li>
+                                               <a class="" href="../pf/pf_YearlyExpense.aspx">PF Expense</a>
+                                           </li>  
+                                           <li>
+                                               <a class="" href="../pf/pf_interest_distribution.aspx"> Profit Distribution</a>
+                                           </li>
+                                           <li>
+                                               <a class="" href="../pf/pf_withdraw.aspx">PF Withdraw</a>
+                                           </li>
+                                       </ul>
+                                   </li>
+                               </ul>
+                   </li>
+                   <li class="bordered">
+                       <span class="mega-title">Bouns</span>
+                       <ul>
+                           <li>
+                               <a class="" href="../payroll/bonus_setup.aspx">Bonus Setup</a>
+                           </li>
+                           <li>
+                               <a class="" href="../payroll/bonus_monyh_setup.aspx">B.Month Setup</a>
+                           </li>
+                           <li>
+                               <a class="" href="../payroll/bonus_generation.aspx">B.Generate</a>
+                           </li>
+                           <li>
+                               <a class="" href="../payroll/bonus_increase_decrease.aspx">B.Rise & Fall</a>
+                           </li>
+                           <li>
+                               <a class="" href="../payroll/bonus_sheet_Report.aspx">Bonus Sheet</a>
+                           </li>
+                           <li>
+                               <a class="" href="../payroll/bonus_summary_report.aspx">B.Summary</a>
+                           </li>
+                           <li>
+                               <a class="" href="../payroll/bonus_miss_sheet_Report.aspx">B.Miss Sheet</a>
+                           </li>
+                       </ul>
+                   </li>
+                   <li class="bordered">
+                       <span class="mega-title">Vat and Tax
+                       </span>
+                       <ul>
+                          <li>
+                                 <a class="" href="../vat_tax/allowance_calculation_settingsvat.aspx">Allowance Calculation</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/vat_rate_settings.aspx">Vat&Tax Rate Settings</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/taxfreeallowance.aspx">Tax Free Allowance</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/rebatable_rate_setting.aspx">Rebatable Rate Settings</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/vat_tax_years.aspx">Tax Years Setup                                 </a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/vat_tax_investment.aspx">Investment</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/vat_tax_generation.aspx">Tax Generation</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../vat_tax/vat_tax_report.aspx">Tax Repots</a>
+                              </li>
+                       </ul>
+                   </li>
+
+               </ul>
+                </li>
+
+
+
+
+
+<%--                  <li class="mega-item has-subMenu">
                      <a href="#" class="">Payroll</a>
                      <ul class="megaMenu-wrapper megaMenu-wide">
                         <li>
@@ -389,11 +711,94 @@
                         </li>
 
                      </ul>
-                  </li>
+                  </li>--%>
 
                   <li class="mega-item has-subMenu">
                      <a href="#" class="">Personnel</a>
-                       <ul class="megaMenu-wrapper  w-80">
+                      <ul class="megaMenu-wrapper megaMenu-small">
+                           <li class="bordered">
+                               <span class="mega-title">Employee Information</span>
+                               <ul>
+                              <li>
+                                 <a class="" href="../personnel/employee.aspx">Employee Entry Panel</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../personnel/employee_list.aspx">Employee List</a>
+                              </li>
+                                         
+                               <li>
+                                 <a class="" href="../personnel/employee-list-allowing-compliance.aspx">Pending Worker List</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/employee_profile.aspx">Employee Profile Report</a>
+                              </li>  
+                               <li>
+                                 <a class="" href="../personnel/employee_information.aspx">Employee List Report</a>
+                              </li>
+                             <li>
+                                 <a class="" href="../personnel/separation.aspx"">Seperation Entry Panel</a>
+                              </li>
+                         
+                              <li>
+                                 <a class="" href="../personnel/seperation_sheet.aspx">Seperation List Report</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/man_power_status.aspx">Man Power Status Report</a>
+                              </li> 
+                               <li>
+                                 <a class="" href="../personnel/monthly_manpower.aspx">Monthly Man Power Report</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../personnel/EmpContactReport.aspx">Contact List Report </a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/staff_id_card.aspx"> ID Card Report</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/blood_group.aspx">Blood Group Report</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../personnel/OtherReports.aspx">Others Report</a>
+                              </li>
+                            
+                           </ul>
+                           </li>
+                           <li class="bordered">
+                               <span class="mega-title">Roster Information</span>
+                               <ul>
+                                   <li>
+                                 <a class="" href="../personnel/ShiftManagement.aspx">Roster Create Panel
+                                 </a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/shift_roster_extend.aspx">Roster Extend Panel</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/ShiftManageRemove.aspx">Roster View & Remove</a>
+                              </li>
+                              <li>
+                                 <a class="" href="../personnel/roster_transfer.aspx">Roster Transfer Panel</a>
+                              </li>
+                               <li>
+                                 <a class="" href="../personnel/roster_missing.aspx">Roster Missing Panel
+
+                                    Details</a>
+                              </li>   
+                               <li>
+                                 <a class="" href="../personnel/FloorAssigne.aspx">Place Assign Panel</a>
+                              </li>  
+                               <li>
+                                 <a class="" href="../personnel/shift_manage_report.aspx">Roster Manage Report
+                                    Details</a>
+                              </li>   
+                               <li>
+                                 <a class="" href="../personnel/shift_manage_reportByDateRange.aspx">Roster Report By Date Range</a>
+                              </li> 
+                               </ul>
+                   </li>
+
+               </ul>
+<%--                       <ul class="megaMenu-wrapper  w-80">
                         <li>
                            <span class="mega-title">Employee Information</span>
                            <ul>
@@ -476,107 +881,8 @@
                         </li>
 
 
-                     </ul>
-                    <%-- <ul class="megaMenu-wrapper megaMenu-small">
-                        <li>
-                           
-                              <p class="menu-text text-center fw-bold">Employee Information
-                              </p>
-                         
-                           <ul>
-                              <li>
-                                 <a href="changelog.html" class="">
-                                    <span class="menu-text">Employee Entry Panel</span>
-                                    <span class="badge badge-info-10 menuItem rounded-pill">1.1.2</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="profile-setting.html" class="">
-                                    <span class="menu-text">All Employee List</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="gallery.html" class="">
-                                    <span class="menu-text">Employee Profile Report</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="gallery2.html" class="">
-                                    <span class="menu-text">Employee List Report</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="pricing.html" class="">
-                                    <span class="menu-text">Seperation Entry Panel</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="banner.html" class="">
-                                    <span class="menu-text">Seperation List Report</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="testimonial.html" class="">
-                                    <span class="menu-text">Man Power Status Report
-                                    </span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="faq.html" class="">
-                                    <span class="menu-text">Contact List Report</span>
-                                 </a>
-                              </li>
-
-                              <li>
-                                 <a href="search.html" class="">
-                                    <span class="menu-text">Emp. ID Card Report</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="blank.html" class="">
-                                    <span class="menu-text">Blood Group Report</span>
-                                 </a>
-                              </li>
-                           </ul>
-                        </li>
-                        <li>
-                           <p class="menu-text text-center fw-bold">Roster Information
-                           </p>
-                           <ul>
-                              <li>
-                                 <a href="support.html" class="">
-                                    <span class="menu-text">Roster Create Panel</span>
-                                 </a>
-                              </li>
-                              <li>
-                                 <a href="blog.html" class="">Roster Extend Panel</a>
-                              </li>
-                              <li>
-                                 <a href="blog2.html" class="">Roster View & Remove</a>
-                              </li>
-                              <li>
-                                 <a href="blog3.html" class="">Roster Transfer Panel</a>
-                              </li>
-                              <li>
-                                 <a href="blog-details.html" class="">Roster Missing Panel
-
-                                    Details</a>
-                              </li>
-                              <li>
-                                 <a href="course.html" class="">Place Assign Panel</a>
-                              </li>
-                              <li>
-                                 <a href="course-details.html" class="">Roster Manage Report
-                                    Details</a>
-                              </li>
-                              <li>
-                                 <a href="terms.html" class="">
-                                    <span class="menu-text">Terms &amp; Roster Report By Date Range</span>
-                                 </a>
-                              </li>
-                           </ul>
-                        </li>
                      </ul>--%>
+
                   </li>
 
                   <li class="has-subMenu">
@@ -943,7 +1249,6 @@
    </div>
    <div class="overlay-dark-sidebar"></div>
    <div class="customizer-overlay"></div>
-
    <!-- inject:js-->
    <script src="assets/vendor_assets/js/jquery/jquery-3.5.1.min.js"></script>
    <script src="assets/vendor_assets/js/jquery/jquery-ui.js"></script>
@@ -980,6 +1285,7 @@
    <script src="assets/vendor_assets/js/slick.min.js"></script>
    <script src="assets/vendor_assets/js/trumbowyg.min.js"></script>
    <script src="assets/vendor_assets/js/wickedpicker.min.js"></script>
+    <script src="assets/vendor_assets/js/google-chart.js"></script>
    <script src="assets/theme_assets/js/apexmain.js"></script>
    <script src="assets/theme_assets/js/charts.js"></script>
    <script src="assets/theme_assets/js/drag-drop.js"></script>

@@ -174,20 +174,20 @@ function DonutChart(idName, series, width, height, label, colors, size) {
                             fontWeight: "bold",
                             offsetY: 10,
                             formatter: function (val) {
-                                return +val + "K"
+                                return val 
                             }
                         },
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            color: '#404040',
-                            fontFamily: 'Jost, sans-serif',
-                            formatter: function (w) {
-                                return w.globals.seriesTotals.reduce((a, b) => {
-                                    return a + b
-                                }, 0)
-                            }
-                        }
+                        //total: {
+                        //    show: true,
+                        //    label: 'Total',
+                        //    color: '#404040',
+                        //    fontFamily: 'Jost, sans-serif',
+                        //    formatter: function (w) {
+                        //        return w.globals.seriesTotals.reduce((a, b) => {
+                        //            return a + b
+                        //        }, 0)
+                        //    }
+                        //}
                     }
                 },
             },
