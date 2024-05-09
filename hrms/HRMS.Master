@@ -1029,16 +1029,16 @@
                      <div class="dropdown-wrapper dropdown-wrapper--large">
                         <ul class="list-settings">
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/mail.png" alt=""></div>
+                              <div class="me-3"><i class="uil uil-sitemap"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/department.aspx" class="stretched-link">Department</a>
                                  </h6>
-                                 <p>Introducing Increment subscriptions </p>
+                                 <p>Setup Department</p>
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/color-palette.png" alt=""></div>
+                              <div class="me-3"><i class="uil uil-bag"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/designation.aspx" class="stretched-link">Designation</a>
@@ -1047,7 +1047,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/home.png" alt=""></div>
+                              <div class="me-3"><i class="uil uil-star"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/grade_config.aspx" class="stretched-link">Grade</a>
@@ -1056,7 +1056,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/video-camera.png" alt=""></div>
+                              <div class="me-3"><i class="fas fa-people-arrows"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/shift_config.aspx" class="stretched-link">Shift</a>
@@ -1065,7 +1065,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/document.png" alt=""></div>
+                              <div class="me-3"><i class="fas fa-graduation-cap"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/qualification.aspx" class="stretched-link">Qualification</a>
@@ -1074,7 +1074,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="fas fa-praying-hands"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/religion.aspx" class="stretched-link"> Religion</a>
@@ -1083,7 +1083,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="fas fa-map-marker-alt"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/district_Config.aspx" class="stretched-link"> District</a>
@@ -1092,7 +1092,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="uil uil-university"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/Thana.aspx" class="stretched-link"> Thana</a>
@@ -1101,7 +1101,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="fas fa-stamp"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/allowancesetup.aspx" class="stretched-link"> Stamp Deduction</a>
@@ -1110,7 +1110,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="uil uil-align-left"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/line_config.aspx" class="stretched-link"> Line/Group</a>
@@ -1119,7 +1119,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="uil uil-shop"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/CompanyInfo.aspx" class="stretched-link"> Company
@@ -1129,7 +1129,7 @@
                               </div>
                            </li>
                            <li class="d-flex">
-                              <div class="me-3"><img src="img/microphone.png" alt=""></div>
+                              <div class="me-3"><i class="fas fa-angle-double-right"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
                                     <a href="/hrd/others_settings.aspx" class="stretched-link"> Others

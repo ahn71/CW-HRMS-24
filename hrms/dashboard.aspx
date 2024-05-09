@@ -1205,7 +1205,6 @@
 
         //});
 
-
         function SalaryComparisonChart(idName, width, height = "100", salaryData, monthData) {
             var optionRadial = {
                 series: [{
@@ -1216,6 +1215,14 @@
                     width: width,
                     height: height,
                     type: 'bar',
+                },
+                tooltip: {
+                    enabled: true,
+                    y: {
+                        formatter: function (val) {
+                            return "Salary: Tk" + val; // Format tooltip to show salary
+                        }
+                    }
                 },
                 legend: {
                     show: false
@@ -1238,6 +1245,42 @@
                 new ApexCharts(document.querySelector(idName), optionRadial).render();
             }
         }
+
+
+
+
+        //function SalaryComparisonChart(idName, width, height = "100", salaryData, monthData) {
+        //    var optionRadial = {
+        //        series: [{
+        //            data: salaryData // Use the salary data here
+        //        }],
+        //        colors: ['#8231D3'],
+        //        chart: {
+        //            width: width,
+        //            height: height,
+        //            type: 'bar',
+        //        },
+        //        legend: {
+        //            show: false
+        //        },
+        //        plotOptions: {
+        //            bar: {
+        //                borderRadius: 4,
+        //                horizontal: false,
+        //            }
+        //        },
+        //        dataLabels: {
+        //            enabled: false
+        //        },
+        //        xaxis: {
+        //            categories: monthData // Use the month data here
+        //        }
+        //    };
+
+        //    if ($(idName).length > 0) {
+        //        new ApexCharts(document.querySelector(idName), optionRadial).render();
+        //    }
+        //}
 
 
 
