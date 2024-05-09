@@ -2050,6 +2050,7 @@
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
     <Content Include="personnel\employee-list-allowing-compliance.aspx" />
+    <Content Include="personnel\OtherReports.aspx" />
     <Content Include="personnel\promotion_sheetc.aspx" />
     <Content Include="payroll\Punishment_OthersPay.aspx" />
     <Content Include="payroll\salary_index.aspx" />
@@ -2833,6 +2834,24 @@
       <DependentUpon>PaySlip_SF_Worker.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="All Report\Personnel\1stAbsentLetterBangla.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>1stAbsentLetterBangla.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="All Report\Personnel\2ndAbsentLetterBangla.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>2ndAbsentLetterBangla.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="All Report\Personnel\3rdAbsentLetterBangla.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>3rdAbsentLetterBangla.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="All Report\Personnel\AHGBackPartWorkerID.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2857,16 +2876,34 @@
       <DependentUpon>AHGWorker.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="All Report\Personnel\AppointmentLettert1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppointmentLettert.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="All Report\Personnel\BackPartWorkerID.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BackPartWorkerID.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="All Report\Personnel\ConfirmationLetterBanglaFormate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ConfirmationLetterBanglaFormate.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="All Report\Personnel\DesignationwiseEmpListBangla.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DesignationwiseEmpListBangla.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="All Report\Personnel\DismissLetterBanglaFormate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DismissLetterBanglaFormate.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="All Report\Personnel\DistrictwiseEmpListBangla.cs">
@@ -2897,6 +2934,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EmpEmergency Contact_List.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="All Report\Personnel\EmpJoiningLetter.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmpJoiningLetter.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="All Report\Personnel\IDCardWorker_RSS.cs">
@@ -2957,6 +3000,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FrontPartWorkerID.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="All Report\Personnel\ShowCauseLetterBanglaFormate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ShowCauseLetterBanglaFormate.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="All Report\PF\MonthlyPFSheet.cs">
@@ -4147,12 +4196,6 @@
       <DependentUpon>worker_bonus_sheet.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="All Report\Personnel\AppointmentLetter.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>AppointmentLetter.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="All Report\Personnel\BloodGroup.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -4901,6 +4944,13 @@
     </Compile>
     <Compile Include="personnel\employee-list-allowing-compliance.aspx.designer.cs">
       <DependentUpon>employee-list-allowing-compliance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="personnel\OtherReports.aspx.cs">
+      <DependentUpon>OtherReports.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="personnel\OtherReports.aspx.designer.cs">
+      <DependentUpon>OtherReports.aspx</DependentUpon>
     </Compile>
     <Compile Include="personnel\promotion_sheetc.aspx.cs">
       <DependentUpon>promotion_sheetc.aspx</DependentUpon>
@@ -6028,6 +6078,18 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>worker_bonus_sheet.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\1stAbsentLetterBangla.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>1stAbsentLetterBangla.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\2ndAbsentLetterBangla.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>2ndAbsentLetterBangla.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\3rdAbsentLetterBangla.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>3rdAbsentLetterBangla.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="All Report\Personnel\AHGBackPartWorkerID.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>AHGBackPartWorkerID.cs</LastGenOutput>
@@ -6044,9 +6106,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>AHGWorker.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="All Report\Personnel\AppointmentLetter.rpt">
+    <EmbeddedResource Include="All Report\Personnel\AppointmentLettert.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>AppointmentLetter.cs</LastGenOutput>
+      <LastGenOutput>AppointmentLettert1.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="All Report\Personnel\BackPartWorkerID.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -6056,6 +6118,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>BloodGroup.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\ConfirmationLetterBanglaFormate.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ConfirmationLetterBanglaFormate.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="All Report\Personnel\DesignationwiseEmpList.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DesignationwiseEmpList.cs</LastGenOutput>
@@ -6063,6 +6129,10 @@
     <EmbeddedResource Include="All Report\Personnel\DesignationwiseEmpListBangla.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>DesignationwiseEmpListBangla.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\DismissLetterBanglaFormate.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>DismissLetterBanglaFormate.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="All Report\Personnel\DistrictwiseEmpList.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -6091,6 +6161,10 @@
     <EmbeddedResource Include="All Report\Personnel\EmpEmergency Contact_List.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EmpEmergency Contact_List.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\EmpJoiningLetter.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>EmpJoiningLetter.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="All Report\Personnel\EmployeeBioData.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
@@ -6211,6 +6285,10 @@
     <EmbeddedResource Include="All Report\Personnel\ShiftSeduleDetails.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ShiftSeduleDetails.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="All Report\Personnel\ShowCauseLetterBanglaFormate.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ShowCauseLetterBanglaFormate.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="All Report\Personnel\StaffAPPLetter.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

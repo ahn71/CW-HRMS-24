@@ -280,39 +280,44 @@ function chartjsAreaChart(selector, height, labelName1, labelName2) {
 }
 chartjsAreaChart("salesReports", "105", "Total Order", "Total Sale");
 
-/* ======= Bar chart ======= */
 function chartjsBarChart(selector, dataCIn, DataCOut, labels, height, labelName1, labelName2) {
     let delayed;
     var ctx = document.getElementById(selector);
     if (ctx) {
+        var existingChart = Chart.getChart(ctx);
+        if (existingChart) {
+            existingChart.destroy();
+        }
         ctx.getContext("2d");
         ctx.height = window.innerWidth <= 1399 ? (window.innerWidth < 575 ? 250 : 100) : height;
+
+
         var chart = new Chart(ctx, {
             type: "bar",
             data: {
                 labels: labels,
                 datasets: [{
-                        data: dataCIn,
-                        backgroundColor: 'rgba(130, 49, 211, .50)',
-                        hoverBackgroundColor: '#7811FF',
-                        label: labelName1,
-                        barPercentage: 0.45,
-                        borderRadius: 2,
-                        maxBarThickness: 11,
-                        minBarLength: 2,
-                        barThickness: 15,
-                    },
-                    {
-                        data: DataCOut,
-                        backgroundColor: 'rgba(0, 170, 255, .50)',
-                        hoverBackgroundColor: '#00AAFF',
-                        label: labelName2,
-                        barPercentage: 0.45,
-                        borderRadius: 2,
-                        maxBarThickness: 11,
-                        minBarLength: 2,
-                        barThickness: 15,
-                    },
+                    data: dataCIn,
+                    backgroundColor: 'rgba(130, 49, 211, .50)',
+                    hoverBackgroundColor: '#7811FF',
+                    label: labelName1,
+                    barPercentage: 0.45,
+                    borderRadius: 2,
+                    maxBarThickness: 11,
+                    minBarLength: 2,
+                    barThickness: 15,
+                },
+                {
+                    data: DataCOut,
+                    backgroundColor: 'rgba(0, 170, 255, .50)',
+                    hoverBackgroundColor: '#00AAFF',
+                    label: labelName2,
+                    barPercentage: 0.45,
+                    borderRadius: 2,
+                    maxBarThickness: 11,
+                    minBarLength: 2,
+                    barThickness: 15,
+                },
                 ],
             },
 
@@ -433,24 +438,180 @@ function chartjsBarChart(selector, dataCIn, DataCOut, labels, height, labelName1
     }
 }
 
-chartjsBarChart(
+
+/* ======= Bar chart ======= */
+//function chartjsBarChart(selector, dataCIn, DataCOut, labels, height, labelName1, labelName2) {
+//    let delayed;
+//    var ctx = document.getElementById(selector);
+//    if (ctx) {
+//        ctx.getContext("2d");
+//        ctx.height = window.innerWidth <= 1399 ? (window.innerWidth < 575 ? 250 : 100) : height;
+
+   
+//        var chart = new Chart(ctx, {
+//            type: "bar",
+//            data: {
+//                labels: labels,
+//                datasets: [{
+//                        data: dataCIn,
+//                        backgroundColor: 'rgba(130, 49, 211, .50)',
+//                        hoverBackgroundColor: '#7811FF',
+//                        label: labelName1,
+//                        barPercentage: 0.45,
+//                        borderRadius: 2,
+//                        maxBarThickness: 11,
+//                        minBarLength: 2,
+//                        barThickness: 15,
+//                    },
+//                    {
+//                        data: DataCOut,
+//                        backgroundColor: 'rgba(0, 170, 255, .50)',
+//                        hoverBackgroundColor: '#00AAFF',
+//                        label: labelName2,
+//                        barPercentage: 0.45,
+//                        borderRadius: 2,
+//                        maxBarThickness: 11,
+//                        minBarLength: 2,
+//                        barThickness: 15,
+//                    },
+//                ],
+//            },
+
+//            options: {
+//                maintainAspectRatio: true,
+//                responsive: true,
+//                interaction: {
+//                    mode: 'index',
+//                },
+//                plugins: {
+//                    legend: {
+//                        display: false,
+//                        position: "bottom",
+//                        align: "start",
+//                        labels: {
+//                            boxWidth: 6,
+//                            display: true,
+//                            usePointStyle: true,
+//                        },
+//                    },
+//                    tooltip: {
+//                        usePointStyle: true,
+//                        enabled: false,
+//                        external: customTooltips,
+//                        callbacks: {
+//                            label: function (context) {
+//                                let label = context.dataset.label || '';
+
+//                                if (label) {
+//                                    label += ': ';
+//                                }
+//                                if (context.parsed.y !== null) {
+//                                    label += new Intl.NumberFormat().format(context.parsed.y);
+//                                }
+//                                return `<span class="data-label">${label}</span>`;
+//                            }
+//                        },
+//                    },
+//                },
+//                animation: {
+//                    onComplete: () => {
+//                        delayed = true;
+//                    },
+//                    delay: (context) => {
+//                        let delay = 0;
+//                        if (context.type === 'data' && context.mode === 'default' && !delayed) {
+//                            delay = context.dataIndex * 200 + context.datasetIndex * 50;
+//                        }
+//                        return delay;
+//                    },
+//                },
+//                layout: {
+//                    padding: {
+//                        left: -13,
+//                        right: -10,
+//                        top: 0,
+//                        bottom: 0,
+//                    },
+//                },
+//                elements: {
+//                    point: {
+//                        radius: 0,
+//                    },
+//                },
+//                scales: {
+//                    y: {
+//                        grid: {
+//                            color: "#485e9029",
+//                            borderDash: [3, 3],
+//                            zeroLineColor: "#485e9029",
+//                            zeroLineWidth: 1,
+//                            zeroLineBorderDash: [3, 3],
+//                            drawTicks: false,
+//                            drawBorder: false,
+//                            zeroLineWidth: 3,
+//                            borderWidth: 0,
+//                        },
+//                        ticks: {
+//                            beginAtZero: true,
+//                            font: {
+//                                size: 14,
+//                                family: "'Jost', sans-serif",
+//                            },
+//                            color: '#747474',
+//                            padding: 15,
+//                            max: 80,
+//                            min: 0,
+//                            stepSize: 20,
+//                            callback(value, index, values) {
+//                                return `${value}`;
+//                            },
+//                        },
+//                    },
+//                    x: {
+//                        grid: {
+//                            display: true,
+//                            zeroLineWidth: 2,
+//                            zeroLineColor: "transparent",
+//                            color: "transparent",
+//                            z: 1,
+//                            tickMarkLength: 10,
+//                            drawTicks: true,
+//                            drawBorder: false,
+//                        },
+
+//                        ticks: {
+//                            beginAtZero: true,
+//                            font: {
+//                                size: 14,
+//                                family: "'Jost', sans-serif",
+//                            },
+//                            color: '#747474'
+//                        },
+//                    },
+//                },
+//            },
+//        });
+//    }
+//}
+
+//chartjsBarChart(
     
-    "salesGrowthToday",
-    (data = [255, 55, 25,11,32,11,12]),
-    (data = [10, 30, 8,11,21,32,11]),
-    labels = [
-        "Sat",
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-    ],
-    350,
-    "Presnt",
-    "Absent",
-);
+//    "salesGrowthToday",
+//    (data = [255, 55, 25,11,32,11,12]),
+//    (data = [10, 30, 8,11,21,32,11]),
+//    labels = [
+//        "Sat",
+//        "Sun",
+//        "Mon",
+//        "Tue",
+//        "Wed",
+//        "Thu",
+//        "Fri",
+//    ],
+//    350,
+//    "Presnt",
+//    "Absent",
+//);
 
 
 $('#salesgrowth2-tab').on("shown.bs.tab", function () {
@@ -569,23 +730,7 @@ chartjsBarChart(
 );
 
 
-/* demo 3*/
-chartjsBarChart(
-    "profitGrowthToday",
-    (data = [35, 55, 25, 60, 42, 80]),
-    (data = [10, 30, 8, 30, 22, 38]),
-    labels = [
-        "Nov-23",
-        "Dec-23",
-        "Jan-24",
-        "Feb-24",
-        "Mar-24",
-        "Apr-24",
-    ],
-    140,
-    "New Join",
-    "Relased"
-);
+
 
 function chartjsLineChart(selector, height, dataCur, labels, labelName, fill) {
     let delayed;

@@ -9,6 +9,7 @@ $(function () {
     const lineChart = document.getElementById("google-lineChart");
     const lineChartMultiple = document.getElementById("google-lineChartMultiple");
     const orgChart = document.getElementById("google-orgChart");
+
     const pieChartBasic = document.getElementById("google-pieChartBasic");
     const pieChart3d = document.getElementById("google-pieChart3d");
     if(barChart && materialChart && barChartStacked && barChartCusttomColor && comboChart && lineChart && lineChartMultiple && orgChart && pieChartBasic && pieChart3d){
