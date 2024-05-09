@@ -1192,12 +1192,12 @@
                               </li>
                                <li>
                                  <a href="" data-layout="dark">
-                                    <i class="uil uil-setting"></i>
+                                    <i class="uil uil-moon"></i>
                                     Dark</a>
                               </li>
                                 <li>
                                  <a href="" data-layout="light">
-                                    <i class="uil uil-setting"></i>
+                                    <i class="uil uil-sun"></i>
                                     Light</a>
                               </li>
                              
