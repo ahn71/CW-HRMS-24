@@ -8,26 +8,30 @@
     <div class="crm mb-25">
         <div class="container-fluid">
 
-            <div class="date-picker-sticky">
-                            <div class="row">
-                <div class="col-lg-7">
-                </div>
-                <div class="col-lg-5">
-                    <div class="dm-date-picker date-picker-sticky d-flex justify-content-end gap-1 w-100">
-                        <div class="form-group mb-0 form-group-calender">
-                            <div class="position-relative">
-                                <input type="text" onload="getDate()" class="form-control form-control-default" id="datepicker4" placeholder="select date">
-                                <a href="#">
-                                    <img class="svg" src="img/svg/calendar.svg" alt="calendar"></a>
+      
+                <div class="date-parent">
+                            <div class="row position-relative">
+            
+                    <div class="dm-date-picker d-flex justify-content-end gap-1 w-100">
+                        <div class="form-group mb-0 form-group-calender position-relative">
+                            <div class="positon-fixed top-0">
+                                <input type="text" onload="getDate()" class="form-control top-0 date-wrapper form-control-default " id="datepicker4" placeholder="select date">
+                         
+                             
                             </div>
+
+                            <%--<span><i class="fab fa-facebook"></i></span>--%>
+                                  <img class="svg cicon" src="img/svg/calendar.svg" alt="calendar">
                         </div>
                         <button style="line-height: 32px; display: block;" type="button" onclick="SearchData()" class="btn btn-info btn-default btn-squared ">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                </div>
             </div>
             </div>
+                            
+            
+
 
 
             <div class="row mt-2">
@@ -742,16 +746,8 @@
 
                     </div>
                      
-                     
-                </div>
-
-                <!-----Start -->
-
-               
-                <!---Salary Comparison Table Start ---->
-
-
-                <div class="col-12 mb-25 mt-25">
+                    <div class="row">
+            <div class="col-12 mb-25  mt-25">
                     <!-- Card 1  -->
                     <div class="ap-po-details ap-po-details--3 radius-xl d-flex py-25">
 
@@ -880,6 +876,8 @@
                     </div>
                     <!-- Card 1 End  -->
                 </div>
+        </div>
+                
 
               <div class="row">
                      <div class="col-lg-6">
@@ -1001,8 +999,17 @@
                         </div>
                      </div>
                   </div>
+                     
+                </div>
+
+                <!-----Start -->
+
+               
+                <!---Salary Comparison Table Start ---->
+
+
         </div>
-    </div>
+    
 
     <%--<div id="overlayer">--%>
     <%--<div class="loader-overlay">--%>
@@ -1029,11 +1036,7 @@
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
         function SearchData() {
-            var date = new Date($(".hasDatepicker").val());
-            var formattedDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
-            console.log(formattedDate);
-         
-            // Define an array to hold promises
+            var formattedDate = $(".hasDatepicker").val();
             var promises = [];
 
             // Push promises for each function call
@@ -1090,40 +1093,21 @@
                 resolve();
             }));
 
-
-            // Execute promises sequentially
             promises.reduce(function (previousPromise, nextPromise) {
                 return previousPromise.then(function () {
                     return nextPromise;
                 });
             }, Promise.resolve());
         }
-
-        //function SearchData() {
-
-        //    var date = new Date($(".hasDatepicker").val());
-        //    var date = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
-        //    console.log(date);
-        //    GetDailyAttendanceStatus(date);
-        //    GetLast7DaysPARatio(date);
-        //    GetDailyAttSummary(date);
-        //    GetCurrentEmpStatus();
-        //    GetMonthlyNewJoinRelase(date)
-        //    GetNewJoinAndRelease(date);
-        //    GetSalaryComparisonLast12Month(date);
-        //    GetMonthlyCosting(date);
-        //    GetTodaysCosting(date);
-        //}
         $(document).ready(function () {
-            var today = new Date();
-            var formattedDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-            console.log(formattedDate);
+            var initialDate = new Date();
+            var options = { day: 'numeric', month: 'long', year: 'numeric' };
+            var formattedDate = initialDate.toLocaleDateString('en-US', options);
             document.querySelector('.hasDatepicker').value = formattedDate;
-            var date = document.querySelector('.hasDatepicker').value;
+
+            var date = formattedDate;
             // Define an array to hold promises
             var promises = [];
-
-            // Push promises for each function call
             promises.push(new Promise(function (resolve, reject) {
                 GetDailyAttendanceStatus(date);
                 resolve();
@@ -1184,26 +1168,6 @@
             }, Promise.resolve());
         });
 
-
-
-
-        //$(document).ready(function () {
-        //    var today = new Date();
-        //    var formattedDate = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2) + '-' + ('0' + today.getDate()).slice(-2);
-        //    console.log(formattedDate);
-        //    document.querySelector('.hasDatepicker').value = formattedDate;
-        //    var date = document.querySelector('.hasDatepicker').value;
-        //    GetDailyAttendanceStatus(date);
-        //    GetLast7DaysPARatio(date);
-        //    GetDailyAttSummary(date);
-        //    GetCurrentEmpStatus();
-        //    GetMonthlyNewJoinRelase(date)
-        //    GetNewJoinAndRelease(date);
-        //    GetSalaryComparisonLast12Month(date);
-        //    GetMonthlyCosting(date);
-        //    GetTodaysCosting(date);
-
-        //});
 
         function SalaryComparisonChart(idName, width, height = "100", salaryData, monthData) {
             var optionRadial = {
@@ -1354,12 +1318,10 @@
                 w.push(GetLast7DaysPARatioData[i].weekDay.substring(0, 3));
             }
 
-            // Call the chartjsBarChart function with the retrieved data
             chartjsBarChart("salesGrowthToday", p, a, w, 350, "Present", "Absent");
 
         })
         .catch(function(error) {
-            // Hide loader on error
             $('.loaderSevenDays').hide();
             console.error('Error occurred while fetching data:', error);
         });
@@ -1504,7 +1466,7 @@
                     malePercentage = response.malePers;
                     femalePercentage = response.femalePers;
                     maleFemaleRatio = [malePercentage, femalePercentage];
-                    DonutChart('.MaleFemaleRatio', maleFemaleRatio, 180, 180, ['Male', 'Female'], ['#00AAFF', '#FA8B0C'], "60%");
+                    DonutChart('.MaleFemaleRatio', maleFemaleRatio, 180, 180, ['Male', 'Female'], ['#01B81A', '#8231d3'], "60%");
 
                     // Populate StaffWorkerRatio array
                      StaffPercentage = response.staffPers;

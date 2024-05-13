@@ -4566,7 +4566,9 @@ body.top-menu .navbar-left .customizer-trigger + .top-menu {
 }
 
 @media only screen and (max-width: 900px) {
-    .navbar-right__menu .nav-settings .dropdown-custom .dropdown-wrapper--large {
+    .navbar-right__menu .nav-
+    
+    .dropdown-custom .dropdown-wrapper--large {
         min-width: 100%;
         position: fixed;
     }
@@ -36047,4 +36049,48 @@ body:after {
 .dropdown-custom .dropdown-wrapper {
     border: 1px solid #ddd !important;
     box-shadow: none !important
+}
+
+.IconStyle {
+    font-size: 25px;
+    color: var(--color-primary);
+}
+
+.gradeIconStyle {
+    font-size: 25px;
+    color: var(--color-warning);
+}
+
+.QualiStyle {
+    font-size: 25px;
+    color: var(--color-secondary);
+}
+
+.DistrictStyle {
+    font-size: 25px;
+    color: var(--color-success);
+}
+.sticky-top {
+    z-index: 11 !important;
+}
+.ui-datepicker {
+    position: fixed !important;
+    top: 108px !important;
+}
+
+.date-parent {
+    position: fixed;
+    z-index: 5555;
+    /* left: 0; */
+    top: 79px;
+    right: 20px;
+}
+.main-content {
+    margin-top:47px;
+}
+.cicon {
+    position:absolute;
+  right: 8px;
+    width: 17px;
+    top: 5px !important
 }
