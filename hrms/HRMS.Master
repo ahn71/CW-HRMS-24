@@ -84,7 +84,7 @@
                   <li class="has-subMenu">
                      <li class="has-subMenux d-flex align-items-center gap-1">
                         <span><i class="uil uil-create-dashboard"></i></span>
-                        <a href="#" class="">
+                        <a href="" class="">
                            Dashboard
                         </a>
                      </li>

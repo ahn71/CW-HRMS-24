@@ -289,7 +289,22 @@ function chartjsBarChart(selector, dataCIn, DataCOut, labels, height, labelName1
             existingChart.destroy();
         }
         ctx.getContext("2d");
-        ctx.height = window.innerWidth <= 1399 ? (window.innerWidth < 575 ? 250 : 100) : height;
+        //ctx.height = window.innerWidth <= 1399 ? (window.innerWidth < 575 ? 250 : 100) : height;
+        if (window.innerWidth <= 1200) {
+            ctx.height = 100;
+        }
+        else if (window.innerWidth <= 1400) {
+            ctx.height = 120;
+        }
+        else if (window.innerWidth <= 1600) {
+            ctx.height = 120;
+        }
+        else if (window.innerWidth <= 1920) {
+            ctx.height = 90;
+        }
+        else if (window.innerWidth <= 3840) {
+            ctx.height = 38;
+        }
 
 
         var chart = new Chart(ctx, {

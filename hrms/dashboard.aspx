@@ -223,7 +223,7 @@
                     </div>
                 </div>
                 <div class="col-lg-4 mb-25 d-block">
-                    <div class="card border-0 px-25 h-100">
+                    <div class="card border-0 px-25 paratioStyle">
                         <div class="card-header px-0 border-0">
                             <h6>Last 7 Days Attendance Ratio</h6>
 
@@ -250,7 +250,9 @@
                                                 <span class="spin-dot badge-dot dot-primary"></span>
                                                 <span class="spin-dot badge-dot dot-primary"></span>
                                             </div>
-                                            <canvas id="salesGrowthToday"></canvas>
+                                            <div class="height-present-ratio ">
+                                               <canvas id="salesGrowthToday"></canvas>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -578,7 +580,7 @@
                                             <h6>Male Female Ratio</h6>
                                         </div>
                                         <!-- ends: .card-header -->
-                                        <div class="card-body pt-20">
+                                        <div class="card-body cardBodyCenter ">
                                             <div id="google-pieChartBasic"></div>
                                             <div class="tab-content">
                                                 <div class="tab-pane fade active show" id="se_device-today" role="tabpanel"
@@ -586,15 +588,15 @@
                                                     <div class="device-pieChart-wrap position-relative">
 
                                                         <div class="worker-loader-x">
-                                                                                                                                                        <div class="dm-spin-dots dot-size loaderCurrStatus dot-sizedot-sizedot-sizedot-size spin-sm">
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                            </div>
-                                                                </div>
-                                                            <div class="MaleFemaleRatio"></div>
-                                                    
+                                                            <div class="dm-spin-dots dot-size loaderCurrStatus dot-sizedot-sizedot-sizedot-size spin-sm">
+                                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="MaleFemaleRatio"></div>
+
 
                                                     </div>
                                                     <div class="session-wrap session-wrap--top--4">
@@ -630,7 +632,7 @@
                                             <h6>Staff Worker Ratio</h6>
                                         </div>
                                         <!-- ends: .card-header -->
-                                        <div class="card-body pt-20">
+                                        <div class="card-body cardBodyCenter">
                                             <div class="tab-content">
                                                 <div class="tab-pane fade active show" id="se_device-today" role="tabpanel"
                                                     aria-labelledby="se_device-today-tab">
@@ -690,7 +692,7 @@
                                          <h6>Monthly New Join & Release</h6>
                                      </div>
                                      <!-- ends: .card-header -->
-                                     <div style="height: 230px;" class="card-body pt-0 ">
+                                     <div  class="card-body monthlyNewJoinRatio pt-0 ">
                                          <div class="cashflow-chart">
                                              <ul class="legend-static mt-1 d-flex justify-content-center">
                                                  <li class="custom-label">
@@ -727,7 +729,7 @@
                                         <h1>Salary Comparison(Last 12th Month)</h1>
                                     </div>
                                 </div>
-                                <div style="height:230px; overflow:hidden;"  class="card-body">
+                                <div class="card-body salary-height">
 
                                     <div class="worker-loader">
                                      <div class="dm-spin-dots dot-size loaderSelaryCom dot-sizedot-sizedot-sizedot-size spin-sm">
@@ -738,7 +740,6 @@
                                             </div>
                                             </div>
                                         <div class="SalaryComparisonChart"></div>
-                                
 
                                 </div>
                             </div>
@@ -1169,7 +1170,25 @@
         });
 
 
-        function SalaryComparisonChart(idName, width, height = "100", salaryData, monthData) {
+        function SalaryComparisonChart(idName, width, height, salaryData, monthData) {
+
+            var height;
+            if (window.innerWidth <= 1200) {
+                height = 100;
+            }
+            else if (window.innerWidth <= 1400) {
+                height = 240;
+            }
+            else if (window.innerWidth <= 1600) {
+                height = 250;
+            }
+            else if (window.innerWidth <= 1920) {
+                height =250;
+            }
+            else if (window.innerWidth <= 3840) {
+                height = 250;
+            }
+
             var optionRadial = {
                 series: [{
                     data: salaryData // Use the salary data here
@@ -1179,6 +1198,7 @@
                     width: width,
                     height: height,
                     type: 'bar',
+
                 },
                 tooltip: {
                     enabled: true,
@@ -1204,6 +1224,8 @@
                     categories: monthData // Use the month data here
                 }
             };
+
+
 
             if ($(idName).length > 0) {
                 new ApexCharts(document.querySelector(idName), optionRadial).render();
@@ -1245,10 +1267,6 @@
         //        new ApexCharts(document.querySelector(idName), optionRadial).render();
         //    }
         //}
-
-
-
-
 
 
         function GetDailyAttendanceStatus(date) {
@@ -1403,7 +1421,7 @@
                         salary.push(GetSalaryComparison[i].salary);
                         monthname.push(GetSalaryComparison[i].monthname);
                     }
-                    SalaryComparisonChart('.SalaryComparisonChart', '100%', 180, salary, monthname);
+                    SalaryComparisonChart('.SalaryComparisonChart', '100%', height=height, salary, monthname);
                 })
                 .catch(function (error) {
                     console.error('Error occurred while fetching data:', error);
@@ -1443,8 +1461,6 @@
             // Clear previous data
             var maleFemaleRatio = [];
             var StaffWorkerRatio = [];
-
-
             // Clear text values
             $('#totalEmpReg').text('');
             $('#female').text('');
@@ -1452,7 +1468,7 @@
             $('#overtime').text('');
             $('.MaleFemaleRatio').html('');
             $('.StapWorkerRatio').html('');
-
+          
             ApiCallSam(CurrentEmpStatusUrl, companyId, token)
                 .then(function (response) {
                     $('.loaderCurrStatus').hide();
@@ -1472,7 +1488,6 @@
                      StaffPercentage = response.staffPers;
                     WorkerPercentage = response.workerpers;
                     StaffWorkerRatio = [StaffPercentage, WorkerPercentage];
-
                     // Pass the arrays to the DonutChart function
                     DonutChart('.StapWorkerRatio', StaffWorkerRatio, 180, 180, ['Staff', 'Worker'], ['#00AAFF', '#FA8B0C'], "60%");
 
