@@ -2508,6 +2508,7 @@
     <Content Include="hrms\maps\style.css.map" />
     <Content Include="hrms\HRMS.Master" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\GloryGroup.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />

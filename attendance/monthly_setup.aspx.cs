@@ -65,7 +65,6 @@ namespace SigmaERP.attendance
                
 
             }
-            catch { }
 
         }
 

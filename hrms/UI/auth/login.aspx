@@ -19,8 +19,8 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <title>HRMS Sign In</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon.png" />
+    <title>Sign In | CW-HRMS</title>
     <style>
         .login-logo {
             width: 70%;
@@ -265,4 +265,5 @@
 
     </div>
 </body>
+  
 </html>

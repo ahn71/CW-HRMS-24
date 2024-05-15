@@ -1,0 +1,6 @@
+D:\Running projects github\CW-HRMS-24\HRD.DAL\bin\Release\HRD.DAL.dll
+D:\Running projects github\CW-HRMS-24\HRD.DAL\bin\Release\HRD.DAL.pdb
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Release\HRD.DAL.csprojResolveAssemblyReference.cache
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Release\HRD.DAL.csproj.CoreCompileInputs.cache
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Release\HRD.DAL.dll
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Release\HRD.DAL.pdb

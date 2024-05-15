@@ -52,7 +52,7 @@
 
                                         <div class="ap-po-details-time">
                                             <span class="color-success"><i class="las la-arrow-up"></i>
-                                                <strong id="totalEmpRatio">10%</strong></span>
+                                                <strong id="totalEmpRatio"></strong></span>
                                             <small></small>
                                         </div>
                                     </div>
@@ -204,7 +204,7 @@
                                         </div>
                                         <div class="ap-po-details-time">
                                             <span class="color-success"><i class="las la-arrow-up"></i>
-                                                <strong>2%</strong></span>
+                                                <strong id="WHOffDeutyPers"></strong></span>
                                         </div>
                                     </div>
                                     <div class="ap-po-details__icon-area color-warning">
@@ -723,7 +723,7 @@
                                         <h1>Salary Comparison(Last 12th Month)</h1>
                                     </div>
                                 </div>
-                                <div class="card-body">
+                                <div style="height:230px; overflow:hidden;"  class="card-body">
 
                                     <div class="worker-loader">
                                      <div class="dm-spin-dots dot-size loaderSelaryCom dot-sizedot-sizedot-sizedot-size spin-sm">
@@ -754,66 +754,7 @@
                 <div class="col-12 mb-25 mt-25">
                     <!-- Card 1  -->
                     <div class="ap-po-details ap-po-details--3 radius-xl d-flex py-25">
-                        <div class="col-lg-3 overview-content overview-content3 b-none bg-none mb-lg-0 mb-20">
-                            <div class="d-flex">
-                                <div class="revenue-chart-box__Icon me-20 bg-primary color-white rounded-circle">
-                                    <i class="uil uil-money-withdraw"></i>
 
-                                </div>
-                                <div class="d-flex align-items-start flex-wrap">
-                                    <div class="me-10">
-                                        <div class="loader-size loaderCosting">
-                                            <div class="dm-spin-dots dot-size  dot-sizedot-sizedot-sizedot-size spin-sm">
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                            </div>
-                                        </div>
-
-                                        <div class="h1" id="TodaySalaryAmt">
-
-                                        </div>
-                                        <p class="mt-1 mb-0">Today’s Salary</p>
-                                    </div>
-
-                                    <!-- <div class="ap-po-details bg-none">
-                                    <span class="color-success fs-14  d-inline-block mt-2"><i
-                                          class="las la-arrow-up"></i>
-                                       <strong>25.36%</strong></span>
-                                 </div> -->
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 overview-content overview-content3 bg-none b-none mb-lg-0 mb-20">
-                            <div class="d-flex">
-                                <div class="revenue-chart-box__Icon me-20 bg-info color-white rounded-circle">
-                                    <i class="uil uil-clock-eight"></i>
-                                </div>
-                                <div class="d-flex align-items-start flex-wrap">
-                                    <div class="me-10">
-                                        <div class="loader-size loaderCosting">
-                                            <div class="dm-spin-dots dot-size  dot-sizedot-sizedot-sizedot-size spin-sm">
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                            </div>
-                                        </div>
-                                        <div class="h1" id="todayOtAmount">
-
-                                        </div>
-                                        <p class="mt-1 mb-0">Today's OT Amount</p>
-                                    </div>
-
-                                    <!-- <div class="ap-po-details bg-none">
-                                    <span class="color-success fs-14 d-inline-block mt-2"><i
-                                          class="las la-arrow-up"></i>
-                                       <strong>25.36%</strong></span>
-                                 </div> -->
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-lg-3 overview-content overview-content3 bg-none b-none mb-lg-0 mb-20">
                             <div class="d-flex">
                                 <div class="revenue-chart-box__Icon me-20 bg-success color-white rounded-circle">
@@ -833,7 +774,7 @@
                                         <div class="h1" id="LastMonthCosting">
 
                                         </div>
-                                        <p class="mt-1 mb-0">Last Month Costing</p>
+                                        <p class="mt-1 mb-0">Last Month Salary</p>
                                     </div>
                                     <!-- <div class="ap-po-details bg-none">
                                     <span class="color-success fs-14 d-inline-block mt-2"><i
@@ -875,21 +816,93 @@
                             </div>
                         </div>
 
+                                                <div class="col-lg-3 overview-content overview-content3 b-none bg-none mb-lg-0 mb-20">
+                            <div class="d-flex">
+                                <div class="revenue-chart-box__Icon me-20 bg-primary color-white rounded-circle">
+                                    <i class="uil uil-money-withdraw"></i>
+
+                                </div>
+                                <div class="d-flex align-items-start flex-wrap">
+                                    <div class="me-10">
+                                        <div class="loader-size loaderCosting">
+                                            <div class="dm-spin-dots dot-size  dot-sizedot-sizedot-sizedot-size spin-sm">
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="h1" id="TodaySalaryAmt">
+
+                                        </div>
+                                        <p class="mt-1 mb-0">Today’s Salary</p>
+                                    </div>
+
+                                    <!-- <div class="ap-po-details bg-none">
+                                    <span class="color-success fs-14  d-inline-block mt-2"><i
+                                          class="las la-arrow-up"></i>
+                                       <strong>25.36%</strong></span>
+                                 </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 overview-content overview-content3 bg-none b-none mb-lg-0 mb-20">
+                            <div class="d-flex">
+                                <div class="revenue-chart-box__Icon me-20 bg-info color-white rounded-circle">
+                                    <i class="uil uil-money-bill"></i>
+                                </div>
+                                <div class="d-flex align-items-start flex-wrap">
+                                    <div class="me-10">
+                                        <div class="loader-size loaderDailyOt">
+                                            <div class="dm-spin-dots dot-size  dot-sizedot-sizedot-sizedot-size spin-sm">
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                                <span class="spin-dot badge-dot dot-primary"></span>
+                                            </div>
+                                        </div>
+                                        <div class="h1" id="todayOtAmount">
+
+                                        </div>
+                                        <p class="mt-1 mb-0">Today's OT Amount</p>
+                                    </div>
+
+                                    <!-- <div class="ap-po-details bg-none">
+                                    <span class="color-success fs-14 d-inline-block mt-2"><i
+                                          class="las la-arrow-up"></i>
+                                       <strong>25.36%</strong></span>
+                                 </div> -->
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <!-- Card 1 End  -->
                 </div>
 
               <div class="row">
                      <div class="col-lg-6">
-                        <div class="card">
+                        <div class="card position-relative">
 
                            <div class="card-header">
-                              <h6>Monthly OT</h6>
+                              <h6>This Month's OT</h6>
                            </div>
 
-                           <div class="card-body">
+                           <div style="height:170px" class="card-body">
                               <div class="table-responsive">
                                  <table class="table table-border">
+                                     <div class="loader-size loaderMontOt worker-loader">
+                                         
+                                         <div class="dm-spin-dots dot-size  dot-sizedot-sizedot-sizedot-size spin-sm">
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                         </div>
+                                         
+
+                                     </div>
                                     <thead>
                                        <tr>
                                           <th>Regular </th>
@@ -899,23 +912,40 @@
                                        </tr>
                                     </thead>
                                     <tbody>
-                                       <tr>
-                                          <td>558.5 H
-                                          </td>
-                                          <td>50.8H</td>
-                                          <td>600H</td>
-                                          <td>6H</td>
-
-                                       </tr>
 
                                        <tr>
-                                          <td>2,340Tk
+                                          <td><div id="MonRegularOtH"></div>
                                           </td>
-                                          <td>21,340Tk</td>
-                                          <td>12,340Tk</td>
-                                          <td>23,340Tk</td>
+                                           <td>
+                                               <div id="MonExtOtH"></div>
+                                           </td>
+                                           <td>
+                                               <div id="MonTotalOtH"></div>
+                                           </td>
+                                           <td>
+                                               <div id="MonAvarageOtH"></div>
+                                           </td>
+ 
 
                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div id="MonRegularOtAmt"></div>
+                                            </td>
+                                            <td>
+                                                <div id="MonExtOtAmt"></div>
+                                            </td>
+                                            <td>
+                                                <div id="MonTotalOtAmt"></div>
+                                            </td>
+                                            <td>
+                                                <div id="MonAvarageOtAmt"></div>
+                                            </td>
+
+
+                                        </tr>
+
+
 
                                     </tbody>
                                  </table>
@@ -927,12 +957,23 @@
                         <div class="card">
 
                            <div class="card-header">
-                              <h6> Todays OT</h6>
+                              <h6>Today's OT</h6>
                            </div>
 
-                           <div class="card-body">
+                           <div style="height:170px" class="card-body">
                               <div class="table-responsive">
                                  <table class="table table-border">
+                                      <div class="loader-size loaderDailyOt worker-loader">
+                                         
+                                         <div class="dm-spin-dots dot-size  dot-sizedot-sizedot-sizedot-size spin-sm">
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                             <span class="spin-dot badge-dot dot-primary"></span>
+                                         </div>
+                                         
+
+                                     </div>
                                     <thead>
                                        <tr>
                                           <th>Regular </th>
@@ -941,20 +982,18 @@
                                        </tr>
                                     </thead>
                                     <tbody>
-                                       <tr>
-                                          <td>558.5 H
-                                          </td>
-                                          <td>50.8H</td>
-                                          <td>600H</td>
-                                       </tr>
-
-                                       <tr>
-                                          <td>2,340Tk
-                                          </td>
-                                          <td>21,340Tk</td>
-                                          <td>12,340Tk</td>
-                                       </tr>
-
+                                        <tr>
+                                            <td><span id="DailyRegOTH"></span>
+                                            </td>
+                                            <td><span id="DailyExtOTH"></span></td>
+                                            <td><span id="DailyTotalOTH"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><span id="DailyRegOtTk"></span>
+                                            </td>
+                                            <td><span id="DailyExtOtTk"></span></td>
+                                            <td><span id="DailyTotalOtTk"></span></td>
+                                        </tr>
                                     </tbody>
                                  </table>
                               </div>
@@ -984,6 +1023,8 @@
         var GetNewJoinAndReleaseUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/newJoinReleaseHistory';
         var GetSalaryComparisonLast12MonthUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/salaryComparison';
         var GetMonthlyNewJoinRelaseUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/monthlyNewjoinAndRelease';
+        var GetMonthlyOtCalculationUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/monthlyOtCalculation';
+        var GetDailyOtCalculationUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyOtCalculation';
         var companyId = '0001';
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
@@ -991,7 +1032,7 @@
             var date = new Date($(".hasDatepicker").val());
             var formattedDate = date.getFullYear() + "-" + ("0" + (date.getMonth() + 1)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2);
             console.log(formattedDate);
-
+         
             // Define an array to hold promises
             var promises = [];
 
@@ -1040,6 +1081,15 @@
                 GetTodaysCosting(formattedDate);
                 resolve();
             }));
+            promises.push(new Promise(function (resolve, reject) {
+                GetDailyOtCalculation(formattedDate);
+                resolve();
+            }));
+            promises.push(new Promise(function (resolve, reject) {
+                GetMonthlyOtCalculation(formattedDate);
+                resolve();
+            }));
+
 
             // Execute promises sequentially
             promises.reduce(function (previousPromise, nextPromise) {
@@ -1118,7 +1168,14 @@
                 GetTodaysCosting(date);
                 resolve();
             }));
-
+            promises.push(new Promise(function (resolve, reject) {
+                GetDailyOtCalculation(formattedDate);
+                resolve();
+            }));
+            promises.push(new Promise(function (resolve, reject) {
+                GetMonthlyOtCalculation(formattedDate);
+                resolve();
+            }));
             // Execute promises sequentially
             promises.reduce(function (previousPromise, nextPromise) {
                 return previousPromise.then(function () {
@@ -1210,7 +1267,7 @@
 
                     // Update UI with data
                     $('#totalEmp').text(response.total);
-                    $('#totalEmpRatio').text(response.total);
+                    $('#totalEmpRatio').text(response.totalPerc);
                     $('#todayPresent').text(response.present);
                     $('#todayPresentRatio').text(response.pressentRatio);
                     $('#todayAbsent').text(response.absent);
@@ -1219,7 +1276,8 @@
                     $('#todayLateRatio').text(response.lateRatio);
                     $('#todayLeave').text(response.leave);
                     $('#todayLeaveRatio').text(response.leavePers);
-                    $('#WHOffDuty').text('NA');
+                    $('#WHOffDuty').text(response.offDayDuty);
+                    $('#WHOffDeutyPers').text(response.offDayDutyPerc);
                 })
                 .catch(function (error) {
                     // Hide loader
@@ -1239,7 +1297,7 @@
         .then(function(response) {
             $('.loaderSevenDays').hide();
             var GetLast7DaysPARatioData = response;
-            console.log(GetLast7DaysPARatioData);
+            
 
             // Clear previous data
             p = [];
@@ -1305,15 +1363,15 @@
         function GetTodaysCosting(date) {
             $('.loaderCosting').show();
             $('#TodaySalaryAmt').text('');
-            $('#todayOtAmount').text('');
+   
             // Initialize responseData
 
             ApiCall(GetTodaysCostingUrl, companyId, date, token)
                 .then(function (response) {
                     $('.loaderCosting').hide();
                     responseData = response[0];
-                    $('#TodaySalaryAmt').text(responseData.dailySalaryAmnt + 'Tk');
-                    $('#todayOtAmount').text(responseData.dailyOTPay + 'Tk');
+                    $('#TodaySalaryAmt').text(responseData.dailySalaryAmnt);
+                   
                 })
                 .catch(function (error) {
                     $('.loaderCosting').hide();
@@ -1326,6 +1384,8 @@
             $('.loaderSelaryCom').show();
             var salary = [];
             var monthname = [];
+
+            $(".SalaryComparisonChart").html("");
          
    
             ApiCall(GetSalaryComparisonLast12MonthUrl, companyId, date, token)
@@ -1352,8 +1412,8 @@
             ApiCall(GetMonthlyCostingUrl, companyId, date, token).then(function (response) {
                 $('.loaderLastMonthCosting').hide();
                 GetDataFromArray = response[0];
-                $('#LastMonthCosting').text(GetDataFromArray.monthlyPaySalaryamnt + 'Tk');
-                $('#lastMonthOtAmount').text(GetDataFromArray.monthlyOTPay + 'Tk');
+                $('#LastMonthCosting').text(GetDataFromArray.monthlyPaySalaryamnt);
+                $('#lastMonthOtAmount').text(GetDataFromArray.monthlyOTPay);
             }).catch(function (error) {
                 console.error('Error occurred while fetching data:', error);
             });
@@ -1385,12 +1445,12 @@
             $('#female').text('');
             $('#male').text('');
             $('#overtime').text('');
+            $('.MaleFemaleRatio').html('');
+            $('.StapWorkerRatio').html('');
 
             ApiCallSam(CurrentEmpStatusUrl, companyId, token)
                 .then(function (response) {
                     $('.loaderCurrStatus').hide();
-                    $('.MaleFemaleRatio').show();
-                    $('.StapWorkerRatio').show();
                     // Update text values
                     $('#totalEmpReg').text(response.totalEmployee);
                     $('#female').text(response.female);
@@ -1410,6 +1470,82 @@
 
                     // Pass the arrays to the DonutChart function
                     DonutChart('.StapWorkerRatio', StaffWorkerRatio, 180, 180, ['Staff', 'Worker'], ['#00AAFF', '#FA8B0C'], "60%");
+
+                })
+                .catch(function (error) {
+                    $('.loaderCurrStatus').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
+        function GetMonthlyOtCalculation(date) {
+
+            $('.loaderMontOt').show();
+            // Clear text values
+            $('#MonTotalOtH').text('');
+            $('#MonExtOtH').text('');
+            $('#MonRegularOtH').text('');
+            $('#MonAvarageOtH').text('');
+
+            //Clear Ot Amt
+            $('#MonTotalOtAmt').text('');
+            $('#MonExtOtAmt').text('');
+            $('#MonRegularOtAmt').text('');
+            $('#MonAvarageOtAmt').text('');
+
+            ApiCall(GetMonthlyOtCalculationUrl, companyId, date, token)
+                .then(function (response) {
+                    $('.loaderMontOt').hide();
+                    // Update text values
+                    $('#MonRegularOtH').text(response.regularOtHour +'H');
+                    $('#MonExtOtH').text(response.extraOtHour +'H');
+                    $('#MonTotalOtH').text(response.totalOtHour +'H');
+                    $('#MonAvarageOtH').text(response.avgOtHour +'H');
+
+                    //Update Ot Amt
+                    $('#MonRegularOtAmt').text(response.regularOTAmount+'TK');
+                    $('#MonExtOtAmt').text(response.extraOtAmnt +'TK');
+                    $('#MonTotalOtAmt').text(response.totalOtAmount +'TK');
+                    $('#MonAvarageOtAmt').text(response.avgOtAmnt +'TK');
+
+                })
+                .catch(function (error) {
+                    $('.loaderCurrStatus').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
+        function GetDailyOtCalculation(date) {
+            console.log('Hello World');
+            $('.loaderDailyOt').show();
+            // Clear text values
+            $('#DailyRegOTH').text('');
+            $('#DailyExtOTH').text('');
+            $('#DailyTotalOTH').text('');
+
+
+            //Clear Ot Amt
+            $('#DailyRegOtTk').text('');
+            $('#DailyExtOtTk').text('');
+            $('#DailyTotalOtTk').text('');
+            $('#todayOtAmount').text('');
+
+
+            ApiCall(GetDailyOtCalculationUrl, companyId, date, token)
+                .then(function (response) {
+                    console.log('Test Ot Hours' + response.regularOtHour);
+                    $('.loaderDailyOt').hide();
+                    // Update text values
+                    $('#DailyRegOTH').text(response.regularOtHour+'H');
+                    $('#DailyExtOTH').text(response.extraOtHour+'H');
+                    $('#DailyTotalOTH').text(response.totalOtHour+'H');
+
+
+                    //Clear Ot Amt
+                    $('#DailyRegOtTk').text(response.regularOTAmount+'Tk');
+                    $('#DailyExtOtTk').text(response.extraOtAmnt +'Tk');
+                    $('#todayOtAmount').text(response.totalOtAmount);
+                    $('#DailyTotalOtTk').text(response.totalOtAmount +'Tk');
 
                 })
                 .catch(function (error) {
@@ -1459,38 +1595,6 @@
 }
 
 
-        //function GetDailyAttSummary(date) {
-        //    ApiCall(DailyAttSumUrl, companyId, date, token)
-        //        .then(function (responsedata) {
-        //            $('.loaderDailySum').hide();
-        //            var tableBody = $('#tblDailyAttSummary tbody');
-        //            tableBody.empty();
-        //            var newRow = '';
-        //            responsedata.forEach(item => {
-        //                newRow += `<tr>
-        //                <td>${item.department}</td>
-        //                <td>${item.totalEmployee}</td>
-        //                <td>${item.male}</td>
-        //                <td>${item.female}</td>
-        //                <td>${item.present}</td>
-        //                <td>${item.presentRatio}</td>
-        //                <td>${item.absent}</td>
-        //                <td>${item.absentRatio}</td>
-        //                <td>${item.leave}</td>
-        //                <td>${item.leaveRatio}</td>
-        //                <td>${item.late}</td>
-        //                <td>${item.lateRatio}</td>
-        //                <td>${item.offDay}</td>
-        //                <td>${item.offdayRatio}</td>
-        //            </tr>`;
-
-        //            });
-        //            tableBody.append(newRow);
-        //        })
-        //        .catch(function (error) {
-        //            console.error('Error occurred while fetching data:', error);
-        //        });
-        //}
 
         function ApiCallGetCosting(url, date, token) {
             return new Promise(function (resolve, reject) {
@@ -1567,6 +1671,7 @@
             });
         }
 
+        
 
     </script>
 

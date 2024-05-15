@@ -1167,7 +1167,7 @@
             <li class="nav-author">
                <div class="dropdown-custom">
                   <a href="javascript:;" class="nav-item-toggle"><img src="man.jpg" alt="" class="rounded-circle">
-                     <span class="nav-item__title">Nipun<i class="las la-angle-down nav-item__arrow"></i></span>
+                     <span class="nav-item__title"> <i class="las la-angle-down nav-item__arrow"></i></span>
                   </a>
                   <div class="dropdown-parent-wrapper">
                      <div class="dropdown-wrapper">
@@ -1176,8 +1176,9 @@
                               <img src="man.jpg" alt="" class="rounded-circle">
                            </div>
                            <div>
-                              <h6>Nipun Mitra</h6>
-                              <span>Frontend Developer</span>
+                              <h6 runat="server" id="UserName"></h6>
+                              <%--<span>Frontend Developer</span>--%>
+                              <span runat="server" id="UserType"></span>
                            </div>
                         </div>
                         <div class="nav-author__options">
@@ -1193,18 +1194,19 @@
                               </li>
                                <li>
                                  <a href="" data-layout="dark">
-                                    <i class="uil uil-setting"></i>
+                                    <i class="uil uil-moon"></i>
                                     Dark</a>
                               </li>
                                 <li>
                                  <a href="" data-layout="light">
-                                    <i class="uil uil-setting"></i>
+                                    <i class="uil uil-sun"></i>
                                     Light</a>
                               </li>
                              
                            </ul>
-                           <a href="" class="nav-author__signout">
-                              <i class="uil uil-sign-out-alt"></i> Sign Out</a>
+                          <%-- <a href="" class="nav-author__signout">
+                              <i class="uil uil-sign-out-alt"></i> Sign Out</a>--%>
+                            <asp:LinkButton ClientIDMode="Static" ID="btnLogout" runat="server" CssClass="nav-author__signout" OnClick="btnLogout_Click"><i class="uil uil-sign-out-alt"></i> Sign Out </asp:LinkButton>
                         </div>
                      </div>
                      <!-- ends: .dropdown-wrapper -->

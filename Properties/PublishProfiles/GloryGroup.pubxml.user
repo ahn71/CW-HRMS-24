@@ -6,7 +6,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>G:\AllPublish\SGFHRM</_PublishTargetUrl>
+    <_PublishTargetUrl>D:\Running projects github\all publish file\CW-HRMS-24</_PublishTargetUrl>
     <LastUsedBuildConfiguration>Debug</LastUsedBuildConfiguration>
     <LastUsedPlatform>Any CPU</LastUsedPlatform>
   </PropertyGroup>

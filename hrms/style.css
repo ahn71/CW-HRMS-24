@@ -36021,14 +36021,14 @@ body:after {
     top: 60%;
     left: 50%;
     right: 50%;
-    z-index:9999;
+    z-index:99;
 }
 .worker-loader-x {
     position: absolute;
     top: 45%;
     left: 45%;
     right: 45%;
-    z-index: 9999;
+    z-index: 99;
 }
 
 .worker-loader{
@@ -36036,5 +36036,15 @@ body:after {
     top: 50%;
     left: 50%;
     right: 50%;
-    z-index: 9999;
+    z-index: 99;
+}
+#apexcharts3woq9i5y:nth-child(even) {
+    display: none !important;
+}
+.date-picker-sticky {
+    z-index:99;
+}
+.dropdown-custom .dropdown-wrapper {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important
 }
