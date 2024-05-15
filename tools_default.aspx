@@ -19,30 +19,30 @@
     </div>
 
     <%--  <img alt="" class="main_images" src="images/hrd.png">--%>
-    <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1000%;">
+    <div>
     <div class="col-lg-12" style="margin-top: 10%">
         <div class="row">
 
             <div class=" col-md-2"></div>
 
             <div class="col-md-2">
-                <a class="ds_Settings_Basic_Text Tbox" href="/ControlPanel/CreateAccount.aspx">
+                <a class="ds_Settings_Basic_Text " href="/ControlPanel/CreateAccount.aspx">
                     <img class="image_width_for_module" src="images/common/department.ico" /><br />
                     User Account</a>
 
             </div>
             <div class=" col-md-2">
-                <a class="ds_Settings_Basic_Text Tbox" href="/ControlPanel/changepassword.aspx">
+                <a class="ds_Settings_Basic_Text" href="/ControlPanel/changepassword.aspx">
                     <img class="image_width_for_module" src="images/common/designation.ico" /><br />
                     C. Password</a>
             </div>
             <div class=" col-md-2">
-                <a class="ds_Settings_Basic_Text Tbox" href="/ControlPanel/user_privilege.aspx">
+                <a class="ds_Settings_Basic_Text " href="/ControlPanel/user_privilege.aspx">
                     <img class="image_width_for_module" src="images/common/grade.ico" /><br />
                     User Privilege</a>
             </div> 
             <div class=" col-md-2">
-                <a class="ds_Settings_Basic_Text Tbox" href="/ControlPanel/authority-access-control.aspx">
+                <a class="ds_Settings_Basic_Text " href="/ControlPanel/authority-access-control.aspx">
                     <img class="image_width_for_module" src="images/common/grade.ico" /><br />
                     Authority Access Control</a>
             </div>

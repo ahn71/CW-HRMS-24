@@ -67,59 +67,103 @@
   background: rgba(0,0,0,.1);
   color: #fff;
 }
+.ds_Settings_Basic_Text::before {
+    content: "";
+    position: absolute;
+    top: -27px;
+    right: -44px;
+    width: 50%;
+    height: 50%;
+    background: #a673da36;
+    z-index: -11;
+    overflow: hidden;
+    border-radius: 50%;
+}
 .ds_Settings_Basic_Text {
+    background: #fff;
+    border-bottom: 3px solid #8231D3;
     border-radius: 15px;
-    color: #fff;
+    color: #000;
     display: block;
     font-size: 14px;
     margin: 0 0 10px;
-    padding: 30px;
+    padding: 25px 3px;
     text-align: center;
-    border-bottom: 10px solid #0057AE;
-    background: rgba(0,0,0,.1);
-    min-height: 170px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    z-index: 11;
+    overflow: hidden;
 }
 .ds_Settings_Basic_Text:hover {
   background: rgba(0,0,0,.3);
   color: #fff;
 }
-.ds_personnel_Basic_Text {
-  background: rgba(0,0,0,.1);
-  border-radius: 15px;
-  color: #fff;
-  display: block;
-  font-size: 14px;
-  margin: 0 0 10px;
-  padding: 37px;
-  text-align: center;
-  border-bottom:10px solid #9E1313;
-}
+
 .ds_leave_Basic_Text {
-  background: rgba(0,0,0,.1);
-  border-radius: 15px;
-  color: #fff;
-  display: block;
-  font-size: 14px;
-  margin: 0 0 10px;
-  padding: 37px;
-  text-align: center;
-  border-bottom:10px solid #008B8B;
+    background: #fff;
+    border-bottom: 3px solid #8231D3;
+    border-radius: 15px;
+    color: #000;
+    display: block;
+    font-size: 14px;
+    margin: 0 0 10px;
+    padding: 25px 3px;
+    text-align: center;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
+    z-index: 11;
+    overflow: hidden;
 }
 .ds_attendance_Basic_Text {
-  background: rgba(0, 0, 0, 0.1) none repeat scroll 0 0;
-  border-bottom: 10px solid #2b5e4e;
-  border-radius: 15px;
-  color: #fff;
-  display: block;
-  font-size: 14px;
-  margin: 0 0 10px;
-  padding: 37px;
-  text-align: center;
+    background: #fff;
+    border-bottom: 3px solid #8231D3;
+    border-radius: 15px;
+    color: #000;
+    display: block;
+    font-size: 14px;
+    margin: 0 0 10px;
+    padding: 25px 3px;
+    text-align: center;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position:relative;
+    z-index: 11;
+    overflow:hidden;
 }
-.ds_attendance_Basic_Text:hover {
-  background: rgba(0, 0, 0, 0.3) none repeat scroll 0 0;
- color:white;
+    .ds_attendance_Basic_Text::before {
+        content: "";
+        position: absolute;
+        top: -27px;
+        right: -44px;
+        width: 50%;
+        height: 50%;
+        background: #a673da36;
+        z-index: -11;
+        overflow: hidden;
+        border-radius: 50%;
+    }
+
+.rowCenter{
+    margin-top:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
+.ds_leave_Basic_Text::before {
+    content: "";
+    position: absolute;
+    top: -27px;
+    right: -44px;
+    width: 50%;
+    height: 50%;
+    background: #a673da36;
+    z-index: -11;
+    overflow: hidden;
+    border-radius: 50%;
+}
+    .ds_attendance_Basic_Text:hover {
+        background: rgba(0, 0, 0, 0.3) none repeat scroll 0 0;
+        color: white;
+    }
 
 .ds_leave_Basic_Text:hover {
   background: rgba(0, 0, 0, 0.3) none repeat scroll 0 0;

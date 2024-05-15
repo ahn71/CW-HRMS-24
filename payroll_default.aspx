@@ -20,43 +20,39 @@
         </div>
     
       <%--  <img alt="" class="main_images" src="images/hrd.png">--%>
-    <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1000%;">
-         <div class="col-lg-12" style="margin-top:10%">
-             <div class="row">
-
-                 <div class=" col-md-3"></div>
-
+    <div>
+         <div class="col-lg-12">
+             <div class="row rowCenter">
                  <div runat="server" id="divBonus" class="col-md-2">
-                     <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_index.aspx"> <img class="image_width_for_module" src="images/common/department.ico" /><br /> Bonus</a>
+                     <a class="ds_Settings_Basic_Text " href="/payroll/bonus_index.aspx"> <i class="uil uil-cog iconStyle"></i><br /> Bonus</a>
                      
                  </div>
                  <div runat="server" id="divAdvance" class=" col-md-2">
-                        <a class="ds_Settings_Basic_Text Pbox" href="/payroll/advance/advance_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Advance</a>
+                        <a class="ds_Settings_Basic_Text " href="/payroll/advance/advance_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Advance</a>
                  </div>
                  <div runat="server" id="divSalary" class=" col-md-2">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/salary_index.aspx"><img class="image_width_for_module" src="images/common/grade.ico" /><br />Salary</a>
+                      <a class="ds_Settings_Basic_Text " href="/payroll/salary_index.aspx"><img class="image_width_for_module" src="images/common/grade.ico" /><br />Salary</a>
                  </div>
                  <div runat="server" id="divSignatureEntry" class=" col-md-2">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/hrd/Signatures.aspx" target="_blank"><img class="image_width_for_module" src="images/common/grade.ico" /><br />Signature</a>
+                      <a class="ds_Settings_Basic_Text " href="/hrd/Signatures.aspx" target="_blank"><img class="image_width_for_module" src="images/common/grade.ico" /><br />Signature</a>
                  </div>
                  
-                 <div class=" col-md-3"></div>
              </div>
-             <div class="row">
-
-                 <div class=" col-md-3"></div>
+             <div class="row rowCenter">
 
                  <div runat="server" id="divPF" class="col-md-2">
-                     <a class="ds_Settings_Basic_Text Pbox" href="/pf/pf_index.aspx"> <img class="image_width_for_module" src="images/common/department.ico" /><br /> Provident Fund</a>
+                     <a class="ds_Settings_Basic_Text " href="/pf/pf_index.aspx"> <img class="image_width_for_module" src="images/common/department.ico" /><br /> Provident Fund</a>
                      
                  </div>
                  <div runat="server" id="divVat" class=" col-md-2">
-                        <a class="ds_Settings_Basic_Text Pbox" href="/vat_tax/vat_tax_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Vat&Tax</a>
+                        <a class="ds_Settings_Basic_Text " href="/vat_tax/vat_tax_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Vat&Tax</a>
                  </div>  
                      
-                    
-                 
-                 <div class=" col-md-3"></div>
+
+                 <div class="col-lg-2">
+
+                 </div>
+ 
              </div>
 
 
