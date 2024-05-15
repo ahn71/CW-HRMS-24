@@ -65,6 +65,7 @@ namespace SigmaERP.attendance
                
 
             }
+            catch { Response.Redirect("~/hrms/UI/auth/login.aspx"); }
 
         }
 
