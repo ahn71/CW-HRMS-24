@@ -23,40 +23,40 @@
     <div class="col-lg-12" style="margin-top: 10%">
         <div class="row">
 
-            <div class=" col-md-2"></div>
+            <div class=" col-lg-2"></div>
 
-            <div class="col-md-2">
+            <div class="col-lg-2 col-md-3 col-sm-6">
                 <a class="ds_Settings_Basic_Text " href="/ControlPanel/CreateAccount.aspx">
-                    <img class="image_width_for_module" src="images/common/department.ico" /><br />
-                    User Account</a>
+                    <i class="fas fa-users FsiconStyle"></i><br />
+                   <span> User Account</span></a>
 
             </div>
-            <div class=" col-md-2">
+            <div class=" col-lg-2 col-md-3 col-sm-6">
                 <a class="ds_Settings_Basic_Text" href="/ControlPanel/changepassword.aspx">
-                    <img class="image_width_for_module" src="images/common/designation.ico" /><br />
-                    C. Password</a>
+                    <i class="fas fa-unlock-alt FsiconStyle"></i><br />
+                    <span>C. Password</span></a>
             </div>
-            <div class=" col-md-2">
+            <div class=" col-lg-2 col-md-3 col-sm-6">
                 <a class="ds_Settings_Basic_Text " href="/ControlPanel/user_privilege.aspx">
-                    <img class="image_width_for_module" src="images/common/grade.ico" /><br />
-                    User Privilege</a>
+                    <i class="fas fa-users-cog FsiconStyle"></i><br />
+                   <span> User Privilege</span></a>
             </div> 
-            <div class=" col-md-2">
+            <div class=" col-lg-2 col-md-3 col-sm-6">
                 <a class="ds_Settings_Basic_Text " href="/ControlPanel/authority-access-control.aspx">
-                    <img class="image_width_for_module" src="images/common/grade.ico" /><br />
-                    Authority Access Control</a>
+                    <i class="fas fa-universal-access FsiconStyle"></i><br />
+                    <span>Authority Access Control</span></a>
             </div>
-          <%--  <div class=" col-md-2">
+          <%--  <div class=" col-lg-2 col-md-3 col-sm-6">
                 <a class="ds_Settings_Basic_Text Tbox" href="/hrd/shift_config.aspx">
                     <img class="image_width_for_module" src="images/common/Class Schedule.ico" /><br />
                     Db Backup</a>
             </div>--%>
-             <%--<div class=" col-md-2">
+             <%--<div class=" col-lg-2 col-md-3 col-sm-6">
                 <a class="ds_Settings_Basic_Text Tbox" href="/ModifyPage.aspx">
                     <img class="image_width_for_module" src="images/common/Class Schedule.ico" /><br />
                    Modify</a>
             </div>--%>
-            <div class=" col-md-2"></div>
+            <div class=" col-lg-2 "></div>
         </div>
     </div></div>
 </asp:Content>

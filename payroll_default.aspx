@@ -22,37 +22,41 @@
       <%--  <img alt="" class="main_images" src="images/hrd.png">--%>
     <div>
          <div class="col-lg-12">
-             <div class="row rowCenter">
-                 <div runat="server" id="divBonus" class="col-md-2">
-                     <a class="ds_Settings_Basic_Text " href="/payroll/bonus_index.aspx"> <i class="uil uil-cog iconStyle"></i><br /> Bonus</a>
-                     
-                 </div>
-                 <div runat="server" id="divAdvance" class=" col-md-2">
-                        <a class="ds_Settings_Basic_Text " href="/payroll/advance/advance_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Advance</a>
-                 </div>
-                 <div runat="server" id="divSalary" class=" col-md-2">
-                      <a class="ds_Settings_Basic_Text " href="/payroll/salary_index.aspx"><img class="image_width_for_module" src="images/common/grade.ico" /><br />Salary</a>
-                 </div>
-                 <div runat="server" id="divSignatureEntry" class=" col-md-2">
-                      <a class="ds_Settings_Basic_Text " href="/hrd/Signatures.aspx" target="_blank"><img class="image_width_for_module" src="images/common/grade.ico" /><br />Signature</a>
-                 </div>
-                 
-             </div>
-             <div class="row rowCenter">
-
-                 <div runat="server" id="divPF" class="col-md-2">
-                     <a class="ds_Settings_Basic_Text " href="/pf/pf_index.aspx"> <img class="image_width_for_module" src="images/common/department.ico" /><br /> Provident Fund</a>
-                     
-                 </div>
-                 <div runat="server" id="divVat" class=" col-md-2">
-                        <a class="ds_Settings_Basic_Text " href="/vat_tax/vat_tax_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Vat&Tax</a>
-                 </div>  
-                     
-
+             <div class="row ">
                  <div class="col-lg-2">
+                 </div>
+                 <div runat="server" id="divBonus" class="col-lg-2 col-md-3 col-sm-6">
+                     <a class="ds_Settings_Basic_Text " href="/payroll/bonus_index.aspx"> <i class="uil uil-money-bill iconStyle"></i><br /> <span>Bonus</span></a>
+                     
+                 </div>
+                 <div runat="server" id="divAdvance" class=" col-lg-2 col-md-3 col-sm-6">
+                        <a class="ds_Settings_Basic_Text " href="/payroll/advance/advance_index.aspx"><i class="fas fa-hand-holding-usd FsiconStyle "></i><br /><span>Advance</span></a>
+                 </div>
+                 <div runat="server" id="divSalary" class=" col-lg-2 col-md-3 col-sm-6">
+                      <a class="ds_Settings_Basic_Text " href="/payroll/salary_index.aspx"><i class="fas fa-money-bill-wave FsiconStyle"></i><br />Salary</a>
+                 </div>
+                 <div runat="server" id="divSignatureEntry" class=" col-lg-2 col-md-3 col-sm-6">
+                      <a class="ds_Settings_Basic_Text " href="/hrd/Signatures.aspx" target="_blank"><i class="fas fa-hand-holding-usd FsiconStyle "></i><br /><span>Signature</span></a>
+                 </div>
+                 <div runat="server" id="divPF" class="col-lg-2 col-md-3 col-sm-6">
+                     <a class="ds_Settings_Basic_Text " href="/pf/pf_index.aspx">
+                         <i class="uil uil-money-stack FsiconStyle"></i><br />
+                         <span>Provident Fund</span></a>
 
                  </div>
- 
+                  <div class="col-lg-2"></div>
+             </div>
+             <div class="row ">
+
+                                  <div class="col-lg-2">
+                 </div>
+                 <div runat="server" id="divVat" class=" col-lg-2 col-md-3 col-sm-6">
+                     <a class="ds_Settings_Basic_Text " href="/vat_tax/vat_tax_index.aspx">
+                         <i class="fas fa-money-check-alt FsiconStyle"></i><br />
+                         <span>Vat&Tax
+                         </span></a>
+                 </div>
+
              </div>
 
 

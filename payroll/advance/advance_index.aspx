@@ -23,18 +23,18 @@
              <div class="row rowCenter">
                 
                  <div class="col-md-2" title="Loan Entry">
-                     <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_entry.aspx"> <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br /> Advance Entry Panel</a>                     
+                     <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_entry.aspx"> <i class="fas fa-file-invoice-dollar FsiconStyle"></i><br /> <span>Advance Entry Panel</span></a>                     
                  </div> 
               
                  
                  <div class=" col-md-2" title="Advance Setting">
-                        <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_monthly_installment_setup.aspx"><img class="image_width_for_module" src="/images/common/generate.ico" /><br />Monthly Installment Setup</a>
+                        <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_monthly_installment_setup.aspx"><i class="fas fa-calendar-day FsiconStyle"></i><br />Monthly Installment Setup</a>
                  </div>
                  <div class=" col-md-2" title="Advance Reprot">
-                      <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_info.aspx"><img class="image_width_for_module" src="/images/common/advancereport.ico" /><br />Advance Reports</a>
+                      <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_info.aspx"><i class="far fa-file-alt FsiconStyle"></i><br /><span>Advance Reports</span></a>
                  </div>
                   <div class=" col-md-2" title="Advance List">
-                      <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_list.aspx"><img class="image_width_for_module" src="/images/common/advancereport.ico" /><br />Advance List</a>
+                      <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_list.aspx"><i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br /><span>Advance List</span></a>
                  </div>
 
                  <%-- <div class=" col-md-2" title="Employee Profile">
