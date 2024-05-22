@@ -145,3 +145,9 @@ S:\CW_Official_Project\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.csprojResolveAssembl
 S:\CW_Official_Project\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.csproj.CoreCompileInputs.cache
 S:\CW_Official_Project\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.dll
 S:\CW_Official_Project\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.pdb
+D:\Running projects github\CW-HRMS-24\HRD.DAL\bin\Debug\HRD.DAL.dll
+D:\Running projects github\CW-HRMS-24\HRD.DAL\bin\Debug\HRD.DAL.pdb
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.csprojResolveAssemblyReference.cache
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.csproj.CoreCompileInputs.cache
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.dll
+D:\Running projects github\CW-HRMS-24\HRD.DAL\obj\Debug\HRD.DAL.pdb

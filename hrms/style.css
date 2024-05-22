@@ -4566,7 +4566,9 @@ body.top-menu .navbar-left .customizer-trigger + .top-menu {
 }
 
 @media only screen and (max-width: 900px) {
-    .navbar-right__menu .nav-settings .dropdown-custom .dropdown-wrapper--large {
+    .navbar-right__menu .nav-
+    
+    .dropdown-custom .dropdown-wrapper--large {
         min-width: 100%;
         position: fixed;
     }
@@ -35991,10 +35993,13 @@ body:after {
     overflow-y: scroll;
 }
 
-.ap-po-details--3x {
+/*.ap-po-details--3x {
     height: 257px;
+}*/
+.session-wrap .session-single {
+    text-align: center ;
+    padding: 0px 15px !important;
 }
-
 .attendance-table tr:nth-child(even) {
     background-color: #00ff4e08;
 }
@@ -36047,4 +36052,72 @@ body:after {
 .dropdown-custom .dropdown-wrapper {
     border: 1px solid #ddd !important;
     box-shadow: none !important
+}
+
+.IconStyle {
+    font-size: 25px;
+    color: var(--color-primary);
+}
+
+.gradeIconStyle {
+    font-size: 25px;
+    color: var(--color-warning);
+}
+
+.QualiStyle {
+    font-size: 25px;
+    color: var(--color-secondary);
+}
+
+.DistrictStyle {
+    font-size: 25px;
+    color: var(--color-success);
+}
+.sticky-top {
+    z-index: 11 !important;
+}
+.ui-datepicker {
+    position: fixed !important;
+    top: 108px !important;
+}
+
+.date-parent {
+    position: fixed;
+    z-index: 5555;
+    /* left: 0; */
+    top: 79px;
+    right: 20px;
+}
+.main-content {
+    margin-top:47px;
+}
+.cicon {
+    position:absolute;
+  right: 8px;
+    width: 17px;
+    top: 5px !important
+}
+
+.height-present-ratio {
+    height: 166px;
+}
+.salary-height{
+    height: 257px;
+}
+.card-body {
+
+    padding: 0.5rem 1.56rem !important;
+}
+
+.cardBodyCenter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+@media(min-width:1920px){
+    .salary-height {
+        height: 300px;
+    }
 }

@@ -178,3 +178,9 @@ S:\CW_Official_Project\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.
 S:\CW_Official_Project\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.csproj.CoreCompileInputs.cache
 S:\CW_Official_Project\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.dll
 S:\CW_Official_Project\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.pdb
+D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\bin\Debug\HRD.ModelEntities.dll
+D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\bin\Debug\HRD.ModelEntities.pdb
+D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.csprojResolveAssemblyReference.cache
+D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.csproj.CoreCompileInputs.cache
+D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.dll
+D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Debug\HRD.ModelEntities.pdb
