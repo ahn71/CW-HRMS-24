@@ -602,13 +602,13 @@
                                                     <div class="session-wrap session-wrap--top--4">
                                                         <div class="session-single">
                                                             <div class="chart-label">
-                                                                <span class="label-dot dot-success"></span>
+                                                                <span class="label-dot dot-info " ></span>
                                                                 Male
                                                             </div>
                                                         </div>
                                                         <div class="session-single">
                                                             <div class="chart-label">
-                                                                <span class="label-dot dot-primary"></span>
+                                                                <span class="label-dot" style="background-color:#EC49A6 !important"></span>
                                                                 Female
                                                             </div>
                                                         </div>
@@ -1466,8 +1466,8 @@
             $('#female').text('');
             $('#male').text('');
             $('#overtime').text('');
-            $('.MaleFemaleRatio').html('');
-            $('.StapWorkerRatio').html('');
+
+            console.log("Rubel")
           
             ApiCallSam(CurrentEmpStatusUrl, companyId, token)
                 .then(function (response) {
@@ -1477,15 +1477,17 @@
                     $('#female').text(response.female);
                     $('#male').text(response.male);
                     $('#overtime').text(response.overTime);
+                    $('.MaleFemaleRatio').html("").text('');
+                    $('.StapWorkerRatio').html("").text('');
 
                     // Populate maleFemaleRatio array
                     malePercentage = response.malePers;
                     femalePercentage = response.femalePers;
                     maleFemaleRatio = [malePercentage, femalePercentage];
-                    DonutChart('.MaleFemaleRatio', maleFemaleRatio, 180, 180, ['Male', 'Female'], ['#01B81A', '#8231d3'], "60%");
+                    DonutChart('.MaleFemaleRatio', maleFemaleRatio, 180, 180, ['Male', 'Female'], ['#02A3FE', '#EC49A6'], "60%");
 
                     // Populate StaffWorkerRatio array
-                     StaffPercentage = response.staffPers;
+                    StaffPercentage = response.staffPers;
                     WorkerPercentage = response.workerpers;
                     StaffWorkerRatio = [StaffPercentage, WorkerPercentage];
                     // Pass the arrays to the DonutChart function

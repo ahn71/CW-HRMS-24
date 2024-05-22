@@ -21,41 +21,41 @@
     </div>
 
     <%--  <img alt="" class="main_/images" src="/images/hrd.png">--%>
-    <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1400%;background-size:cover;">
-        <div class="container" style="margin-top: 10%">
+    <div>
+        <div class="container">
             <div class="row">
 
                 <div runat="server" id="divSalaryEntry" class="col-md-3">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/payroll_entry_panel.aspx">
-                        <img class="image_width_for_module" src="/images/common/risefall.ico" /><br />
-                        Salary Set Entry Panel</a>
+                    <a class="ds_Settings_Basic_Text" href="/payroll/payroll_entry_panel.aspx">
+                        <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br />
+                        <span>Salary Set Entry Panel</span></a>
 
                 </div>
                 <div runat="server" id="divSalaryEntryc" class="col-md-3">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/payroll_entry_panelc.aspx">
-                        <img class="image_width_for_module" src="/images/common/risefall.ico" /><br />
-                        Salary Set Entry Panel</a>
+                    <a class="ds_Settings_Basic_Text " href="/payroll/payroll_entry_panelc.aspx">
+                        <i class="fa-solid fa-money-check-dollar FsiconStyle"></i>
+                       <span>Salary Set Entry Panel</span></a>
 
                 </div>
                 <div runat="server" id="divAllowanceCalculation" class="col-md-3">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/allowance_calculation_settings.aspx">
-                        <img class="image_width_for_module" src="/images/common/risefall.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/allowance_calculation_settings.aspx">
+                       <i class="uil uil-megaphone FsiconStyle"></i><br />
                         Allowance Calculation </a>
 
                 </div>
                 <div runat="server" id="divSalaryGenerate" class="col-md-3" title="Regular Salary Generate">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/payroll_generation1.aspx">
-                        <img class="image_width_for_module" src="/images/common/generate.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/payroll_generation1.aspx">
+                       <i class="fas fa-money-bill-wave FsiconStyle" ></i><br />
                         Salary Generate</a>
                 </div>
                  <div runat="server" class="col-md-3" title="Salary Processing">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/salary/salary_processing.aspx">
-                        <img class="image_width_for_module" src="/images/common/generate.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_processing.aspx">
+                        <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
                         Salary Processing (New)</a>
                 </div>
                 <div runat="server" id="divSeperationGenerate" class="col-md-3" title="Resigned Salary Generate">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/separation_generation_rss.aspx">
-                        <img class="image_width_for_module" src="/images/common/generate.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/separation_generation_rss.aspx">
+                        <i class="uil uil-user-arrows iconStyle"></i><br />
                         Seperation Generate</a>
                 </div>
 
@@ -63,117 +63,117 @@
 
                 
                 <div class=" col-md-3" title="Monthly Salary Sheet">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/salary_sheet_Report.aspx">
-                        <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/salary_sheet_Report.aspx">
+                        <i class="fas fa-hand-holding-usd FsiconStyle"></i><br />
                         Salary Sheet</a>
                 </div>
                 <div class=" col-md-3" title="Monthly Salary Sheet">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/salary/salary_sheet.aspx">
-                        <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_sheet.aspx">
+                        <i class="fas fa-hand-holding-usd FsiconStyle"></i><br />
                         Salary Sheet (New)</a>
                 </div>
                 <div runat="server" id="divSalarySummary" class=" col-md-3" title="Monthly Salary Summary">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/summary_of_salary.aspx">
-                        <img class="image_width_for_module" src="/images/common/businesstype.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/summary_of_salary.aspx">
+                        <i class="fas fa-file-alt FsiconStyle"></i><br />
                         Salary Summary</a>
 
                 </div>
                 <div runat="server" id="divOvertimeSheet" class=" col-md-3" title="Overtime Payment Sheet">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/ot_payment_sheet.aspx">
-                        <img class="image_width_for_module" src="/images/common/businesstype.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/ot_payment_sheet.aspx">
+                       <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
                         Only Overtime Sheet</a>
                 </div>
                    <div runat="server"  class=" col-md-3" title="Overtime Payment Sheet">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/salary/ot_payment.aspx">
-                        <img class="image_width_for_module" src="/images/common/businesstype.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/ot_payment.aspx">
+                       <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br />
                         Only OT Payment (New)</a>
                 </div>
                 <div runat="server" id="divSeperationSheet" class=" col-md-3" title="Resigned Salary Sheet">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/separation_pmt_sheet.aspx">
-                        <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/separation_pmt_sheet.aspx">
+                       <i class="uil uil-user-arrows iconStyle"></i><br />
                         Seperation Sheet</a>
                 </div>
 
                 <div runat="server" id="divPromotionEntry" class=" col-md-3" title="Employee Promotion">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/promotion.aspx">
-                        <img class="image_width_for_module" src="../images/common/qualification.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/promotion.aspx">
+                        <i class="fas fa-chart-line FsiconStyle"></i><br />
                         Promotion Entry Panel</a>
 
                 </div>
                 <div runat="server" id="divPromotionEntryComp" class=" col-md-3" title="Employee Promotion">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/promotionc.aspx">
-                        <img class="image_width_for_module" src="../images/common/qualification.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/promotionc.aspx">
+                        <i class="fas fa-chart-line iconStyle FsiconStyle"></i><br />
                         Promotion Entry Panel</a>
                 </div>
                 <div runat="server" id="divPromotionReport" class=" col-md-3" title="Employees Promotion Report">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/promotion_sheet.aspx">
-                        <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/promotion_sheet.aspx">
+                        <i class="fas fa-chart-line iconStyle FsiconStyle"></i><br />
                         Promotion List Report</a>
 
                 </div>
                 <div runat="server" id="divPromotionReportComp" class=" col-md-3" title="Employees Promotion Report">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/promotion_sheetc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/personnel/promotion_sheetc.aspx">
                         <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
                         Promotion List Report</a>
 
                 </div>
                 <div runat="server" id="divIncrement" class=" col-md-3" title="Salary Increment">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/salary_increment.aspx">
-                        <img class="image_width_for_module" src="../images/common/religion.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/salary_increment.aspx">
+                        <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment Entry Panel</a>
                 </div>
                 <div runat="server" id="divIncrementComp" class=" col-md-3" title="Salary Increment">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/salary_incrementc.aspx">
-                        <img class="image_width_for_module" src="../images/common/religion.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/salary_incrementc.aspx">
+                         <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment Entry Panel</a>
                 </div>
                 <div runat="server" id="divAutoIncrementComp" class=" col-md-3" title="Salary Increment">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/AutoIncrementPanel.aspx">
-                        <img class="image_width_for_module" src="../images/common/religion.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/AutoIncrementPanel.aspx">
+                        <i class="uil uil-chart-growth iconStyle"></i><br />
                         Auto Increment Panel</a>
                 </div>
                 <div runat="server" id="divIncrementReport" class=" col-md-3" title="Salary Increment Report">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/increment_sheet.aspx">
-                        <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/increment_sheet.aspx">
+                         <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment List Report</a>
                 </div>
                 <div runat="server" id="divIncrementReportComp" class=" col-md-3" title="Salary Increment Report">
 
-                    <a class="ds_Settings_Basic_Text Pbox" href="/personnel/increment_sheetc.aspx">
-                        <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/personnel/increment_sheetc.aspx">
+                       <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment List Report</a>
                 </div>
 
                 <div runat="server" id="divPaySlip" class=" col-md-3" title="Monthly Salary Payslip">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/pay_slip.aspx">
-                        <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/pay_slip.aspx">
+                        <i class="fas fa-receipt FsiconStyle"></i><br />
                         Pay Slip</a>
                 </div>
                 <div runat="server" id="divEarnLeavePaymentGeneration" class=" col-md-3" title="Earn Leave Payment Generation">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/earnleave_payment_generation.aspx">
-                        <img class="image_width_for_module" src="/images/common/generate.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_generation.aspx">
+                        <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
                         Earn Leave Generation</a>
                 </div>
                 <div runat="server" id="divEarnLeavePaymentGenerationComp" class=" col-md-3" title="Earn Leave Payment Generation">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/earnleave_payment_generationc.aspx">
-                        <img class="image_width_for_module" src="/images/common/generate.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_generationc.aspx">
+                        <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
                         Earn Leave Generation</a>
                 </div>
                 <div runat="server" id="divEarnLeavePaymentSheet" class="col-md-3" title="Earn Leave Payment Sheet">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/earnleave_payment_sheet.aspx">
-                        <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_sheet.aspx">
+                        <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
                         Earn Leave Payment Sheet</a>
                 </div>
                 <div runat="server" id="divEarnLeavePaymentSheetComp" class="col-md-3" title="Earn Leave Payment Sheet">
-                    <a class="ds_Settings_Basic_Text Pbox" href="/payroll/earnleave_payment_sheetc.aspx">
-                        <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br />
+                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_sheetc.aspx">
+                       <i class="fas fa-sign-out-alt FsiconStyle"></i>
                         Earn Leave Payment Sheet</a>
                 </div>
                 <%--<div class=" col-md-2" title="Final Bill Payment Sheet">

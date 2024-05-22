@@ -924,15 +924,7 @@
       </div>
       <!-- ends: navbar-left -->
       <div class="navbar-right">
-         
-         <!-- ends: .navbar-right__menu -->
-         <div class="navbar-right__mobileAction d-md-none">
-            <a href="#" class="btn-search">
-               <img src="img/svg/search.svg" alt="search" class="svg feather-search">
-               <img src="img/svg/x.svg" alt="x" class="svg feather-x"></a>
-            <a href="#" class="btn-author-action">
-               <img class="svg" src="img/svg/more-vertical.svg" alt="more-vertical"></a>
-         </div>
+
       <ul class="navbar-right__menu">
             <!-- ends: nav-message -->
             <li class="nav-notification">

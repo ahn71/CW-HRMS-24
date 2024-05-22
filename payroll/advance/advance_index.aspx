@@ -18,29 +18,29 @@
         </div>
     
       <%--  <img alt="" class="main_images" src="images/hrd.png">--%>
-    <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1200%;">
-         <div class="col-lg-12" style="margin-top:10%">
-             <div class="row">
-                 <div class=" col-md-2"></div>
+    <div>
+         <div class="col-lg-12">
+             <div class="row rowCenter">
+                
                  <div class="col-md-2" title="Loan Entry">
-                     <a class="ds_Settings_Basic_Text Pbox" href="/payroll/advance/advance_entry.aspx"> <img class="image_width_for_module" src="/images/common/advanceentry.ico" /><br /> Advance Entry Panel</a>                     
+                     <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_entry.aspx"> <i class="fas fa-file-invoice-dollar FsiconStyle"></i><br /> <span>Advance Entry Panel</span></a>                     
                  </div> 
               
                  
                  <div class=" col-md-2" title="Advance Setting">
-                        <a class="ds_Settings_Basic_Text Pbox" href="/payroll/advance/advance_monthly_installment_setup.aspx"><img class="image_width_for_module" src="/images/common/generate.ico" /><br />Monthly Installment Setup</a>
+                        <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_monthly_installment_setup.aspx"><i class="fas fa-calendar-day FsiconStyle"></i><br />Monthly Installment Setup</a>
                  </div>
                  <div class=" col-md-2" title="Advance Reprot">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/advance/advance_info.aspx"><img class="image_width_for_module" src="/images/common/advancereport.ico" /><br />Advance Reports</a>
+                      <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_info.aspx"><i class="far fa-file-alt FsiconStyle"></i><br /><span>Advance Reports</span></a>
                  </div>
                   <div class=" col-md-2" title="Advance List">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/advance/advance_list.aspx"><img class="image_width_for_module" src="/images/common/advancereport.ico" /><br />Advance List</a>
+                      <a class="ds_Settings_Basic_Text" href="/payroll/advance/advance_list.aspx"><i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br /><span>Advance List</span></a>
                  </div>
 
                  <%-- <div class=" col-md-2" title="Employee Profile">
                        <img class="image_width_for_module" style="width: 86%" src="../images/common/blankImageForManu.png" /><br />
                    </div>--%>
-                 <div class=" col-md-2"></div>
+  
              </div>
 </div>
         </div>

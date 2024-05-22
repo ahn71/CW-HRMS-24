@@ -6,6 +6,9 @@
     <title></title>
   
     <meta name="viewport" content="width=device-width" />
+      <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+       <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link href="/style/main.css" rel="stylesheet" />
     <link href="/style/master.css" rel="stylesheet" />
     <link href="/style/hrd.css" rel="stylesheet" />
@@ -52,13 +55,59 @@
     <link runat="server" href="~/AssetsNew/css/dassboard_title_nagivation.css" rel="stylesheet" />
     <link href="style/select2.css" rel="stylesheet" />
     <style>
-        .tooltip {
-  border-bottom: 1px solid red;
-  color: red;
-  display: inline-block;
-  opacity: 1;
-  position: relative;
+
+        .ds_attendance_Basic_Text {
+    background: #fff;
+    border-bottom: 3px solid #8231D3;
+    border-radius: 15px;
+    color: #000;
+    display: block;
+    font-size: 14px;
+    margin: 0 0 10px;
+    padding: 25px 3px;
+    text-align: center;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position:relative;
+    z-index: 11;
+    overflow:hidden;
 }
+        .cardStyle{
+            background-color:#fff ;
+            color:#000000;
+        }
+        .iconStyle{
+            color:#8231D3;
+            font-size:33px;
+        }
+
+        .FsiconStyle {
+            color: #8231D3;
+            font-size: 30px;
+
+        }
+        .ds_Settings_Basic_Text i {
+            display: block;
+            height: 18px;
+            line-height: 18px !important;
+        }
+
+        .ds_Settings_Basic_Text span {
+            display: block;
+            height: 18px;
+        }
+
+        body {
+            font-family: "Jost", sans-serif;
+            background: #f5f5f5;
+        }
+
+        .tooltip {
+            border-bottom: 1px solid red;
+            color: red;
+            display: inline-block;
+            opacity: 1;
+            position: relative;
+        }
 
 .tooltip .tooltiptext {
   background-color: #555;
