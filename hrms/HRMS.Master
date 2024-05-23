@@ -341,7 +341,7 @@
                      
                   <li class="has-subMenu">
                      <a href="#" class="">Leave</a>
-                     <ul class="subMenu">
+                     <ul class="subMenu " style="background-color:#f5e9f7">
                         <li class="l_sidebar">
                            <a href="../leave/LeaveConfig.aspx">Configuration
                            </a>
@@ -888,7 +888,7 @@
                   <li class="has-subMenu">
                      <a href="#" class="">Users
                      </a>
-                     <ul class="subMenu">
+                     <ul class="subMenu " style="background-color:#e5f8e8">
                         <li>
                            <a href="/ControlPanel/CreateAccount.aspx" class="">
                               

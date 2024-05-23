@@ -116,7 +116,7 @@
 
                                         </div>
                                         <div class="ap-po-details-time">
-                                            <span class="color-danger"><i class="las la-arrow-up"></i>
+                                            <span class="color-danger"><i class="las la-arrow-down"></i>
                                                 <strong id="todayAbsentRatio"></strong></span>
                                         </div>
                                     </div>
@@ -232,10 +232,10 @@
 
                         <ul class="legend-static mb-30 mt-1 d-flex justify-content-center">
                             <li class="custom-label">
-                                <span class="bg-primary"></span>Present
+                                <span class="dotcolornew"></span>Present
                             </li>
                             <li class="custom-label">
-                                <span class="bg-secondary"></span>Absent
+                                <span class="dotcolorrel"></span>Absent
                             </li>
                         </ul>
                         <div class="card-body p-0 pb-sm-25 position-relative">
@@ -268,7 +268,7 @@
                         <div class="card-header px-0 border-0">
                             <h2 class="mt-3 mb-4">Daily Attendance Summary</h2>
                         </div>
-                        <div class="card-body p-0">
+                        <div class=" p-0">
                             <div class="tab-content">
                                 <div class="tab-pane fade active show" id="t_selling-today" role="tabpanel"
                                     aria-labelledby="t_selling-today-tab">
@@ -281,8 +281,9 @@
                                                 <span class="spin-dot badge-dot dot-primary"></span>
                                             </div>
                                             <table class="attendance-table table table-border " id="tblDailyAttSummary">
-                                                <thead class="sticky-top">
+                                                <thead class="sticky-top text-center">
                                                     <tr>
+                                                        <th>SL </th>
                                                         <th>Department </th>
                                                         <th>Total Employee</th>
                                                         <th>Male</th>
@@ -299,60 +300,8 @@
                                                         <th>Off day %</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Oparetor
-                                                        </td>
-                                                        <td>500</td>
-                                                        <td>300</td>
-                                                        <td>200</td>
-                                                        <td>490</td>
-                                                        <td>99%</td>
-                                                        <td>10</td>
-                                                        <td>1%</td>
-                                                        <td>10</td>
-                                                        <td>1%</td>
-                                                        <td>0</td>
-                                                        <td>0%</td>
-                                                        <td>0</td>
-                                                        <td>0%</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>Finacial
-                                                        </td>
-                                                        <td>300</td>
-                                                        <td>100</td>
-                                                        <td>120</td>
-                                                        <td>490</td>
-                                                        <td>99%</td>
-                                                        <td>10</td>
-                                                        <td>1%</td>
-                                                        <td>10</td>
-                                                        <td>1%</td>
-                                                        <td>0</td>
-                                                        <td>0%</td>
-                                                        <td>0</td>
-                                                        <td>0%</td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>Manager
-                                                        </td>
-                                                        <td>100</td>
-                                                        <td>300</td>
-                                                        <td>300</td>
-                                                        <td>190</td>
-                                                        <td>99%</td>
-                                                        <td>10</td>
-                                                        <td>1%</td>
-                                                        <td>10</td>
-                                                        <td>1%</td>
-                                                        <td>3</td>
-                                                        <td>0%</td>
-                                                        <td>1</td>
-                                                        <td>0%</td>
-                                                    </tr>
+                                                <tbody class="text-center">
+                                                   <!-- Data Bind From Api ---->
                                                 </tbody>
                                             </table>
                                         </div>
@@ -656,13 +605,13 @@
                                                     <div class="session-wrap session-wrap--top--4">
                                                         <div class="session-single">
                                                             <div class="chart-label">
-                                                                <span class="label-dot dot-info"></span>
+                                                                <span class="label-dot staff"></span>
                                                                 Staff
                                                             </div>
                                                         </div>
                                                         <div class="session-single">
                                                             <div class="chart-label">
-                                                                <span class="label-dot dot-warning"></span>
+                                                                <span class="label-dot worker"></span>
                                                                 Worker
                                                             </div>
                                                         </div>
@@ -696,10 +645,10 @@
                                          <div class="cashflow-chart">
                                              <ul class="legend-static mt-1 d-flex justify-content-center">
                                                  <li class="custom-label">
-                                                     <span class="bg-primary"></span>New Join
+                                                     <span class="dotcolornew"></span>New Join
                                                  </li>
                                                  <li class="custom-label">
-                                                     <span class="bg-secondary"></span>Relase
+                                                     <span class="dotcolorrel"></span>Release
                                                  </li>
                                              </ul>
                                             
@@ -1292,17 +1241,17 @@
 
                     // Update UI with data
                     $('#totalEmp').text(response.total);
-                    $('#totalEmpRatio').text(response.totalPerc);
+                    $('#totalEmpRatio').text(response.totalPerc +'%');
                     $('#todayPresent').text(response.present);
-                    $('#todayPresentRatio').text(response.pressentRatio);
+                    $('#todayPresentRatio').text(response.pressentRatio +'%');
                     $('#todayAbsent').text(response.absent);
-                    $('#todayAbsentRatio').text(response.absentRatio);
+                    $('#todayAbsentRatio').text(response.absentRatio +'%');
                     $('#todayLate').text(response.late);
-                    $('#todayLateRatio').text(response.lateRatio);
+                    $('#todayLateRatio').text(response.lateRatio +'%');
                     $('#todayLeave').text(response.leave);
-                    $('#todayLeaveRatio').text(response.leavePers);
+                    $('#todayLeaveRatio').text(response.leavePers +'%');
                     $('#WHOffDuty').text(response.offDayDuty);
-                    $('#WHOffDeutyPers').text(response.offDayDutyPerc);
+                    $('#WHOffDeutyPers').text(response.offDayDutyPerc +'%');
                 })
                 .catch(function (error) {
                     // Hide loader
@@ -1491,7 +1440,7 @@
                     WorkerPercentage = response.workerpers;
                     StaffWorkerRatio = [StaffPercentage, WorkerPercentage];
                     // Pass the arrays to the DonutChart function
-                    DonutChart('.StapWorkerRatio', StaffWorkerRatio, 180, 180, ['Staff', 'Worker'], ['#00AAFF', '#FA8B0C'], "60%");
+                    DonutChart('.StapWorkerRatio', StaffWorkerRatio, 180, 180, ['Staff', 'Worker'], ['#385e97', '#fb6542'], "60%");
 
                 })
                 .catch(function (error) {
@@ -1589,8 +1538,24 @@
             $('.loaderDailySum').hide(); // Hide loader
             // Build table rows with new data
             var newRow = '';
+            var i = 1;
+           let totalEmployeesSum = 0;
+            let totalMalesSum = 0;
+            let totalFemalesSum = 0;
+            let totalPresentSum = 0;
+            let totalPresentRatioSum = 0;
+            let totalAbsentSum = 0;
+            let totalAbsentRatioSum = 0;
+            let totalLeaveSum = 0;
+            let totalLeaveRatioSum = 0;
+            let totalLateSum = 0;
+            let totalLateRatioSum = 0;
+            let totalOffDaySum = 0;
+            let totalOffDayRatioSum = 0;
             responsedata.forEach(item => {
+
                 newRow += `<tr>
+                    <td>${i++}</td> 
                     <td>${item.department}</td>
                     <td>${item.totalEmployee}</td>
                     <td>${item.male}</td>
@@ -1606,9 +1571,48 @@
                     <td>${item.offDay}</td>
                     <td>${item.offdayRatio}</td>
                 </tr>`;
-            });
 
-            tableBody.append(newRow); // Update table with new data
+
+                totalEmployeesSum += item.totalEmployee;
+                totalMalesSum += item.male;
+                totalFemalesSum += item.female;
+                totalPresentSum += item.present;
+                totalPresentRatioSum += item.presentRatio;
+                totalAbsentSum += item.absent;
+                totalAbsentRatioSum += item.absentRatio;
+                totalLeaveSum += item.leave;
+                totalLeaveRatioSum += item.leaveRatio;
+                totalLateSum += item.late;
+                totalLateRatioSum += item.lateRatio;
+                totalOffDaySum += item.offDay;
+                totalOffDayRatioSum += item.offdayRatio;
+            });
+            tableBody.append(newRow);
+            var debed = i - 1;
+            console.log(debed);
+            var totatPreRet = (totalPresentSum * 100) / totalEmployeesSum ;
+            var totalAbsRet = (totalAbsentSum * 100)/ totalEmployeesSum;
+            var totalLvRet =(totalLeaveSum * 100)/ totalEmployeesSum ;
+            var totalLateRatio = (totalLateSum * 100)/ totalEmployeesSum;;
+            var totalWHOFRatio = (totalOffDaySum * 100)/ totalEmployeesSum;;
+            let summaryRow = `<tr>
+            <td colspan="2"><strong>Total</strong></td>
+            <td><strong>${totalEmployeesSum}</strong></td>
+            <td><strong>${totalMalesSum}</strong></td>
+            <td><strong>${totalFemalesSum}</strong></td>
+            <td><strong>${totalPresentSum}</strong></td>
+            <td><strong>${totatPreRet.toFixed(2)}</strong></td>
+            <td><strong>${totalAbsentSum}</strong></td>
+            <td><strong>${totalAbsRet.toFixed(2)}</strong></td>
+            <td><strong>${totalLateSum}</strong></td>
+            <td><strong>${totalLateRatio.toFixed(2)}</strong></td>
+            <td><strong>${totalLeaveSum}</strong></td>
+            <td><strong>${totalLvRet.toFixed(2)}</strong></td>
+
+            <td><strong>${totalOffDaySum}</strong></td>
+            <td><strong>${totalWHOFRatio.toFixed(2)}</strong></td>
+        </tr>`;
+            tableBody.append(summaryRow);  
         })
         .catch(function(error) {
             $('.loaderDailySum').hide(); // Hide loader on error

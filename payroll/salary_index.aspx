@@ -39,7 +39,7 @@
                 </div>
                 <div runat="server" id="divAllowanceCalculation" class="col-md-3">
                     <a class="ds_Settings_Basic_Text " href="/payroll/allowance_calculation_settings.aspx">
-                       <i class="uil uil-megaphone FsiconStyle"></i><br />
+                       <i class="fa fa-hand-holding-usd FsiconStyle"></i><br />
                         Allowance Calculation </a>
 
                 </div>

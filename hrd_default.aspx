@@ -18,7 +18,7 @@
         </div>
     
       <%--  <img alt="" class="main_images" src="images/hrd.png">--%>
-        <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1000%;">
+        <div>
          <div class="col-lg-12" style="margin-top:10%">
              <div class="row">
 

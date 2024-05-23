@@ -313,8 +313,8 @@ function chartjsBarChart(selector, dataCIn, DataCOut, labels, height, labelName1
                 labels: labels,
                 datasets: [{
                     data: dataCIn,
-                    backgroundColor: 'rgba(130, 49, 211, .50)',
-                    hoverBackgroundColor: '#7811FF',
+                    backgroundColor: '#39c84cd6',
+                    hoverBackgroundColor: '#01b81a',
                     label: labelName1,
                     barPercentage: 0.45,
                     borderRadius: 2,
@@ -324,8 +324,8 @@ function chartjsBarChart(selector, dataCIn, DataCOut, labels, height, labelName1
                 },
                 {
                     data: DataCOut,
-                    backgroundColor: 'rgba(0, 170, 255, .50)',
-                    hoverBackgroundColor: '#00AAFF',
+                    backgroundColor: '#ff5d5dc9',
+                    hoverBackgroundColor: '#ff0f0f',
                     label: labelName2,
                     barPercentage: 0.45,
                     borderRadius: 2,
