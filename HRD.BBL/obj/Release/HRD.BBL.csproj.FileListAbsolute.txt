@@ -1,2 +1,0 @@
-D:\Running projects github\CW-HRMS-24\HRD.BBL\obj\Release\HRD.BBL.csprojResolveAssemblyReference.cache
-D:\Running projects github\CW-HRMS-24\HRD.BBL\obj\Release\HRD.BBL.csproj.CoreCompileInputs.cache

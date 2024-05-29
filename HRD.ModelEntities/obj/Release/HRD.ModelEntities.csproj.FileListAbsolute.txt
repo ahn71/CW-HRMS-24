@@ -1,6 +1,0 @@
-D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\bin\Release\HRD.ModelEntities.dll
-D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\bin\Release\HRD.ModelEntities.pdb
-D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Release\HRD.ModelEntities.csprojResolveAssemblyReference.cache
-D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Release\HRD.ModelEntities.csproj.CoreCompileInputs.cache
-D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Release\HRD.ModelEntities.dll
-D:\Running projects github\CW-HRMS-24\HRD.ModelEntities\obj\Release\HRD.ModelEntities.pdb
