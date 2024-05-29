@@ -36115,8 +36115,20 @@ body:after {
     align-items: center;
 
 }
+.dotcolorrel {
+    background-color: #ff5d5dc9;
+}
+.dotcolornew {
+    background-color: #39c84cd6
+}
+.staff {
+    background-color:#385e97;
+}
 
-@media(min-width:1920px){
+.worker {
+    background-color: #fb6542;
+}
+@media(min-width:1920px) {
     .salary-height {
         height: 300px;
     }

@@ -32,7 +32,8 @@
                      
                  </div>
                     <div class="col-md-2">
-                     <a class="ds_Settings_Basic_Text " href="/vat_tax/vat_rate_settings.aspx"><i class="fas fa-money-check-alt FsiconStyle"></i><br />Vat&Tax Rate Settings</a>
+                     <a class="ds_Settings_Basic_Text " href="/vat_tax/vat_rate_settings.aspx"><i class="fas fa-money-check-alt FsiconStyle"></i><br />Vat&Tax Rate Settings
+                     </a>
                      
                  </div>
                  <div class="col-md-2">
