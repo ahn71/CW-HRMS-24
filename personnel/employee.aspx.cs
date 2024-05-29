@@ -54,7 +54,7 @@ namespace SigmaERP.personnel
                  
                    
                     classes.Employee.LoadEmpStatus(ddlEmpStatus);
-                   // classes.commonTask.LoadShift(ddlShift, ddlBranch.SelectedValue);
+                   classes.commonTask.LoadShiftOnlyIndependent(ddlShift, ddlBranch.SelectedValue);
                     if (ViewState["__CardNoType__"].ToString().Equals("True"))
                         classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
                     else 
@@ -388,7 +388,8 @@ namespace SigmaERP.personnel
                 if (ViewState["IsTranster"]==null || ViewState["IsTranster"].ToString().Equals(""))
                 AutoGenerateEmpIdByDepartment();
                 classes.commonTask.LoadDesignation(ViewState["__DptId__"].ToString(), ddlDesingnation);
-                classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
+               classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
+               // classes.commonTask.LoadShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
                 DepartmentCustomOrdering();
             }
             else
@@ -396,6 +397,7 @@ namespace SigmaERP.personnel
                 ViewState["__DptId__"] = ddlDepartment.SelectedValue;
                 classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue, ddlDesingnation);
                 classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ddlDepartment.SelectedValue);
+                //classes.commonTask.LoadShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ddlDepartment.SelectedValue);
             }
             if (ViewState["__LineORGroupDependency__"].ToString().Equals("True"))
             {

@@ -724,6 +724,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadShiftOnlyIndependent(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where companyId='" + CompanyId + "' AND IsActive='true' and DptID='0'", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "SftId";
+                dl.DataTextField = "SftName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
         public static void LoadInitialShift(DropDownList dl, string CompanyId)
         {
             try
@@ -741,7 +755,20 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1 and IsInitial=1 and CompanyId='" + CompanyId + "' and DptId='" + DptID + "'", dt = new DataTable());
+                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1  and CompanyId='" + CompanyId + "' and DptId In('" + DptID + "','0')", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "SftId";
+                dl.DataTextField = "SftName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+        public static void LoadShiftByDepartment(DropDownList dl, string CompanyId, string DptID)
+        {
+            try
+            {
+                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1  and CompanyId='" + CompanyId + "' and DptId in( '" + DptID + "','0')", dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
