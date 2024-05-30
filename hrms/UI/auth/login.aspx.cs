@@ -61,6 +61,7 @@ namespace SigmaERP.hrms.UI.auth
 
 
                     Session["__GetCompanyId__"] = dt.Rows[0]["CompanyId"].ToString();
+                    string companyId = Session["__GetCompanyId__"].ToString();
                     Session["__GetUID__"] = dt.Rows[0]["UserId"].ToString();
                     Session["__isLvAuthority__"] = dt.Rows[0]["isLvAuthority"].ToString();
                     Session["__LvOnlyDpt__"] = dt.Rows[0]["LvOnlyDpt"].ToString();
