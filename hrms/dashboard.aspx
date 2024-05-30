@@ -971,17 +971,20 @@
 
     <script>
 
-        var DailyAttUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendanceStatus';
-        var DailyAttSumUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendanceSummary';
-        var CurrentEmpStatusUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/currentEmployeeStaus';
-        var GetTodaysCostingUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/getTodaysCosting';
-        var GetMonthlyCostingUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/getlastMonthCosting';
-        var GetLast7DaysPARatioUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyAttendancehistory';
-        var GetNewJoinAndReleaseUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/newJoinReleaseHistory';
-        var GetSalaryComparisonLast12MonthUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/salaryComparison';
-        var GetMonthlyNewJoinRelaseUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/monthlyNewjoinAndRelease';
-        var GetMonthlyOtCalculationUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/monthlyOtCalculation';
-        var GetDailyOtCalculationUrl = 'http://cw-hrms-api.codehosting.xyz/api/DailyAttendance/dailyOtCalculation';
+        var rootUrl = 'http://cw-hrms-api.codehosting.xyz';
+
+        var DailyAttUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceStatus';
+        var DailyAttSumUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceSummary';
+        var CurrentEmpStatusUrl = rootUrl + '/api/DailyAttendance/currentEmployeeStaus';
+        var GetTodaysCostingUrl = rootUrl + '/api/DailyAttendance/getTodaysCosting';
+        var GetMonthlyCostingUrl = rootUrl + '/api/DailyAttendance/getlastMonthCosting';
+        var GetLast7DaysPARatioUrl = rootUrl + '/api/DailyAttendance/dailyAttendancehistory';
+        var GetNewJoinAndReleaseUrl = rootUrl + '/api/DailyAttendance/newJoinReleaseHistory';
+        var GetSalaryComparisonLast12MonthUrl = rootUrl + '/api/DailyAttendance/salaryComparison';
+        var GetMonthlyNewJoinRelaseUrl = rootUrl + '/api/DailyAttendance/monthlyNewjoinAndRelease';
+        var GetMonthlyOtCalculationUrl = rootUrl + '/api/DailyAttendance/monthlyOtCalculation';
+        var GetDailyOtCalculationUrl = rootUrl + '/api/DailyAttendance/dailyOtCalculation';
+
         var companyId = '0001';
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
