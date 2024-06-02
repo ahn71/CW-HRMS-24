@@ -62,6 +62,8 @@ namespace SigmaERP.classes
         {
             try
             {
+                return true;
+
                 string _ProxymityNo = "";
                 string table = (db == "access") ? " tEnter" : " UNIS.dbo.tEnter";
                 string query = "";
@@ -308,7 +310,8 @@ namespace SigmaERP.classes
             {
                 dt = new DataTable();
 
-                query = "select distinct CardNo,format(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttendancePunch_temp where ProcessingID='" + ProcessingID + "' and CompanyID='" + CompanyID + "' and  PunchTime>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and PunchTime<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND CardNo='" + CardNo + "' order by PunchTime ";
+         //       query = "select distinct CardNo,format(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttendancePunch_temp where ProcessingID='" + ProcessingID + "' and CompanyID='" + CompanyID + "' and  PunchTime>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and PunchTime<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND CardNo='" + CardNo + "' order by PunchTime ";
+                query = "select  distinct u.BADGENUMBER as CardNo,format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PunchTime from cw_att_zk.dbo.CHECKINOUT c inner join cw_att_zk.dbo.USERINFO u on c.USERID=u.USERID where c.CHECKTIME>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and c.CHECKTIME<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND u.BADGENUMBER='" + CardNo + "' order by format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss')";
 
 
                 return CRUD.ExecuteReturnDataTable(query);
