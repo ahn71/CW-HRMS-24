@@ -106,14 +106,14 @@
                               <li class="l_sidebar">
                                  <a href="../attendance/AttendanceProcessing.aspx" class="">
       
-                                    <span class="menu-text">Attendance Processing</span>
+                                    <span class="menu-text">Shrink Data</span>
                                  </a>
                               </li>
       
                               <li class="l_sidebar">
                                  <a href="../attendance/attendance.aspx" class="">
       
-                                    <span class="menu-text">Manual Attendance</span>
+                                    <span class="menu-text">Manually Count</span>
                                  </a>
                               </li>
       
@@ -127,14 +127,14 @@
                               <li class="l_sidebar">
                                  <a href="../attendance/attendance_summary.aspx" class="">
       
-                                    <span class="menu-text">Daily Attendance Summary</span>
+                                    <span class="menu-text">Att Summary</span>
                                  </a>
                               </li>
       
                               <li class="l_sidebar">
                                  <a href="../attendance/daily_movement.aspx" class="">
       
-                                    <span class="menu-text">Daily In-Out Report</span>
+                                    <span class="menu-text">In-Out Report</span>
                                  </a>
                               </li>
       
@@ -913,6 +913,13 @@
                               <%--<span class="menu-text">Authorization Committee</span>--%>
                               <span class="menu-text">Approval Panel</span>
                            </a>
+                        </li>
+                         <li>
+                             <a href="Modules.aspx">
+                                 <span class="menu-text">Modules</span>
+
+                             </a>
+
                         </li> 
                      </ul>
                   </li>
@@ -1228,6 +1235,7 @@
          </div>
       </footer>
     </form>
+
     <div id="overlayer">
       <div class="loader-overlay">
          <div class="dm-spin-dots spin-lg">
@@ -1238,6 +1246,7 @@
          </div>
       </div>
    </div>
+
    <div class="overlay-dark-sidebar"></div>
    <div class="customizer-overlay"></div>
    <!-- inject:js-->
