@@ -558,7 +558,8 @@ namespace SigmaERP.All_Report
                 DataTable dtcompany = new DataTable();
 
                 dt = (DataTable)Session["__PaySlip__"];
-                rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New.rpt"));
+                //rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New.rpt"));
+                rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New_Mollah.rpt"));
                 rpd.SetDataSource(dt);
                 if (year.Trim().Length > 4)
                     year = year.Substring(0,4);
@@ -3498,9 +3499,16 @@ namespace SigmaERP.All_Report
                     else// This is for Actual Salary Sheet
                     {
                         if (EmpTypeId == "1")
+                        {
                             rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
+                        //    rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                        }
+
                         else
+                        {
                             rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual.rpt"));
+
+                        }
 
                     }
                 }
@@ -3581,9 +3589,10 @@ namespace SigmaERP.All_Report
                     {
                         if (EmpTypeId == "1")
                         {
-                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
-                           
-                        }                          
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+
+                        }
                         else                            
                             rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_New.rpt"));
 
