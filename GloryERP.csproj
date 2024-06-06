@@ -1691,13 +1691,14 @@
     <Content Include="hrms\img\zip.png" />
     <Content Include="hrms\index.html" />
     <Content Include="hrms\man.jpg" />
-    <Content Include="hrms\Modules.aspx" />
+    <Content Include="hrms\modules.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
     <Content Include="hrms\UI\auth\cw-hrms.png" />
     <Content Include="hrms\UI\auth\login.aspx" />
     <Content Include="hrms\UI\auth\login.html" />
     <Content Include="hrms\UI\auth\logo.png" />
+    <Content Include="hrms\userPermissions.aspx" />
     <Content Include="hrms\WebForm1.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
     <Content Include="images\common\add document.ico" />
@@ -3606,12 +3607,12 @@
     <Compile Include="hrms\HRMS.Master.designer.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
     </Compile>
-    <Compile Include="hrms\Modules.aspx.cs">
-      <DependentUpon>Modules.aspx</DependentUpon>
+    <Compile Include="hrms\modules.aspx.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\Modules.aspx.designer.cs">
-      <DependentUpon>Modules.aspx</DependentUpon>
+    <Compile Include="hrms\modules.aspx.designer.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
@@ -3626,6 +3627,13 @@
     </Compile>
     <Compile Include="hrms\UI\auth\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userPermissions.aspx.cs">
+      <DependentUpon>userPermissions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userPermissions.aspx.designer.cs">
+      <DependentUpon>userPermissions.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>

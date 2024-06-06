@@ -396,9 +396,6 @@
                               <li>
                                  <a class="" href="../payroll/allowance_calculation_settings.aspx">Allowance Calculation</a>
                               </li>
-                              <li>
-                                 <a class="" href="../payroll/allowance_calculation_settings.aspx">Other Payment/Punishment</a>
-                              </li>
                                <li>
                                  <a class="" href="../payroll/salary/salary_processing.aspx">Sallery Processing</a>
                               </li>
@@ -908,7 +905,14 @@
 
                              </a>
 
-                        </li> 
+                        </li>
+                         <li>
+                             <a href="userPermissions.aspx">
+                                 <span class="menu-text">User Permissions</span>
+
+                             </a>
+
+                         </li>
                      </ul>
                   </li>
 
