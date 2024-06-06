@@ -42,12 +42,7 @@ namespace SigmaERP.payroll
 
                         divSalaryEntry.Visible = false;
                         divSalaryEntryc.Visible = true;
-                        divAllowanceCalculation.Visible = false;
-                        divSalarySummary.Visible = false;
-                        divOvertimeSheet.Visible = false;
-                        divPaySlip.Visible = true;
-                        divSeperationSheet.Visible = false;
-
+                        divAllowanceCalculation.Visible = false;                      
                         divAutoIncrementComp.Visible = true;
 
                      
