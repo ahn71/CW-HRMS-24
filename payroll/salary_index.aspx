@@ -28,13 +28,13 @@
                 <div runat="server" id="divSalaryEntry" class="col-md-3">
                     <a class="ds_Settings_Basic_Text" href="/payroll/payroll_entry_panel.aspx">
                         <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br />
-                        <span>Salary Set Entry Panel</span></a>
+                        <span>Salary Entry Panel</span></a>
 
                 </div>
                 <div runat="server" id="divSalaryEntryc" class="col-md-3">
                     <a class="ds_Settings_Basic_Text " href="/payroll/payroll_entry_panelc.aspx">
                         <i class="fa-solid fa-money-check-dollar FsiconStyle"></i>
-                       <span>Salary Set Entry Panel</span></a>
+                       <span>Salary Entry Panel</span></a>
 
                 </div>
                 <div runat="server" id="divAllowanceCalculation" class="col-md-3">
@@ -42,60 +42,26 @@
                        <i class="fa fa-hand-holding-usd FsiconStyle"></i><br />
                         Allowance Calculation </a>
 
-                </div>
-                <div runat="server" id="divSalaryGenerate" class="col-md-3" title="Regular Salary Generate">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/payroll_generation1.aspx">
-                       <i class="fas fa-money-bill-wave FsiconStyle" ></i><br />
-                        Salary Generate</a>
-                </div>
+                </div>            
                  <div runat="server" class="col-md-3" title="Salary Processing">
                     <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_processing.aspx">
                         <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
                         Salary Processing (New)</a>
-                </div>
-                <div runat="server" id="divSeperationGenerate" class="col-md-3" title="Resigned Salary Generate">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/separation_generation_rss.aspx">
-                        <i class="uil uil-user-arrows iconStyle"></i><br />
-                        Seperation Generate</a>
-                </div>
-
-
-
-                
-                <div class=" col-md-3" title="Monthly Salary Sheet">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/salary_sheet_Report.aspx">
-                        <i class="fas fa-hand-holding-usd FsiconStyle"></i><br />
-                        Salary Sheet</a>
-                </div>
+                </div>              
+               
                 <div class=" col-md-3" title="Monthly Salary Sheet">
                     <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_sheet.aspx">
                         <i class="fas fa-hand-holding-usd FsiconStyle"></i><br />
                         Salary Sheet (New)</a>
-                </div>
-                <div runat="server" id="divSalarySummary" class=" col-md-3" title="Monthly Salary Summary">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/summary_of_salary.aspx">
-                        <i class="fas fa-file-alt FsiconStyle"></i><br />
-                        Salary Summary</a>
-
-                </div>
-                <div runat="server" id="divOvertimeSheet" class=" col-md-3" title="Overtime Payment Sheet">
-
-                    <a class="ds_Settings_Basic_Text " href="/payroll/ot_payment_sheet.aspx">
-                       <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
-                        Only Overtime Sheet</a>
-                </div>
+                </div>            
+                
                    <div runat="server"  class=" col-md-3" title="Overtime Payment Sheet">
 
                     <a class="ds_Settings_Basic_Text " href="/payroll/salary/ot_payment.aspx">
                        <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br />
                         Only OT Payment (New)</a>
                 </div>
-                <div runat="server" id="divSeperationSheet" class=" col-md-3" title="Resigned Salary Sheet">
-
-                    <a class="ds_Settings_Basic_Text " href="/payroll/separation_pmt_sheet.aspx">
-                       <i class="uil uil-user-arrows iconStyle"></i><br />
-                        Seperation Sheet</a>
-                </div>
+             
 
                 <div runat="server" id="divPromotionEntry" class=" col-md-3" title="Employee Promotion">
                     <a class="ds_Settings_Basic_Text " href="/personnel/promotion.aspx">
@@ -150,12 +116,7 @@
                        <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment List Report</a>
                 </div>
-
-                <div runat="server" id="divPaySlip" class=" col-md-3" title="Monthly Salary Payslip">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/pay_slip.aspx">
-                        <i class="fas fa-receipt FsiconStyle"></i><br />
-                        Pay Slip</a>
-                </div>
+               
                 <div runat="server" id="divEarnLeavePaymentGeneration" class=" col-md-3" title="Earn Leave Payment Generation">
                     <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_generation.aspx">
                         <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
