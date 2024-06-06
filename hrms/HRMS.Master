@@ -109,6 +109,12 @@
                                     <span class="menu-text">Attendance Processing</span>
                                  </a>
                               </li>
+                               <li class="l_sidebar">
+                                 <a href="../attendance/AttendanceProcessing.aspx" class="">
+      
+                                    <span class="menu-text">Attendance Processing Test</span>
+                                 </a>
+                              </li>
       
                               <li class="l_sidebar">
                                  <a href="../attendance/attendance.aspx" class="">
