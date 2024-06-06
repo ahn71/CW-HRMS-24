@@ -49,51 +49,6 @@ namespace SigmaERP.payroll {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAllowanceCalculation;
         
         /// <summary>
-        /// divSalaryGenerate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSalaryGenerate;
-        
-        /// <summary>
-        /// divSeperationGenerate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSeperationGenerate;
-        
-        /// <summary>
-        /// divSalarySummary control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSalarySummary;
-        
-        /// <summary>
-        /// divOvertimeSheet control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divOvertimeSheet;
-        
-        /// <summary>
-        /// divSeperationSheet control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSeperationSheet;
-        
-        /// <summary>
         /// divPromotionEntry control.
         /// </summary>
         /// <remarks>
@@ -173,15 +128,6 @@ namespace SigmaERP.payroll {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divIncrementReportComp;
-        
-        /// <summary>
-        /// divPaySlip control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divPaySlip;
         
         /// <summary>
         /// divEarnLeavePaymentGeneration control.

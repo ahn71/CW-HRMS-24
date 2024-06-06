@@ -391,7 +391,7 @@
                                <span class="mega-title">Salary</span>
                                <ul>
                                    <li>
-                                 <a class="" href="../payroll/payroll_entry_panel.aspx">Salary Set Entry Panel</a>
+                                 <a class="" href="../payroll/payroll_entry_panel.aspx">Salary Entry Panel</a>
                               </li>
                               <li>
                                  <a class="" href="../payroll/allowance_calculation_settings.aspx">Allowance Calculation</a>
@@ -399,25 +399,13 @@
                                <li>
                                  <a class="" href="../payroll/salary/salary_processing.aspx">Sallery Processing</a>
                               </li>
+                              
                               <li>
-                                 <a class="" href="../payroll/separation_generation_rss.aspx">Seperation Generate</a>
-                              </li>
-                             <li>
-                                 <a class="" href="../payroll/salary_sheet_Report.aspx">Salary Sheet</a>
-                              </li>
-                         
-                              <li>
-                                 <a class="" href="../payroll/summary_of_salary.aspx"> Salary Summary</a>
+                                 <a class="" href="../payroll/salary/salary_sheet.aspx">Salary Sheet</a>
                               </li>
                               <li>
-                                 <a class="" href="../payroll/ot_payment_sheet.aspx">Only Overtime Sheet</a>
-                              </li>
-                               <li>
                                  <a class="" href="../payroll/salary/ot_payment.aspx">Overtime payment </a>
-                              </li>
-                              <li>
-                                 <a class="" href="../payroll/separation_pmt_sheet.aspx">Seperation Salary Sheet</a>
-                              </li>
+                              </li>                              
                               <li>
                                  <a class="" href="../personnel/promotion.aspx">Promotion Entry Panel</a>
                               </li>
@@ -429,10 +417,7 @@
                               </li>
                               <li>
                                  <a class="" href="../personnel/increment_sheet.aspx">Increment List Report</a>
-                              </li>
-                               <li>
-                                 <a class="" href="../payroll/pay_slip.aspx">Pay Slip</a>
-                              </li>
+                              </li>                             
                               <li>
                                  <a class="" href="../payroll/earnleave_payment_generation.aspx">Earn Leave Generation</a>
                               </li>

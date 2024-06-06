@@ -540,23 +540,30 @@ namespace SigmaERP.classes
                     _attRecord.StayTime = stayTime.ToString();
                     if (_attRecord.AttStatus == "W" || _attRecord.AttStatus == "H")
                     {
-                        if (!IsDelivery)
-                        {
-                            totalOTTime = stayTime;
-                            totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
-                            if (totalOTTime >= TimeSpan.Parse("10:00:00"))
-                            {
-                                _attRecord.TiffinCount = "1";
-                                _attRecord.NightAllowCount = "1";
-                            }
-                            else if (totalOTTime >= TimeSpan.Parse("07:00:00"))
-                            {
-                                _attRecord.NightAllowCount = "1";
-                            }
-                        }
-                        if (stayTime >= MinWorkingTime)
-                            _attRecord.HolidayCount = "1";//Payble Day
-                    }
+                    //if (!IsDelivery)
+                    //{
+                    //    totalOTTime = stayTime;
+                    //    totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
+                    //    if (totalOTTime >= TimeSpan.Parse("10:00:00"))
+                    //    {
+                    //        _attRecord.TiffinCount = "1";
+                    //        _attRecord.NightAllowCount = "1";
+                    //    }
+                    //    else if (totalOTTime >= TimeSpan.Parse("07:00:00"))
+                    //    {
+                    //        _attRecord.NightAllowCount = "1";
+                    //    }
+                    //}
+                    //if (stayTime >= MinWorkingTime)
+                    //    _attRecord.HolidayCount = "1";//Payble Day
+
+                    if (LogOutTime>RosterStartTime)
+                    {
+                        totalOTTime = LogOutTime- RosterStartTime;
+                        totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
+                        
+                    }                 
+                }
                     else// P or L 
                     {
                         if (IsDelivery)
@@ -573,25 +580,38 @@ namespace SigmaERP.classes
                         }
                         else
                         {
+                        //if (RosterStartTimeForOT < LogOutTime)
+                        //{
+                        //    totalOTTime = LogOutTime - RosterStartTimeForOT;
+
+                        //    totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
+
+                        //    if (totalOTTime >= TimeSpan.Parse("06:00:00"))
+                        //    {
+                        //        _attRecord.TiffinCount = "1";
+                        //        _attRecord.NightAllowCount = "1";
+                        //    }
+                        //    else if (totalOTTime >= TimeSpan.Parse("02:00:00"))
+                        //    {
+                        //        _attRecord.TiffinCount = "1";
+                        //    }
+
+                        //}                        
+
+                        if (stayTime > TimeSpan.Parse("09:00:00"))
+                        {                          
+                            if (LogInTime > RosterStartTime)
+                            {
+                                RosterStartTimeForOT = LogInTime+ TimeSpan.Parse("09:00:00");
+                            }
                             if (RosterStartTimeForOT < LogOutTime)
                             {
                                 totalOTTime = LogOutTime - RosterStartTimeForOT;
-
                                 totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
-
-                                if (totalOTTime >= TimeSpan.Parse("06:00:00"))
-                                {
-                                    _attRecord.TiffinCount = "1";
-                                    _attRecord.NightAllowCount = "1";
-                                }
-                                else if (totalOTTime >= TimeSpan.Parse("02:00:00"))
-                                {
-                                    _attRecord.TiffinCount = "1";
-                                }
-
                             }
-
                         }
+
+                    }
                         if (stayTime >= MinWorkingTime)
                             _attRecord.PaybleDays = "1";//Payble Day                    
 
@@ -786,14 +806,14 @@ namespace SigmaERP.classes
             {
                 try
                 {
-                if (_attRecord.AttStatus == "L")
-                {
-                    if (TimeSpan.Parse(_attRecord.LateTime) >= TimeSpan.Parse("03:00:00"))
-                    {
-                        _attRecord.AttStatus = "A";
-                        _attRecord.PaybleDays = "0";
-                    }                  
-                }
+                //if (_attRecord.AttStatus == "L")
+                //{
+                //    if (TimeSpan.Parse(_attRecord.LateTime) >= TimeSpan.Parse("03:00:00"))
+                //    {
+                //        _attRecord.AttStatus = "A";
+                //        _attRecord.PaybleDays = "0";
+                //    }                  
+                //}
                 string[] getColumns = { "EmpId", "AttDate", "EmpTypeId", "InHour", "InMin", "InSec", "OutHour", "OutMin", "OutSec",
                                         "AttStatus", "StateStatus", "OverTime", "SftId", "DptId","DsgId", "CompanyId", "GId","LateTime","StayTime","TiffinCount","HolidayCount","PaybleDays","OtherOverTime","TotalOverTime","UserId","NightAllowCount"};
 
