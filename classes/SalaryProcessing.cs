@@ -336,13 +336,19 @@ namespace SigmaERP.classes
             return Amount;
         }
         private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
-        {        
+        {
 
+            //Late Deduction
+            if (salaryRecord.LateDays > 2)
+            {
+                int LateFineDays = salaryRecord.LateDays / 3;
+                salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
+            }
             // Absent Deduction
             salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
            
             //Payable
-            salaryRecord.Payable = Round(((salaryRecord.EmpNetGross) - (salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction+salaryRecord.ProvidentFund+salaryRecord.ProfitTax)));
+            salaryRecord.Payable = Round(((salaryRecord.EmpNetGross) - (salaryRecord.LateFine +salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction+salaryRecord.ProvidentFund+salaryRecord.ProfitTax)));
             // Attendance Bonus
 
             //NetPayable (with normal OT)

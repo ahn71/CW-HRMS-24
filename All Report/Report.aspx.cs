@@ -3580,7 +3580,10 @@ namespace SigmaERP.All_Report
                     else// This is for Actual Salary Sheet
                     {
                         if (EmpTypeId == "1")
+                        {
                             rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
+                           
+                        }                          
                         else                            
                             rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_New.rpt"));
 
