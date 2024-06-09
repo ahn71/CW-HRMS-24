@@ -12,7 +12,7 @@ namespace SigmaERP.classes
         string query = "";
         DataTable dt;
         SalaryRecord salaryRecord;
-        public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,string ExceptedEmpCardNo)
+        public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,bool hasLateDeduction,string ExceptedEmpCardNo)
         {
             //Note: ProcessNo is 1 for Separation Employees and 0 for Regular Employees
             try
@@ -175,7 +175,9 @@ namespace SigmaERP.classes
                         salaryRecord.AdvanceDeduction = getAdvanceDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
                     //get Tax Deduction
                     salaryRecord.ProfitTax =Round(double.Parse(employee["TaxAmount"].ToString()));
-                   
+                    // get Late Deduction
+                    if (hasLateDeduction)
+                        salaryRecord.LateFine = getLateFine();
                    //get Punishment Deduction
                     salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
 
@@ -338,16 +340,23 @@ namespace SigmaERP.classes
                 Amount = Math.Floor(Amount);
             return Amount;
         }
-        private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
+        private Double getLateFine()
         {
-
             //Late Deduction
             if (salaryRecord.LateDays > 2)
             {
                 int LateFineDays = salaryRecord.LateDays / 3;
-               // salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
-                salaryRecord.LateFine = Round(salaryRecord.EmpPresentSalary / 30 * LateFineDays) ; //static for Mollah Fashion
+                // salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
+               return  Round(salaryRecord.EmpPresentSalary / 30 * LateFineDays); //static for Mollah Fashion
             }
+            return 0;
+
+        }
+
+        private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
+        {
+
+            
             // Absent Deduction
            // salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
             salaryRecord.AbsentDeduction =Round(salaryRecord.EmpPresentSalary / 30 * salaryRecord.AbsentDay); //static for Mollah Fashion

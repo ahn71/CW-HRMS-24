@@ -107,12 +107,12 @@
                                     </tr>
                                      <tr>
                                         <td colspan="3">
-                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbPF" Text="PF" Checked="true" />
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbPF" Text="PF" Checked="false" Visible="false"  />
                                             <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbTiffinBill" Text="Tiffin Bill" Checked="true" Visible="false" />                                      
                                             <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbNightBill" Text="Night Bill" Checked="true"  Visible="false"/>
                                             <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbAttendanceBonus" Text="Attendance Bonus" Checked="true" />
-                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbHolidayAllow" Text="Holiday Allowance" Checked="true" />
-                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbLateDeduction" Text="Late Deduction" Checked="true" Visible="false" />
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbHolidayAllow" Text="Holiday Allowance" Checked="false" Visible="false" />
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbLateDeduction" Text="Late Deduction" Checked="true" />
                                             <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbAdvanceDeduction" Text="Advance Deduction" Checked="true" />
                                             <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbStampDeduction" Text="Stamp Deduction" Checked="true" />
                                         </td>
