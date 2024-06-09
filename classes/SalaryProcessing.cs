@@ -175,9 +175,12 @@ namespace SigmaERP.classes
                         salaryRecord.AdvanceDeduction = getAdvanceDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
                     //get Tax Deduction
                     salaryRecord.ProfitTax =Round(double.Parse(employee["TaxAmount"].ToString()));
+                   
+                   //get Punishment Deduction
+                    salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
 
-                    //OverTime 
-                    if (employee["EmpTypeId"].ToString() == "1")// for worker 
+                        //OverTime 
+                        if (employee["EmpTypeId"].ToString() == "1")// for worker 
                     {
                         salaryRecord = getOverTime(salaryRecord, employee);
                     }
@@ -342,13 +345,16 @@ namespace SigmaERP.classes
             if (salaryRecord.LateDays > 2)
             {
                 int LateFineDays = salaryRecord.LateDays / 3;
-                salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
+               // salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
+                salaryRecord.LateFine = Round(salaryRecord.EmpPresentSalary / 30 * LateFineDays) ; //static for Mollah Fashion
             }
             // Absent Deduction
-            salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
-           
+           // salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
+            salaryRecord.AbsentDeduction =Round(salaryRecord.EmpPresentSalary / 30 * salaryRecord.AbsentDay); //static for Mollah Fashion
+            
+            double totalDeductions = salaryRecord.LateFine + salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction + salaryRecord.ProvidentFund + salaryRecord.ProfitTax + salaryRecord.OthersDeduction;
             //Payable
-            salaryRecord.Payable = Round(((salaryRecord.EmpNetGross) - (salaryRecord.LateFine +salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction+salaryRecord.ProvidentFund+salaryRecord.ProfitTax)));
+            salaryRecord.Payable = Round(salaryRecord.EmpNetGross- totalDeductions);
             // Attendance Bonus
 
             //NetPayable (with normal OT)
@@ -485,6 +491,14 @@ namespace SigmaERP.classes
             dt = CRUD.ExecuteReturnDataTable("select SL,LoanID,Month,Amount from Payroll_LoanMonthlySetup where Month='" +FromDate.ToString("yyyy-MM") + "- 01' and EmpId='" + EmpId + "'");
             if (dt != null && dt.Rows.Count > 0)
                 return Round(double.Parse(dt.Rows[0]["Amount"].ToString()));
+            return 0;
+        }
+        private double getPunishmentDeduction(string EmpId,DateTime FromDate)
+        {
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select PAmount from Payroll_Punishment where EmpId='" + EmpId + "' and MonthName='"+ FromDate.ToString("MM-yyyy") + "'");
+            if (dt != null && dt.Rows.Count > 0)
+                return Round(double.Parse(dt.Rows[0]["PAmount"].ToString()));
             return 0;
         }
         private double getOTRate(double Salary)

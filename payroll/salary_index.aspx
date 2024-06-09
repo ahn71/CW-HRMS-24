@@ -43,7 +43,12 @@
                         Allowance Calculation </a>
 
                 </div>            
-                 <div runat="server" class="col-md-3" title="Salary Processing">
+                 <div runat="server" class="col-md-3" title="Punishment">
+                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/other_pay_deduction.aspx">
+                        <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
+                       Punishment</a>
+                </div>   
+                <div runat="server" class="col-md-3" title="Salary Processing">
                     <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_processing.aspx">
                         <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
                         Salary Processing (New)</a>

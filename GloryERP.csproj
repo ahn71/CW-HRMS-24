@@ -1698,6 +1698,7 @@
     <Content Include="hrms\UI\auth\login.aspx" />
     <Content Include="hrms\UI\auth\login.html" />
     <Content Include="hrms\UI\auth\logo.png" />
+    <Content Include="hrms\user_img_default.jpg" />
     <Content Include="hrms\WebForm1.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
     <Content Include="images\common\add document.ico" />
@@ -2042,6 +2043,7 @@
     <Content Include="payroll\pay_base_shift.aspx" />
     <Content Include="payroll\pay_slip.aspx" />
     <Content Include="payroll\pay_slip2.aspx" />
+    <Content Include="payroll\salary\other_pay_deduction.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
@@ -4913,6 +4915,13 @@
     </Compile>
     <Compile Include="payroll\pay_slip2.aspx.designer.cs">
       <DependentUpon>pay_slip2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\salary\other_pay_deduction.aspx.cs">
+      <DependentUpon>other_pay_deduction.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\other_pay_deduction.aspx.designer.cs">
+      <DependentUpon>other_pay_deduction.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>
