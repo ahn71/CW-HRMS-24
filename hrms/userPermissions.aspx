@@ -1,9 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="modules.aspx.cs" Inherits="SigmaERP.hrms.Modules" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userPermissions.aspx.cs" Inherits="SigmaERP.hrms.userPermissions" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">   
-
-  <main class="main-content">
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">  <main class="main-content">
       <div class="Dashbord">
          <div class="crm mb-25">
             <div class="container-fulid">
@@ -12,7 +10,7 @@
                   <div class="card-header d-flex align-items-center">
                      <div class="card-title d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
-                           <h4>Add Modules</h4>
+                           <h4>Add User Permissions</h4>
                         </div>
                      </div>
 
@@ -29,38 +27,38 @@
                      <div class="Vertical-form">
   
                            <div class="row">
+                               <div class="col-lg-3">
+                                   <div class="form-group">
+                                       <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Modules <span
+                                          class="text-danger">*</span></label>
+                                       <div class="support-form__input-id">
+                                           <div class="dm-select ">
+                                               <select name="ddlModules" class="select-search form-control ">
+                                                   <option value="02">Salary</option>
+                                                   <option value="03">Attendance</option>
+                                                   <option value="04">Employee</option>
+                                                   <option value="05">Provident Found</option>
+                                               </select>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
                               <div class="col-lg-3">
                                  <div class="form-group">
-                                     <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Parent</label>
-                                     <div class="support-form__input-id">
-                                         <div class="dm-select ">
-                                             <select name="ddlParent" class="select-search form-control ">
-                                                 <option value="01">All</option>
-                                                 <option value="02">Option 2</option>
-                                                 <option value="03">Option 3</option>
-                                                 <option value="04">Option 4</option>
-                                                 <option value="05">Option 5</option>
-                                             </select>
-                                         </div>
-                                     </div>
+                                    <label for="formGroupExampleInput"
+                                       class="color-dark fs-14 fw-500 align-center mb-10">Permission Name <span
+                                          class="text-danger">*</span></label>
+                                    <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
+                                       id="txtPermissionName" placeholder="Type Permission Name ">
                                  </div>
                               </div>
                               <div class="col-lg-3">
                                  <div class="form-group">
                                     <label for="formGroupExampleInput"
-                                       class="color-dark fs-14 fw-500 align-center mb-10">Module Name <span
+                                       class="color-dark fs-14 fw-500 align-center mb-10">Permission Url<span
                                           class="text-danger">*</span></label>
                                     <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                       id="txtModuleName" placeholder="Type Module Name ">
-                                 </div>
-                              </div>
-                              <div class="col-lg-3">
-                                 <div class="form-group">
-                                    <label for="formGroupExampleInput"
-                                       class="color-dark fs-14 fw-500 align-center mb-10">Module Url <span
-                                          class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                       id="txtModuleUrl" placeholder="Type Module Url">
+                                       id="txtPermissionsUrl" placeholder="Type permission Url">
                                  </div>
                               </div>
                               <div class="col-lg-3">
@@ -69,19 +67,9 @@
                                        class="color-dark fs-14 fw-500 align-center mb-10">Physical Location <span
                                           class="text-danger">*</span></label>
                                     <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                       id="txtPhysicalLocation" placeholder="Type PhysicalLocation">
+                                       id="txtPerPhysicalLocation" placeholder="Type PhysicalLocation">
                                  </div>
                               </div>
-                               <div class="col-lg-3">
-                                   <div class="form-group">
-                                       <label for="formGroupExampleInput"
-                                           class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Icon Class <span
-                                               class="text-danger">*</span></label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                           id="txtIconClass" placeholder="Type Icon Class">
-                                   </div>
-                               </div>   
                                <div class="col-lg-3">
                                    <div class="form-group">
                                        <label for="formGroupExampleInput"
@@ -89,7 +77,7 @@
                                             Ordaring <span
                                                class="text-danger">*</span></label>
                                        <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                           id="txtOrdaring" placeholder="Type Ordaring">
+                                           id="txtPerOrdaring" placeholder="Type Ordaring">
                                    </div>
                                </div>
                                <div class="col-lg-3">
@@ -135,7 +123,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 adv-table">
                            <div class="table-responsive">
                               <div class="adv-table-table__header">
-                                 <h4>Module List</h4>
+                                 <h4>Permission List</h4>
                                  <div class="adv-table-table__button">
                                     <div class="dropdown">
                                        <a class="btn btn-primary dropdown-toggle dm-select" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
