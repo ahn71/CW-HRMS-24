@@ -36,7 +36,7 @@ FooTable.MyFiltering = FooTable.Filtering.extend({
 		var self = this;
 		// create the status form group and dropdown
 		var $status_form_grp = $('<div/>', {'class': 'form-group dm-select d-flex align-items-center adv-table-searchs__position my-xl-25 my-15 me-sm-20 me-0 '})
-			.append($('<label/>', {'class': 'd-flex align-items-center mb-sm-0 mb-2', text: 'position'}))
+			.append($('<label/>', {'class': 'd-flex align-items-center mb-sm-0 mb-2', text: 'Module Name'}))
 			.prependTo(self.$form);
 
 		self.$status = $('<select/>', { 'class': 'form-control ms-sm-10 ms-0' })

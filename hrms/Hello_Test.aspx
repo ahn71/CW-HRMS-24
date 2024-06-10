@@ -1,7 +1,15 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="SigmaERP.hrms.WebForm1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Hello_Test.aspx.cs" Inherits="SigmaERP.hrms.Hello_Test" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+   
+</head>
+<body>
+
 
       <div class="contents">
          <div class="container-fluid">
@@ -1869,9 +1877,14 @@
                </div>
             </div>
          </div>
-
+          
       </div>
+    <script>
+        console.log("Hello Test Module");
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="assets/theme_assets/js/main.js"></script>
     <script src="assets/vendor_assets/js/footable.min.js"></script>
     <script src="assets/theme_assets/js/footable.js"></script>
-
-</asp:Content>
+</body>
+</html>

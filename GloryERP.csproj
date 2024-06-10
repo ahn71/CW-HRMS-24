@@ -1189,6 +1189,7 @@
     <Content Include="hrms\assets\vendor_assets\js\trumbowyg.min.js" />
     <Content Include="hrms\assets\vendor_assets\js\wickedpicker.min.js" />
     <Content Include="hrms\dashboard.aspx" />
+    <Content Include="hrms\Hello_Test.aspx" />
     <Content Include="hrms\img\165.png" />
     <Content Include="hrms\img\166.png" />
     <Content Include="hrms\img\287.png" />
@@ -3600,6 +3601,13 @@
       <DependentUpon>dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\Data\CRUD.cs" />
+    <Compile Include="hrms\Hello_Test.aspx.cs">
+      <DependentUpon>Hello_Test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Hello_Test.aspx.designer.cs">
+      <DependentUpon>Hello_Test.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\HRMS.Master.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
