@@ -618,7 +618,11 @@ namespace SigmaERP.classes
                     }
                     if (totalOTTime > TimeSpan.Parse("00:00:00"))
                     {
-                        if (totalOTTime > MinOverTime)
+                    // Secially for Mollah Fashion, Less then 15 mins not countable. 
+                    if(totalOTTime.Minutes<15)
+                        totalOTTime= new TimeSpan(totalOTTime.Hours, 0, 0);
+
+                    if (totalOTTime > MinOverTime)
                         {
                             _attRecord.OverTime = MinOverTime.ToString();// over time 
                             _attRecord.OtherOverTime = (totalOTTime - MinOverTime).ToString();// extra over time
