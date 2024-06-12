@@ -32,13 +32,14 @@
                            <div class="row">
                               <div class="col-lg-3">
                                  <div class="form-group">
+                                     <label id="lblHidenModuleId" style="display:none"></label>
                                      <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Parent</label>
                                      <div class="support-form__input-id">
                                          <div class="dm-select ">
-                                             <select name="ddlParent" class="select-search form-control ">
-                                                 <option value="01">All</option>
-                                                 <option value="02">Option 2</option>
-                                                 <option value="03">Option 3</option>
+                                             <select id="ddlParent" class="select-search form-control ">
+                                                 <option value="1">All</option>
+                                                 <option value="2">Option 2</option>
+                                                 <option value="3">Option 3</option>
                                                  <option value="04">Option 4</option>
                                                  <option value="05">Option 5</option>
                                              </select>
@@ -46,71 +47,62 @@
                                      </div>
                                  </div>
                               </div>
-                              <div class="col-lg-3">
-                                 <div class="form-group">
-                                    <label for="formGroupExampleInput"
-                                       class="color-dark fs-14 fw-500 align-center mb-10">Module Name <span
-                                          class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                       id="txtModuleName" placeholder="Type Module Name ">
-                                 </div>
-                              </div>
-                              <div class="col-lg-3">
-                                 <div class="form-group">
-                                    <label for="formGroupExampleInput"
-                                       class="color-dark fs-14 fw-500 align-center mb-10">Module Url <span
-                                          class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                       id="txtModuleUrl" placeholder="Type Module Url">
-                                 </div>
-                              </div>
-                              <div class="col-lg-3">
-                                 <div class="form-group">
-                                    <label for="formGroupExampleInput"
-                                       class="color-dark fs-14 fw-500 align-center mb-10">Physical Location <span
-                                          class="text-danger">*</span></label>
-                                    <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                       id="txtPhysicalLocation" placeholder="Type PhysicalLocation">
-                                 </div>
-                              </div>
                                <div class="col-lg-3">
                                    <div class="form-group">
-                                       <label for="formGroupExampleInput"
-                                           class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Icon Class <span
-                                               class="text-danger">*</span></label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                           id="txtIconClass" placeholder="Type Icon Class">
-                                   </div>
-                               </div>   
-                               <div class="col-lg-3">
-                                   <div class="form-group">
-                                       <label for="formGroupExampleInput"
-                                           class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Ordaring <span
-                                               class="text-danger">*</span></label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15"
-                                           id="txtOrdaring" placeholder="Type Ordaring">
+                                       <label for="txtModuleName" class="color-dark fs-14 fw-500 align-center mb-10">
+                                           Module Name <span class="text-danger">*</span>
+                                       </label>
+                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtModuleName" placeholder="Type Module Name">
+                                       <span class="text-danger" id="moduleNameError"></span>
                                    </div>
                                </div>
                                <div class="col-lg-3">
-                                   <div class="form-group">        
-                                       <div class="radio-horizontal-list d-flex mt-40">
-
-
-                                           <div class="radio-theme-default custom-radio ">
-                                               <input class="radio " checked  type="radio" name="radio-optional" value="0" id="radio-hl1">
-                                               <label for="radio-hl1">
-                                                   <span class="radio-text">Active</span>
-                                               </label>
+                                   <div class="form-group">
+                                       <label for="txtModuleUrl" class="color-dark fs-14 fw-500 align-center mb-10">
+                                           Module Url <span class="text-danger">*</span>
+                                       </label>
+                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtModuleUrl" placeholder="Type Module Url">
+                                       <span class="text-danger" id="moduleUrlError"></span>
+                                   </div>
+                               </div>
+                              <div class="col-lg-3">
+                                  <div class="form-group">
+                                      <label for="txtPhysicalLocation" class="color-dark fs-14 fw-500 align-center mb-10">
+                                          Physical Location <span class="text-danger">*</span>
+                                      </label>
+                                      <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtPhysicalLocation" placeholder="Type Physical Location">
+                                      <span class="text-danger" id="physicalLocationError"></span>
+                                  </div>
+                              </div>
+                               <div class="col-lg-3">
+                                   <div class="form-group">
+                                       <label for="txtIconClass" class="color-dark fs-14 fw-500 align-center mb-10">
+                                           Icon Class <span class="text-danger">*</span>
+                                       </label>
+                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtIconClass" placeholder="Type Icon Class">
+                                       <span class="text-danger" id="iconClassError"></span>
+                                   </div>
+                               </div>
+                               <div class="col-lg-3">
+                                   <div class="form-group">
+                                       <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
+                                           Ordering <span class="text-danger">*</span>
+                                       </label>
+                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtOrdaring" placeholder="Type Ordering">
+                                       <span class="text-danger" id="orderingError"></span>
+                                   </div>
+                               </div>
+                               <div class="col-lg-3">
+                                   <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                   <div class="form-group d-flex">
+                                       <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                           Status <span class="text-danger"></span>
+                                       </label>
+                                       <div class="radio-horizontal-list d-flex">
+                                           <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                               <input type="checkbox" checked class="form-check-input" id="chkIsActive">
+                                               <label class="form-check-label" for="chkIsActive"></label>
                                            </div>
-                                           <div class="radio-theme-default custom-radio ">
-                                               <input class="radio" type="radio" name="radio-optional" value="1" id="radio-hl2">
-                                               <label for="radio-hl2">
-                                                   <span class="radio-text">Deactive</span>
-                                               </label>
-                                           </div>
-
                                        </div>
                                    </div>
                                </div>
@@ -118,7 +110,7 @@
                                  <label style="opacity: 0;" for="formGroupExampleInput"
                                     class="color-dark fs-14 fw-500 align-center mb-10">Name <span
                                        class="text-danger"></span></label>
-                                 <button type="button"
+                                 <button type="button" id="saveButton" onclick="validateAndPostModule()"
                                     class="btn btn-primary btn-default btn-squared px-30">Save</button>
                               </div>
                            </div>
@@ -193,7 +185,12 @@
    </main>
 <script>
     var rootUrl = 'https://localhost:7220';
+     var GetByIdModuleUrl = rootUrl + '/api/UserModules/modules';
       var GetModuleUrl = rootUrl + '/api/UserModules/modules';
+      var PostModuleUrl = rootUrl + '/api/UserModules/modules/create';
+      var updateModuleUrl = rootUrl + '/api/UserModules/modules/update';
+      var DeleteModuleUrl = rootUrl + '/api/UserModules/modules/delete';
+     
     var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
 
@@ -214,6 +211,165 @@
                 console.error('Error occurred while fetching data:', error);
             });
     }
+
+
+    function validateAndPostModule() {
+        // Clear previous error messages
+
+        // Validate form data
+        var isValid = true;
+          if ($('#txtModuleName').val().trim() === "") {
+        $('#moduleNameError').html("Module Name is required.");
+        $("#txtModuleName").focus();
+        isValid = false;
+    } else {
+        $('#moduleNameError').html("");
+    }
+
+    // Validate Module Url
+    if ($('#txtModuleUrl').val().trim() === "") {
+        $('#moduleUrlError').html("Module Url is required.");
+        $("#txtModuleUrl").focus();
+        isValid = false;
+    } else {
+        $('#moduleUrlError').html("");
+    }
+
+    // Validate Physical Location
+    if ($('#txtPhysicalLocation').val().trim() === "") {
+        $('#physicalLocationError').html("Physical Location is required.");
+        $("#txtPhysicalLocation").focus();
+        isValid = false;
+    } else {
+        $('#physicalLocationError').html("");
+    }
+
+    // Validate Icon Class
+    if ($('#txtIconClass').val().trim() === "") {
+        $('#iconClassError').html("Icon Class is required.");
+        $("#txtIconClass").focus();
+        isValid = false;
+    } else {
+        $('#iconClassError').html("");
+    }
+
+    // Validate Ordering
+    if ($('#txtOrdaring').val().trim() === "" || isNaN($('#txtOrdaring').val())) {
+        $('#orderingError').html("Ordering is required and must be a number.");
+        $("#txtOrdaring").focus();
+        isValid = false;
+    } else {
+        $('#orderingError').html("");
+    }
+
+        if (isValid) {
+
+            if ($('#saveButton').html === 'Save') {
+                PostModule();
+            }
+            else {
+                updateModule();
+            }
+
+            
+        }
+    }
+
+
+
+   function PostModule() {
+    // Capture form data
+    var moduleName = $('#txtModuleName').val();
+    var parentID = parseInt($('#ddlParent').val());
+    var url = $('#txtModuleUrl').val();
+    var physicalLocation = $('#txtPhysicalLocation').val();
+    var iconClass = $('#txtIconClass').val();
+    var ordering = parseInt($('#txtOrdaring').val());
+    var isActive = $('#chkIsActive').is(':checked'); // Changed to boolean
+
+    // Create postData object
+    var postData = {
+        moduleName: moduleName,
+        parentID: parentID,
+        url: url,
+        physicalLocation: physicalLocation,
+        isActive: isActive,
+        ordering: ordering,
+        iconClass: iconClass
+    };
+
+    // Call the API using ApiCallPost function
+    ApiCallPost(PostModuleUrl, token, postData)
+        .then(function(response) {
+            console.log('Data saved successfully:', response);
+            // Handle success response with SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Data saved successfully!'
+            }).then((result) => {
+                // Reload the page if the user clicks "OK"
+                if (result.isConfirmed) {
+                    location.reload();
+                }
+            });
+        })
+        .catch(function(error) {
+            console.error('Error saving data:', error);
+            // Handle error response with SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to save data. Please try again.'
+            });
+        });
+}
+
+    function updateModule() {
+        // Capture form data
+        var moduleId = $('#lblHidenModuleId').val();
+        var moduleName = $('#txtModuleName').val();
+        var parentID = parseInt($('#ddlParent').val());
+        var url = $('#txtModuleUrl').val();
+        var physicalLocation = $('#txtPhysicalLocation').val();
+        var iconClass = $('#txtIconClass').val();
+        var ordering = parseInt($('#txtOrdaring').val());
+        var isActive = $('#chkIsActive').is(':checked');
+
+        // Create updateData object
+        var updateData = {
+            moduleName: moduleName,
+            parentID: parentID,
+            url: url,
+            physicalLocation: physicalLocation,
+            isActive: isActive,
+            ordering: ordering,
+            iconClass: iconClass
+        };
+         //var updateUrl = `${GetByIdModuleUrl}/${moduleId}`; 
+        ApiCallUpdate(updateModuleUrl, token, updateData, moduleId)
+            .then(function (response) {
+                console.log('Data updated successfully:', response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Data updated successfully!'
+                }).then(() => {
+                    location.reload();
+                });
+
+            })
+            .catch(function (error) {
+                console.error('Error updating data:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to update data. Please try again.'
+                });
+            });
+    }
+
+
     function bindTableData(data) {
     var tableBody = $('.adv-table tbody');
     tableBody.empty(); // Clear any existing rows
@@ -237,9 +393,11 @@
 
             <td>
                 <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li><a href="#" class="view"><i class="uil uil-eye"></i></a></li>
-                    <li><a href="#" class="edit"><i class="uil uil-edit"></i></a></li>
-                    <li><a href="#" class="remove"><i class="uil uil-trash-alt"></i></a></li>
+                    <li><a href="javascript:void(0)" class="view"><i class="uil uil-eye"></i></a></li>
+                     <li><a href="#" onclick="FetchDataForEdit('${item.moduleID}');" class="edit"><i class="uil uil-edit"></i></a></li>
+
+
+                    <li><a href="javascript:void(0)"  onclick="DeleteModule('${item.moduleID}');" class="remove"><i class="uil uil-trash-alt"></i></a></li>
                 </ul>
             </td>
         </tr>`;
@@ -258,15 +416,79 @@
         $("#addnew").text(newText);
     }
 
+    function BoxExpland() {
+        var scrollTop = $(window).scrollTop();
+        $("#cardbox").show();
+        $(window).scrollTop(scrollTop);
+    }
 
+  function DeleteModule(moduleID) {
+    // Show confirmation dialog
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you really want to delete this module?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with deletion
+            ApiDeleteById(DeleteModuleUrl, token, moduleID)
+                .then(function (response) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Module deleted successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();
+                    });
+                })
+                .catch(function (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An error occurred while deleting the module.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        }
+    });
+}
+
+ function FetchDataForEdit(moduleID) {
+    ApiCallById(GetByIdModuleUrl, token, moduleID)
+        .then(function (responseData) {
+            // Log the retrieved data
+            console.log('Data:', responseData);
+             var data = responseData.data;
+            $('#lblHidenModuleId').val(data.moduleID);
+            $('#ddlParent').val(data.parentID);
+            $('#txtModuleName').val(data.moduleName);
+            $('#txtModuleUrl').val(data.url);
+            $('#txtPhysicalLocation').val(data.physicalLocation);
+            $('#txtIconClass').val(data.iconClass);
+            $('#txtOrdaring').val(data.ordering);
+            $('#chkIsActive').prop('checked', data.isActive);
+            $('#saveButton').html('Update');
+
+            BoxExpland()
+        })
+        .catch(function (error) {
+            console.error('Error:', error);
+        });
+
+    }
 
 
     $(document).ready(function () {
         GetModule();
-
     });
 
 
+ 
     function ApiCall(url, token) {
         return new Promise(function (resolve, reject) {
             $.ajax({
@@ -287,7 +509,92 @@
             });
         });
     }
+    function ApiCallPost(url, token, postData) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'POST',  // Changed type to 'POST'
+            dataType: 'json',
+            contentType: 'application/json',  // Added contentType for JSON
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: JSON.stringify(postData),  // Added data for POST request
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while fetching data:', status, error);
+                reject(error);
+            }
+        });
+    });
+    }
 
+    function ApiCallById(url, token, id) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: url + '/' + id, 
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                data: {
+                    moduleID: id,
+                },
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error occurred while fetching data:', status, error);
+                    reject(error);
+                }
+            });
+        });
+    }
+
+
+    function ApiCallUpdate(url, token, updateData, id) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url + '/' + id,
+            type: 'PUT', 
+            dataType: 'json',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: JSON.stringify(updateData),
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while updating data:', status, error);
+                reject(error);
+            }
+        });
+    });
+}
+    function ApiDeleteById(url, token, id) {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: url + '/' + id,
+                type: 'DELETE',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error occurred while deleting data:', status, error);
+                    reject(error);
+                }
+            });
+        });
+    }
 
 </script>
    

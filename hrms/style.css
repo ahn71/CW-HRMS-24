@@ -36133,3 +36133,6 @@ body:after {
         height: 300px;
     }
 }
+.form-check {
+    cursor:pointer;
+}
