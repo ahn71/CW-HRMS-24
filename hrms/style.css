@@ -36136,3 +36136,30 @@ body:after {
 .form-check {
     cursor:pointer;
 }
+.footable-loader {
+    display: none;
+    text-align: center;
+    margin: 20px 0;
+}
+/*.orderDatatable_actions {
+     min-width: 0px !important;
+    max-width: 100%;
+    justify-content: flex-end;
+}*/
+.footable-details.table th, .footable.table th {
+    text-align: center !important;
+}
+#filter-form-container .form-inline {
+    display: flex;
+    justify-content: end !important;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+#filter-form-container .footable-filtering-search {
+     margin: 5px 0 !important; 
+}
+
+.main-content {
+     margin-top: 0px !important;
+}

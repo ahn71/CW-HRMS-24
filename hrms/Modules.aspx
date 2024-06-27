@@ -20,8 +20,7 @@
                      <div class="btn-wrapper">
                         <div class="dm-button-list d-flex flex-wrap align-items-end">
 
-                           <button type="button" id="addnew" onclick="cardbox();" class="btn btn-secondary btn-default btn-squared">Add New
-                           </button>
+                           <button type="button" id="addnew" onclick="cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
                         </div>
                      </div>
                   </div>
@@ -110,7 +109,7 @@
                                  <label style="opacity: 0;" for="formGroupExampleInput"
                                     class="color-dark fs-14 fw-500 align-center mb-10">Name <span
                                        class="text-danger"></span></label>
-                                 <button type="button" id="saveButton" onclick="validateAndPostModule()"
+                                 <button type="button" id="btnSave" onclick="validateAndPostModule()"
                                     class="btn btn-primary btn-default btn-squared px-30">Save</button>
                               </div>
                            </div>
@@ -121,56 +120,25 @@
             </div>
                <!-- Department List  -->
                         <div class="row">
-               <div class="col-lg-12 mb-30">
-                  <div class="card mt-30">
+               <div class="col-lg-12">
+                  <div class="card ">
                      <div class="card-body">
+
+                         <table class="johirultable" data-paging="true"></table>
 
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
-                              <div class="adv-table-table__header">
-                                 <h4>Module List</h4>
+                              <div class="ad-table-table__header d-flex justify-content-between">
+                                  <h4 style="margin-top: 13px;">Module List</h4>
+                              <div id="filter-form-container">
+
+                            
 
                               </div>
-                              <div id="filter-form-container"></div>
-                              <table class="table mb-0 table-borderless adv-table" data-sorting="true" data-filter-container="#filter-form-container" data-paging-current="1" data-paging-position="right" data-paging-size="10">
-                                 <thead>
-                                    <tr class="userDatatable-header">
-                                       <th>
-                                          <span class="userDatatable-title">ID</span>
-                                       </th>
-                                       <th>
-                                          <span class="userDatatable-title">Parent</span>
-                                       </th>
-                                       <th>
-                                          <span class="userDatatable-title">Module Name</span>
-                                       </th>
-                                       <th>
-                                          <span class="userDatatable-title">Module Url</span>
-                                       </th>
-                                       <th data-type="html" data-name='position'>
-                                          <span class="userDatatable-title">Physical Location</span>
-                                       </th>
-                                       <th>
-                                          <span class="userDatatable-title">Icon Class</span>
-                                       </th>
-                                        <th>
-                                            <span class="userDatatable-title">Ordaring
-                                            </span>
-                                        </th>
-                                       <th data-type="html" data-name='status'>
-                                          <span class="userDatatable-title">status</span>
-                                       </th>
-                                       <th>
-                                          <span class="userDatatable-title float-end">action</span>
-                                       </th>
-                                    </tr>
-                                 </thead>
-                                 <tbody>
+                              </div>
 
-                                     <!---Data Bind From Api---->
-
-                                 </tbody>
-                              </table>
+                               <table class="table mb-0 table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                               </table>
                            </div>
                         </div>
 
@@ -183,10 +151,11 @@
 
 
    </main>
-
     <script>
 
-      var rootUrl = 'https://localhost:7220';
+
+
+var rootUrl = 'http://localhost:5081';
       var GetByIdModuleUrl = rootUrl + '/api/UserModules/modules';
       var GetModuleUrl = rootUrl + '/api/UserModules/modules';
       var PostModuleUrl = rootUrl + '/api/UserModules/modules/create';
@@ -194,15 +163,12 @@
       var DeleteModuleUrl = rootUrl + '/api/UserModules/modules/delete';
 
     var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
-
-
-
     function GetModule() {
         ApiCall(GetModuleUrl, token)
             .then(function (response) {
                 if (response.statusCode === 200) {
-                    var responseData = response.data;
-                    console.log(responseData);
+                    var responseData = response.data; 
+                      $('.footable-loader').show();
                     bindTableData(responseData);
                 } else {
                     console.error('Error occurred while fetching data:', response.message);
@@ -216,19 +182,14 @@
 
 
     function validateAndPostModule() {
-        // Clear previous error messages
-
-        // Validate form data
-        var isValid = true;
-          if ($('#txtModuleName').val().trim() === "") {
-        $('#moduleNameError').html("Module Name is required.");
+    var isValid = true;
+    if ($('#txtModuleName').val().trim() === "") {
+    $('#moduleNameError').html("Module Name is required.");
     $("#txtModuleName").focus();
         isValid = false;
     } else {
         $('#moduleNameError').html("");
     }
-
-    // Validate Module Url
     if ($('#txtModuleUrl').val().trim() === "") {
         $('#moduleUrlError').html("Module Url is required.");
     $("#txtModuleUrl").focus();
@@ -236,8 +197,6 @@
     } else {
         $('#moduleUrlError').html("");
     }
-
-    // Validate Physical Location
     if ($('#txtPhysicalLocation').val().trim() === "") {
         $('#physicalLocationError').html("Physical Location is required.");
     $("#txtPhysicalLocation").focus();
@@ -245,8 +204,6 @@
     } else {
         $('#physicalLocationError').html("");
     }
-
-    // Validate Icon Class
     if ($('#txtIconClass').val().trim() === "") {
         $('#iconClassError').html("Icon Class is required.");
     $("#txtIconClass").focus();
@@ -254,8 +211,6 @@
     } else {
         $('#iconClassError').html("");
     }
-
-    // Validate Ordering
     if ($('#txtOrdaring').val().trim() === "" || isNaN($('#txtOrdaring').val())) {
         $('#orderingError').html("Ordering is required and must be a number.");
     $("#txtOrdaring").focus();
@@ -263,17 +218,16 @@
     } else {
         $('#orderingError').html("");
     }
-
-        if (isValid) {
-
-            if ($('#saveButton').html === 'Save') {
-        PostModule();
-    }
-            else {
-        updateModule();
-    }
-
-
+     if (isValid) {
+         var addnewElement = $("#btnSave");
+         if (addnewElement.html() === "Save") {
+                PostModule();
+                ClearTextBox();
+         }
+         else {
+          updateModule();
+          ClearTextBox();
+          }
         }
     }
 
@@ -312,7 +266,7 @@
             }).then((result) => {
                 // Reload the page if the user clicks "OK"
                 if (result.isConfirmed) {
-        location.reload();
+                    GetModule();
     }
             });
         })
@@ -356,8 +310,8 @@
         icon: 'success',
                     title: 'Success',
                     text: 'Data updated successfully!'
-                }).then(() => {
-        location.reload();
+    }).then(() => {
+        GetModule();
     });
 
             })
@@ -370,57 +324,168 @@
                 });
             });
     }
-
-
     function bindTableData(data) {
-    var tableBody = $('.adv-table tbody');
-    tableBody.empty(); // Clear any existing rows
+    // Clear existing footable instance if it exists
+    $('.adv-table').trigger('footable_initialize').footable('destroy');
 
-        data.forEach(function (item) {
-         var switchButton = `
+    console.log("This data from bind Table test:", data);
+
+    // Add action buttons with Font Awesome icons to each row in the data
+    data.forEach(row => {
+        row.actions = `
+            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                <li><a href="javascript:void(0)" class="view"><i class="uil uil-eye"></i></a></li>
+                <li><a href="#" data-id="${row.moduleID}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>  
+                <li><a href="javascript:void(0)" data-id="${row.moduleID}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+            </ul>
+        `;
+
+        // Add checkbox for isActive
+        row.isActive = `
             <div class="form-check form-switch form-switch-primary form-switch-sm">
-        <input type="checkbox" class="form-check-input" id="switch-${item.moduleID}" ${item.isActive ? 'checked' : ''}>
-            <label class="form-check-label" for="switch-${item.moduleID}"></label>
-            </div>`;
+                <input type="checkbox" class="form-check-input" id="switch-${row.moduleID}" ${row.isActive ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.moduleID}"></label>
+            </div>
+        `;
+    });
 
-        var row = `<tr>
-            <td><div class="userDatatable-content">${item.moduleID}</div></td>
-            <td><div class="userDatatable-content">${item.parentID}</div></td>
-            <td><div class="userDatatable-content">${item.moduleName}</div></td>
-            <td><div class="userDatatable-content">${item.url}</div></td>
-            <td><div class="userDatatable-content">${item.physicalLocation}</div></td>
-            <td><div class="userDatatable-content">${item.iconClass}</div></td>
-            <td><div class="userDatatable-content">${item.ordering}</div></td>
-            <td><div class="userDatatable-content">${switchButton}</div></td>
+    const columns = [
+        { "name": "moduleID", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+        { "name": "moduleName", "title": "Module Name", "className": "userDatatable-content" },
+        { "name": "parentID", "title": "Parent ID", "type": "number", "className": "userDatatable-content" },
+        { "name": "url", "title": "URL", "className": "userDatatable-content" },
+        { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
+        { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+        { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
+        { "name": "iconClass", "title": "Icon Class", "className": "userDatatable-content" },
+        { "name": "actions", "title": "Actions", "sortable": false, "filterable": false, "className": "userDatatable-content" }
+    ];
 
-            <td>
-                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li><a href="javascript:void(0)" class="view"><i class="uil uil-eye"></i></a></li>
-                    <li><a href="#" onclick="FetchDataForEdit('${item.moduleID}');" class="edit"><i class="uil uil-edit"></i></a></li>
+    try {
+        $('.adv-table').footable({
+            "columns": columns,
+            "rows": data,
+            "filtering": {
+                "enabled": true,
+                "placeholder": "Search...",
+                "dropdownTitle": "Search in:",
+                "position": "left",
+                "containers": "#filter-form-container",
+                "space": true
+            }
+        }).on('postinit.ft.table', function(e) {
+            $('.footable-loader').hide();
+        });
+    } catch (error) {
+        console.error("Error initializing Footable:", error);
+    }
 
+    $('.adv-table').on('click', '.edit-btn', function() {
+        const id = $(this).data('id');
+        FetchDataForEdit(id);
+        console.log('Edit button clicked for ID:', id);
+    });
 
-                    <li><a href="javascript:void(0)" onclick="DeleteModule('${item.moduleID}');" class="remove"><i class="uil uil-trash-alt"></i></a></li>
-                </ul>
-            </td>
-        </tr>`;
+    $('.adv-table').on('click', '.delete-btn', function() {
+        const id = $(this).data('id');
+        DeleteModule(id);
+        console.log('Delete button clicked for ID:', id);
+    });
 
-        tableBody.append(row);
+    $('.adv-table').on('click', '.view-btn', function() {
+        const id = $(this).data('id');
+        // Handle the view action
+        console.log('View button clicked for ID:', id);
     });
 }
 
 
 
 
-    function cardbox() {
-            $("#cardbox").toggle();
-        var currentText = $("#addnew").text();
-        var newText = currentText === "Close" ? "Add New" : "Close";
-        $("#addnew").text(newText);
+
+
+    //    function bindTableData(data) {
+    //        console.log("this data from bind Table test");
+    //        var tableBody = $('.adv-table tbody');
+    //        tableBody.empty(); // Clear any existing rows
+
+	   //     //$('.table').footable({
+		  //     // //"columns": $.get('columns.json'),
+		  //     // "rows": data
+	   //     //});
+
+    //    data.forEach(function (item) {
+    //     var switchButton = `
+    //        <div class="form-check form-switch form-switch-primary form-switch-sm">
+    //    <input type="checkbox" class="form-check-input" id="switch-${item.moduleID}" ${item.isActive ? 'checked' : ''}>
+    //        <label class="form-check-label" for="switch-${item.moduleID}"></label>
+    //        </div>`;
+
+        //var row = `<tr>
+        //    <td><div class="userDatatable-content">${item.moduleID}</div></td>
+        //    <td><div class="userDatatable-content">${item.parentID}</div></td>
+        //    <td><div class="userDatatable-content">${item.moduleName}</div></td>
+        //    <td><div class="userDatatable-content">${item.url}</div></td>
+        //    <td><div class="userDatatable-content">${item.physicalLocation}</div></td>
+        //    <td><div class="userDatatable-content">${item.iconClass}</div></td>
+        //    <td><div class="userDatatable-content">${item.ordering}</div></td>
+        //    <td><div class="userDatatable-content">${switchButton}</div></td>
+
+        //    <td>
+        //        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+        //            <li><a href="javascript:void(0)" class="view"><i class="uil uil-eye"></i></a></li>
+        //            <li><a href="#" onclick="FetchDataForEdit('${item.moduleID}');" class="edit"><i class="uil uil-edit"></i></a></li>
+        //            <li><a href="javascript:void(0)" onclick="DeleteModule('${item.moduleID}');" class="remove"><i class="uil uil-trash-alt"></i></a></li>
+        //        </ul>
+        //    </td>
+        //</tr>`;
+
+    //        tableBody.append(row);
+    //        tableBody.trigger('footable_initialize');
+    //});
+    //    };
+
+function ClearTextBox() {
+    $('#txtModuleName').val("");
+    $('#ddlParent').val("");
+    $('#txtModuleUrl').val("");
+    $('#txtPhysicalLocation').val("");
+    $('#txtIconClass').val("");
+    $('#txtOrdaring').val("");
+    $('#chkIsActive').prop('checked', false);
+    $('#btnSave').text("Save");
+}
+
+
+function cardbox() {
+    var cardboxElement = $("#cardbox");
+    var addnewElement = $("#addnew");
+
+    if (addnewElement.html() === "Add New") {
+        cardboxElement.show();
+        addnewElement.text("Close");
+    } else {
+        ClearTextBox();
+        cardboxElement.hide();
+        addnewElement.html("Add New");
+     
     }
+
+    //if (cardboxElement.is(":visible")) {
+    //    cardboxElement.hide();
+    //    addnewElement.text("Add New");
+    //} else {
+    //    cardboxElement.show();
+    //    
+    //}
+}
+
 
     function BoxExpland() {
         var scrollTop = $(window).scrollTop();
+
         $("#cardbox").show();
+        $("#addnew").text("Close");
         $(window).scrollTop(scrollTop);
     }
 
@@ -445,7 +510,7 @@
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                location.reload();
+                                GetModule();
                             });
                         })
                         .catch(function (error) {
@@ -474,9 +539,9 @@
                     $('#txtIconClass').val(data.iconClass);
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
-                    $('#saveButton').html('Update');
+                    $('#btnSave').html('Update');
 
-                    BoxExpland()
+                    BoxExpland() 
                 })
                 .catch(function (error) {
                     console.error('Error:', error);
@@ -485,10 +550,13 @@
         }
 
         $(document).ready(function () {
+           
             GetModule();
         });
 
+
     </script>
+    
     <script src="assets/theme_assets/js/module.js"></script>
     <script src="assets/theme_assets/js/apiHelper.js"></script>
 </asp:Content>
