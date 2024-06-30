@@ -19,15 +19,13 @@
 
                      <div class="btn-wrapper">
                         <div class="dm-button-list d-flex flex-wrap align-items-end">
-
-                           <button type="button" id="addnew" onclick="cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
+                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                           </button>
                         </div>
                      </div>
                   </div>
 
-                  <div style="display: none;" id="cardbox" class="card-body pb-md-30">
+                  <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                      <div class="Vertical-form">
-  
                            <div class="row">
                               <div class="col-lg-3">
                                  <div class="form-group">
@@ -149,8 +147,34 @@
 
 
    </main>
+    <script>
+        function BoxExpland() {
+            var scrollTop = $(window).scrollTop();
 
-    
+            $("#Cardbox").show();
+            $("#addnew").text("Close");
+            $(window).scrollTop(scrollTop);
+        }
+
+            function Cardbox() {
+    var CardboxElement = $("#Cardbox");
+    var addnewElement = $("#addnew");
+
+    if (addnewElement.html() === "Add New") {
+        CardboxElement.show();
+        addnewElement.text("Close");
+    } else {
+        ClearTextBox(); 
+        CardboxElement.hide();
+        addnewElement.html("Add New");
+
+    }
+        }
+
+
+    </script>
+
+
     <script src="assets/theme_assets/js/module.js"></script>
     <script src="assets/theme_assets/js/apiHelper.js"></script>
 </asp:Content>

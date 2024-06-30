@@ -33,12 +33,8 @@
                                           class="text-danger">*</span></label>
                                        <div class="support-form__input-id">
                                            <div class="dm-select ">
-                                               <select name="ddlModule" class="select-search form-control ">
-                                                   <option value="0">---Select---</option> 
-                                                   <option value="61">Salary</option>
-                                                   <option value="03">Attendance</option>
-                                                   <option value="04">Employee</option>
-                                                   <option value="05">Provident Found</option>
+                                               <select name="ddlModule" id="ddlModule" class="select-search form-control">
+                                                   <option value="0">---Select---</option>
                                                </select>
                                            </div>
                                        </div>
@@ -185,8 +181,19 @@
             console.log('test Data For Ddl' +data);
         }
 
+        function populateDropdown(data) {
+            const dropdown = document.getElementById('ddlModule');
+            dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
 
-        function BindTableData(data) {
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.moduleID;
+                console.log('test module name'+item.moduleName);
+                option.textContent = item.moduleName;
+                dropdown.appendChild(option);
+            });
+        }
+                function BindTableData(data) {
             if ($('.adv-table').data('footable')) {
                 $('.adv-table').data('footable').destroy();
             }
@@ -196,25 +203,25 @@
 
             data.forEach(row => {
                 row.actions = `
-            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.permissionId}"><i class="uil uil-eye"></i></a></li>
-                <li><a href="javascript:void(0)" data-id="${row.permissionId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>  
-                <li><a href="javascript:void(0)" data-id="${row.permissionId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-            </ul>
-        `;
+                    <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                        <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.permissionId}"><i class="uil uil-eye"></i></a></li>
+                        <li><a href="javascript:void(0)" data-id="${row.permissionId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                        <li><a href="javascript:void(0)" data-id="${row.permissionId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+                    </ul>
+                `;
 
                 row.isActive = `
-            <div class="form-check form-switch form-switch-primary form-switch-sm">
-                <input type="checkbox" class="form-check-input" id="switch-${row.permissionId}" ${row.isActive ? 'checked' : ''}>
-                <label class="form-check-label" for="switch-${row.permissionId}"></label>
-            </div>
-        `;
+                    <div class="form-check form-switch form-switch-primary form-switch-sm">
+                        <input type="checkbox" class="form-check-input" id="switch-${row.permissionId}" ${row.isActive ? 'checked' : ''}>
+                        <label class="form-check-label" for="switch-${row.permissionId}"></label>
+                    </div>
+                `;
             });
 
             const columns = [
                 { "name": "permissionId", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
                 { "name": "permissionName", "title": "Name", "className": "userDatatable-content" },
-                { "name": "moduleID", "title": "Module ID", "type": "number", "className": "userDatatable-content" },
+                { "name": "moduleName", "title": "ModuleName", "className": "userDatatable-content" },
                 { "name": "url", "title": "URL", "className": "userDatatable-content" },
                 { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
                 { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },     
@@ -259,6 +266,9 @@
                 // Handle the view action
                 console.log('View button clicked for ID:', id);
             });
+
+            // Populate the dropdown with data
+            populateDropdown(data);
         }
         function ValidateAndPostModule() {
             var isValid = true;
@@ -388,7 +398,6 @@
                     $('#txtPerOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');
-
                     BoxExpland()
                 })
                 .catch(function (error) {
@@ -471,6 +480,7 @@
                 }
             });
         }
+
         function BoxExpland() {
             var scrollTop = $(window).scrollTop();
 

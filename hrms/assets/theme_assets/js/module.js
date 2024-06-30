@@ -302,29 +302,15 @@ function ClearTextBox() {
 }
 
 
-function Cardbox() {
-    var CardboxElement = $("#Cardbox");
-    var addnewElement = $("#addnew");
-
-    if (addnewElement.html() === "Add New") {
-        CardboxElement.show();
-        addnewElement.text("Close");
-    } else {
-        ClearTextBox();
-        CardboxElement.hide();
-        addnewElement.html("Add New");
-
-    }
-}
 
 
-function BoxExpland() {
-    var scrollTop = $(window).scrollTop();
+//function BoxExpland() {
+//    var scrollTop = $(window).scrollTop();
 
-    $("#Cardbox").show();
-    $("#addnew").text("Close");
-    $(window).scrollTop(scrollTop);
-}
+//    $("#Cardbox").show();
+//    $("#addnew").text("Close");
+//    $(window).scrollTop(scrollTop);
+//}
 
 function DeleteModule(moduleID) {
     // Show confirmation dialog
@@ -379,6 +365,7 @@ function FetchDataForEdit(moduleID) {
             $('#btnSave').html('Update');
 
             BoxExpland()
+            //Cardbox()
         })
         .catch(function (error) {
             console.error('Error:', error);
