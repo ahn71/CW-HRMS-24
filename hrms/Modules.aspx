@@ -2,8 +2,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">   
-
-
   <main class="main-content">
       <div class="Dashbord">
          <div class="crm mb-25">
@@ -33,12 +31,8 @@
                                      <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Parent</label>
                                      <div class="support-form__input-id">
                                          <div class="dm-select ">
-                                             <select id="ddlParent" class="select-search form-control ">
-                                                 <option value="0">---select---</option>
-                                                 <option value="2">Salary</option>
-                                                 <option value="3">Attendance</option>
-                                                 <option value="04">Parsonnel</option>
-                                                 <option value="05">OT</option>
+                                             <select name="ddlParent" id="ddlParent" class="select-search form-control">
+                                                 <option value="0">---Select---</option>
                                              </select>
                                          </div>
                                      </div>

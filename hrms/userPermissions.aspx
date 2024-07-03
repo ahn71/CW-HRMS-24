@@ -17,7 +17,7 @@
                      <div class="btn-wrapper">
                         <div class="dm-button-list d-flex flex-wrap align-items-end">
 
-                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                           </button>
+                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>  
                         </div>
                      </div>
                   </div>
@@ -111,7 +111,7 @@
                <!-- Department List  -->
                         <div class="row">
                <div class="col-lg-12 mb-30">
-                  <div class="card mt-30">
+                  <div class="card">
                      <div class="card-body">
 
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
@@ -152,6 +152,7 @@
 
         var rootUrl = 'http://localhost:5081';
         var GetByIdPermissionUrl = rootUrl + '/api/UserPermissions/permissions';
+        var GetModuleForDdlUrl = rootUrl + '/api/UserModules/modules';
         var GetPermissioneUrl = rootUrl + '/api/UserPermissions/permissions';
         var PostPermissionUrl = rootUrl + '/api/UserPermissions/permissions/create';
         var updatePermissioneUrl = rootUrl + '/api/UserPermissions/permissions/update';
@@ -159,13 +160,12 @@
 
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
-        function GetModule() {
+        function GetPermission() {
             ApiCall(GetPermissioneUrl, token)
                 .then(function (response) {
                     if (response.statusCode === 200) {
                         var responseData = response.data;
                         $('.footable-loader').show();
-                        DataGetForDdlModule(responseData);
                         BindTableData(responseData);
                     } else {
                         console.error('Error occurred while fetching data:', response.message);
@@ -177,8 +177,19 @@
                 });
         }
 
-        function DataGetForDdlModule(data) {
-            console.log('test Data For Ddl' +data);
+        function GetModule() {
+            ApiCall(GetModuleForDdlUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        populateDropdown(responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error occurred while fetching data:', error);
+                });
         }
 
         function populateDropdown(data) {
@@ -187,89 +198,92 @@
 
             data.forEach(item => {
                 const option = document.createElement('option');
-                option.value = item.moduleID;
-                console.log('test module name'+item.moduleName);
+                option.value = item.moduleId;
                 option.textContent = item.moduleName;
                 dropdown.appendChild(option);
             });
         }
-                function BindTableData(data) {
-            if ($('.adv-table').data('footable')) {
-                $('.adv-table').data('footable').destroy();
-            }
+        function BindTableData(data) {
+    if ($('.adv-table').data('footable')) {
+        $('.adv-table').data('footable').destroy();
+    }
 
-            $('.adv-table').html('');
-            $('#filter-form-container').empty();
+    $('.adv-table').html('');
+    $('#filter-form-container').empty();
 
-            data.forEach(row => {
-                row.actions = `
+    data.forEach(row => {
+        row.permissionName = `
+            <div class="permission-name-container">
+                ${row.permissionName}
+                <div class="actions-container">
                     <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
                         <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.permissionId}"><i class="uil uil-eye"></i></a></li>
                         <li><a href="javascript:void(0)" data-id="${row.permissionId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
                         <li><a href="javascript:void(0)" data-id="${row.permissionId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
                     </ul>
-                `;
+                </div>
+            </div>
+        `;
 
-                row.isActive = `
-                    <div class="form-check form-switch form-switch-primary form-switch-sm">
-                        <input type="checkbox" class="form-check-input" id="switch-${row.permissionId}" ${row.isActive ? 'checked' : ''}>
-                        <label class="form-check-label" for="switch-${row.permissionId}"></label>
-                    </div>
-                `;
-            });
+        row.isActive = `
+            <div class="form-check form-switch form-switch-primary form-switch-sm">
+                <input type="checkbox" class="form-check-input" id="switch-${row.permissionId}" ${row.isActive ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.permissionId}"></label>
+            </div>
+        `;
+    });
 
-            const columns = [
-                { "name": "permissionId", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-                { "name": "permissionName", "title": "Name", "className": "userDatatable-content" },
-                { "name": "moduleName", "title": "ModuleName", "className": "userDatatable-content" },
-                { "name": "url", "title": "URL", "className": "userDatatable-content" },
-                { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
-                { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },     
-                { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-                { "name": "actions", "title": "Actions", "sortable": false, "filterable": false, "className": "userDatatable-content" }
-            ];
+    const columns = [
+        { "name": "permissionId", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+        { "name": "permissionName", "title": "Name", "className": "userDatatable-content custom-td-width" },
+        { "name": "moduleName", "title": "ModuleName", "className": "userDatatable-content" },
+        { "name": "url", "title": "URL", "className": "userDatatable-content" },
+        { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
+        { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },     
+        { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" }
+    ];
 
-            try {
-                $('.adv-table').footable({
-                    "columns": columns,
-                    "rows": data,
-                    "filtering": {
-                        "enabled": true,
-                        "placeholder": "Search...",
-                        "dropdownTitle": "Search in:",
-                        "position": "left",
-                        "containers": "#filter-form-container",
-                        "space": true
-                    }
-                }).on('postinit.ft.table', function (e) {
-                    $('.footable-loader').hide();
-                });
-            } catch (error) {
-                console.error("Error initializing Footable:", error);
+    try {
+        $('.adv-table').footable({
+            "columns": columns,
+            "rows": data,
+            "filtering": {
+                "enabled": true,
+                "placeholder": "Search...",
+                "dropdownTitle": "Search in:",
+                "position": "left",
+                "containers": "#filter-form-container",
+                "space": true
             }
+        }).on('postinit.ft.table', function (e) {
+            $('.footable-loader').hide();
+        });
+    } catch (error) {
+        console.error("Error initializing Footable:", error);
+    }
 
-            // Clear and re-attach event listeners
-            $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
-                const id = $(this).data('id');
-                FetchDataForEdit(id);
-                console.log('Edit button clicked for ID:', id);
-            });
+    // Clear and re-attach event listeners
+    $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+        const id = $(this).data('id');
+        FetchDataForEdit(id);
+        console.log('Edit button clicked for ID:', id);
+    });
 
-            $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                const id = $(this).data('id');
-                Delete(id);
-                console.log('Delete button clicked for ID:', id);
-            });
+    $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+        const id = $(this).data('id');
+        Delete(id);
+        console.log('Delete button clicked for ID:', id);
+    });
 
-            $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-                const id = $(this).data('id');
-                // Handle the view action
-                console.log('View button clicked for ID:', id);
-            });
+    $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+        const id = $(this).data('id');
+        // Handle the view action
+        console.log('View button clicked for ID:', id);
+    });
 
-            // Populate the dropdown with data
-            populateDropdown(data);
-        }
+    // Populate the dropdown with data
+}
+
         function ValidateAndPostModule() {
             var isValid = true;
             if ($('#txtPermissionName').val().trim() === "") {
@@ -369,7 +383,7 @@
                     }).then((result) => {
                         // Reload the page if the user clicks "OK"
                         if (result.isConfirmed) {
-                            GetModule();
+                            GetPermission();
                         }
                     });
                 })
@@ -390,7 +404,7 @@
                     // Log the retrieved data
                     console.log('Data:', responseData);
                     var data = responseData.data;
-                    $('#lblHidenPermissionId').val(data.permissionId);
+                    $('#lblHidenPermissionId').val(data.userPermId);
                     $('#txtPermissionName').val(data.permissionName);
                     $('select[name="ddlModule"]').val(data.moduleID).change();     
                     $('#txtPermissionsUrl').val(data.url);
@@ -434,7 +448,7 @@
                         title: 'Success',
                         text: 'Data updated successfully!'
                     }).then(() => {
-                        GetModule();
+                        GetPermission();
                     });
 
                 })
@@ -466,7 +480,7 @@
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                GetModule();
+                                GetPermission();
                             });
                         })
                         .catch(function (error) {
@@ -491,7 +505,8 @@
 
         $(document).ready(function () {
 
-            GetModule();
+            GetPermission();
+            GetModule()
         });
 
     </script>

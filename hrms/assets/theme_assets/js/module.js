@@ -12,6 +12,7 @@ function GetModule() {
             if (response.statusCode === 200) {
                 var responseData = response.data;
                 $('.footable-loader').show();
+                populateDropdown(responseData)
                 bindTableData(responseData);
             } else {
                 console.error('Error occurred while fetching data:', response.message);
@@ -74,7 +75,17 @@ function validateAndPostModule() {
     }
 }
 
+function populateDropdown(data) {
+    const dropdown = document.getElementById('ddlParent');
+    dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
 
+    data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.moduleId;
+        option.textContent = item.moduleName;
+        dropdown.appendChild(option);
+    });
+}
 
 function PostModule() {
     // Capture form data
@@ -126,7 +137,7 @@ function PostModule() {
 
 function updateModule() {
     // Capture form data
-    var moduleId = $('#lblHidenModuleId').val();
+    var moduleID = $('#lblHidenModuleId').val();
     var moduleName = $('#txtModuleName').val();
     var parentID = parseInt($('#ddlParent').val());
     var url = $('#txtModuleUrl').val();
@@ -146,7 +157,7 @@ function updateModule() {
         iconClass: iconClass
     };
     //var updateUrl = `${GetByIdModuleUrl}/${moduleId}`;
-    ApiCallUpdate(updateModuleUrl, token, updateData, moduleId)
+    ApiCallUpdate(updateModuleUrl, token, updateData, moduleID)
         .then(function (response) {
             console.log('Data updated successfully:', response);
             Swal.fire({
@@ -175,32 +186,36 @@ function bindTableData(data) {
     $('#filter-form-container').empty();
 
     data.forEach(row => {
-        row.actions = `
-            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                <li><a href="javascript:void(0)" class="view-btn view"><i class="uil uil-eye"></i></a></li>
-                <li><a href="javascript:void(0)" data-id="${row.moduleID}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>  
-                <li><a href="javascript:void(0)" data-id="${row.moduleID}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-            </ul>
+        row.moduleName = `
+            <div class="permission-name-container">
+                ${row.moduleName}
+                <div class="actions-container">
+                    <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                        <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.moduleId}"><i class="uil uil-eye"></i></a></li>
+                        <li><a href="javascript:void(0)" data-id="${row.moduleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                        <li><a href="javascript:void(0)" data-id="${row.moduleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+                    </ul>
+                </div>
+            </div>
         `;
 
         row.isActive = `
             <div class="form-check form-switch form-switch-primary form-switch-sm">
-                <input type="checkbox" class="form-check-input" id="switch-${row.moduleID}" ${row.isActive ? 'checked' : ''}>
-                <label class="form-check-label" for="switch-${row.moduleID}"></label>
+                <input type="checkbox" class="form-check-input" id="switch-${row.moduleId}" ${row.isActive ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.moduleId}"></label>
             </div>
         `;
     });
 
     const columns = [
-        { "name": "moduleID", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+        { "name": "moduleId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
         { "name": "moduleName", "title": "Module Name", "className": "userDatatable-content" },
-        { "name": "parentID", "title": "Parent ID", "type": "number", "className": "userDatatable-content" },
+        { "name": "parentName", "title": "Parent Name", "className": "userDatatable-content" },
         { "name": "url", "title": "URL", "className": "userDatatable-content" },
         { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
         { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
         { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
-        { "name": "iconClass", "title": "Icon Class", "className": "userDatatable-content" },
-        { "name": "actions", "title": "Actions", "sortable": false, "filterable": false, "className": "userDatatable-content" }
+        { "name": "iconClass", "title": "Icon Class", "className": "userDatatable-content" }
     ];
 
     try {
@@ -249,6 +264,7 @@ function bindTableData(data) {
 
 
 
+
 //    function bindTableData(data) {
 //        console.log("this data from bind Table test");
 //        var tableBody = $('.adv-table tbody');
@@ -262,12 +278,12 @@ function bindTableData(data) {
 //    data.forEach(function (item) {
 //     var switchButton = `
 //        <div class="form-check form-switch form-switch-primary form-switch-sm">
-//    <input type="checkbox" class="form-check-input" id="switch-${item.moduleID}" ${item.isActive ? 'checked' : ''}>
-//        <label class="form-check-label" for="switch-${item.moduleID}"></label>
+//    <input type="checkbox" class="form-check-input" id="switch-${item.moduleId}" ${item.isActive ? 'checked' : ''}>
+//        <label class="form-check-label" for="switch-${item.moduleId}"></label>
 //        </div>`;
 
 //var row = `<tr>
-//    <td><div class="userDatatable-content">${item.moduleID}</div></td>
+//    <td><div class="userDatatable-content">${item.moduleId}</div></td>
 //    <td><div class="userDatatable-content">${item.parentID}</div></td>
 //    <td><div class="userDatatable-content">${item.moduleName}</div></td>
 //    <td><div class="userDatatable-content">${item.url}</div></td>
@@ -279,8 +295,8 @@ function bindTableData(data) {
 //    <td>
 //        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
 //            <li><a href="javascript:void(0)" class="view"><i class="uil uil-eye"></i></a></li>
-//            <li><a href="#" onclick="FetchDataForEdit('${item.moduleID}');" class="edit"><i class="uil uil-edit"></i></a></li>
-//            <li><a href="javascript:void(0)" onclick="DeleteModule('${item.moduleID}');" class="remove"><i class="uil uil-trash-alt"></i></a></li>
+//            <li><a href="#" onclick="FetchDataForEdit('${item.moduleId}');" class="edit"><i class="uil uil-edit"></i></a></li>
+//            <li><a href="javascript:void(0)" onclick="DeleteModule('${item.moduleId}');" class="remove"><i class="uil uil-trash-alt"></i></a></li>
 //        </ul>
 //    </td>
 //</tr>`;
@@ -312,7 +328,7 @@ function ClearTextBox() {
 //    $(window).scrollTop(scrollTop);
 //}
 
-function DeleteModule(moduleID) {
+function DeleteModule(moduleId) {
     // Show confirmation dialog
     Swal.fire({
         title: 'Are you sure?',
@@ -325,7 +341,7 @@ function DeleteModule(moduleID) {
     }).then((result) => {
         if (result.isConfirmed) {
             // Proceed with deletion
-            ApiDeleteById(DeleteModuleUrl, token, moduleID)
+            ApiDeleteById(DeleteModuleUrl, token, moduleId)
                 .then(function (response) {
                     Swal.fire({
                         title: 'Success!',
@@ -348,14 +364,13 @@ function DeleteModule(moduleID) {
     });
 }
 
-function FetchDataForEdit(moduleID) {
-    ApiCallById(GetByIdModuleUrl, token, moduleID)
+function FetchDataForEdit(moduleId) {
+    ApiCallById(GetByIdModuleUrl, token, moduleId)
         .then(function (responseData) {
-            // Log the retrieved data
-            console.log('Data:', responseData);
             var data = responseData.data;
+            console.log(data.moduleId);
             $('#lblHidenModuleId').val(data.moduleID);
-            $('#ddlParent').val(data.parentID);
+            $('select[name="ddlParent"]').val(data.parentID).change();   
             $('#txtModuleName').val(data.moduleName);
             $('#txtModuleUrl').val(data.url);
             $('#txtPhysicalLocation').val(data.physicalLocation);
