@@ -36198,3 +36198,6 @@ body:after {
     height:68px;
 }
 
+.jstree .jstree-loading {
+    background: none !important;
+}

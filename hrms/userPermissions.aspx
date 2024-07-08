@@ -511,5 +511,10 @@
 
     </script>
     <script src="assets/theme_assets/js/apiHelper.js"></script>
+    <style>
+        .jstree .jstree-loading {
+    background: none !important;
+}
 
+    </style>
 </asp:Content>
