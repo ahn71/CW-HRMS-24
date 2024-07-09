@@ -3444,6 +3444,7 @@
     <Compile Include="classes\PF_ProfitDistribution.cs" />
     <Compile Include="classes\Roster.cs" />
     <Compile Include="classes\RosteringLogic.cs" />
+    <Compile Include="classes\Routing.cs" />
     <Compile Include="classes\SalaryProcessing.cs" />
     <Compile Include="classes\SalaryProcessingCommonTask.cs" />
     <Compile Include="classes\ServerTimeZone.cs" />
