@@ -1254,7 +1254,7 @@
     <!-- Sweet Alert ----->
 
     
-
+    <script src="treeview.js"></script>
     <script src="assets/vendor_assets/js/jquery/jquery-ui.js"></script>
     <script src="assets/vendor_assets/js/bootstrap/popper.js"></script>
     <script src="assets/vendor_assets/js/bootstrap/bootstrap.min.js"></script>
