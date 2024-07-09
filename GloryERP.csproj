@@ -1120,6 +1120,7 @@
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
+    <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
     <Content Include="hrms\assets\theme_assets\js\charts.js" />
     <Content Include="hrms\assets\theme_assets\js\drag-drop.js" />
     <Content Include="hrms\assets\theme_assets\js\footable.js" />
@@ -1129,6 +1130,8 @@
     <Content Include="hrms\assets\theme_assets\js\jvectormap-init.js" />
     <Content Include="hrms\assets\theme_assets\js\leaflet-init.js" />
     <Content Include="hrms\assets\theme_assets\js\main.js" />
+    <Content Include="hrms\assets\theme_assets\js\module.js" />
+    <Content Include="hrms\assets\theme_assets\js\moduleValidationSchema.js" />
     <Content Include="hrms\assets\vendor_assets\css\bootstrap\bootstrap.css" />
     <Content Include="hrms\assets\vendor_assets\css\daterangepicker.css" />
     <Content Include="hrms\assets\vendor_assets\css\fontawesome.css" />
@@ -1189,6 +1192,7 @@
     <Content Include="hrms\assets\vendor_assets\js\trumbowyg.min.js" />
     <Content Include="hrms\assets\vendor_assets\js\wickedpicker.min.js" />
     <Content Include="hrms\dashboard.aspx" />
+    <Content Include="hrms\Hello_Test.aspx" />
     <Content Include="hrms\img\165.png" />
     <Content Include="hrms\img\166.png" />
     <Content Include="hrms\img\287.png" />
@@ -1691,14 +1695,15 @@
     <Content Include="hrms\img\zip.png" />
     <Content Include="hrms\index.html" />
     <Content Include="hrms\man.jpg" />
-    <Content Include="hrms\Modules.aspx" />
+    <Content Include="hrms\modules.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
     <Content Include="hrms\UI\auth\cw-hrms.png" />
     <Content Include="hrms\UI\auth\login.aspx" />
     <Content Include="hrms\UI\auth\login.html" />
     <Content Include="hrms\UI\auth\logo.png" />
-    <Content Include="hrms\user_img_default.jpg" />
+    <Content Include="hrms\userPackages.aspx" />
+    <Content Include="hrms\userPermissions.aspx" />
     <Content Include="hrms\WebForm1.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
     <Content Include="images\common\add document.ico" />
@@ -2043,7 +2048,6 @@
     <Content Include="payroll\pay_base_shift.aspx" />
     <Content Include="payroll\pay_slip.aspx" />
     <Content Include="payroll\pay_slip2.aspx" />
-    <Content Include="payroll\salary\other_pay_deduction.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
@@ -3601,6 +3605,13 @@
       <DependentUpon>dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\Data\CRUD.cs" />
+    <Compile Include="hrms\Hello_Test.aspx.cs">
+      <DependentUpon>Hello_Test.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Hello_Test.aspx.designer.cs">
+      <DependentUpon>Hello_Test.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\HRMS.Master.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3608,12 +3619,12 @@
     <Compile Include="hrms\HRMS.Master.designer.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
     </Compile>
-    <Compile Include="hrms\Modules.aspx.cs">
-      <DependentUpon>Modules.aspx</DependentUpon>
+    <Compile Include="hrms\modules.aspx.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\Modules.aspx.designer.cs">
-      <DependentUpon>Modules.aspx</DependentUpon>
+    <Compile Include="hrms\modules.aspx.designer.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
@@ -3628,6 +3639,20 @@
     </Compile>
     <Compile Include="hrms\UI\auth\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userPackages.aspx.cs">
+      <DependentUpon>userPackages.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userPackages.aspx.designer.cs">
+      <DependentUpon>userPackages.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userPermissions.aspx.cs">
+      <DependentUpon>userPermissions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userPermissions.aspx.designer.cs">
+      <DependentUpon>userPermissions.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
@@ -4915,13 +4940,6 @@
     </Compile>
     <Compile Include="payroll\pay_slip2.aspx.designer.cs">
       <DependentUpon>pay_slip2.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="payroll\salary\other_pay_deduction.aspx.cs">
-      <DependentUpon>other_pay_deduction.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="payroll\salary\other_pay_deduction.aspx.designer.cs">
-      <DependentUpon>other_pay_deduction.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>

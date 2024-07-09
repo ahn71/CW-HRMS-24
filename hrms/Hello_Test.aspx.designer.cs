@@ -10,6 +10,6 @@
 namespace SigmaERP.hrms {
     
     
-    public partial class Modules {
+    public partial class Hello_Test {
     }
 }
