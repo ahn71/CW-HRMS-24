@@ -371,25 +371,22 @@
                 ordering: ordering,
             };
 
-            // Call the API using ApiCallPost function
             ApiCallPost(PostPermissionUrl, token, postData)
                 .then(function (response) {
                     console.log('Data saved successfully:', response);
-                    // Handle success response with SweetAlert2
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
                         text: 'Data saved successfully!'
                     }).then((result) => {
-                        // Reload the page if the user clicks "OK"
                         if (result.isConfirmed) {
                             GetPermission();
+                            GetPackages();
                         }
                     });
                 })
                 .catch(function (error) {
                     console.error('Error saving data:', error);
-                    // Handle error response with SweetAlert2
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -401,7 +398,6 @@
         function FetchDataForEdit(moduleID) {
             ApiCallById(GetByIdPermissionUrl, token, moduleID)
                 .then(function (responseData) {
-                    // Log the retrieved data
                     console.log('Data:', responseData);
                     var data = responseData.data;
                     $('#lblHidenPermissionId').val(data.userPermId);

@@ -17,7 +17,7 @@
 
                      <div class="btn-wrapper">
                         <div class="dm-button-list d-flex flex-wrap align-items-end">
-                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                           </button>
+                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                          
                         </div>
                      </div>
                   </div>

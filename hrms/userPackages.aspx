@@ -15,14 +15,21 @@
                                     <h4>Add Packages</h4>
                                 </div>
                             </div>
+                            <div class="btn-wrapper">
+                                <div class="dm-button-list d-flex flex-wrap align-items-end">
+                                    <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
+                                </div>
+                            </div>
                         </div>
 
-                        <div id="Cardbox" class="card-body pb-md-30">
+                        <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                             <div class="Vertical-form">
                                 <div class="row">
 
                                     <div class="col-lg-3">
                                         <div class="form-group">
+                                                                                    <label id="lblHidenPackagesId" style="display:none"></label>
+
                                             <label for="txtPackagesName" class="color-dark fs-14 fw-500 align-center mb-10">
                                                 Packages Name <span class="text-danger">*</span>
                                             </label>
@@ -55,7 +62,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
-                                        <p>Test TreeView</p>
+                                        <p>Select features and permission</p>
                                         <div class="loader-size loaderPackages">
                                             <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
                                                 <span class="spin-dot badge-dot dot-primary"></span>
@@ -72,9 +79,8 @@
                                             Name <span
                                                 class="text-danger"></span>
                                         </label>
-                                        <button type="button" id="btnSave" onclick="PostModule()"
-                                            class="btn btn-primary btn-default btn-squared px-30">
-                                            Save</button>
+                                        <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
+                                            class="btn btn-primary btn-default btn-squared px-30">Save</button>
                                     </div>
                                 </div>
 
@@ -97,7 +103,7 @@
                               </div>
                               </div>
 
-                               <table class="table mb-0 table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                               <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
                                </table>
                            </div>
                         </div>
@@ -115,14 +121,14 @@
     <script>
 
         var rootUrl = 'http://localhost:5081';
-        var GetByIdModuleUrl = rootUrl + '/api/UserModules/Packages';
+        var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';//working
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
 
         var PostPackagesUrl = rootUrl + '/api/UserPackages/Packages/create';//working
 
-        var updateModuleUrl = rootUrl + '/api/UserModules/modules/update';
-        var DeleteModuleUrl = rootUrl + '/api/UserModules/modules/delete';
+        var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
+        var DeleteUrl = rootUrl + '/api/UserPackages/packages/delete';
 
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
@@ -130,9 +136,64 @@
             GetModule();
             GetPackages();
         });
+        function Cardbox() {
+            $("#Cardbox").toggle();
+            var currentText = $("#addnew").text();
+            var newText = currentText === "Close" ? "Add New" : "Close";
+            $("#addnew").text(newText);
+        }
 
+        function ValidateAndPostModule() {
+            var isValid = true;
+            if ($('#txtPackagesName').val().trim() === "") {
+                $('#PackagesNameError').html("Packages Name is required.");
+                $("#txtPackagesName").focus();
+                isValid = false;
+            } else {
+                $('#PackagesNameError').html("");
+            }
+            if ($('#txtOrdaring').val().trim() === "" || isNaN($('#orderingError').val())) {
+                $('#orderingError').html("Ordering is required and must be a number.");
+                $("#txtOrdaring").focus();
+                isValid = false;
+            } else {
+                $('#orderingError').html("");
+            }
+            if (isValid) {
+                var addnewElement = $("#btnSave");
+                if (addnewElement.html() === "Save") {
+                    PostModule();
+                    ClearTextBox();
+                }
+                else {
+                    updatePackages();
+                    ClearTextBox();
+                }
+            }
+        }
+        function ClearTextBox() {
+            $('#txtPackagesName').val("");
+            $('#txtOrdaring').val("");
+            $('#chkIsActive').prop('checked', false);
+            $('#btnSave').text("Save");
+        }
+        function Cardbox() {
+            var CardboxElement = $("#Cardbox");
+            var addnewElement = $("#addnew");
+
+            if (addnewElement.html() === "Add New") {
+                CardboxElement.show();
+                addnewElement.text("Close");
+            } else {
+                ClearTextBox();
+                CardboxElement.hide();
+                addnewElement.html("Add New");
+
+            }
+        } 
         var selectedPermissionIDs = [];
 
+        var responseData = null;
 
         function GetModule() {
             console.log('Calling GetModule');
@@ -140,8 +201,9 @@
                 .then(function (response) {
                     if (response.statusCode === 200) {
                         $('.loaderPackages').show();
-                        var responseData = response.data;
+                        responseData = response.data;
                         var treeData = transformToJSTreeFormat(responseData);
+                        console.log("TreeData :",treeData)
                            $('.loaderPackages').hide();
                         $('#treeContainer').jstree({
                             'core': {
@@ -203,13 +265,7 @@
             });
         }
 
-        function getAllSelectedPermissionIDs(instance) {
-            console.log("getAllSelectedPermissionIDs", instance);
-            var selectedNodes = instance.get_selected(true);
-            return selectedNodes
-                .filter(node => node.original && node.original.isPermission)
-                .map(node => node.id);
-        }
+
 
         function PostModule() {
             var PackageName = $('#txtPackagesName').val();
@@ -240,6 +296,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             GetModule();
+                            GetPackages();
                         }
                     });
                 })
@@ -270,6 +327,16 @@
                     console.error('Error occurred while fetching data:', error);
                 });
         }
+
+
+        function BoxExpland() {
+            var scrollTop = $(window).scrollTop();
+
+            $("#Cardbox").show();
+            $("#addnew").text("Close");
+            $(window).scrollTop(scrollTop);
+        }
+
 
         function bindTableData(data) {
             if ($('.adv-table').data('footable')) {
@@ -336,13 +403,13 @@
             // Clear and re-attach event listeners
             $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
                 const id = $(this).data('id');
-                //FetchDataForEdit(id);
+                FetchDataForEdit(id);
                 console.log('Edit button clicked for ID:', id);
             });
 
             $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
                 const id = $(this).data('id');
-                //DeleteModule(id);
+                Delete(id);
                 console.log('Delete button clicked for ID:', id);
             });
 
@@ -355,12 +422,163 @@
             $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
                 const id = $(this).data('id');
                 console.log('Feature button clicked for ID:', id);
-                // Handle the feature action
+                FetchDataForEdit(id);
             });
+        }
+        var selectedPermissionIDsUpdate = []
+        function FetchDataForEdit(moduleID) {
+            ApiCallById(GetByIdPackagesUrl, token, moduleID)
+                .then(function (response) {
+                    console.log('Data:', response);
+                    var data = response.data;
+                    $('#lblHidenPackagesId').val(data.id);
+                    $('#txtPackagesName').val(data.packageName);
+                    $('#txtOrdaring').val(data.ordering);
+                    $('#chkIsActive').prop('checked', data.isActive);
+                    $('#btnSave').html('Update');
+                    BoxExpland();
+                    var selectedPermissionIDs = JSON.parse(data.features);
+                    if (Array.isArray(selectedPermissionIDs)) {
+                        var treeData = transformToJSTreeFormats(responseData);
+                        $('#treeContainer').jstree("destroy").empty();
+                        $('#treeContainer').jstree({
+                            'core': {
+                                'data': treeData,
+                                'themes': {
+                                    'dots': true
+                                },
+                                'multiple': true,
+                                'animation': true,
+                                'check_callback': true
+                            },
+                            'checkbox': {
+                                'keep_selected_style': false,
+                                'tie_selection': true
+                            },
+                            'plugins': ['checkbox', 'wholerow']
+                        }).on('ready.jstree', function (e, data) {
+                            selectedPermissionIDs.forEach(function (id) {
+                                console.log("id.toString()", id.toString())
+                                data.instance.select_node(id.toString());
+                            });
+                        }).on('changed.jstree', function (e, data) {
+                            selectedPermissionIDsUpdate = [];
+
+                            for (i = 0, j = data.selected.length; i < j; i++) {
+
+                                var node = data.instance.get_node(data.selected[i]);
+                                if (node && node.children.length === 0) {
+                                    selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
+                                }
+                                console.log('node:', node);
+                            }
+                            console.log('petch Child Node IDs:', selectedPermissionIDsUpdate)
+                        });
+                    } else {
+                        console.error('responseData.features is not an array:', responseData.features);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
         }
 
 
+        function transformToJSTreeFormats(data) {
+            return data.map(function (item) {
 
+                return {
+                    "id": item.isPermission ? item.permissionId : item.moduleID,
+                    "text": item.name,
+                    "state": {
+                        "opened": true
+                    },
+                    "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+                    "li_attr": {
+                        "id": item.isPermission ? item.permissionId : item.moduleID
+                    },
+                    "original": {
+                        "isPermission": item.isPermission
+                    }
+                };
+            });
+        }
+
+        
+        function updatePackages() {
+                var PackageId = $('#lblHidenPackagesId').val();
+                var PackageName = $('#txtPackagesName').val();
+                var ordering = parseInt($('#txtOrdaring').val());
+                var isActive = $('#chkIsActive').is(':checked');
+                var treeInstance = $('#treeContainer').jstree(true);
+
+                var jsonString = JSON.stringify(selectedPermissionIDsUpdate);
+                console.log(jsonString);
+
+                var updateData = {
+                    PackageName: PackageName,
+                    features: jsonString,
+                    isActive: isActive,
+                    ordering: ordering,
+                };
+
+                ApiCallUpdate(updatePackagesUrl, token, updateData, PackageId)
+                    .then(function (response) {
+                        console.log('Data updated successfully:', response);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Data updated successfully!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                GetModule();
+                                GetPackages();
+                            }
+                        });
+                    })
+                    .catch(function (error) {
+                        console.error('Error updating data:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Failed to update data. Please try again.'
+                        });
+                    });
+            }
+
+        function Delete(ID) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Packages?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ApiDeleteById(DeleteUrl, token, ID)
+                        .then(function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Packages deleted successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                GetPackages();
+                            });
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while deleting the module.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
 
 
 
