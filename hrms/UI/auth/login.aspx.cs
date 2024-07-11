@@ -30,7 +30,8 @@ namespace SigmaERP.hrms.UI.auth
         {
             if (LogingInfo())
             {
-                Response.Redirect("~/default.aspx");
+                Response.RedirectToRoute("DashboardRoute");
+                //Response.Redirect("~/default.aspx");
             }
         }
         private bool LogingInfo()
