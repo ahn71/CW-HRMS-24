@@ -1703,6 +1703,7 @@
     <Content Include="hrms\UI\auth\login.html" />
     <Content Include="hrms\UI\auth\logo.png" />
     <Content Include="hrms\userPackages.aspx" />
+    <Content Include="hrms\userPackagesSetup.aspx" />
     <Content Include="hrms\userPermissions.aspx" />
     <Content Include="hrms\WebForm1.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
@@ -3646,6 +3647,13 @@
     </Compile>
     <Compile Include="hrms\userPackages.aspx.designer.cs">
       <DependentUpon>userPackages.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userPackagesSetup.aspx.cs">
+      <DependentUpon>userPackagesSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userPackagesSetup.aspx.designer.cs">
+      <DependentUpon>userPackagesSetup.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\userPermissions.aspx.cs">
       <DependentUpon>userPermissions.aspx</DependentUpon>
