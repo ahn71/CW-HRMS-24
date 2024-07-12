@@ -580,6 +580,7 @@
             });
         }
 
+        console.log("Git Test From Home ");
 
 
     </script>
