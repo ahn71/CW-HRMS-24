@@ -36201,6 +36201,12 @@ body:after {
 .jstree .jstree-loading {
     background: none !important;
 }
-.packagesTable tbody {
+.packagesTable tbody tr {
     text-align:center;
+}
+
+.actions-center {
+    display: flex;
+    justify-content: center;
+    text-align: center;
 }

@@ -73,10 +73,35 @@
                                     </div>
                                 </div>
 
+
+
                             </div>
                         </div>
                     </div>
                 </div>
+
+                    <div class="row">
+               <div class="col-lg-12">
+                  <div class="card ">
+                     <div class="card-body">
+
+                        <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
+                           <div class="table-responsive">
+                              <div class="ad-table-table__header d-flex justify-content-between">
+                                  <h4 style="margin-top: 13px;">Setup Packages List</h4>
+                              <div id="filter-form-container">
+
+                              </div>
+                              </div>
+                               <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                               </table>
+                           </div>
+                        </div>
+
+                     </div>
+                  </div>
+               </div>
+            </div>
               
             </div>
         </div>
@@ -91,11 +116,11 @@
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
-
-        var PostPackagesUrl = rootUrl + '/api/UserPackages/Packages/create';//working
+        var GetPackageSetupsUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup';
+        var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';//working
 
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
-        var DeleteUrl = rootUrl + '/api/UserPackages/packages/delete';
+        var DeleteUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/delete';
 
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
@@ -108,6 +133,7 @@
                 $('#treeContainer').show();
             });
             GetPackages();
+            GetPackagesSetupList();
             GetModule();
         });
 
@@ -133,7 +159,7 @@
                 };
             });
         }
-         var selectedPermissionIDsUpdate = []
+       
 
                 function GetPackages() {
             ApiCall(GetPackagesUrl, token)
@@ -213,7 +239,7 @@
         }
 
           var responseData = null;
-
+        var selectedPermissionIDsUpdate = [];
         function FetchDataForEdit(moduleID) {
             ApiCallById(GetByIdPackagesUrl, token, moduleID)
                 .then(function (response) {
@@ -224,7 +250,7 @@
                     //$('#txtPackagesName').val(data.packageName);
                     //$('#txtOrdaring').val(data.ordering);
                     //$('#chkIsActive').prop('checked', data.isActive);
-                    $('#btnSave').html('Update');
+                    //$('#btnSave').html('Update');
                     //BoxExpland();
                     var selectedPermissionIDs = JSON.parse(data.features);
                     if (Array.isArray(selectedPermissionIDs)) {
@@ -293,24 +319,143 @@
                 };
             });
         }
+        function ValidateAndPostModule() {
+            var isValid = true;
+            if ($('#ddlPackages').val() <= 0) {
+                $('#PackagesNameError').html("Please select a package name.");
+                $("#txtPackagesName").focus();
+                isValid = false;
+            } else {
+                $('#PackagesNameError').html("");
+            }
+            if (isValid) {
+                var addnewElement = $("#btnSave");
+                if (addnewElement.html() === "Save") {
+                    PostModule();
+                    //ClearTextBox();
+                }
+                else {
+                    //updatePackages();
+                    //ClearTextBox();
+                }
+            }
+        }
+        function GetPackagesSetupList() {
+            ApiCall(GetPackageSetupsUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log('responseData',responseData);
+                        $('.footable-loader').show();
+                        bindTableData(responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+        
+        function bindTableData(data) {
+            // Destroy existing Footable instance if it exists
+            if ($('.adv-table').data('footable')) {
+                $('.adv-table').data('footable').destroy();
+            }
+
+            // Clear the table and filter form container
+            $('.adv-table').html('');
+            $('#filter-form-container').empty();
+
+            // Iterate through data and format rows
+            data.forEach(row => {
+                row.actions = `
+            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.psid}"><i class="uil uil-eye"></i></a></li>
+                <li><a href="javascript:void(0)" data-id="${row.psid}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>  
+                <li><a href="javascript:void(0)" data-id="${row.psid}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+            </ul>
+        `;
+                row.isActive = `
+            <div class="form-check form-switch form-switch-primary form-switch-sm">
+                <input type="checkbox" class="form-check-input" id="switch-${row.id}" ${row.isActive ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.id}"></label>
+            </div>
+        `;
+                row.features = `
+            <div class="features-icon-container">
+                <a href="javascript:void(0)" class="feature-btn" data-id="${row.id}"><i class="uil uil-star"></i></a>
+            </div>
+        `;
+            });
+
+            // Define the table columns
+            const columns = [
+                { "name": "psid", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "packageName", "title": "Package Name", "className": "userDatatable-content" },
+                { "name": "features", "title": "Features", "className": "userDatatable-content" },
+                { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                { "name": "activatedAt", "title": "Activated At", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                { "name": "deActivatedAt", "title": "DeActivated At", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                { "name": "actions", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" }
+            ];
+
+            try {
+                // Initialize Footable
+                $('.adv-table').footable({
+                    "columns": columns,
+                    "rows": data,
+                    "filtering": {
+                        "enabled": true,
+                        "placeholder": "Search...",
+                        "dropdownTitle": "Search in:",
+                        "position": "left",
+                        "containers": "#filter-form-container",
+                        "space": true
+                    }
+                }).on('postinit.ft.table', function () {
+                    $('.footable-loader').hide();
+                });
+            } catch (error) {
+                console.error("Error initializing Footable:", error);
+            }
+
+            // Clear and reattach event listeners
+            $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                const id = $(this).data('id');
+                FetchDataForEdit(id);
+                console.log('Edit button clicked for ID:', id);
+            });
+
+            $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                const id = $(this).data('id');  // Corrected here
+                Delete(id);
+                console.log('Delete button clicked for ID:', id);
+            });
+
+            $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+                const id = $(this).data('id');
+                // Handle the view action
+                console.log('View button clicked for ID:', id);
+            });
+        }
 
 
         function PostModule() {
-            var PackageName = $('#txtPackagesName').val();
-            var ordering = parseInt($('#txtOrdaring').val());
+            var packageId = parseInt($('#ddlPackages').val(), 10);
             var isActive = $('#chkIsActive').is(':checked');
             var treeInstance = $('#treeContainer').jstree(true);
 
-            var jsonString = JSON.stringify(selectedPermissionIDs);
+            var jsonString = JSON.stringify(selectedPermissionIDsUpdate);
             console.log(jsonString);
 
             var postData = {
-                PackageName: PackageName,
+                packageId: packageId,
                 features: jsonString,
                 isActive: isActive,
-                ordering: ordering,
             };
-            ApiCallPost(PostPackagesUrl, token, postData)
+            ApiCallPost(PostPackagesSetUrl, token, postData)
                 .then(function (response) {
                     console.log('Data saved successfully:', response);
                     Swal.fire({
@@ -319,8 +464,8 @@
                         text: 'Data saved successfully!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            GetModule();
-                            GetPackages();
+                            GetPackagesSetupList();
+                            //GetPackages();
                         }
                     });
                 })
@@ -334,6 +479,39 @@
                 });
         }
 
+        function Delete(ID) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Packages?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ApiDeleteById(DeleteUrl, token, ID)
+                        .then(function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Packages deleted successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                GetPackagesSetupList();
+                            });
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while deleting the module.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
 
     </script>
 
