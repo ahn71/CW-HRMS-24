@@ -1705,6 +1705,7 @@
     <Content Include="hrms\userPackages.aspx" />
     <Content Include="hrms\userPackagesSetup.aspx" />
     <Content Include="hrms\userPermissions.aspx" />
+    <Content Include="hrms\userRoles.aspx" />
     <Content Include="hrms\WebForm1.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
     <Content Include="images\common\add document.ico" />
@@ -3661,6 +3662,13 @@
     </Compile>
     <Compile Include="hrms\userPermissions.aspx.designer.cs">
       <DependentUpon>userPermissions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userRoles.aspx.cs">
+      <DependentUpon>userRoles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userRoles.aspx.designer.cs">
+      <DependentUpon>userRoles.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>

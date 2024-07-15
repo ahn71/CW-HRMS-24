@@ -161,7 +161,7 @@
         }
        
 
-                function GetPackages() {
+        function GetPackages() {
             ApiCall(GetPackagesUrl, token)
                 .then(function (response) {
                     if (response.statusCode === 200) {
@@ -189,6 +189,7 @@
                 dropdown.appendChild(option);
             });
         }
+
         var selectedPermissionIDs = [];
          function GetModule() {
             console.log('Calling GetModule');

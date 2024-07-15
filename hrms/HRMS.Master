@@ -921,9 +921,17 @@
                              </a>
 
                          </li>
-                                                      <li>
+                         <li>
                              <a href="userPackagesSetup.aspx">
                                  <span class="menu-text">User Packages Setup</span>
+
+                             </a>
+
+                         </li>
+
+                         <li>
+                             <a href="userRoles.aspx">
+                                 <span class="menu-text">User Roles</span>
 
                              </a>
 
