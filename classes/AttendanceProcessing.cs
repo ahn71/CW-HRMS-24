@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using HRD.ModelEntities.Models;
+using SigmaERP.hrms.repo.repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -272,7 +273,7 @@ namespace SigmaERP.classes
                 //_attCommon.DeleteTempRawData(ProcessingID);
             }
         }
-        public void _AttendanceProcessing(string ProcessingID,string CompanyId, DateTime SelectedDate, FileUpload FileUploader, bool ForAllEmployee, string DepartmentId, string EmpCardNo, string UserId,string EmpType,string db, Label lblErrorMessage)
+        public void _AttendanceProcessing(string ProcessingID,string DeviceType,string CompanyId, DateTime SelectedDate, FileUpload FileUploader, bool ForAllEmployee, string DepartmentId, string EmpCardNo, string UserId,string EmpType,string db, Label lblErrorMessage)
         {
             try
             {
@@ -395,7 +396,8 @@ namespace SigmaERP.classes
                                             string _ProxymityNo = _attCommon.GetEmpProximityNo(_attRecord.EmpId, SelectedDate.ToString("yyyy-MM-dd"));
                                             _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
                                             DataTable dtPunch = new DataTable();
-                                            dtPunch = _attCommon.GetPunch(ProcessingID, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                           dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                           
 
                                             if (dtPunch != null && dtPunch.Rows.Count > 0)
                                             {
