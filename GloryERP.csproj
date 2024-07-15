@@ -3626,6 +3626,10 @@
     <Compile Include="hrms\modules.aspx.designer.cs">
       <DependentUpon>modules.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\repo\implementations\Zk.cs" />
+    <Compile Include="hrms\repo\implementations\ZkBiotime.cs" />
+    <Compile Include="hrms\repo\repositories\IDevice.cs" />
+    <Compile Include="hrms\repo\services\PunchService.cs" />
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
