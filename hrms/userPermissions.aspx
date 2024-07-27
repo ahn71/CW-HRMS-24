@@ -150,7 +150,8 @@
         }
 
 
-        var rootUrl = 'http://localhost:5081';
+        //var rootUrl = 'http://localhost:5081';
+        var rootUrl = 'https://localhost:7220';
         var GetByIdPermissionUrl = rootUrl + '/api/UserPermissions/permissions';
         var GetModuleForDdlUrl = rootUrl + '/api/UserModules/modules';
         var GetPermissioneUrl = rootUrl + '/api/UserPermissions/permissions';

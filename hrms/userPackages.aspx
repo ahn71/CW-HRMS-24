@@ -120,7 +120,9 @@
 
     <script>
 
-        var rootUrl = 'http://localhost:5081';
+        //var rootUrl = 'http://localhost:5081';
+        var rootUrl = 'https://localhost:7220';
+
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';//working
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';

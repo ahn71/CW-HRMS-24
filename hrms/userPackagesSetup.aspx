@@ -112,11 +112,12 @@
 
 
     <script>
-        var rootUrl = 'http://localhost:5081';
+        //var rootUrl = 'http://localhost:5081';
+        var rootUrl = 'https://localhost:7220';
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
-        var GetPackageSetupsUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup';
+        var GetPackageSetupsUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
         var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';//working
 
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';

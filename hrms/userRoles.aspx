@@ -88,8 +88,8 @@
 
                               </div>
                               </div>
-                               <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
-                               </table>
+                              <%-- <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                               </table>--%>
                            </div>
                         </div>
 
@@ -105,8 +105,10 @@
     </main>
 
     <script>
-        var rootUrl = 'http://localhost:5081';
-        var GetStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParents';
+        //var rootUrl = 'http://localhost:5081';
+
+        var rootUrl = 'https://localhost:7220';
+        var GetStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
          var GetStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
@@ -116,101 +118,48 @@
             GetStpPkgFeatures();
         });
 
-
-        function GetStpPkgFeatures() {
-            ApiCall(GetStpPkgFeaturesUrl, token)
-                .then(function (response) {
-                    if (response.statusCode === 200) {
-                        var responseData = response.data;
-                        console.log(responseData);
-                        responseData.forEach(function (item) {
-                            var featuresArray = JSON.parse(item.features);
-                            console.log(featuresArray);
-                            GetStpPkgFeaturesWithParent(featuresArray)
-                        });
-
-                        //$('.footable-loader').show();
-                    } else {
-                        console.error('Error occurred while fetching data:', response.message);
-                    }
-                })
-                .catch(function (error) {
-                    $('.loaderCosting').hide();
-                    console.error('Error occurred while fetching data:', error);
-                });
-        }
-
-
-
-        function ApiCallByFeatures(url, token, ids) {
-            return new Promise(function (resolve, reject) {
-                // Construct the query string with multiple childIds parameters
-                const queryString = ids.map(id => `childIds=${encodeURIComponent(id)}`).join('&');
-                const fullUrl = `${url}?${queryString}`;
-
-                console.log("Full URL: ", fullUrl); // Debugging log
-
-                $.ajax({
-                    url: fullUrl,
-                    type: 'GET',
-                    dataType: 'json',
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    },
-                    success: function (data) {
-                        resolve(data);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error occurred while fetching data:', status, error);
-                        reject(error);
-                    }
-                });
-            });
-        }
-
-
-
         var selectedPermissionIDs = [];
+
         var responseData = null;
 
-        function GetStpPkgFeaturesWithParent(featuresArray) {
+        function GetStpPkgFeatures() {
             console.log('Calling GetModule');
-
-            // Make an API call with the entire featuresArray
-            ApiCallByFeatures(GetStpPkgFeaturesWithParentUrl, token, featuresArray)
+            ApiCall(GetStpPkgFeaturesWithParentUrl, token)
                 .then(function (response) {
                     if (response.statusCode === 200) {
                         $('.loaderPackages').show();
                         responseData = response.data;
                         var treeData = transformToJSTreeFormat(responseData);
-                        console.log("TreeData :", treeData);
-                        $('.loaderPackages').hide();
-
+                        console.log("TreeData :",treeData)
+                           $('.loaderPackages').hide();
                         $('#treeContainer').jstree({
                             'core': {
                                 'data': treeData,
                                 'themes': {
-                                    'dots': true
+                                    'dots': true 
                                 },
-                                'multiple': true,
-                                'animation': true,
-                                'check_callback': true
+                                'multiple': true, 
+                                'animation': true, 
+                                'check_callback': true 
                             },
                             'checkbox': {
-                                'keep_selected_style': false,
-                                'tie_selection': true
+                                'keep_selected_style': false, 
+                                'tie_selection': true 
                             },
-                            'plugins': ['checkbox', 'wholerow']
+                            'plugins': ['checkbox', 'wholerow'] 
                         }).on('changed.jstree', function (e, data) {
-                            selectedPermissionIDs = [];
-                            for (var i = 0, j = data.selected.length; i < j; i++) {
+                             selectedPermissionIDs = [];
+
+                            for(i = 0, j = data.selected.length; i < j; i++) {
+
                                 var node = data.instance.get_node(data.selected[i]);
                                 if (node && node.children.length === 0) {
                                     selectedPermissionIDs.push(parseInt(node.id, 10));
                                 }
-                                console.log('node:', node);
+                                 console.log('node:', node);
                             }
                             console.log('Child Node IDs:', selectedPermissionIDs);
+                            
                         });
                     } else {
                         console.error('Error occurred while fetching data:', response.message);
@@ -220,7 +169,6 @@
                     console.error('Error occurred while fetching data:', error.message || error);
                 });
         }
-
 
         function transformToJSTreeFormat(data) {
             return data.map(function (item) {
@@ -233,7 +181,7 @@
                         "opened": true,
                         "selected": hasSelectedChild
                     },
-                    "children": (item.children && item.children.length > 0) ? transformToJSTreeFormat(item.children) : [],
+                    "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
                     "li_attr": {
                         "id": item.isPermission ? item.permissionId : item.moduleID
                     },
@@ -244,7 +192,10 @@
             });
         }
 
-      
+
+
+
+
 
     </script>
 
