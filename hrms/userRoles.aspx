@@ -129,7 +129,7 @@
                             GetStpPkgFeaturesWithParent(featuresArray)
                         });
 
-                        $('.footable-loader').show();
+                        //$('.footable-loader').show();
                     } else {
                         console.error('Error occurred while fetching data:', response.message);
                     }
@@ -221,6 +221,7 @@
                 });
         }
 
+
         function transformToJSTreeFormat(data) {
             return data.map(function (item) {
                 let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
@@ -232,7 +233,7 @@
                         "opened": true,
                         "selected": hasSelectedChild
                     },
-                    "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+                    "children": (item.children && item.children.length > 0) ? transformToJSTreeFormat(item.children) : [],
                     "li_attr": {
                         "id": item.isPermission ? item.permissionId : item.moduleID
                     },
@@ -242,18 +243,6 @@
                 };
             });
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
       
 

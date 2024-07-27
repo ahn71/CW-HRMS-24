@@ -293,20 +293,7 @@
             } else {
                 $('#PermissionError').html("");
             }
-            if ($('#txtPermissionsUrl').val().trim() === "") {
-                $('#UrlError').html("Module Url is required.");
-                $("#txtPermissionsUrl").focus();
-                isValid = false;
-            } else {
-                $('#UrlError').html("");
-            }
-            if ($('#txtPerPhysicalLocation').val().trim() === "") {
-                $('#perPhysicalLocationError').html("Physical Location is required.");
-                $("#txtPerPhysicalLocation").focus();
-                isValid = false;
-            } else {
-                $('#perPhysicalLocationError').html("");
-            }
+
             if ($('#txtPerOrdaring').val().trim() === "" || isNaN($('#txtPerOrdaring').val())) {
                 $('#OrderingError').html("Ordering is required and must be a number.");
                 $("#txtPerOrdaring").focus();

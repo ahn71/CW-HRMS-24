@@ -48,13 +48,7 @@ function validateAndPostModule() {
     } else {
         $('#physicalLocationError').html("");
     }
-    if ($('#txtIconClass').val().trim() === "") {
-        $('#iconClassError').html("Icon Class is required.");
-        $("#txtIconClass").focus();
-        isValid = false;
-    } else {
-        $('#iconClassError').html("");
-    }
+
     if ($('#txtOrdaring').val().trim() === "" || isNaN($('#txtOrdaring').val())) {
         $('#orderingError').html("Ordering is required and must be a number.");
         $("#txtOrdaring").focus();
