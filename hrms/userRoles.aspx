@@ -13,6 +13,8 @@
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="form-group">
+                                            <label id="lblHidenRolesId" style="display:none"></label>
+
                                             <label for="txtRole" class="color-dark fs-14 fw-500 align-center mb-10">
                                                 Role Name <span class="text-danger">*</span>
                                             </label>
@@ -87,8 +89,8 @@
 
                               </div>
                               </div>
-                              <%-- <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
-                               </table>--%>
+                               <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                               </table>
                            </div>
                         </div>
 
@@ -109,7 +111,10 @@
         var rootUrl = 'https://localhost:7220';
         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
         var postRolesUrl = rootUrl + '/api/UserRoles/create';
-         var getFeturesUrl = rootUrl + '/api/UserModules/Packages';
+         var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
+         var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
+         var updateRolesUrl = rootUrl + '/api/UserRoles/update';
+         var DeleteRoleUrl = rootUrl + '/api/UserRoles/delete';
          var getStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
@@ -117,6 +122,7 @@
            
             //GetModule();
             GetStpPkgFeatures();
+            GetRoles();
         });
 
         var selectedPermissionIDs = [];
@@ -216,6 +222,7 @@
                 }
                 else {
                     //updatePackages();
+                    updateRoles();
                     //ClearTextBox();
                 }
             }
@@ -239,8 +246,6 @@
  
             };
 
-          
-
             ApiCallPost(postRolesUrl, token, postData)
                 .then(function (response) {
                     console.log('Data saved successfully:', response);
@@ -251,6 +256,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             //GetModule();
+                            GetRoles();
                             //GetPackages();
                         }
                     });
@@ -265,29 +271,204 @@
                 });
         }
 
+         function updateRoles() {
+                var roleId = $('#lblHidenRolesId').val();
+                var txtRole = $('#txtRole').val();
+                var ordering = parseInt($('#txtOrdaring').val());
+                var isActive = $('#chkIsActive').is(':checked');
+                var treeInstance = $('#treeContainer').jstree(true);
+
+                var jsonString = JSON.stringify(selectedPermissionIDsUpdate);
+                console.log(jsonString);
+
+                var updateData = {
+                    UserRole: txtRole,
+                    Permissions: jsonString,
+                    Ordering: ordering,
+                    IsActive: isActive
+                };
+
+            ApiCallUpdate(updateRolesUrl, token, updateData, roleId)
+                .then(function (response) {
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Data updated successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            GetRoles();
+                            //GetPackages();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        }
+        function Delete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Packages?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ApiDeleteById(DeleteRoleUrl, token, id)
+                        .then(function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Packages deleted successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                GetRoles();
+                            });
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while deleting the module.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
 
 
 
+        function GetRoles() {
+            ApiCall(getRolesUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log(responseData);
+                        $('.footable-loader').show();
+                        bindTableData(responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
 
 
+        function bindTableData(data) {
+            if ($('.adv-table').data('footable')) {
+                $('.adv-table').data('footable').destroy();
+            }
+            $('.adv-table').html('');
+            $('#filter-form-container').empty();
+
+            data.forEach(row => {
+                row.userRoleName = `
+        <div class="permission-name-container">
+            ${row.userRoleName}
+            <div class="actions-container">
+                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userRoleId}"><i class="uil uil-eye"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        `;
+
+                row.isActive = `
+        <div class="form-check form-switch form-switch-primary form-switch-sm">
+            <input type="checkbox" class="form-check-input" id="switch-${row.userRoleId}" ${row.isActive ? 'checked' : ''}>
+            <label class="form-check-label" for="switch-${row.userRoleId}"></label>
+        </div>
+        `;
+
+                row.permissions = `
+        <div class="features-icon-container">
+            <a href="javascript:void(0)" class="feature-btn" data-id="${row.userRoleId}"><i class="uil uil-star"></i></a>
+        </div>
+        `;
+            });
+
+            const columns = [
+                { "name": "userRoleId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
+                { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
+                { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
+            ];
+
+            try {
+                $('.adv-table').footable({
+                    "columns": columns,
+                    "rows": data,
+                    "filtering": {
+                        "enabled": true,
+                        "placeholder": "Search...",
+                        "dropdownTitle": "Search in:",
+                        "position": "left",
+                        "containers": "#filter-form-container",
+                        "space": true
+                    }
+                }).on('postinit.ft.table', function (e) {
+                    $('.footable-loader').hide();
+                });
+            } catch (error) {
+                console.error("Error initializing Footable:", error);
+            }
+
+            // Clear and re-attach event listeners
+            $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                const userRoleId = $(this).data('id');
+                FetchDataForEdit(userRoleId);
+                console.log('Edit button clicked for ID:', userRoleId);
+            });
+
+            $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                const id = $(this).data('id');
+                Delete(id);
+                console.log('Delete button clicked for ID:', id);
+            });
+
+            $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+                const id = $(this).data('id');
+                // Handle the view action
+                console.log('View button clicked for ID:', id);
+            });
+
+            $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
+                const id = $(this).data('id');
+                console.log('Feature button clicked for ID:', id);
+                //FetchDataForEdit(id);
+            });
+        }
 
 
+        var selectedPermissionIDsUpdate = []
 
-
-
-          var selectedPermissionIDsUpdate = []
         function FetchDataForEdit(moduleID) {
-            ApiCallById(GetByIdPackagesUrl, token, moduleID)
+            ApiCallById(getRolesByIdUrl, token, moduleID)
                 .then(function (response) {
                     console.log('Data:', response);
                     var data = response.data;
-                    $('#lblHidenPackagesId').val(data.id);
-                    $('#txtPackagesName').val(data.packageName);
+                    $('#lblHidenRolesId').val(data.userRoleId);
+                    $('#txtRole').val(data.userRoleName);
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');
-                    BoxExpland();
-                    var selectedPermissionIDs = JSON.parse(data.features);
+                    //BoxExpland();
+                    var selectedPermissionIDs = JSON.parse(data.permissions);
                     if (Array.isArray(selectedPermissionIDs)) {
                         var treeData = transformToJSTreeFormats(responseData);
                         $('#treeContainer').jstree("destroy").empty();

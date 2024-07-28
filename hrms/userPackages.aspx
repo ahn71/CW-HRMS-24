@@ -28,7 +28,7 @@
 
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                                                                    <label id="lblHidenPackagesId" style="display:none"></label>
+                                            <label id="lblHidenPackagesId" style="display:none"></label>
 
                                             <label for="txtPackagesName" class="color-dark fs-14 fw-500 align-center mb-10">
                                                 Packages Name <span class="text-danger">*</span>
@@ -427,6 +427,8 @@
                 FetchDataForEdit(id);
             });
         }
+
+
         var selectedPermissionIDsUpdate = []
         function FetchDataForEdit(moduleID) {
             ApiCallById(GetByIdPackagesUrl, token, moduleID)
