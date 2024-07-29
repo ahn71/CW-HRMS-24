@@ -127,6 +127,15 @@
                               </div>
                               </div>
 
+                               <div class="loader-size loaderModulesList " style="display: none">
+                                   <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                   </div>
+                               </div>
+
                                <table class="table mb-0 table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
                                </table>
                            </div>
