@@ -121,9 +121,6 @@
                               <div class="ad-table-table__header d-flex justify-content-between">
                                   <h4 style="margin-top: 13px;">Module List</h4>
                               <div id="filter-form-container">
-
-                            
-
                               </div>
                               </div>
 

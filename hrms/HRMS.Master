@@ -936,6 +936,13 @@
                              </a>
 
                          </li>
+                         <li>
+                             <a href="user.aspx">
+                                 <span class="menu-text">User</span>
+
+                             </a>
+
+                         </li>
                      </ul>
                   </li>
 
