@@ -1132,6 +1132,7 @@
     <Content Include="hrms\assets\theme_assets\js\main.js" />
     <Content Include="hrms\assets\theme_assets\js\module.js" />
     <Content Include="hrms\assets\theme_assets\js\moduleValidationSchema.js" />
+    <Content Include="hrms\assets\theme_assets\js\TreeViewHepler.js" />
     <Content Include="hrms\assets\vendor_assets\css\bootstrap\bootstrap.css" />
     <Content Include="hrms\assets\vendor_assets\css\daterangepicker.css" />
     <Content Include="hrms\assets\vendor_assets\css\fontawesome.css" />

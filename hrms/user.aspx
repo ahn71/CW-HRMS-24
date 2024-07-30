@@ -202,6 +202,10 @@
          var getUsersUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getEmployeeUrl = rootUrl + '/api/Employee/EmployeeName';
+         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
+         var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
+         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
+
          var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
          $(document).ready(function () {
@@ -209,6 +213,9 @@
              GetRoles();
              GetEmployee();
              GetUsers();
+             GetStpPkgFeatures();
+             GetRolesFeatures();
+
 
          });
          function IsGuestUser () {
@@ -219,6 +226,15 @@
                     $('#FirstName, #LastName').hide();
                 }
             });
+         }
+
+         function GetRolesFeatures() {
+             $('#ddlUserRole').change(function () {
+                 var selectedValue = $(this).val();
+                 console.log("Selected value: " + selectedValue);
+                 FetchDataForEdit(selectedValue);
+
+             });
          }
 
          function GetRoles() {
@@ -236,7 +252,7 @@
                      console.error('Error occurred while fetching data:', error);
                  });
          }
-          function RolesPopulateDropdown(data) {
+         function RolesPopulateDropdown(data) {
              const dropdown = document.getElementById('ddlUserRole');
              dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
 
@@ -262,7 +278,7 @@
                      console.error('Error occurred while fetching data:', error);
                  });
          }
-           function EmployeePopulateDropdown(data) {
+         function EmployeePopulateDropdown(data) {
              const dropdown = document.getElementById('ddlReferenceEmp');
              dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
 
@@ -292,15 +308,15 @@
                      console.error('Error occurred while fetching data:', error);
                  });
          }
-        function bindTableData(data) {
-            if ($('.adv-table').data('footable')) {
-                $('.adv-table').data('footable').destroy();
-            }
-            $('.adv-table').html('');
-            $('#filter-form-container').empty();
+         function bindTableData(data) {
+             if ($('.adv-table').data('footable')) {
+                 $('.adv-table').data('footable').destroy();
+             }
+             $('.adv-table').html('');
+             $('#filter-form-container').empty();
 
-            data.forEach(row => {
-                row.userRoleName = `
+             data.forEach(row => {
+                 row.userRoleName = `
         <div class="permission-name-container">
             ${row.userRoleName}
             <div class="actions-container">
@@ -313,78 +329,83 @@
         </div>
         `;
 
-                row.isActive = `
+                 row.isActive = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
         </div>
         `;
 
-                row.permissions = `
+                 row.permissions = `
         <div class="features-icon-container">
             <a href="javascript:void(0)" class="feature-btn" data-id="${row.userId}"><i class="uil uil-star"></i></a>
         </div>
         `;
-            });
+             });
 
-            const columns = [
-                { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-                { "name": "firstName", "title": "First Name", "className": "userDatatable-content" },
-                { "name": "lastName", "title": "Last Name", "className": "userDatatable-content" },
-                { "name": "userName", "title": "User Name", "className": "userDatatable-content" },
-                { "name": "userPassword", "title": "Password", "className": "userDatatable-content" },
-                { "name": "email", "title": "Email", "className": "userDatatable-content" },
-                { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-                { "name": "referenceID", "title": "Refer By", "className": "userDatatable-content" },
-                { "name": "additionalPermissions", "title": "Additional Permissions", "className": "userDatatable-content" },
-                { "name": "removedPermissions", "title": "Remove Permission", "className": "userDatatable-content" },
-                { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-            ];
+             const columns = [
+                 { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                 { "name": "firstName", "title": "First Name", "className": "userDatatable-content" },
+                 { "name": "lastName", "title": "Last Name", "className": "userDatatable-content" },
+                 { "name": "userName", "title": "User Name", "className": "userDatatable-content" },
+                 { "name": "userPassword", "title": "Password", "className": "userDatatable-content" },
+                 { "name": "email", "title": "Email", "className": "userDatatable-content" },
+                 { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                 { "name": "referenceID", "title": "Refer By", "className": "userDatatable-content" },
+                 { "name": "additionalPermissions", "title": "Additional Permissions", "className": "userDatatable-content" },
+                 { "name": "removedPermissions", "title": "Remove Permission", "className": "userDatatable-content" },
+                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+             ];
 
-            try {
-                $('.adv-table').footable({
-                    "columns": columns,
-                    "rows": data,
-                    "filtering": {
-                        "enabled": true,
-                        "placeholder": "Search...",
-                        "dropdownTitle": "Search in:",
-                        "position": "left",
-                        "containers": "#filter-form-container",
-                        "space": true
-                    }
-                }).on('postinit.ft.table', function (e) {
-                    $('.footable-loader').hide();
-                });
-            } catch (error) {
-                console.error("Error initializing Footable:", error);
-            }
+             try {
+                 $('.adv-table').footable({
+                     "columns": columns,
+                     "rows": data,
+                     "filtering": {
+                         "enabled": true,
+                         "placeholder": "Search...",
+                         "dropdownTitle": "Search in:",
+                         "position": "left",
+                         "containers": "#filter-form-container",
+                         "space": true
+                     }
+                 }).on('postinit.ft.table', function (e) {
+                     $('.footable-loader').hide();
+                 });
+             } catch (error) {
+                 console.error("Error initializing Footable:", error);
+             }
 
-            // Clear and re-attach event listeners
-            $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
-                const userId = $(this).data('id');
-                //FetchDataForEdit(userId);
-                console.log('Edit button clicked for ID:', userId);
-            });
+             // Clear and re-attach event listeners
+             $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                 const userId = $(this).data('id');
+                 //FetchDataForEdit(userId);
+                 console.log('Edit button clicked for ID:', userId);
+             });
 
-            $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                const id = $(this).data('id');
-                Delete(id);
-                console.log('Delete button clicked for ID:', id);
-            });
+             $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                 const id = $(this).data('id');
+                 Delete(id);
+                 console.log('Delete button clicked for ID:', id);
+             });
 
-            $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-                const id = $(this).data('id');
-                // Handle the view action
-                console.log('View button clicked for ID:', id);
-            });
+             $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+                 const id = $(this).data('id');
+                 // Handle the view action
+                 console.log('View button clicked for ID:', id);
+             });
 
-            $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
-                const id = $(this).data('id');
-                console.log('Feature button clicked for ID:', id);
-                //FetchDataForEdit(id);
-            });
-        }
+             $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
+                 const id = $(this).data('id');
+                 console.log('Feature button clicked for ID:', id);
+                 //FetchDataForEdit(id);
+             });
+         }
+
+
+
+
+
 
 
 
@@ -398,24 +419,24 @@
             $(window).scrollTop(scrollTop);
         }
 
-            function Cardbox() {
-    var CardboxElement = $("#Cardbox");
-    var addnewElement = $("#addnew");
+         function Cardbox() {
+             var CardboxElement = $("#Cardbox");
+             var addnewElement = $("#addnew");
 
-    if (addnewElement.html() === "Add New") {
-        CardboxElement.show();
-        addnewElement.text("Close");
-    } else {
-        ClearTextBox(); 
-        CardboxElement.hide();
-        addnewElement.html("Add New");
+             if (addnewElement.html() === "Add New") {
+                 CardboxElement.show();
+                 addnewElement.text("Close");
+             } else {
+                 ClearTextBox();
+                 CardboxElement.hide();
+                 addnewElement.html("Add New");
 
-    }
-        }
+             }
+         }
 
 
      </script>
-
-       <script src="assets/theme_assets/js/apiHelper.js"></script>
+    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>
+    <script src="assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>
