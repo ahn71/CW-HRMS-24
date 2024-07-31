@@ -23,7 +23,7 @@
                               </label>
                               <div class="radio-horizontal-list d-flex">
                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                      <input type="checkbox" class="form-check-input" id="chkIsGetUser">
+                                      <input type="checkbox" class="form-check-input" onchange="toggleReferenceEmp()" id="chkIsGetUser">
                                       <label class="form-check-label" for="chkIsGetUser"></label>
                                   </div>
                               </div>
@@ -41,16 +41,17 @@
                   <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                      <div class="Vertical-form">
                            <div class="row">
-                               <div class="col-lg-3">
+                               <div class="col-lg-3" id="ddlReference">
                                    <div class="form-group">
                                        <label id="lblHidenUserId" style="display: none"></label>
-                                       <label for="ddlUserRole" class="color-dark fs-14 fw-500 align-center mb-10">Employee</label>
+                                       <label for="ddlReferenceEmp" class="color-dark fs-14 fw-500 align-center mb-10">Employee</label>
                                        <div class="support-form__input-id">
                                            <div class="dm-select ">
                                                <select name="ddlReferenceEmp" id="ddlReferenceEmp" class="select-search form-control">
                                                    <option value="0">---Select---</option>
                                                </select>
                                            </div>
+                                             <span class="text-danger" id="repEmpError"></span>
                                        </div>
                                    </div>
                                </div>
@@ -61,7 +62,7 @@
                                        <label for="txtFirstName" class="color-dark fs-14 fw-500 align-center mb-10">
                                            First Name
                                        </label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtFirstName" placeholder="Type First Name">
+                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtFirstName" placeholder="Type First Name" pattern="[^\d]*" title="Numbers are not allowed" >
                                        <span class="text-danger" id="firstNameError"></span>
                                    </div>
                                </div>
@@ -88,7 +89,7 @@
                                <div class="col-lg-3">
                                    <div class="form-group">
                                        <label for="txtUserPassword" class="color-dark fs-14 fw-500 align-center mb-10">
-                                           User Password <span class="text-danger">*</span>
+                                           Password <span class="text-danger">*</span>
                                        </label>
                                        <input type="password" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtUserPassword" placeholder="Type User Password">
                                        <span class="text-danger" id="userPasswordError"></span>
@@ -112,6 +113,7 @@
                                                  <option value="0">---Select---</option>
                                              </select>
                                          </div>
+                                           <span class="text-danger" id="roleError"></span>
                                      </div>
                                  </div>
                               </div>
@@ -204,6 +206,7 @@
          var getEmployeeUrl = rootUrl + '/api/Employee/EmployeeName';
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
+         var createUserUrl = rootUrl + '/api/User/users/create';
          var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
 
          var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
@@ -215,9 +218,114 @@
              GetUsers();
              GetStpPkgFeatures();
              GetRolesFeatures();
+             //$('#chkIsGetUser').change(function () {
+             //    toggleReferenceEmp();
+             //});
 
 
          });
+         function toggleReferenceEmp() {
+             if ($('#chkIsGetUser').is(':checked')) {
+                 $('#ddlReference').hide("");
+                 $('#repEmpError').html("");
+                 $('#userEmailError').html("");
+                 $('#userPasswordError').html("");
+                 $('#userNameError').html("");
+                  $('#roleError').html("");
+             } else {
+                 $('#ddlReference').show();
+                 $('#userEmailError').html("");
+                 $('#roleError').html("");
+                 $('#userPasswordError').html("");
+                 $('#userNameError').html("");
+                
+             }
+         }
+         
+         function validateAndPostModule() {
+             var isValid = true;
+             let alphabeticPattern = /^[a-zA-Z]+$/;
+             let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+             if ($('#chkIsGetUser').is(':checked')) {
+                 $('#ddlReference').hide();
+                 $('#repEmpError').html("");
+             } else {
+                 $('#ddlReference').show();
+                 let selectedReferenceEmp = $('#ddlReferenceEmp').val();
+                 if (selectedReferenceEmp == "0") {
+                     $('#repEmpError').html("Please select a valid reference employee.");
+                     $("#ddlReferenceEmp").focus();
+                 } else {
+                     $('#repEmpError').html("");
+                 }
+             }
+             let firstName = $('#txtFirstName').val().trim();
+             if (firstName !== "" && !alphabeticPattern.test(firstName)) {
+                 $('#firstNameError').html("Only alphabetic characters are allowed.");
+                 $("#txtFirstName").focus();
+                 isValid = false;
+             } else {
+                 $('#firstNameError').html("");
+             }
+             let LastName = $('#txtLastName').val().trim();
+             if (LastName !== "" && !alphabeticPattern.test(LastName)) {
+                 $('#lastNameError').html("Only alphabetic characters are allowed.");
+                 $("#txtLastName").focus();
+                 isValid = false;
+             } else {
+                 $('#lastNameError').html("");
+             }
+             if ($('#txtUserName').val().trim() === "") {
+                 $('#userNameError').html("User Name is required.");
+                 $("#txtUserName").focus();
+                 isValid = false;
+             } else {
+                 $('#userNameError').html("");
+             }
+             if ($('#txtUserPassword').val().trim() === "") {
+                 $('#userPasswordError').html("Password is required.");
+                 $("#userPasswordError").focus();
+                 isValid = false;
+             } else {
+                 $('#userNameError').html("");
+             }
+
+             let userEmail = $('#txtUserEmail').val().trim();
+             if (userEmail === "") {
+                 $('#userEmailError').html("Email is required.");
+                 $("#txtUserEmail").focus();
+                 isValid = false;
+             } else if (!emailPattern.test(userEmail)) {
+                 $('#userEmailError').html("Please enter a valid email address.");
+                 $("#txtUserEmail").focus();
+                 isValid = false;
+             } else {
+                 $('#userEmailError').html("");
+             }
+             let selectedRole = $('#ddlUserRole').val();
+             if (selectedRole == "0") {
+                 $('#roleError').html("Please select role.");
+                 $("#ddlUserRole").focus();
+                 isValid = false;
+             } else {
+                 $('#roleError').html("");
+             }
+             if (isValid) {
+                 var addnewElement = $("#btnSave");
+                 if (addnewElement.html() === "Save") {
+                     PostStpPkgFeatures();
+                     //ClearTextBox();
+                 }
+                 else {
+                     updateModule();
+                     ClearTextBox();
+                 }
+             }
+         }
+
+
+
+
          function IsGuestUser () {
                 $('#chkIsGetUser').change(function() {
                 if ($(this).is(':checked')) {
@@ -401,8 +509,233 @@
                  //FetchDataForEdit(id);
              });
          }
+         var selectedPermissionIDs = [];
+         var responseData = null;
+         function GetStpPkgFeatures() {
+             console.log('Calling GetModule');
+             $('.loaderPackages').show();
+             ApiCall(getStpPkgFeaturesWithParentUrl, token)
+                 .then(function (response) {
+                     if (response.statusCode === 200) {
+                         responseData = response.data;
+                         var treeData = transformToJSTreeFormat(responseData);
+                         console.log("TreeData :", treeData)
+                         $('#treeContainer').jstree({
+                             'core': {
+                                 'data': treeData,
+                                 'themes': {
+                                     'dots': true
+                                 },
+                                 'multiple': true,
+                                 'animation': true,
+                                 'check_callback': true
+                             },
+                             'checkbox': {
+                                 'keep_selected_style': false,
+                                 'tie_selection': true
+                             },
+                             'plugins': ['checkbox', 'wholerow']
+                         }).on('changed.jstree', function (e, data) {
+                             selectedPermissionIDs = [];
+
+                             for (i = 0, j = data.selected.length; i < j; i++) {
+
+                                 var node = data.instance.get_node(data.selected[i]);
+                                 if (node && node.children.length === 0) {
+                                     selectedPermissionIDs.push(parseInt(node.id, 10));
+                                 }
+                                 console.log('node:', node);
+                             }
+                             console.log('Child Node IDs:', selectedPermissionIDs);
+
+                         });
+                         $('.loaderPackages').hide();
+                     } else {
+                         console.error('Error occurred while fetching data:', response.message);
+                     }
+                 })
+                 .catch(function (error) {
+                     console.error('Error occurred while fetching data:', error.message || error);
+                 });
+         }
+
+         function transformToJSTreeFormat(data) {
+             return data.map(function (item) {
+                 let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
+
+                 return {
+                     "id": item.isPermission ? item.permissionId : item.moduleID,
+                     "text": item.name,
+                     "state": {
+                         "opened": true,
+                         "selected": hasSelectedChild
+                     },
+                     "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+                     "li_attr": {
+                         "id": item.isPermission ? item.permissionId : item.moduleID
+                     },
+                     "original": {
+                         "isPermission": item.isPermission
+                     }
+                 };
+             });
+         }
+
+         var selectedPermissionIDsUpdate = []
+         var selectedPermissionIDs = []
+
+         function FetchDataForEdit(moduleID) {
+             ApiCallById(getRolesByIdUrl, token, moduleID)
+                 .then(function (response) {
+                     console.log('Data:', response);
+                     var data = response.data;
+                     $('#lblHidenRolesId').val(data.userRoleId);
+                     //BoxExpland();
+                     selectedPermissionIDs = JSON.parse(data.permissions);
+                     console.log('Roles data:',selectedPermissionIDs);
+                     if (Array.isArray(selectedPermissionIDs)) {
+                         var treeData = transformToJSTreeFormats(responseData);
+                         $('#treeContainer').jstree("destroy").empty();
+                         $('#treeContainer').jstree({
+                             'core': {
+                                 'data': treeData,
+                                 'themes': {
+                                     'dots': true
+                                 },
+                                 'multiple': true,
+                                 'animation': true,
+                                 'check_callback': true
+                             },
+                             'checkbox': {
+                                 'keep_selected_style': false,
+                                 'tie_selection': true
+                             },
+                             'plugins': ['checkbox', 'wholerow']
+                         }).on('ready.jstree', function (e, data) {
+                             selectedPermissionIDs.forEach(function (id) {
+                                 console.log("id.toString()", id.toString())
+                                 data.instance.select_node(id.toString());
+                             });
+                         }).on('changed.jstree', function (e, data) {
+                             selectedPermissionIDsUpdate = [];
+
+                             for (i = 0, j = data.selected.length; i < j; i++) {
+
+                                 var node = data.instance.get_node(data.selected[i]);
+                                 if (node && node.children.length === 0) {
+                                     selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
+                                 }
+                                 //console.log('node:', node);
+                             }
+                             console.log('roles Data and Additional Data :', selectedPermissionIDsUpdate)
+                         });
+                     } else {
+                         console.error('responseData.features is not an array:', responseData.features);
+                     }
+                 })
+                 .catch(function (error) {
+                     console.error('Error:', error);
+                 });
+         }
 
 
+         function transformToJSTreeFormats(data) {
+             return data.map(function (item) {
+
+                 return {
+                     "id": item.isPermission ? item.permissionId : item.moduleID,
+                     "text": item.name,
+                     "state": {
+                         "opened": true
+                     },
+                     "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+                     "li_attr": {
+                         "id": item.isPermission ? item.permissionId : item.moduleID
+                     },
+                     "original": {
+                         "isPermission": item.isPermission
+                     }
+                 };
+             });
+         }
+
+         
+         function PostStpPkgFeatures() {
+           
+             var refaranceEmp = ($('#ddlReferenceEmp').val());
+             var firstName = $('#txtFirstName').val();
+             var lastName = $('#txtLastName').val();
+             var userName = $('#txtUserName').val();
+             var userPassword = $('#txtUserPassword').val();
+             var userEmail = $('#txtUserEmail').val();
+             var userRole = parseInt($('#ddlUserRole').val());
+             var isActive = $('#chkIsActive').is(':checked'); 
+             var isGuest = $('#chkIsGetUser').is(':checked'); 
+             var treeInstance = $('#treeContainer').jstree(true);
+
+            var jsonRolesData = JSON.stringify(selectedPermissionIDs);
+            var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
+
+             var rolesDataArray = JSON.parse(jsonRolesData);
+             var updateDataArray = JSON.parse(jsonUpdateData);
+             var removedItems = findDifferences(rolesDataArray, updateDataArray);
+             var addedItems = findDifferences(updateDataArray, rolesDataArray);
+
+            function findDifferences(array1, array2) {
+                return array1.filter(item => !array2.includes(item));
+            }
+
+             if (removedItems.length > 0 || addedItems.length > 0) {
+                 console.log("Removed Items:", removedItems);
+                 console.log("Added Items:", addedItems);
+                 rolesDataArray = rolesDataArray.filter(item => !removedItems.includes(item));
+             }
+
+             console.log("Updated Roles Data:", rolesDataArray);
+
+
+
+            var postData = {
+                
+                FirstName: firstName,
+                LastName: lastName,
+                UserName: userName,
+                UserPassword: userPassword,
+                Email: userEmail,
+                UserRoleID: userRole,
+                IsGuestUser: isGuest,
+                ReferenceID: refaranceEmp,
+                AdditionalPermissions: JSON.stringify(addedItems),
+                RemovedPermissions: JSON.stringify(removedItems),
+                IsActive: isActive,
+                //Permissions: jsonUpdateData,
+
+            };
+
+            ApiCallPost(createUserUrl, token, postData)
+                .then(function (response) {
+                    console.log('Data saved successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Data saved successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            //GetModule();
+                            //GetRoles();
+                            //GetPackages();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error saving data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to save data. Please try again.'
+                    });
+                });
+        }
 
 
 
@@ -436,7 +769,7 @@
 
 
      </script>
-    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>
+<%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
     <script src="assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>
