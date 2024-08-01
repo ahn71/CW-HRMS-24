@@ -133,7 +133,7 @@
                                        </div>
                                    </div>
                                </div>
-                               <div class="col-lg-6">
+                               <div class="col-lg-3">
                                    <p>Select Aditional Permissions</p>
                                    <div class="loader-size loaderPackages " style="display: none">
                                        <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
@@ -340,7 +340,7 @@
              $('#ddlUserRole').change(function () {
                  var selectedValue = $(this).val();
                  console.log("Selected value: " + selectedValue);
-                 FetchDataForEdit(selectedValue);
+                 FetchDataRolesWise(selectedValue);
 
              });
          }
@@ -424,9 +424,9 @@
              $('#filter-form-container').empty();
 
              data.forEach(row => {
-                 row.userRoleName = `
+                 row.userName = `
         <div class="permission-name-container">
-            ${row.userRoleName}
+            ${row.userName}
             <div class="actions-container">
                 <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
                     <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
@@ -487,7 +487,7 @@
              // Clear and re-attach event listeners
              $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
                  const userId = $(this).data('id');
-                 //FetchDataForEdit(userId);
+                 FetchDataForEdit(userId);
                  console.log('Edit button clicked for ID:', userId);
              });
 
@@ -537,7 +537,6 @@
                              'plugins': ['checkbox', 'wholerow']
                          }).on('changed.jstree', function (e, data) {
                              selectedPermissionIDs = [];
-
                              for (i = 0, j = data.selected.length; i < j; i++) {
 
                                  var node = data.instance.get_node(data.selected[i]);
@@ -584,14 +583,35 @@
          var selectedPermissionIDsUpdate = []
          var selectedPermissionIDs = []
 
-         function FetchDataForEdit(moduleID) {
+         function FetchDataRolesWise(moduleID) {
              ApiCallById(getRolesByIdUrl, token, moduleID)
                  .then(function (response) {
                      console.log('Data:', response);
                      var data = response.data;
                      $('#lblHidenRolesId').val(data.userRoleId);
                      //BoxExpland();
+
                      selectedPermissionIDs = JSON.parse(data.permissions);
+                     console.log('additionalPermissions:',additionalPermissions);
+                     console.log('removedPermissions:', removedPermissions);
+
+                     if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
+                         selectedPermissionIDs = selectedPermissionIDs.filter(id => !removedPermissions.includes(id));
+
+                         additionalPermissions.forEach(id => {
+                             if (!selectedPermissionIDs.includes(id)) {
+                                 selectedPermissionIDs.push(id);
+                             }
+                         });
+
+                         console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
+                     } else {
+                         console.log('only roles data :.',selectedPermissionIDs);
+                     }
+
+
+
+
                      console.log('Roles data:',selectedPermissionIDs);
                      if (Array.isArray(selectedPermissionIDs)) {
                          var treeData = transformToJSTreeFormats(responseData);
@@ -637,8 +657,6 @@
                      console.error('Error:', error);
                  });
          }
-
-
          function transformToJSTreeFormats(data) {
              return data.map(function (item) {
 
@@ -659,86 +677,129 @@
              });
          }
 
-         
+         function findDifferences(array1, array2) {
+             return array1.filter(item => !array2.includes(item));
+         }
          function PostStpPkgFeatures() {
-           
-             var refaranceEmp = ($('#ddlReferenceEmp').val());
+             var refaranceEmp = $('#ddlReferenceEmp').val();
              var firstName = $('#txtFirstName').val();
              var lastName = $('#txtLastName').val();
              var userName = $('#txtUserName').val();
              var userPassword = $('#txtUserPassword').val();
              var userEmail = $('#txtUserEmail').val();
              var userRole = parseInt($('#ddlUserRole').val());
-             var isActive = $('#chkIsActive').is(':checked'); 
-             var isGuest = $('#chkIsGetUser').is(':checked'); 
+             var isActive = $('#chkIsActive').is(':checked');
+             var isGuest = $('#chkIsGetUser').is(':checked');
              var treeInstance = $('#treeContainer').jstree(true);
 
-            var jsonRolesData = JSON.stringify(selectedPermissionIDs);
-            var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
+             var jsonRolesData = JSON.stringify(selectedPermissionIDs);
+             var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
 
              var rolesDataArray = JSON.parse(jsonRolesData);
              var updateDataArray = JSON.parse(jsonUpdateData);
              var removedItems = findDifferences(rolesDataArray, updateDataArray);
              var addedItems = findDifferences(updateDataArray, rolesDataArray);
 
-            function findDifferences(array1, array2) {
-                return array1.filter(item => !array2.includes(item));
-            }
+
 
              if (removedItems.length > 0 || addedItems.length > 0) {
-                 console.log("Removed Items:", removedItems);
-                 console.log("Added Items:", addedItems);
                  rolesDataArray = rolesDataArray.filter(item => !removedItems.includes(item));
              }
 
-             console.log("Updated Roles Data:", rolesDataArray);
+             var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
+             var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
+
+             var postData = {
+                 FirstName: firstName,
+                 LastName: lastName,
+                 UserName: userName,
+                 UserPassword: userPassword,
+                 Email: userEmail,
+                 UserRoleID: userRole,
+                 IsGuestUser: isGuest,
+                 ReferenceID: refaranceEmp,
+                 AdditionalPermissions: additionalPermissions,
+                 RemovedPermissions: removedPermissions,
+                 IsActive: isActive,
+             };
+
+             ApiCallPost(createUserUrl, token, postData)
+                 .then(function (response) {
+                     console.log('Data saved successfully:', response);
+                     Swal.fire({
+                         icon: 'success',
+                         title: 'Success',
+                         text: 'Data saved successfully!'
+                     }).then((result) => {
+                         if (result.isConfirmed) {
+                             //GetModule();
+                             //GetRoles();
+                             //GetPackages();
+                         }
+                     });
+                 })
+                 .catch(function (error) {
+                     console.error('Error saving data:', error);
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Error',
+                         text: 'Failed to save data. Please try again.'
+                     });
+                 });
+         }
+
+         var additionalPermissions;
+         var removedPermissions;
+
+         function FetchDataForEdit(moduleId) {
+             ApiCallById(getUsersUrl, token, moduleId)
+                 .then(function (responseData) {
+                     var data = responseData.data;
+                     console.log(data.moduleId);
+                     $('#lblHidenUserId').val(data.userId);
+                     $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
+                     $('#txtFirstName').val(data.firstName);
+                     $('#txtLastName').val(data.lastName);
+                     $('#txtUserName').val(data.userName);
+                     $('#txtUserPassword').val(data.userPassword);
+                     $('#txtUserEmail').val(data.email);
+                     $('select[name="ddlUserRole"]').val(data.userRoleID).change();
+                     $('#chkIsActive').prop('checked', data.isGuestUser);
+                     $('#chkIsGetUser').prop('checked', data.isActive);
+                     var GuestUser = data.isGuestUser;
+
+                     
+
+                     additionalPermissions = JSON.parse(data.additionalPermissions);
+                     removedPermissions = JSON.parse(data.removedPermissions);
+                     console.log(additionalPermissions);
+                     console.log(removedPermissions);
 
 
 
-            var postData = {
-                
-                FirstName: firstName,
-                LastName: lastName,
-                UserName: userName,
-                UserPassword: userPassword,
-                Email: userEmail,
-                UserRoleID: userRole,
-                IsGuestUser: isGuest,
-                ReferenceID: refaranceEmp,
-                AdditionalPermissions: JSON.stringify(addedItems),
-                RemovedPermissions: JSON.stringify(removedItems),
-                IsActive: isActive,
-                //Permissions: jsonUpdateData,
-
-            };
-
-            ApiCallPost(createUserUrl, token, postData)
-                .then(function (response) {
-                    console.log('Data saved successfully:', response);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Data saved successfully!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            //GetModule();
-                            //GetRoles();
-                            //GetPackages();
-                        }
-                    });
-                })
-                .catch(function (error) {
-                    console.error('Error saving data:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to save data. Please try again.'
-                    });
-                });
-        }
+                     if (GuestUser == true) {
+                         $('#chkIsGetUser').prop('checked', true);
+                         $('#FirstName, #LastName').show();
+                         $('#ddlReference').hide();
+                     } else {
+                         $('#chkIsGetUser').prop('checked', false);
+                         $('#FirstName, #LastName').hide();
+                         $('#ddlReference').show();
+                     }
 
 
+                     console.log(GuestUser);
+                     
+                     $('#btnSave').html('Update');
 
+                     BoxExpland()
+                     //Cardbox()
+                 })
+                 .catch(function (error) {
+                     console.error('Error:', error);
+                 });
+
+         }
 
 
 
