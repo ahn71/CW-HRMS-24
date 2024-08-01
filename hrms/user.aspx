@@ -279,15 +279,24 @@
                  $('#userNameError').html("User Name is required.");
                  $("#txtUserName").focus();
                  isValid = false;
-             } else {
-                 $('#userNameError').html("");
-             }
-             if ($('#txtUserPassword').val().trim() === "") {
-                 $('#userPasswordError').html("Password is required.");
-                 $("#userPasswordError").focus();
+             } else if ($('#txtUserName').val().trim().length < 6) {
+                 $('#userNameError').html("User Name must be at least 6 characters.");
+                 $("#txtUserName").focus();
                  isValid = false;
              } else {
                  $('#userNameError').html("");
+             }
+
+             if ($('#txtUserPassword').val().trim() === "") {
+                 $('#userPasswordError').html("Password is required.");
+                 $("#txtUserPassword").focus();
+                 isValid = false;
+             } else if ($('#txtUserPassword').val().trim().length < 6) {
+                 $('#userPasswordError').html("Password must be at least 6 characters.");
+                 $("#txtUserPassword").focus();
+                 isValid = false;
+             } else {
+                 $('#userPasswordError').html("");
              }
 
              let userEmail = $('#txtUserEmail').val().trim();
@@ -606,7 +615,8 @@
 
                          console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
                      } else {
-                         console.log('only roles data :.',selectedPermissionIDs);
+                         console.log('only roles data :.', selectedPermissionIDs);
+                         selectedPermissionIDs = JSON.parse(data.permissions);
                      }
 
 
@@ -709,6 +719,7 @@
              var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
              var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
 
+
              var postData = {
                  FirstName: firstName,
                  LastName: lastName,
@@ -718,7 +729,7 @@
                  UserRoleID: userRole,
                  IsGuestUser: isGuest,
                  ReferenceID: refaranceEmp,
-                 AdditionalPermissions: additionalPermissions,
+                 AdditionalPermissions:additionalPermissions,
                  RemovedPermissions: removedPermissions,
                  IsActive: isActive,
              };
@@ -748,8 +759,10 @@
                  });
          }
 
-         var additionalPermissions;
-         var removedPermissions;
+         var additionalPermissions = [];
+         var removedPermissions = [];
+
+         
 
          function FetchDataForEdit(moduleId) {
              ApiCallById(getUsersUrl, token, moduleId)
@@ -768,7 +781,8 @@
                      $('#chkIsGetUser').prop('checked', data.isActive);
                      var GuestUser = data.isGuestUser;
 
-                     
+                     additionalPermissions = [];
+                     removedPermissions = [];
 
                      additionalPermissions = JSON.parse(data.additionalPermissions);
                      removedPermissions = JSON.parse(data.removedPermissions);
