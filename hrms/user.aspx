@@ -207,6 +207,7 @@
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
          var createUserUrl = rootUrl + '/api/User/users/create';
+         var updateUserUrl = rootUrl + '/api/User/users/update';
          var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
 
          var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
@@ -322,11 +323,11 @@
              if (isValid) {
                  var addnewElement = $("#btnSave");
                  if (addnewElement.html() === "Save") {
-                     PostStpPkgFeatures();
+                     PostUsers();
                      //ClearTextBox();
                  }
                  else {
-                     updateModule();
+                     updateUsers();
                      ClearTextBox();
                  }
              }
@@ -690,13 +691,13 @@
          function findDifferences(array1, array2) {
              return array1.filter(item => !array2.includes(item));
          }
-         function PostStpPkgFeatures() {
+         function PostUsers() {
              var refaranceEmp = $('#ddlReferenceEmp').val();
-             var firstName = $('#txtFirstName').val();
-             var lastName = $('#txtLastName').val();
-             var userName = $('#txtUserName').val();
-             var userPassword = $('#txtUserPassword').val();
-             var userEmail = $('#txtUserEmail').val();
+             var firstName = $('#txtFirstName').val().trim();
+             var lastName = $('#txtLastName').val().trim();
+             var userName = $('#txtUserName').val().trim();
+             var userPassword = $('#txtUserPassword').val().trim();
+             var userEmail = $('#txtUserEmail').val().trim();
              var userRole = parseInt($('#ddlUserRole').val());
              var isActive = $('#chkIsActive').is(':checked');
              var isGuest = $('#chkIsGetUser').is(':checked');
@@ -758,6 +759,77 @@
                      });
                  });
          }
+
+         function updateUsers() {
+                 var userId = $('#lblHidenUserId').val();
+                 var refaranceEmp = $('#ddlReferenceEmp').val();
+                 var firstName = $('#txtFirstName').val().trim();
+                 var lastName = $('#txtLastName').val().trim();
+                 var userName = $('#txtUserName').val().trim();
+                 var userPassword = $('#txtUserPassword').val().trim();
+                 var userEmail = $('#txtUserEmail').val().trim();
+                 var userRole = parseInt($('#ddlUserRole').val());
+                 var isActive = $('#chkIsActive').is(':checked');
+                 var isGuest = $('#chkIsGetUser').is(':checked');
+
+       
+
+             var jsonRolesData = JSON.stringify(selectedPermissionIDs);
+             var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
+
+             var rolesDataArray = JSON.parse(jsonRolesData);
+             var updateDataArray = JSON.parse(jsonUpdateData);
+             var removedItems = findDifferences(rolesDataArray, updateDataArray);
+             var addedItems = findDifferences(updateDataArray, rolesDataArray);
+
+
+
+             if (removedItems.length > 0 || addedItems.length > 0) {
+                 rolesDataArray = rolesDataArray.filter(item => !removedItems.includes(item));
+             }
+
+             var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
+             var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
+
+                var updateData = {
+                    FirstName: firstName,
+                    LastName: lastName,
+                    UserName: userName,
+                    UserPassword: userPassword,
+                    Email: userEmail,
+                    UserRoleID: userRole,
+                    IsGuestUser: isGuest,
+                    ReferenceID: refaranceEmp,
+                    AdditionalPermissions: additionalPermissions,
+                    RemovedPermissions: removedPermissions,
+                    IsActive: isActive,
+                };
+
+             ApiCallUpdate(updateUserUrl, token, updateData, userId)
+                 .then(function (response) {
+                     console.log('Data updated successfully:', response);
+                     Swal.fire({
+                         icon: 'success',
+                         title: 'Success',
+                         text: 'Data updated successfully!'
+                     }).then((result) => {
+                         if (result.isConfirmed) {
+                             //GetRoles();
+                             //GetPackages();
+                         }
+                     });
+                 })
+                 .catch(function (error) {
+                     console.error('Error updating data:', error);
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Error',
+                         text: 'Failed to update data. Please try again.'
+                     });
+                 });
+         }
+
+
 
          var additionalPermissions = [];
          var removedPermissions = [];
