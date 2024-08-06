@@ -142,12 +142,12 @@
    </main>   
 
     <script>
-        function Cardbox() {
-            $("#Cardbox").toggle();
-            var currentText = $("#addnew").text();
-            var newText = currentText === "Close" ? "Add New" : "Close";
-            $("#addnew").text(newText);
-        }
+        //function Cardbox() {
+        //    $("#Cardbox").toggle();
+        //    var currentText = $("#addnew").text();
+        //    var newText = currentText === "Close" ? "Add New" : "Close";
+        //    $("#addnew").text(newText);
+        //}
 
 
         //var rootUrl = 'http://localhost:5081';

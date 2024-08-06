@@ -16,14 +16,14 @@
                         </div>
 
                      </div>
-                      <div class="col-lg-3">
+                      <div class="col-lg-3 " id="IsGuest" style="display:none">
                           <div class="form-group d-flex">
                               <label for="chkIsGetUser" class="color-dark fs-14 fw-500 align-center">
                                   Guest User <span class="text-danger"></span>
                               </label>
                               <div class="radio-horizontal-list d-flex">
                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                      <input type="checkbox" class="form-check-input" onchange="toggleReferenceEmp()" id="chkIsGetUser">
+                                      <input type="checkbox" class="form-check-input" id="chkIsGetUser">
                                       <label class="form-check-label" for="chkIsGetUser"></label>
                                   </div>
                               </div>
@@ -41,43 +41,43 @@
                   <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                      <div class="Vertical-form">
                            <div class="row">
-                               <div class="col-lg-3" id="ddlReference">
-                                   <div class="form-group">
-                                       <label id="lblHidenUserId" style="display: none"></label>
-                                       <label for="ddlReferenceEmp" class="color-dark fs-14 fw-500 align-center mb-10">Employee</label>
-                                       <div class="support-form__input-id">
-                                           <div class="dm-select ">
-                                               <select name="ddlReferenceEmp" id="ddlReferenceEmp" class="select-search form-control">
-                                                   <option value="0">---Select---</option>
-                                               </select>
+                               <div class="col-lg-8">
+                                   <div class="row">
+                                       <div class="col-lg-4" id="ddlReference">
+                                           <div class="form-group">
+                                               <label id="lblHidenUserId" style="display: none"></label>
+                                               <label for="ddlReferenceEmp" class="color-dark fs-14 fw-500 align-center mb-10">Employee</label>
+                                               <div class="support-form__input-id">
+                                                   <div class="dm-select ">
+                                                       <select name="ddlReferenceEmp" id="ddlReferenceEmp" class="select-search form-control">
+                                                           <option value="0">---Select---</option>
+                                                       </select>
+                                                   </div>
+                                                   <span class="text-danger" id="repEmpError"></span>
+                                               </div>
                                            </div>
-                                             <span class="text-danger" id="repEmpError"></span>
                                        </div>
-                                   </div>
-                               </div>
-                               
-                                 <div id="FirstName" style="display:none" class="col-lg-3">
-                                   <div class="form-group">
 
-                                       <label for="txtFirstName" class="color-dark fs-14 fw-500 align-center mb-10">
-                                           First Name
-                                       </label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtFirstName" placeholder="Type First Name" pattern="[^\d]*" title="Numbers are not allowed" >
-                                       <span class="text-danger" id="firstNameError"></span>
-                                   </div>
-                               </div>
-                               <div id="LastName" style="display:none" class="col-lg-3">
-                                   <div class="form-group">
-                                       <label for="txtLastName" class="color-dark fs-14 fw-500 align-center mb-10">
-                                           Last Name
-                                       </label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtLastName" placeholder="Type Last name">
-                                       <span class="text-danger" id="lastNameError"></span>
-                                   </div>
-                               </div>
-                            
-                  
-                               <div class="col-lg-3">
+                                       <div id="FirstName" style="display: none" class="col-lg-4">
+                                           <div class="form-group">
+
+                                               <label for="txtFirstName" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   First Name
+                                               </label>
+                                               <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtFirstName" placeholder="Type First Name" pattern="[^\d]*" title="Numbers are not allowed">
+                                               <span class="text-danger" id="firstNameError"></span>
+                                           </div>
+                                       </div>
+                                       <div id="LastName" style="display: none" class="col-lg-4">
+                                           <div class="form-group">
+                                               <label for="txtLastName" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   Last Name
+                                               </label>
+                                               <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtLastName" placeholder="Type Last name">
+                                               <span class="text-danger" id="lastNameError"></span>
+                                           </div>
+                                       </div>
+                                       <div class="col-lg-4">
                                    <div class="form-group">
                                        <label for="txtUserName" class="color-dark fs-14 fw-500 align-center mb-10">
                                            User Name <span class="text-danger">*</span>
@@ -86,7 +86,7 @@
                                        <span class="text-danger" id="userNameError"></span>
                                    </div>
                                </div>
-                               <div class="col-lg-3">
+                               <div class="col-lg-4">
                                    <div class="form-group">
                                        <label for="txtUserPassword" class="color-dark fs-14 fw-500 align-center mb-10">
                                            Password <span class="text-danger">*</span>
@@ -95,7 +95,7 @@
                                        <span class="text-danger" id="userPasswordError"></span>
                                    </div>
                                </div>
-                               <div class="col-lg-3">
+                               <div class="col-lg-4">
                                    <div class="form-group">
                                        <label for="txtUserEmail" class="color-dark fs-14 fw-500 align-center mb-10">
                                            User Email <span class="text-danger">*</span>
@@ -104,7 +104,7 @@
                                        <span class="text-danger" id="userEmailError"></span>
                                    </div>
                                </div>
-                              <div class="col-lg-3">
+                               <div class="col-lg-4">
                                  <div class="form-group">
                                      <label for="ddlUserRole" class="color-dark fs-14 fw-500 align-center mb-10">User Role<span class="text-danger">*</span></label>
                                      <div class="support-form__input-id">
@@ -117,24 +117,45 @@
                                      </div>
                                  </div>
                               </div>
-                              
 
-                               <div class="col-lg-3">
-                                   <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
-                                   <div class="form-group d-flex">
-                                       <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
-                                           Status <span class="text-danger"></span>
-                                       </label>
-                                       <div class="radio-horizontal-list d-flex">
-                                           <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                               <input type="checkbox" checked class="form-check-input" id="chkIsActive">
-                                               <label class="form-check-label" for="chkIsActive"></label>
+                                       <div class="col-lg-4 " style="display:flex; justify-content:space-between">
+                                           <div class="LeftSite">
+                                           <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                           <div class="form-group d-flex">
+                                               <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                                   Status <span class="text-danger"></span>
+                                               </label>
+                                               <div class="radio-horizontal-list d-flex">
+                                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                                       <input type="checkbox" checked class="form-check-input" id="chkIsActive">
+                                                       <label class="form-check-label" for="chkIsActive"></label>
+                                                   </div>
+                                               </div>
                                            </div>
+                                           </div>
+                                           <div class="rightSite">
+                                               <label style="opacity: 0;" for="formGroupExampleInput"
+                                                   class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   Name <span
+                                                       class="text-danger"></span>
+                                               </label>
+                                               <button type="button" id="btnSave" onclick="validateUser()"
+                                                   class="btn btn-primary btn-default btn-squared px-30">Save</button>
+                                           </div>
+
                                        </div>
+                       
+
+
+
                                    </div>
+
                                </div>
-                               <div class="col-lg-3">
-                                   <p>Select Aditional Permissions</p>
+
+                            
+
+                               <div class="col-lg-4" id="treeSection">
+                                   <p>Select Permissions</p>
                                    <div class="loader-size loaderPackages " style="display: none">
                                        <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
                                            <span class="spin-dot badge-dot dot-primary"></span>
@@ -146,14 +167,10 @@
                                    <div id="treeContainer"></div>
                                </div>
 
-                               <div class="col-lg-3">
-                                 <label style="opacity: 0;" for="formGroupExampleInput"
-                                    class="color-dark fs-14 fw-500 align-center mb-10">Name <span
-                                       class="text-danger"></span></label>
-                                 <button type="button" id="btnSave" onclick="validateAndPostModule()"
-                                    class="btn btn-primary btn-default btn-squared px-30">Save</button>
-                              </div>
-                           </div>
+
+
+
+
              
                      </div>
                   </div>
@@ -208,6 +225,7 @@
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
          var createUserUrl = rootUrl + '/api/User/users/create';
          var updateUserUrl = rootUrl + '/api/User/users/update';
+         var DeleteUserUrl = rootUrl + '/api/User/users/delete';
          var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
 
          var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
@@ -219,9 +237,9 @@
              GetUsers();
              GetStpPkgFeatures();
              GetRolesFeatures();
-             //$('#chkIsGetUser').change(function () {
-             //    toggleReferenceEmp();
-             //});
+             $('#chkIsGetUser').change(function () {
+                 toggleReferenceEmp();
+             });
 
 
          });
@@ -243,9 +261,9 @@
              }
          }
          
-         function validateAndPostModule() {
+         function validateUser() {
              var isValid = true;
-             let alphabeticPattern = /^[a-zA-Z]+$/;
+            let alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
              let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
              if ($('#chkIsGetUser').is(':checked')) {
                  $('#ddlReference').hide();
@@ -324,7 +342,7 @@
                  var addnewElement = $("#btnSave");
                  if (addnewElement.html() === "Save") {
                      PostUsers();
-                     //ClearTextBox();
+                     ClearTextBox();
                  }
                  else {
                      updateUsers();
@@ -453,7 +471,13 @@
             <label class="form-check-label" for="switch-${row.userId}"></label>
         </div>
         `;
-
+                 
+                 row.isGuestUser = `
+        <div class="form-check form-switch form-switch-primary form-switch-sm">
+            <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
+            <label class="form-check-label" for="switch-${row.userId}"></label>
+        </div>
+        `;
                  row.permissions = `
         <div class="features-icon-container">
             <a href="javascript:void(0)" class="feature-btn" data-id="${row.userId}"><i class="uil uil-star"></i></a>
@@ -463,15 +487,13 @@
 
              const columns = [
                  { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-                 { "name": "firstName", "title": "First Name", "className": "userDatatable-content" },
-                 { "name": "lastName", "title": "Last Name", "className": "userDatatable-content" },
                  { "name": "userName", "title": "User Name", "className": "userDatatable-content" },
                  { "name": "userPassword", "title": "Password", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
-                 { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "referenceID", "title": "Refer By", "className": "userDatatable-content" },
                  { "name": "additionalPermissions", "title": "Additional Permissions", "className": "userDatatable-content" },
                  { "name": "removedPermissions", "title": "Remove Permission", "className": "userDatatable-content" },
+                 { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
              ];
 
@@ -585,10 +607,14 @@
                      },
                      "original": {
                          "isPermission": item.isPermission
-                     }
+                     },
+                     "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
                  };
              });
          }
+
+
+         
 
          var selectedPermissionIDsUpdate = []
          var selectedPermissionIDs = []
@@ -600,25 +626,34 @@
                      var data = response.data;
                      $('#lblHidenRolesId').val(data.userRoleId);
                      //BoxExpland();
-
+                     selectedPermissionIDs = [];
                      selectedPermissionIDs = JSON.parse(data.permissions);
                      console.log('additionalPermissions:',additionalPermissions);
                      console.log('removedPermissions:', removedPermissions);
 
-                     if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
-                         selectedPermissionIDs = selectedPermissionIDs.filter(id => !removedPermissions.includes(id));
+                     if (IsEditData) {
+                         if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
+                             // Remove permissions from selectedPermissionIDs
+                             selectedPermissionIDs = selectedPermissionIDs.filter(id => !removedPermissions.includes(id));
 
-                         additionalPermissions.forEach(id => {
-                             if (!selectedPermissionIDs.includes(id)) {
-                                 selectedPermissionIDs.push(id);
-                             }
-                         });
+                             // Add new permissions to selectedPermissionIDs
+                             additionalPermissions.forEach(id => {
+                                 if (!selectedPermissionIDs.includes(id)) {
+                                     selectedPermissionIDs.push(id);
+                                 }
+                             });
 
-                         console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
-                     } else {
-                         console.log('only roles data :.', selectedPermissionIDs);
-                         selectedPermissionIDs = JSON.parse(data.permissions);
+                             console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
+                         } else {
+                             // If no removed or additional permissions, update selectedPermissionIDs with existing permissions
+                             console.log('Only roles data:', selectedPermissionIDs);
+                             selectedPermissionIDs = JSON.parse(data.permissions);
+                         }
+
+                         // Set IsEditData to false
+                         IsEditData = false;
                      }
+
 
 
 
@@ -643,6 +678,7 @@
                              },
                              'plugins': ['checkbox', 'wholerow']
                          }).on('ready.jstree', function (e, data) {
+                          
                              selectedPermissionIDs.forEach(function (id) {
                                  console.log("id.toString()", id.toString())
                                  data.instance.select_node(id.toString());
@@ -747,6 +783,7 @@
                              //GetModule();
                              //GetRoles();
                              //GetPackages();
+                             GetUsers();
                          }
                      });
                  })
@@ -816,6 +853,7 @@
                          if (result.isConfirmed) {
                              //GetRoles();
                              //GetPackages();
+                             GetUsers();
                          }
                      });
                  })
@@ -834,15 +872,15 @@
          var additionalPermissions = [];
          var removedPermissions = [];
 
-         
+         var IsEditData =false;
 
          function FetchDataForEdit(moduleId) {
              ApiCallById(getUsersUrl, token, moduleId)
                  .then(function (responseData) {
                      var data = responseData.data;
-                     console.log(data.moduleId);
+                     IsEditData = true;
+                     //console.log(data.moduleId);
                      $('#lblHidenUserId').val(data.userId);
-                     $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
                      $('#txtFirstName').val(data.firstName);
                      $('#txtLastName').val(data.lastName);
                      $('#txtUserName').val(data.userName);
@@ -851,27 +889,38 @@
                      $('select[name="ddlUserRole"]').val(data.userRoleID).change();
                      $('#chkIsActive').prop('checked', data.isGuestUser);
                      $('#chkIsGetUser').prop('checked', data.isActive);
+                     $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
                      var GuestUser = data.isGuestUser;
 
                      additionalPermissions = [];
                      removedPermissions = [];
 
-                     additionalPermissions = JSON.parse(data.additionalPermissions);
-                     removedPermissions = JSON.parse(data.removedPermissions);
-                     console.log(additionalPermissions);
-                     console.log(removedPermissions);
+                     if (data.additionalPermissions.length > 0) {
+                         additionalPermissions = JSON.parse(data.additionalPermissions);
+                     }
+
+                     if (data.removedPermissions.length > 0) {
+                         removedPermissions = JSON.parse(data.removedPermissions);
+                     }
 
 
 
-                     if (GuestUser == true) {
-                         $('#chkIsGetUser').prop('checked', true);
+                     const isChecked = $('#chkIsGetUser').is(':checked');
+
+                     if (GuestUser) {
+                         if (!isChecked) {
+                             $('#chkIsGetUser').prop('checked', true);
+                         }
                          $('#FirstName, #LastName').show();
                          $('#ddlReference').hide();
                      } else {
-                         $('#chkIsGetUser').prop('checked', false);
+                         if (isChecked) {
+                             $('#chkIsGetUser').prop('checked', false);
+                         }
                          $('#FirstName, #LastName').hide();
                          $('#ddlReference').show();
                      }
+
 
 
                      console.log(GuestUser);
@@ -887,6 +936,39 @@
 
          }
 
+         function Delete(id) {
+             Swal.fire({
+                 title: 'Are you sure?',
+                 text: "Do you really want to delete this Packages?",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Yes, delete it!'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     ApiDeleteById(DeleteUserUrl, token, id)
+                         .then(function (response) {
+                             Swal.fire({
+                                 title: 'Success!',
+                                 text: 'Packages deleted successfully.',
+                                 icon: 'success',
+                                 confirmButtonText: 'OK'
+                             }).then(() => {
+                                 GetUsers();
+                             });
+                         })
+                         .catch(function (error) {
+                             Swal.fire({
+                                 title: 'Error!',
+                                 text: 'An error occurred while deleting the module.',
+                                 icon: 'error',
+                                 confirmButtonText: 'OK'
+                             });
+                         });
+                 }
+             });
+         }
 
 
 
@@ -896,6 +978,7 @@
 
             $("#Cardbox").show();
             $("#addnew").text("Close");
+             $("#IsGuest").show();
             $(window).scrollTop(scrollTop);
         }
 
@@ -905,17 +988,56 @@
 
              if (addnewElement.html() === "Add New") {
                  CardboxElement.show();
+                  $("#IsGuest").show();
                  addnewElement.text("Close");
              } else {
                  ClearTextBox();
                  CardboxElement.hide();
                  addnewElement.html("Add New");
-
+                   $("#IsGuest").hide();
              }
          }
 
+         function ClearTextBox() {
+             $('#txtFirstName').val("");
+             $('#txtLastName').val("");
+             $('#txtUserName').val("");
+             $('#txtUserPassword').val("");
+             $('#txtUserEmail').val("");
+             $('select[name="ddlUserRole"]').val('0').change();
+             $('select[name="ddlReferenceEmp"]').val('0').change();
+             $('#txtPermissionName').val("");
+             $('#txtPermissionsUrl').val("");
+             $('#txtPerPhysicalLocation').val("");
+             $('#txtPerOrdaring').val("");
+             $('#chkIsActive').prop('checked', false);
+             $('#chkIsGetUser').prop('checked', false);
+             $('#btnSave').text("Save");
+         }
+
+
+
 
      </script>
+    <style>
+
+        
+        .custom-permission-icon {
+            color: #8231d3;
+        }
+
+        .custom-module-icon {
+            color: #d331d3; 
+        }
+
+        #treeSection {
+            height:50vh;
+            overflow: auto;
+            background-color:#f0f8ff;
+            
+        }
+        
+    </style>
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
     <script src="assets/theme_assets/js/apiHelper.js"></script>
 
