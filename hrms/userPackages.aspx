@@ -38,7 +38,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <div class="form-group">
                                             <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
                                                 Ordering <span class="text-danger">*</span>
@@ -47,21 +47,34 @@
                                             <span class="text-danger" id="orderingError"></span>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
-                                        <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
-                                        <div class="form-group d-flex">
-                                            <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
-                                                Status <span class="text-danger"></span>
-                                            </label>
-                                            <div class="radio-horizontal-list d-flex">
-                                                <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                                    <input type="checkbox" checked class="form-check-input" id="chkIsActive">
-                                                    <label class="form-check-label" for="chkIsActive"></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
+
+                                      <div class="col-lg-3 " style="display:flex; justify-content:space-between">
+                                           <div class="LeftSite">
+                                           <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                           <div class="form-group d-flex">
+                                               <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                                   Status <span class="text-danger"></span>
+                                               </label>
+                                               <div class="radio-horizontal-list d-flex">
+                                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                                       <input type="checkbox" checked class="form-check-input" id="chkIsActive">
+                                                       <label class="form-check-label" for="chkIsActive"></label>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                           </div>
+                                           <div class="rightSite">
+                                               <label style="opacity: 0;" for="formGroupExampleInput"
+                                                   class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   Name <span
+                                                       class="text-danger"></span>
+                                               </label>
+                                               <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
+                                                   class="btn btn-primary btn-default btn-squared px-30">Save</button>
+                                           </div>
+
+                                       </div>
+                                    <div class="col-lg-4" id="treeSection">
                                         <p>Select features and permission</p>
                                         <div class="loader-size loaderPackages">
                                             <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
@@ -73,15 +86,7 @@
                                         </div>
                                         <div id="treeContainer"></div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <label style="opacity: 0;" for="formGroupExampleInput"
-                                            class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Name <span
-                                                class="text-danger"></span>
-                                        </label>
-                                        <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
-                                            class="btn btn-primary btn-default btn-squared px-30">Save</button>
-                                    </div>
+
                                 </div>
 
                             </div>
@@ -244,7 +249,7 @@
                     console.error('Error occurred while fetching data:', error.message || error);
                 });
         }
-
+        
         function transformToJSTreeFormat(data) {
             return data.map(function (item) {
                 let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
@@ -262,10 +267,32 @@
                     },
                     "original": {
                         "isPermission": item.isPermission
-                    }
+                    },
+                    "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
                 };
             });
         }
+        //function transformToJSTreeFormat(data) {
+        //    return data.map(function (item) {
+        //        let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
+
+        //        return {
+        //            "id": item.isPermission ? item.permissionId : item.moduleID,
+        //            "text": item.name,
+        //            "state": {
+        //                "opened": true,
+        //                "selected": hasSelectedChild
+        //            },
+        //            "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+        //            "li_attr": {
+        //                "id": item.isPermission ? item.permissionId : item.moduleID
+        //            },
+        //            "original": {
+        //                "isPermission": item.isPermission
+        //            }
+        //        };
+        //    });
+        //}
 
 
 

@@ -452,9 +452,9 @@
              $('#filter-form-container').empty();
 
              data.forEach(row => {
-                 row.userName = `
+                 row.name = `
         <div class="permission-name-container">
-            ${row.userName}
+            ${row.name}
             <div class="actions-container">
                 <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
                     <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
@@ -465,34 +465,26 @@
         </div>
         `;
 
-                 row.isActive = `
+         row.isActive = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
         </div>
         `;
                  
-                 row.isGuestUser = `
+         row.isGuestUser = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
-        </div>
-        `;
-                 row.permissions = `
-        <div class="features-icon-container">
-            <a href="javascript:void(0)" class="feature-btn" data-id="${row.userId}"><i class="uil uil-star"></i></a>
         </div>
         `;
              });
 
              const columns = [
                  { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-                 { "name": "userName", "title": "User Name", "className": "userDatatable-content" },
-                 { "name": "userPassword", "title": "Password", "className": "userDatatable-content" },
+                 { "name": "name", "title": "Name", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "referenceID", "title": "Refer By", "className": "userDatatable-content" },
-                 { "name": "additionalPermissions", "title": "Additional Permissions", "className": "userDatatable-content" },
-                 { "name": "removedPermissions", "title": "Remove Permission", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
              ];
@@ -531,7 +523,7 @@
 
              $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
                  const id = $(this).data('id');
-                 // Handle the view action
+                  FetchDataForView(id);
                  console.log('View button clicked for ID:', id);
              });
 
@@ -935,6 +927,30 @@
                  });
 
          }
+
+         function FetchDataForView(moduleId) {
+             ApiCallById(getUsersUrl, token, moduleId)
+                 .then(function (responseData) {
+                     var data = responseData.data;
+                     Swal.fire({
+                         title: 'User Information',
+                         html: `
+                    <strong>User Name:</strong> ${data.userName}<br>
+                    <strong>User Password:</strong> ${data.userPassword}
+                `,
+                         icon: 'info',
+                         confirmButtonText: 'OK'
+                     });
+                     $('#txtUserName').val(data.userName);
+                     $('#txtUserPassword').val(data.userPassword);
+                 })
+                 .catch(function (error) {
+                     console.error('Error:', error);
+                 });
+         }
+
+
+
 
          function Delete(id) {
              Swal.fire({
