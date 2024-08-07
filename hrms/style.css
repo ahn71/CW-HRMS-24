@@ -36201,3 +36201,26 @@ body:after {
 .jstree .jstree-loading {
     background: none !important;
 }
+.packagesTable tbody tr {
+    text-align:center;
+}
+
+.actions-center {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.custom-permission-icon {
+    color: #8231d3;
+}
+
+.custom-module-icon {
+    color: #d331d3;
+}
+
+#treeSection {
+    height: 50vh;
+    overflow: auto;
+    background-color: #f0f8ff;
+}

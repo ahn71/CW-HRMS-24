@@ -17,7 +17,7 @@
 
                      <div class="btn-wrapper">
                         <div class="dm-button-list d-flex flex-wrap align-items-end">
-                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                           </button>
+                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                          
                         </div>
                      </div>
                   </div>
@@ -121,11 +121,17 @@
                               <div class="ad-table-table__header d-flex justify-content-between">
                                   <h4 style="margin-top: 13px;">Module List</h4>
                               <div id="filter-form-container">
-
-                            
-
                               </div>
                               </div>
+
+                               <div class="loader-size loaderModulesList " style="display: none">
+                                   <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                       <span class="spin-dot badge-dot dot-primary"></span>
+                                   </div>
+                               </div>
 
                                <table class="table mb-0 table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
                                </table>
