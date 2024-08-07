@@ -3630,6 +3630,7 @@
     <Compile Include="hrms\modules.aspx.designer.cs">
       <DependentUpon>modules.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\Routs\Routing.cs" />
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
