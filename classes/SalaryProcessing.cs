@@ -12,7 +12,7 @@ namespace SigmaERP.classes
         string query = "";
         DataTable dt;
         SalaryRecord salaryRecord;
-        public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,string ExceptedEmpCardNo)
+        public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,bool hasLateDeduction,string ExceptedEmpCardNo)
         {
             //Note: ProcessNo is 1 for Separation Employees and 0 for Regular Employees
             try
@@ -175,9 +175,14 @@ namespace SigmaERP.classes
                         salaryRecord.AdvanceDeduction = getAdvanceDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
                     //get Tax Deduction
                     salaryRecord.ProfitTax =Round(double.Parse(employee["TaxAmount"].ToString()));
+                    // get Late Deduction
+                    if (hasLateDeduction)
+                        salaryRecord.LateFine = getLateFine();
+                   //get Punishment Deduction
+                    salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
 
-                    //OverTime 
-                    if (employee["EmpTypeId"].ToString() == "1")// for worker 
+                        //OverTime 
+                        if (employee["EmpTypeId"].ToString() == "1")// for worker 
                     {
                         salaryRecord = getOverTime(salaryRecord, employee);
                     }
@@ -235,13 +240,13 @@ namespace SigmaERP.classes
         {
 
             EmpId = (EmpId == "0" )?"": " and EmpId='" + EmpId + "'";
-             return CRUD.ExecuteReturnDataTable("select CompanyId,DptId,DsgId,GrdName,EmpId,EmpCardNo,EmpName,EmpType,EmpTypeId,EmpStatus,ActiveSalary,IsActive,CompanyId,SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,case when EmpTypeId=1 then 200 else 400 end as AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate from v_Personnel_EmpCurrentStatus Where  EmpStatus in ('1','8') AND ActiveSalary='true' AND IsActive='1' AND CompanyId='" + CompanyId + "' and EmpJoiningDate<='" + SelectDate + "' "+EmpId);
+             return CRUD.ExecuteReturnDataTable("select CompanyId,DptId,DsgId,GrdName,EmpId,EmpCardNo,EmpName,EmpType,EmpTypeId,EmpStatus,ActiveSalary,IsActive,CompanyId,SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate from v_Personnel_EmpCurrentStatus Where  EmpStatus in ('1','8') AND ActiveSalary='true' AND IsActive='1' AND CompanyId='" + CompanyId + "' and EmpJoiningDate<='" + SelectDate + "' "+EmpId);
         }
         private DataTable getSeparationEmployees(string CompanyId,string EmpId, string YearMonth)
         {
 
             EmpId = (EmpId == "0" )?"": " and s.EmpId='" + EmpId + "'";
-             return CRUD.ExecuteReturnDataTable("select s.EmpSeparationId,c.CompanyId,DptId,DsgId,GrdName,c.EmpId,c.EmpCardNo,c.EmpName,c.EmpType,c.EmpTypeId,c.EmpStatus,ActiveSalary,c.IsActive,c.CompanyId,c.SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,case when c.EmpTypeId=1 then 200 else 400 end as AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate,convert(varchar(10), s.EffectiveDate,120) as EffectiveDate from v_Personnel_EmpSeparation s inner join v_Personnel_EmpCurrentStatus as c on s.EmpId=c.EmpId and c.IsActive=1 and c.EmpStatus not in(1,8) where s.CompanyId ='" + CompanyId+"' AND YearMonth='"+ YearMonth + "' AND s.IsActive='True' "+EmpId);
+             return CRUD.ExecuteReturnDataTable("select s.EmpSeparationId,c.CompanyId,DptId,DsgId,GrdName,c.EmpId,c.EmpCardNo,c.EmpName,c.EmpType,c.EmpTypeId,c.EmpStatus,ActiveSalary,c.IsActive,c.CompanyId,c.SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate,convert(varchar(10), s.EffectiveDate,120) as EffectiveDate from v_Personnel_EmpSeparation s inner join v_Personnel_EmpCurrentStatus as c on s.EmpId=c.EmpId and c.IsActive=1 and c.EmpStatus not in(1,8) where s.CompanyId ='" + CompanyId+"' AND YearMonth='"+ YearMonth + "' AND s.IsActive='True' "+EmpId);
         }
         private DataTable getMonthInfo(string  CompanyId,string Month)
         {
@@ -335,20 +340,30 @@ namespace SigmaERP.classes
                 Amount = Math.Floor(Amount);
             return Amount;
         }
-        private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
+        private Double getLateFine()
         {
-
             //Late Deduction
             if (salaryRecord.LateDays > 2)
             {
                 int LateFineDays = salaryRecord.LateDays / 3;
-                salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
+                // salaryRecord.LateFine = Round(salaryRecord.BasicSalary / 30 * LateFineDays) ;
+               return  Round(salaryRecord.EmpPresentSalary / 30 * LateFineDays); //static for Mollah Fashion
             }
+            return 0;
+
+        }
+
+        private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
+        {
+
+            
             // Absent Deduction
-            salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
-           
+           // salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
+            salaryRecord.AbsentDeduction =Round(salaryRecord.EmpPresentSalary / 30 * salaryRecord.AbsentDay); //static for Mollah Fashion
+            
+            double totalDeductions = salaryRecord.LateFine + salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction + salaryRecord.ProvidentFund + salaryRecord.ProfitTax + salaryRecord.OthersDeduction;
             //Payable
-            salaryRecord.Payable = Round(((salaryRecord.EmpNetGross) - (salaryRecord.LateFine +salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction+salaryRecord.ProvidentFund+salaryRecord.ProfitTax)));
+            salaryRecord.Payable = Round(salaryRecord.EmpNetGross- totalDeductions);
             // Attendance Bonus
 
             //NetPayable (with normal OT)
@@ -487,9 +502,18 @@ namespace SigmaERP.classes
                 return Round(double.Parse(dt.Rows[0]["Amount"].ToString()));
             return 0;
         }
+        private double getPunishmentDeduction(string EmpId,DateTime FromDate)
+        {
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select PAmount from Payroll_Punishment where EmpId='" + EmpId + "' and MonthName='"+ FromDate.ToString("MM-yyyy") + "'");
+            if (dt != null && dt.Rows.Count > 0)
+                return Round(double.Parse(dt.Rows[0]["PAmount"].ToString()));
+            return 0;
+        }
         private double getOTRate(double Salary)
         {
-          return Math.Round((Salary / 208) *2, 2); // here 208 is static.                
+          //return Math.Round((Salary / 208) *2, 2); // here 208 is static.                
+          return Math.Round((Salary * .005), 2); // 0.5 % of Gross for Mollah Fashion          
         }
         private double getOTAmout(string OverTime,double OTRate)
         {            
@@ -508,16 +532,22 @@ namespace SigmaERP.classes
         }
         private SalaryRecord getOverTime(SalaryRecord salaryRecord,DataRow employee)
         {
-            salaryRecord.OTRate = getOTRate(double.Parse(employee["BasicSalary"].ToString()));
+            //salaryRecord.OTRate = getOTRate(double.Parse(employee["BasicSalary"].ToString()));
+            salaryRecord.OTRate = getOTRate(double.Parse(employee["EmpPresentSalary"].ToString())); // Gross for Mollah Fashion
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(@"DECLARE @maxOT VARCHAR(8) = '02:00:00' 
                                            Select  isnull(CAST(SUM(DATEDIFF(second, 0, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end)) / 3600 AS varchar(12)) + ':' + RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end)) / 60 % 60 AS varchar(2)), 2) + ':' +RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end)) % 60 AS varchar(2)), 2),'00:00:00') AS OverTime,isnull(CAST(SUM(DATEDIFF(second, 0, TotalOverTime)) / 3600 AS varchar(12)) + ':' + RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, TotalOverTime)) / 60 % 60 AS varchar(2)), 2) + ':' +RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, TotalOverTime)) % 60 AS varchar(2)), 2),'00:00:00') AS TotalOverTime from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND AttDate >='" +salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "'  and IsOverTime='1' and IsActive='1'");
             if (dt!=null && dt.Rows.Count > 0)
             {
-                // normal overtime as per compliance
-                salaryRecord.OverTime = dt.Rows[0]["OverTime"].ToString();
+                //// normal overtime as per compliance
+                //salaryRecord.OverTime = dt.Rows[0]["OverTime"].ToString();
+                //salaryRecord.OverTimeAmount = getOTAmout(salaryRecord.OverTime, salaryRecord.OTRate);
+
+                // normal overtime as per Mollah Fassion
+                salaryRecord.OverTime = dt.Rows[0]["TotalOverTime"].ToString();
                 salaryRecord.OverTimeAmount = getOTAmout(salaryRecord.OverTime, salaryRecord.OTRate);
-                
+
+
                 //total overtime for regular
                 salaryRecord.TotalOverTime = dt.Rows[0]["TotalOverTime"].ToString();
                 salaryRecord.TotalOTAmount = getOTAmout(salaryRecord.TotalOverTime, salaryRecord.OTRate);              

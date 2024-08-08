@@ -84,7 +84,7 @@ namespace SigmaERP.payroll.salary
                 SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]),int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
             }
             
-            sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId,EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked,txtSpecialGrossPer.Text.Trim(),ckbAdvanceDeduction.Checked,ckbStampDeduction.Checked,txtExceptedEmpCardNo.Text.Trim());
+            sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId,EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked,txtSpecialGrossPer.Text.Trim(),ckbAdvanceDeduction.Checked,ckbStampDeduction.Checked,ckbLateDeduction.Checked,txtExceptedEmpCardNo.Text.Trim());
             loadExistingSalary();
             return;
             string[] getDays = txtGenerateMonth.Text.Trim().Split('-');

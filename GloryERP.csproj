@@ -3448,6 +3448,7 @@
     <Compile Include="classes\PF_ProfitDistribution.cs" />
     <Compile Include="classes\Roster.cs" />
     <Compile Include="classes\RosteringLogic.cs" />
+    <Compile Include="classes\Routing.cs" />
     <Compile Include="classes\SalaryProcessing.cs" />
     <Compile Include="classes\SalaryProcessingCommonTask.cs" />
     <Compile Include="classes\ServerTimeZone.cs" />
@@ -3630,7 +3631,10 @@
     <Compile Include="hrms\modules.aspx.designer.cs">
       <DependentUpon>modules.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\Routs\Routing.cs" />
+    <Compile Include="hrms\repo\implementations\Zk.cs" />
+    <Compile Include="hrms\repo\implementations\ZkBiotime.cs" />
+    <Compile Include="hrms\repo\repositories\IDevice.cs" />
+    <Compile Include="hrms\repo\services\PunchService.cs" />
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

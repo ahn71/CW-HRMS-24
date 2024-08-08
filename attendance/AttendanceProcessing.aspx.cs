@@ -85,12 +85,12 @@ namespace SigmaERP.attendance
 
                         attendanceProcessing._AttendanceProcessingWithCommonShift(ddlCompanyList.SelectedValue, AttendanceDate, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue);
                     }
-                    else// RSS
+                    else
                     {
                         Random rnd = new Random();
                         string ProcessingID = DateTime.Now.ToFileTime().ToString() + "_" + rnd.Next().ToString();
                         lblErrorMessage.Text = ProcessingID;
-                        attendanceProcessing._AttendanceProcessing(ProcessingID, ddlCompanyList.SelectedValue, AttendanceDate, FileUpload1, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue,rblImportFrom.SelectedValue, lblErrorMessage1);
+                        attendanceProcessing._AttendanceProcessing(ProcessingID, ViewState["__AttMachineName__"].ToString(), ddlCompanyList.SelectedValue, AttendanceDate, FileUpload1, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue,rblImportFrom.SelectedValue, lblErrorMessage1);
                         generateAbsentNotification(AttendanceDate);
                     }
                     

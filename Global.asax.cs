@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SigmaERP.classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Routing;
 using System.Web.Security;
 using System.Web.SessionState;
 
@@ -12,7 +14,7 @@ namespace SigmaERP
 
         protected void Application_Start(object sender, EventArgs e)
         {
-
+            Routing.RegisterRoutes(RouteTable.Routes);
         }
 
         protected void Session_Start(object sender, EventArgs e)

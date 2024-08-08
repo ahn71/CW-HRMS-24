@@ -304,15 +304,15 @@ namespace SigmaERP.classes
 
 
         }
-        public DataTable GetPunch(string ProcessingID, string CompanyID, string CardNo, DateTime ShiftPunchCountStartTime, DateTime ShiftPunchCountEndTime)
+        public DataTable GetPunch(string ProcessingID, string DeviceType, string CompanyID, string CardNo, DateTime ShiftPunchCountStartTime, DateTime ShiftPunchCountEndTime)
         {
             try
             {
-                dt = new DataTable();
-
-         //       query = "select distinct CardNo,format(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttendancePunch_temp where ProcessingID='" + ProcessingID + "' and CompanyID='" + CompanyID + "' and  PunchTime>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and PunchTime<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND CardNo='" + CardNo + "' order by PunchTime ";
-                query = "select  distinct u.BADGENUMBER as CardNo,format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PunchTime from cw_att_zk.dbo.CHECKINOUT c inner join cw_att_zk.dbo.USERINFO u on c.USERID=u.USERID where c.CHECKTIME>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and c.CHECKTIME<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND u.BADGENUMBER='" + CardNo + "' order by format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss')";
-
+                dt = new DataTable();             
+                if(DeviceType== "zkbiotime")
+                    query = "select  emp_code as CardNo,FORMAT(punch_time,'yyyy-MM-dd HH:mm:ss') as PunchTime from zkbiotime.dbo.iclock_transaction where punch_time >='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and punch_time <='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  and emp_code='" + CardNo + "'  order by  FORMAT(punch_time,'yyyy-MM-dd HH:mm:ss')";
+                else // default att2000 [Old zk]
+                    query = "select  distinct u.BADGENUMBER as CardNo,format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PunchTime from cw_att_zk.dbo.CHECKINOUT c inner join cw_att_zk.dbo.USERINFO u on c.USERID=u.USERID where c.CHECKTIME>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and c.CHECKTIME<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND u.BADGENUMBER='" + CardNo + "' order by format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss')";
 
                 return CRUD.ExecuteReturnDataTable(query);
             }
@@ -618,7 +618,11 @@ namespace SigmaERP.classes
                     }
                     if (totalOTTime > TimeSpan.Parse("00:00:00"))
                     {
-                        if (totalOTTime > MinOverTime)
+                    // Secially for Mollah Fashion, Less then 15 mins not countable. 
+                    if(totalOTTime.Minutes<15)
+                        totalOTTime= new TimeSpan(totalOTTime.Hours, 0, 0);
+
+                    if (totalOTTime > MinOverTime)
                         {
                             _attRecord.OverTime = MinOverTime.ToString();// over time 
                             _attRecord.OtherOverTime = (totalOTTime - MinOverTime).ToString();// extra over time
