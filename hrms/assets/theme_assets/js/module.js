@@ -1,13 +1,14 @@
-﻿var rootUrl = 'http://localhost:5081';
+﻿//var rootUrl = 'http://localhost:5081';
+var rootUrl = 'https://localhost:7220';
 var GetByIdModuleUrl = rootUrl + '/api/UserModules/modules';
 var GetModuleUrl = rootUrl + '/api/UserModules/modules';
 var PostModuleUrl = rootUrl + '/api/UserModules/modules/create';
 var updateModuleUrl = rootUrl + '/api/UserModules/modules/update';
 var DeleteModuleUrl = rootUrl + '/api/UserModules/modules/delete';
 
-var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVl             IuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 function GetModule() {
-    ApiCall(GetModuleUrl, token)
+    ApiCall(GetModuleUrl, token )
         .then(function (response) {
             if (response.statusCode === 200) {
                 var responseData = response.data;
@@ -48,13 +49,7 @@ function validateAndPostModule() {
     } else {
         $('#physicalLocationError').html("");
     }
-    if ($('#txtIconClass').val().trim() === "") {
-        $('#iconClassError').html("Icon Class is required.");
-        $("#txtIconClass").focus();
-        isValid = false;
-    } else {
-        $('#iconClassError').html("");
-    }
+
     if ($('#txtOrdaring').val().trim() === "" || isNaN($('#txtOrdaring').val())) {
         $('#orderingError').html("Ordering is required and must be a number.");
         $("#txtOrdaring").focus();
@@ -389,6 +384,8 @@ function FetchDataForEdit(moduleId) {
 }
 
 $(document).ready(function () {
+    $(".loaderModulesList").show();
 
     GetModule();
+    $(".loaderModulesList").hide();
 });

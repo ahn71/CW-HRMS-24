@@ -142,15 +142,16 @@
    </main>   
 
     <script>
-        function Cardbox() {
-            $("#Cardbox").toggle();
-            var currentText = $("#addnew").text();
-            var newText = currentText === "Close" ? "Add New" : "Close";
-            $("#addnew").text(newText);
-        }
+        //function Cardbox() {
+        //    $("#Cardbox").toggle();
+        //    var currentText = $("#addnew").text();
+        //    var newText = currentText === "Close" ? "Add New" : "Close";
+        //    $("#addnew").text(newText);
+        //}
 
 
-        var rootUrl = 'http://localhost:5081';
+        //var rootUrl = 'http://localhost:5081';
+        var rootUrl = 'https://localhost:7220';
         var GetByIdPermissionUrl = rootUrl + '/api/UserPermissions/permissions';
         var GetModuleForDdlUrl = rootUrl + '/api/UserModules/modules';
         var GetPermissioneUrl = rootUrl + '/api/UserPermissions/permissions';
@@ -293,20 +294,7 @@
             } else {
                 $('#PermissionError').html("");
             }
-            if ($('#txtPermissionsUrl').val().trim() === "") {
-                $('#UrlError').html("Module Url is required.");
-                $("#txtPermissionsUrl").focus();
-                isValid = false;
-            } else {
-                $('#UrlError').html("");
-            }
-            if ($('#txtPerPhysicalLocation').val().trim() === "") {
-                $('#perPhysicalLocationError').html("Physical Location is required.");
-                $("#txtPerPhysicalLocation").focus();
-                isValid = false;
-            } else {
-                $('#perPhysicalLocationError').html("");
-            }
+
             if ($('#txtPerOrdaring').val().trim() === "" || isNaN($('#txtPerOrdaring').val())) {
                 $('#OrderingError').html("Ordering is required and must be a number.");
                 $("#txtPerOrdaring").focus();
@@ -371,25 +359,22 @@
                 ordering: ordering,
             };
 
-            // Call the API using ApiCallPost function
             ApiCallPost(PostPermissionUrl, token, postData)
                 .then(function (response) {
                     console.log('Data saved successfully:', response);
-                    // Handle success response with SweetAlert2
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
                         text: 'Data saved successfully!'
                     }).then((result) => {
-                        // Reload the page if the user clicks "OK"
                         if (result.isConfirmed) {
                             GetPermission();
+                            GetPackages();
                         }
                     });
                 })
                 .catch(function (error) {
                     console.error('Error saving data:', error);
-                    // Handle error response with SweetAlert2
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -401,7 +386,6 @@
         function FetchDataForEdit(moduleID) {
             ApiCallById(GetByIdPermissionUrl, token, moduleID)
                 .then(function (responseData) {
-                    // Log the retrieved data
                     console.log('Data:', responseData);
                     var data = responseData.data;
                     $('#lblHidenPermissionId').val(data.userPermId);
