@@ -1049,7 +1049,8 @@
         #treeSection {
             height:50vh;
             overflow: auto;
-            background-color:#f0f8ff;
+            margin-bottom:10px;
+            /*background-color:#f0f8ff;*/
             
         }
         

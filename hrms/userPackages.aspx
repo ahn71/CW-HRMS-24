@@ -131,7 +131,7 @@
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';//working
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
-
+     
         var PostPackagesUrl = rootUrl + '/api/UserPackages/Packages/create';//working
 
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';

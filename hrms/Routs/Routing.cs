@@ -16,7 +16,7 @@ namespace SigmaERP.hrms.Routs
         public static void RegisterRoutes(RouteCollection routes)
         {
             // Register the route
-            routes.MapPageRoute("PermissionsRoute", "permissions", "IndexRoutePhysicalFile");
+            routes.MapPageRoute("PermissionsRoute", "permissions", IndexRoutePhysicalFile);
         }
     }
 
