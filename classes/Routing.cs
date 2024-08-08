@@ -12,6 +12,7 @@ namespace SigmaERP.classes
         public static string DashboardRouteName = "DashboardRoute";
         public static string DashboardRouteUrl = rootURL+"/dashboard";
         private static string DashboardRoutePhysicalFile = "~/hrms/dashboard.aspx";
+
         public static string LoginRouteName = "LoginRoute";
         public static string LoginRouteUrl = rootURL+"/login";
         private static string LoginRoutePhysicalFile = "~/hrms/UI/auth/login.aspx";
