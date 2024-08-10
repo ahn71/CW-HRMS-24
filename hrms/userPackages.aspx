@@ -141,7 +141,7 @@
 
         $(document).ready(function () {
             GetModule();
-            GetPackages();
+            //GetPackages();
         });
         function Cardbox() {
             $("#Cardbox").toggle();
@@ -277,7 +277,7 @@
         //        let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
 
         //        return {
-        //            "id": item.isPermission ? item.permissionId : item.moduleID,
+        //            "id": item.isPermission ? item.permissionId.toString() : item.moduleID.toString(),
         //            "text": item.name,
         //            "state": {
         //                "opened": true,
@@ -285,7 +285,7 @@
         //            },
         //            "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
         //            "li_attr": {
-        //                "id": item.isPermission ? item.permissionId : item.moduleID
+        //                "id": item.isPermission ? item.permissionId.toString() : item.moduleID.toString()
         //            },
         //            "original": {
         //                "isPermission": item.isPermission
