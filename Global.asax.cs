@@ -14,7 +14,7 @@ namespace SigmaERP
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            Routing.RegisterRoutes(RouteTable.Routes);
+            Routing.RegisterInitialRoutes(RouteTable.Routes);
         }
 
         protected void Session_Start(object sender, EventArgs e)

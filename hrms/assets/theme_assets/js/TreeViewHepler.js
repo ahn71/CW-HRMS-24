@@ -54,7 +54,7 @@ function transformToJSTreeFormat(data) {
         let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
 
         return {
-            "id": item.isPermission ? item.permissionId : item.moduleID,
+            "id": item.isPermission,
             "text": item.name,
             "state": {
                 "opened": true,
@@ -62,7 +62,7 @@ function transformToJSTreeFormat(data) {
             },
             "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
             "li_attr": {
-                "id": item.isPermission ? item.permissionId : item.moduleID
+                "id": item.isPermission 
             },
             "original": {
                 "isPermission": item.isPermission
@@ -158,14 +158,14 @@ function transformToJSTreeFormats(data) {
     return data.map(function (item) {
 
         return {
-            "id": item.isPermission ? item.permissionId : item.moduleID,
+            "id": item.isPermission,
             "text": item.name,
             "state": {
                 "opened": true
             },
             "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
             "li_attr": {
-                "id": item.isPermission ? item.permissionId : item.moduleID
+                "id": item.isPermission
             },
             "original": {
                 "isPermission": item.isPermission
