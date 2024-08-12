@@ -30,11 +30,12 @@ namespace SigmaERP.classes
         public static void RegisterRoutes(RouteCollection routes)
         {
        
-        List<Route> _routes = new List<Route> {
-            new Route {Name= "DashboardRoute",Url= rootURL + "/dashboard",PhysicalFile= "~/hrms/dashboard.aspx" },
-            new Route {Name= "DepartmentRoute",Url= rootURL + "/settings/departments",PhysicalFile= "~/hrd/department.aspx" }
-        };
-            // Route Registration
+            List<Route> _routes = new List<Route>
+            {
+                new Route {Name= "DashboardRoute",Url= rootURL + "/dashboard",PhysicalFile= "~/hrms/dashboard.aspx" },
+                new Route {Name= "DepartmentRoute",Url= rootURL + "/settings/departments",PhysicalFile= "~/hrd/department.aspx" }
+            };
+           
             foreach (Route _route in _routes)
             {                
                 routes.MapPageRoute(_route.Name, _route.Url, _route.PhysicalFile);
