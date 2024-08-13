@@ -218,6 +218,7 @@ namespace SigmaERP.hrms.UI.auth
 
 
                     Routing.RegisterRoutes(RouteTable.Routes);
+                    Routing.RegisterPermissionRoutes(RouteTable.Routes);
 
 
                     Session["__GetCompanyId__"] = dt.Rows[0]["CompanyId"].ToString();
@@ -263,7 +264,8 @@ namespace SigmaERP.hrms.UI.auth
             }
             catch (Exception ex)
             {
-               // lblMessage.InnerText = "error->" + ex.Message;
+
+                string error = ex.Message;
                 return false;
             }
             finally
