@@ -13,6 +13,7 @@ using ComplexScriptingSystem;
 using System.Data.SqlClient;
 using System.Drawing;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
@@ -21,16 +22,25 @@ namespace SigmaERP.attendance
         string strSQL = "";
 
         SqlCommand cmd;
-       
+
+        //View=191,Add=192, Delete=194,Edit=193
 
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
 
-        
+            string perMissionList = "";
+            int[] pagePermission = { 191, 192, 193, 194 };
+
             if (!IsPostBack)
             {
+                int[] userPermissionArray = AccessControl.checkPermission().Split(',').Select(int.Parse).ToArray();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission, userPermissionArray);
+                if (!userPagePermition.Any())
+                {
+                    return;
+                }
                 ViewState["__preRIndex__"] = "No";
                 ViewState["__IsCalculated__"] = "No";
                 setPrivilege();
@@ -565,5 +575,13 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
+
+
+        public void checkPermissiomn()
+        {
+
+        }
+
+       
     }
-    }
+}
