@@ -131,7 +131,7 @@
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';//working
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
-
+     
         var PostPackagesUrl = rootUrl + '/api/UserPackages/Packages/create';//working
 
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
@@ -255,7 +255,7 @@
                 let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
 
                 return {
-                    "id": item.isPermission ? item.permissionId : item.moduleID,
+                    "id": item.permissionId,
                     "text": item.name,
                     "state": {
                         "opened": true,
@@ -263,7 +263,7 @@
                     },
                     "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
                     "li_attr": {
-                        "id": item.isPermission ? item.permissionId : item.moduleID
+                        "id":  item.permissionId 
                     },
                     "original": {
                         "isPermission": item.isPermission
@@ -277,7 +277,7 @@
         //        let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
 
         //        return {
-        //            "id": item.isPermission ? item.permissionId : item.moduleID,
+        //            "id": item.isPermission ? item.permissionId.toString() : item.moduleID.toString(),
         //            "text": item.name,
         //            "state": {
         //                "opened": true,
@@ -285,7 +285,7 @@
         //            },
         //            "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
         //            "li_attr": {
-        //                "id": item.isPermission ? item.permissionId : item.moduleID
+        //                "id": item.isPermission ? item.permissionId.toString() : item.moduleID.toString()
         //            },
         //            "original": {
         //                "isPermission": item.isPermission
@@ -519,14 +519,14 @@
             return data.map(function (item) {
 
                 return {
-                    "id": item.isPermission ? item.permissionId : item.moduleID,
+                    "id": item.isPermission ,
                     "text": item.name,
                     "state": {
                         "opened": true
                     },
                     "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
                     "li_attr": {
-                        "id": item.isPermission ? item.permissionId : item.moduleID
+                        "id": item.isPermission
                     },
                     "original": {
                         "isPermission": item.isPermission

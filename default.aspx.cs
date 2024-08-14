@@ -24,6 +24,7 @@ namespace SigmaERP
                     else
                     {
                         Response.Redirect("~/hrms/dashboard.aspx");
+                        //Response.Redirect("~/dashboard");
                         if (Session["__IsCompliance__"].ToString().Equals("True"))
                         {
                             try

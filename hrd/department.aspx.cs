@@ -20,6 +20,8 @@ namespace SigmaERP.hrd
         string CompanyId = "";
         string sqlcmd="";
         DataTable dt;
+        // View=101,Add=102,Edit=103,Delete=104
+        int[] permission = { 101, 102 };
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();           
@@ -36,7 +38,7 @@ namespace SigmaERP.hrd
         {
             try
             {
-                            
+
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 ViewState["__preRIndex__"] = "No";
                 string getUserId = getCookies["__getUserId__"].ToString();
@@ -46,12 +48,16 @@ namespace SigmaERP.hrd
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "department.aspx", ddlCompanyName, divDepartmentList, btnSave);
-             
+
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ViewState["__WriteAction__"] = AccessPermission[1];
                 ViewState["__UpdateAction__"] = AccessPermission[2];
                 ViewState["__DeletAction__"] = AccessPermission[3];
-             
+                ViewState["__DeletAction__"] = "0";
+                if (permission.Contains(104))
+                    ViewState["__DeletAction__"] = "1";
+
+
                 LoadCompanyInfo();
                 loadDepartment();
                 if (!classes.commonTask.HasBranch())
@@ -367,6 +373,19 @@ namespace SigmaERP.hrd
                 }
                 catch { }
             }
+
+            try
+            {
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                {
+                    LinkButton lnkDelete = (LinkButton)e.Row.FindControl("lnkDelete");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.OnClientClick = "return false";
+                    lnkDelete.ForeColor = Color.Silver;
+                }
+
+            }
+            catch { }
         }
 
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)

@@ -126,6 +126,10 @@
       <HintPath>packages\IronXL.Excel.2022.3.0\lib\net45\IronXL.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RoholProgressBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\Administrator\Documents\Visual Studio 2012\Projects\WebApplication1\WebApplication1\bin\RoholProgressBar.dll</HintPath>
@@ -3448,6 +3452,7 @@
     <Compile Include="classes\PF_ProfitDistribution.cs" />
     <Compile Include="classes\Roster.cs" />
     <Compile Include="classes\RosteringLogic.cs" />
+    <Compile Include="classes\Routing.cs" />
     <Compile Include="classes\SalaryProcessing.cs" />
     <Compile Include="classes\SalaryProcessingCommonTask.cs" />
     <Compile Include="classes\ServerTimeZone.cs" />

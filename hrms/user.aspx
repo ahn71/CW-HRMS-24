@@ -483,6 +483,7 @@
              const columns = [
                  { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
                  { "name": "name", "title": "Name", "className": "userDatatable-content" },
+                 { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "referenceID", "title": "Refer By", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -581,29 +582,50 @@
                      console.error('Error occurred while fetching data:', error.message || error);
                  });
          }
+          function transformToJSTreeFormat(data) {
+            return data.map(function (item) {
+                let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
 
-         function transformToJSTreeFormat(data) {
-             return data.map(function (item) {
-                 let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
+                return {
+                    "id": item.permissionId,
+                    "text": item.name,
+                    "state": {
+                        "opened": true,
+                        "selected": hasSelectedChild
+                    },
+                    "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+                    "li_attr": {
+                        "id":  item.permissionId 
+                    },
+                    "original": {
+                        "isPermission": item.isPermission
+                    },
+                    "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
+                };
+            });
+        }
+         //function transformToJSTreeFormat(data) {
+         //    return data.map(function (item) {
+         //        let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
 
-                 return {
-                     "id": item.isPermission ? item.permissionId : item.moduleID,
-                     "text": item.name,
-                     "state": {
-                         "opened": true,
-                         "selected": hasSelectedChild
-                     },
-                     "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
-                     "li_attr": {
-                         "id": item.isPermission ? item.permissionId : item.moduleID
-                     },
-                     "original": {
-                         "isPermission": item.isPermission
-                     },
-                     "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
-                 };
-             });
-         }
+         //        return {
+         //            "id": item.isPermission,
+         //            "text": item.name,
+         //            "state": {
+         //                "opened": true,
+         //                "selected": hasSelectedChild
+         //            },
+         //            "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
+         //            "li_attr": {
+         //                "id": item.isPermission
+         //            },
+         //            "original": {
+         //                "isPermission": item.isPermission
+         //            },
+         //            "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
+         //        };
+         //    });
+         //}
 
 
          
@@ -700,14 +722,14 @@
              return data.map(function (item) {
 
                  return {
-                     "id": item.isPermission ? item.permissionId : item.moduleID,
+                     "id": item.isPermission,
                      "text": item.name,
                      "state": {
                          "opened": true
                      },
                      "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
                      "li_attr": {
-                         "id": item.isPermission ? item.permissionId : item.moduleID
+                         "id": item.isPermission 
                      },
                      "original": {
                          "isPermission": item.isPermission
@@ -1049,7 +1071,8 @@
         #treeSection {
             height:50vh;
             overflow: auto;
-            background-color:#f0f8ff;
+            margin-bottom:10px;
+            /*background-color:#f0f8ff;*/
             
         }
         
