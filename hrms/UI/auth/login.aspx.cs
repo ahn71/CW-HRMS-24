@@ -218,7 +218,7 @@ namespace SigmaERP.hrms.UI.auth
 
 
                     Routing.RegisterRoutes(RouteTable.Routes);
-                    Routing.RegisterPermissionRoutes(RouteTable.Routes);
+                    //Routing.RegisterPermissionRoutes(RouteTable.Routes);
 
 
                     Session["__GetCompanyId__"] = dt.Rows[0]["CompanyId"].ToString();

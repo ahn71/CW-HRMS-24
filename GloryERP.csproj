@@ -3615,6 +3615,8 @@
       <DependentUpon>dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\Data\CRUD.cs" />
+    <Compile Include="hrms\DTO\PermissionRoute.cs" />
+    <Compile Include="hrms\DTO\RouteDTO.cs" />
     <Compile Include="hrms\Hello_Test.aspx.cs">
       <DependentUpon>Hello_Test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
