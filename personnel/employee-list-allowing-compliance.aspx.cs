@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,17 +13,24 @@ using System.Web.UI.WebControls;
 
 namespace SigmaERP.personnel
 {
+
+    //view=286;
     public partial class employee_list_allowing_compliance : System.Web.UI.Page
     {
         DataTable dt;
         string query = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 286 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                
                 setPrivilege();
                 loadPendingWorkers();
             }
@@ -38,6 +46,7 @@ namespace SigmaERP.personnel
                 DropDownList ddlCompanyList = new DropDownList();
                 Button btnSearch = new Button();
                 string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyList, gvForApprovedList, btnSearch);
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ViewState["__WriteAction__"] = AccessPermission[1];

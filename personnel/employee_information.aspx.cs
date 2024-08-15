@@ -8,9 +8,12 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
+
+    // view=274;
     public partial class employee_information : System.Web.UI.Page
     {
         DataTable dt;
@@ -20,11 +23,16 @@ namespace SigmaERP.personnel
         {
             try
             {
+
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();
+                int[] pagePermission = { 286 };
                 lblMessage.InnerText = "";
                 if (!IsPostBack)
                 {
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect("../hrms/dashboard.aspx");
                     classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                     setPrivilege();
                     HttpCookie getCookies = Request.Cookies["userInfo"];
@@ -56,6 +64,7 @@ namespace SigmaERP.personnel
 
                 string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "employee_information.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();

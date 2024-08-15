@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
 using System.Drawing;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
@@ -22,14 +23,20 @@ namespace SigmaERP.attendance
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-            
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "1";
+            ViewState["__DeletAction__"] = "0";
+            int[] pagePermission = { 259,262,263};
             if (!IsPostBack)
             {
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
                 //string script = "$(document).ready(function () { $('[id*=btnForGet]').click(); });";
                 //ClientScript.RegisterStartupScript(this.GetType(), "load", script, true);
-
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if(!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
                 loadAttendanceList();
@@ -42,7 +49,7 @@ namespace SigmaERP.attendance
         }
 
         //DataTable dtSetPrivilege;
-        private void setPrivilege()
+        private void setPrivilege(int [] permissions)
         {
             try
             {
@@ -50,14 +57,17 @@ namespace SigmaERP.attendance
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance.aspx", ddlCompanyList, gvAttendanceList, btnSearch);
+                //  AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance.aspx", ddlCompanyList, gvAttendanceList, btnSearch);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];   
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                if (permissions.Contains(259))
+                    ViewState["__ReadAction__"] = "1";
+                if (permissions.Contains(262))
+                    ViewState["__DeletAction__"] = "1";
+                if (permissions.Contains(263))
+                    ViewState["__UpdateAction__"] = "1";
+           
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentName, ViewState["__CompanyId__"].ToString());
             }
             catch { }
@@ -163,7 +173,7 @@ namespace SigmaERP.attendance
                     Response.Redirect("/attendance/attendance.aspx?eid_cn_at=" + EmpId + "_" + EmpCardNo + "_" + AttDate + "_" + AttStatus + "_" + InTime + "_" + OutTime + "_" + EmpType + "_" + EmpName + "_" + StateStatus + "");
                 }
             }
-            catch { }
+            catch (Exception ex) { }
         }
 
         private void ChangeLeaveStatusByeEmpIdAndDate(string EmpId,string AttStatus,string AttDate)
@@ -436,9 +446,7 @@ namespace SigmaERP.attendance
             }
             catch { }
 
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
-                Button btn;
+               Button btn;
                 try
                 {
                     if (ViewState["__DeletAction__"].ToString().Equals("0"))
@@ -463,11 +471,7 @@ namespace SigmaERP.attendance
                     }
 
                 }
-                catch { }
-
-            }
-
-       
+                catch { }  
         }
 
         protected void btnRefresh_Click(object sender, EventArgs e)
@@ -477,8 +481,18 @@ namespace SigmaERP.attendance
             allClear();
         }
 
-      
+        //public void cheCkInitialPermission()
+        //{
+        //    if (ViewState["__WriteAction__"].Equals("0"))
+        //    {
 
-     
+        //    }
+        //    else
+        //    {
+          
+        //    }
+        //}
+
+
     }
 }

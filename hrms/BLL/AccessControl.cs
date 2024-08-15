@@ -9,14 +9,11 @@ namespace SigmaERP.hrms.BLL
 {
     public static class AccessControl
     {
-        public static int[] hasPermission(int[] PagePermissions,int [] UserPermissions)
+        public static int[] hasPermission(int[] PagePermissions)
         {
             int[] verifiedPermission;
-            
-            PagePermissions = new int []{ 191, 192, 194 , 193 };
-
-            UserPermissions =new int []{120,121,123,124,125};
-            verifiedPermission = PagePermissions.Intersect(UserPermissions).ToArray();
+            int[] userPermissionArray = checkPermission().Split(',').Select(int.Parse).ToArray();
+            verifiedPermission = PagePermissions.Intersect(userPermissionArray).ToArray();
 
             return verifiedPermission;
         }

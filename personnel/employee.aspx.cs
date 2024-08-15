@@ -19,6 +19,8 @@ using System.Text;
 using SigmaERP.classes;
 
 using IronXL;
+using SigmaERP.hrms.BLL;
+
 namespace SigmaERP.personnel
 {
     public partial class Employee : System.Web.UI.Page
@@ -28,15 +30,23 @@ namespace SigmaERP.personnel
         static string SignatureImage = "";
         DataTable dt;
         private static Random rnd = new Random();
+
+        //View=270
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
+                int[] pagePermission = { 270 };
+
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();
                 lblMessage.InnerText = "";
                 if (!IsPostBack)
                 {
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect("../hrms/dashboard.aspx");
+
                     ViewState["__IsSave__"] = "";
                     txtProximityNo.Enabled = false;
                     classes.commonTask.LoadEmpType(rblEmpType);
@@ -154,9 +164,9 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
+                classes.commonTask.LoadBranch(ddlBranch, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ViewState["__WriteAction__"] = AccessPermission[1];
                 ViewState["__UpdateAction__"] = AccessPermission[2];

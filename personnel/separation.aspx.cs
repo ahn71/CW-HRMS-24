@@ -18,6 +18,10 @@ namespace SigmaERP.personnel
         DataTable dt;
         SqlCommand cmd;
         string query = "";
+       // 280
+281
+282
+283
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();

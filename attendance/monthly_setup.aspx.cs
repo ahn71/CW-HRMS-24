@@ -35,15 +35,20 @@ namespace SigmaERP.attendance
 
             if (!IsPostBack)
             {
-                int[] userPermissionArray = AccessControl.checkPermission().Split(',').Select(int.Parse).ToArray();
-                int[] userPagePermition = AccessControl.hasPermission(pagePermission, userPermissionArray);
-                if (!userPagePermition.Any())
-                {
-                    return;
-                }
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                //if (!userPagePermition.Any())
+                //{
+                //    return;
+                //}
+                //checkPermissiomn(userPagePermition);
                 ViewState["__preRIndex__"] = "No";
                 ViewState["__IsCalculated__"] = "No";
-                setPrivilege();
+               
+                setPrivilege(userPagePermition);
                 LoadGrid();
                 if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
@@ -52,7 +57,7 @@ namespace SigmaERP.attendance
         }
 
         static DataTable  dtSetprivilege;
-        private void setPrivilege()
+        private void setPrivilege(int [] accessPermission)
         {
             try
             {
@@ -63,16 +68,22 @@ namespace SigmaERP.attendance
                 ViewState["__getUserId__"] = getUserId;
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
          
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "monthly_setup.aspx", ddlCompanyList, gvMonthSetup, btnSave);
+               // string[] AccessPermission = new string[0];
+              //  AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "monthly_setup.aspx", ddlCompanyList, gvMonthSetup, btnSave);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
-               
+                if(accessPermission.Contains(191))
+                    ViewState["__ReadAction__"] ="1";
+                if(accessPermission.Contains(192))
+                    ViewState["__WriteAction__"] = "1";
+                if (accessPermission.Contains(193))
+                    ViewState["__UpdateAction__"] = "1";
+                if(accessPermission.Contains(194))
+                    ViewState["__DeletAction__"] = "0";
+                cheCkInitialPermission();
+
+
 
             }
             catch { Response.Redirect("~/hrms/UI/auth/login.aspx"); }
@@ -533,32 +544,29 @@ namespace SigmaERP.attendance
             catch { }
 
 
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
+            try
             {
-                try
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
                 {
-                    if (ViewState["__DeletAction__"].ToString().Equals("0"))
-                    {
-                        Button lnkDelete = (Button)e.Row.FindControl("lnkDelete");
-                        lnkDelete.Enabled = false;
-                        lnkDelete.OnClientClick = "return false";
-                        lnkDelete.ForeColor = Color.Silver;
-                    }
-
+                    Button lnkDelete = (Button)e.Row.FindControl("lnkDelete");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.OnClientClick = "return false";
+                    lnkDelete.ForeColor = Color.Silver;
                 }
-                catch { }
-                try
-                {
-                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
-                    {
-                        Button lnkDelete = (Button)e.Row.FindControl("lnkEdit");
-                        lnkDelete.Enabled = false;
-                        lnkDelete.ForeColor = Color.Silver;
-                    }
 
-                }
-                catch { }
             }
+            catch { }
+            try
+            {
+                if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                {
+                    Button lnkDelete = (Button)e.Row.FindControl("lnkEdit");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.ForeColor = Color.Silver;
+                }
+
+            }
+            catch { }
         }
 
         protected void dlDivision_SelectedIndexChanged(object sender, EventArgs e)
@@ -577,9 +585,42 @@ namespace SigmaERP.attendance
         }
 
 
-        public void checkPermissiomn()
+        public void checkPermissiomn(int[] permissionList)
         {
 
+            //View=191,Add=192, Delete=194,Edit=193
+            int[] permissionLists = permissionList;
+            if (permissionLists.Contains(191))
+                ViewState["__ReadAction__"] = "1";
+            if(permissionList.Contains(192))
+                ViewState["__AddAction__"] = 1;
+            if(permissionList.Contains(192))
+                ViewState["__EditAction__"] = 1;
+            if(permissionList.Contains(194))
+                ViewState["__DeleteAction__"] = 1;
+
+        }
+
+        public void cheCkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnClear.Enabled = false;
+                Button3.Enabled = false;
+                btnSave.CssClass = "";
+                btnClear.CssClass = "";
+                Button3.CssClass = "";
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnClear.Enabled = true;
+                Button3.Enabled = true;
+                btnSave.CssClass = "Mbutton";
+                btnClear.CssClass = "Mbutton";
+                Button3.CssClass = "Mbutton";
+            }
         }
 
        

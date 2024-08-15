@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,19 +17,27 @@ namespace SigmaERP.attendance
     public partial class AttendanceProcessing : System.Web.UI.Page
     {
         string sqlCmd = "";
+        int[] pagePermission = { 260 };
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-
+           
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 ViewState["__OT__"] = "0";
                 setPrivilege();
             }
             if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
+           
+            setPrivilege();
         }
 
         private void setPrivilege()
@@ -45,7 +54,8 @@ namespace SigmaERP.attendance
 
                 string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "import_data.aspx", ddlCompanyList, btnImport);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "import_data.aspx", ddlCompanyList, btnImport);
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
@@ -58,6 +68,8 @@ namespace SigmaERP.attendance
                 {
                     trImportFrom.Visible = false;                    
                 }
+               
+
                 tdFileUpload.Visible = false;
                 tdSelectFile.Visible = false;
             }

@@ -8,11 +8,14 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
+    //view=285
     public partial class employee_profile : System.Web.UI.Page
     {
+        int[] pagePermission = { 286 };
         DataTable dt;
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
@@ -22,6 +25,9 @@ namespace SigmaERP.personnel
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 divindivisual.Visible = false;
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
@@ -42,6 +48,7 @@ namespace SigmaERP.personnel
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlBranch,ViewState["__CompanyId__"].ToString());
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "employee_profile.aspx", ddlBranch, WarningMessage, tblGenerateType, btnPrintpreview);
               

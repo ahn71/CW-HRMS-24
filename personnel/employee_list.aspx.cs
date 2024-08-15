@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,16 +18,32 @@ namespace SigmaERP.personnel
 {
     public partial class employee_list1 : System.Web.UI.Page
     {
+
+        //View=269 , Edit=271 , Transfer=272 , Delete=273
+
+
+  
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+
+            ViewState["__ReadAction__"] ="0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+
+            int[] pagePermission = { 269, 271, 272, 273 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
                 loadYear();
-                setPrivilege();
+                setPrivilege(userPagePermition);
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                // SearchingInEmployeeList();
@@ -63,7 +80,7 @@ namespace SigmaERP.personnel
             }
             catch { }
         }
-        private void setPrivilege()
+        private void setPrivilege(int [] permissions)
         {
             try
             {
@@ -75,10 +92,15 @@ namespace SigmaERP.personnel
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyList, gvForApprovedList, btnSearch);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                if (permissions.Contains(269))
+                    ViewState["__ReadAction__"] = "1";
+                if (permissions.Contains(271))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permissions.Contains(272))
+                    ViewState["__WriteAction__"] = "1";  //transfer
+                if (permissions.Contains(273))
+                    ViewState["__DeletAction__"] = "1";
+
 
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString());
 
@@ -377,8 +399,7 @@ namespace SigmaERP.personnel
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+        
                 Button btn ;
                 try
                 {
@@ -417,7 +438,7 @@ namespace SigmaERP.personnel
 
                 }
                 catch { }
-            }
+            
         }
 
         protected void ddlGrouping_SelectedIndexChanged(object sender, EventArgs e)

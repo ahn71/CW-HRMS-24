@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 using ComplexScriptingSystem;
 using System.Drawing;
 using SigmaERP.classes;
-
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
@@ -20,8 +20,10 @@ namespace SigmaERP.attendance
         DataTable dtSetPrivilege;
         string CompanyId = "";
         GridView gvattsummary;
+        //view=264
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 264 };
             try
             {
                 sqlDB.connectionString = Glory.getConnectionString();
@@ -31,6 +33,9 @@ namespace SigmaERP.attendance
                 {
                     classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                     txtFromDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect("../hrms/dashboard.aspx");
                     setPrivilege();
                     //if (!classes.ServerTimeZone.IsBDTZone()) txtFromDate.Text = dptDate.Text = classes.ServerTimeZone.GetBangladeshNowDate();
                     //else txtFromDate.Text = dptDate.Text= DateTime.Now.ToString("dd-MM-yyyy");
@@ -59,9 +64,9 @@ namespace SigmaERP.attendance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserId__"] = getCookies["__getUserId__"].ToString();
-
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];              
-                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance_summary.aspx", ddlCompanyName, WarningMessage, btnPrintPreview);
+                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance_summary.aspx", ddlCompanyName, WarningMessage, btnPrintPreview);
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 if (ViewState["__ReadAction__"].ToString().Equals("0")) 
                 {
