@@ -380,9 +380,10 @@
                            <a href="../leave/earn_leave_Report.aspx">EL Report</a>
                         </li>
                         <li class="layout">
-                           <a href="../ltr">Lv Status Reports</a>
+                           <a href="../leave/leave_status.aspx">Lv Status Reports</a>
                         </li>
                      </ul>
+                  
                   </li>
 
                    <li class="mega-item has-subMenu">
