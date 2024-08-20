@@ -18,9 +18,21 @@ namespace SigmaERP.classes
         public static string LoginRouteUrl = rootURL + "login";
         private static string LoginRoutePhysicalFile = "~/hrms/UI/auth/login.aspx";
 
+
+        public static string userName = "AccessControlUser";
+       // public static string userUrl = rootURL + "access-control/users";
+        public static string userUrl = rootURL + "users";
+        private static string userPhyLocation = "~/hrms/user.aspx";
+
+        public static string dashboardRoutName = "Dashboard";
+        public static string dashboardUrl = rootURL + "dashboardtest";
+        private static string dashboardPhyLocation = "~/hrms/dashboard.aspx";
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
+            routes.Clear();
             routes.MapPageRoute(LoginRouteName, LoginRouteUrl, LoginRoutePhysicalFile);
+            routes.MapPageRoute(dashboardRoutName, dashboardUrl, dashboardPhyLocation);
+            //routes.MapPageRoute(userName, userUrl, userPhyLocation);
         }
 
 
@@ -115,10 +127,20 @@ namespace SigmaERP.classes
 
 
             List <RouteDTO > moduleRoutes = FetchRoutesFromApi(UserWithModuleUrl);
-            routes.Clear();
+            //  routes.Clear();
+            RegisterInitialRoutes(routes);
             foreach (RouteDTO moduleRoute in moduleRoutes)
             {
-                routes.MapPageRoute(moduleRoute.ModuleName, rootURL+moduleRoute.Url, moduleRoute.PhysicalLocation);
+                //if (moduleRoute.PhysicalLocation == "~/hrms/user.aspx")
+                //{
+                //    //routes.MapPageRoute(moduleRoute.ModuleName, rootURL + moduleRoute.Url, moduleRoute.PhysicalLocation);
+
+                //}
+                
+                
+                 routes.MapPageRoute(moduleRoute.ModuleName, rootURL + moduleRoute.Url, moduleRoute.PhysicalLocation);
+                
+               
             }
  
             List<PermissionRoute> permissionRoutes = FetchPermissionRoutesFromApi(UserWithPermissionUrl);

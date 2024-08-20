@@ -342,7 +342,7 @@
                      
                   <li class="has-subMenu">
                      <a href="#" class="">Leave</a>
-                     <ul class="subMenu " style="background-color:#f5e9f7">
+                     <ul class="subMenu "  >
                         <li class="l_sidebar">
                            <a href="../leave/LeaveConfig.aspx">Configuration
                            </a>
@@ -388,7 +388,8 @@
 
                    <li class="mega-item has-subMenu">
                        <a href="#" class="">Payroll</a>
-                       <ul class="megaMenu-wrapper megaMenu-wide">
+                       <div class="outbox">
+                            <ul class="megaMenu-wrapper megaMenu-wide">
                            <li class="bordered">
                                <span class="mega-title">Salary</span>
                                <ul>
@@ -534,6 +535,8 @@
                    </li>
 
                </ul>
+                       </div>
+                      
                 </li>
 
 
@@ -875,7 +878,7 @@
                   <li class="has-subMenu">
                      <a href="#" class="">Access Control
                      </a>
-                     <ul class="subMenu " style="background-color:#e5f8e8">
+                     <ul class="subMenu " <%--style="background-color:#e5f8e8"--%>>
                         <li>
                            <a href="/ControlPanel/CreateAccount.aspx" class="">
                               

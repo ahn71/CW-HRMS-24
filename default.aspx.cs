@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SigmaERP.classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,7 +20,8 @@ namespace SigmaERP
                     if (getCookies == null || getCookies.Value == "")
                     {
                       //  Response.Redirect("~/ControlPanel/Login.aspx");
-                        Response.Redirect("~/hrms/UI/auth/login.aspx");
+                       // Response.Redirect("~/hrms/UI/auth/login.aspx");
+                        Response.RedirectToRoute(Routing.LoginRouteName);
                     }
                     else
                     {

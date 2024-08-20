@@ -1,12 +1,15 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using Newtonsoft.Json;
 using SigmaERP.classes;
 using SigmaERP.hrms.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Routing;
 using System.Web.Security;
@@ -193,79 +196,121 @@ namespace SigmaERP.hrms.UI.auth
               //  lblMessage.InnerText = "error->" + ex.Message;
             }
         }
+
+        private static string ApiRootUrl = "https://localhost:7220";
+        private static string LoginUrl = ApiRootUrl + "/api/LogIn/Login";
+
+        public string Login(string url, string userName, string userPassword)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            WebRequest webRequest = WebRequest.Create(url);
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json"; // Set content type to JSON
+
+            // Create JSON body
+            var requestBody = new
+            {
+                userName = userName,
+                userPassword = userPassword
+            };
+
+            string json = JsonConvert.SerializeObject(requestBody); // Convert the body to JSON
+
+            try
+            {
+                // Write the JSON data to request stream
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                // Get the response
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+                using (Stream stream = httpWebResponse.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    string response = sr.ReadToEnd();
+                    sr.Close();
+                    return response;
+                }
+            }
+            catch (WebException ex)
+            {
+                // Handle exception
+                using (Stream stream = ex.Response.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
         private bool LogingInfo()
         {
             try
             {
-                
-                string query = "";
-                if (txtPassword.Text.Trim() == "fkjgf&fmjfg,k(52f5fGGHG")
-                    query = "select EmpName,UserId,UserPassword,UserType,CompanyId,ShortName,EmpId,isLvAuthority,LvOnlyDpt,LvEmpType,DptId,ISNULL(IsCompliance,0) as IsCompliance " +
-                                                            " from v_UserAccount " +
-                                                            " where " +
-                                                            " UserName='" + ComplexLetters.getTangledLetters(txtUsername.Text.Trim()) + "'  AND CompanyId='" + ddlCompany.SelectedValue.ToString() + "' and Status=1";
-                else
-                    query = "select EmpName,UserId,UserPassword,UserType,CompanyId,ShortName,EmpId,isLvAuthority,LvOnlyDpt,LvEmpType,DptId,ISNULL(IsCompliance,0) as IsCompliance " +
-                                                            " from v_UserAccount " +
-                                                            " where " +
-                                                            " UserName='" + ComplexLetters.getTangledLetters(txtUsername.Text.Trim()) + "' " +
-                                                            " AND UserPassword='" + ComplexLetters.getTangledLetters(txtPassword.Text.Trim()) + "' " +
-                                                            " AND CompanyId='" + ddlCompany.SelectedValue.ToString() + "' and Status=1";
-                dt = new DataTable();
-                dt= SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable(query);
-                if (dt.Rows.Count > 0)
+                string username = txtUsername.Text.Trim();
+                string password = txtPassword.Text.Trim();
+                string response = Login(LoginUrl, username, password);
+                var jsonResponse = JsonConvert.DeserializeObject<dynamic>(response);
+                if (jsonResponse.statusCode == 200)
                 {
-
-
                     Routing.RegisterRoutes(RouteTable.Routes);
-                    //Routing.RegisterPermissionRoutes(RouteTable.Routes);
+                    var userData = jsonResponse.data[0];
+                    var accessToken = jsonResponse.accessToken;
+                    //Session["__GetCompanyId__"] = userData.CompanyId.ToString();
+                    Session["__GetUID__"] = userData.userId.ToString();
+                    Session["__UserToken__"] = accessToken.ToString();
+                    //Session["__isLvAuthority__"] = userData.isLvAuthority.ToString();
+                    //Session["__LvOnlyDpt__"] = userData.LvOnlyDpt.ToString();
+                    //Session["__LvEmpType__"] = userData.LvEmpType.ToString();
+                    //Session["__IsCompliance__"] = userData.IsCompliance.ToString();
+                    Session["__UserNameText__"] = username;
 
-
-                    Session["__GetCompanyId__"] = dt.Rows[0]["CompanyId"].ToString();
-                    string companyId = Session["__GetCompanyId__"].ToString();
-                    Session["__GetUID__"] = dt.Rows[0]["UserId"].ToString();
-                    Session["__isLvAuthority__"] = dt.Rows[0]["isLvAuthority"].ToString();
-                    Session["__LvOnlyDpt__"] = dt.Rows[0]["LvOnlyDpt"].ToString();
-                    Session["__LvEmpType__"] = dt.Rows[0]["LvEmpType"].ToString();
-                    Session["__IsCompliance__"] = dt.Rows[0]["IsCompliance"].ToString();
-                    Session["__UserNameText__"] = txtUsername.Text.Trim();
-
-
-                    HttpCookie setCookies = new HttpCookie("userInfo");
-
-
-                    setCookies["__getUserId__"] = dt.Rows[0]["UserId"].ToString();
-                    setCookies["__getFirstName__"] = dt.Rows[0]["EmpName"].ToString();
-                    setCookies["__getLastName__"] = "";
-                    setCookies["__getUserType__"] = dt.Rows[0]["UserType"].ToString();
-                    setCookies["__CompanyId__"] = dt.Rows[0]["CompanyId"].ToString();
-                    setCookies["__CompanyName__"] = ddlCompany.SelectedItem.Text;
-                    setCookies["__CShortName__"] = dt.Rows[0]["ShortName"].ToString();
-                    ViewState["__CShortName__"] = dt.Rows[0]["ShortName"].ToString();
-                    setCookies["__isLvAuthority__"] = dt.Rows[0]["isLvAuthority"].ToString();
-                    setCookies["__LvOnlyDpt__"] = dt.Rows[0]["LvOnlyDpt"].ToString();
-                    setCookies["__LvEmpType__"] = dt.Rows[0]["LvEmpType"].ToString();
-                    setCookies["__DptId__"] = dt.Rows[0]["DptId"].ToString();
-                    ViewState["__IsCompliance__"] = dt.Rows[0]["IsCompliance"].ToString();
-                    setCookies["__IsCompliance__"] = dt.Rows[0]["IsCompliance"].ToString();
-                    setCookies["__UserNameText__"] = txtUsername.Text.Trim();
-                    setCookies["__getEmpId__"] = dt.Rows[0]["EmpId"].ToString();
-                    //setCookies.Expires = DateTime.Now.AddMinutes(30);
+                    // Create and store user info in cookies
+                    HttpCookie setCookies = new HttpCookie("userInfo")
+                    {
+                        ["__getUserId__"] = userData.userId.ToString(),
+                        ["__getFirstName__"] = userData.firstName.ToString(),
+                        ["__getLastName__"] = userData.lastName.ToString(),
+                        ["__getUserType__"] = userData.isGuestUser.ToString(),
+                        //["__CompanyId__"] = userData.CompanyId.ToString(),
+                        //["__CompanyName__"] = ddlCompany.SelectedItem.Text,
+                        //["__CShortName__"] = userData.ShortName.ToString(),
+                        //["__isLvAuthority__"] = userData.isLvAuthority.ToString(),
+                        //["__LvOnlyDpt__"] = userData.LvOnlyDpt.ToString(),
+                        //["__LvEmpType__"] = userData.LvEmpType.ToString(),
+                        //["__DptId__"] = userData.DptId.ToString(),
+                        //["__IsCompliance__"] = userData.IsCompliance.ToString(),
+                        ["__UserNameText__"] = username,
+                        //["__getEmpId__"] = userData.EmpId.ToString()
+                    };
                     Response.Cookies.Add(setCookies);
 
+                    // Login successful
                     return true;
                 }
                 else
                 {
-                 //   lblMessage.InnerText = "warning->Please type valid user name and password and right company.";
+                    // Login failed, set userId to 0
                     Session["__getUserId__"] = "0";
                     return false;
                 }
             }
             catch (Exception ex)
             {
-
+                // Log the error to a file
                 string error = ex.Message;
+                string fileName = "RouteLoginError.txt";
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+                string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                string logMessage = $"[{timestamp}] {error}{Environment.NewLine}";
+                File.AppendAllText(filePath, logMessage);
+
                 return false;
             }
             finally
@@ -273,5 +318,92 @@ namespace SigmaERP.hrms.UI.auth
                 sqlDB.connection.Close();
             }
         }
+
+
+        //private bool LogingInfo()
+        //{
+        //    try
+        //    {
+
+        //        string query = "";
+        //        if (txtPassword.Text.Trim() == "fkjgf&fmjfg,k(52f5fGGHG")
+        //            query = "select EmpName,UserId,UserPassword,UserType,CompanyId,ShortName,EmpId,isLvAuthority,LvOnlyDpt,LvEmpType,DptId,ISNULL(IsCompliance,0) as IsCompliance " +
+        //                                                    " from v_UserAccount " +
+        //                                                    " where " +
+        //                                                    " UserName='" + ComplexLetters.getTangledLetters(txtUsername.Text.Trim()) + "'  AND CompanyId='" + ddlCompany.SelectedValue.ToString() + "' and Status=1";
+        //        else
+        //            query = "select EmpName,UserId,UserPassword,UserType,CompanyId,ShortName,EmpId,isLvAuthority,LvOnlyDpt,LvEmpType,DptId,ISNULL(IsCompliance,0) as IsCompliance " +
+        //                                                    " from v_UserAccount " +
+        //                                                    " where " +
+        //                                                    " UserName='" + ComplexLetters.getTangledLetters(txtUsername.Text.Trim()) + "' " +
+        //                                                    " AND UserPassword='" + ComplexLetters.getTangledLetters(txtPassword.Text.Trim()) + "' " +
+        //                                                    " AND CompanyId='" + ddlCompany.SelectedValue.ToString() + "' and Status=1";
+        //        dt = new DataTable();
+        //        dt= SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable(query);
+        //        if (dt.Rows.Count > 0)
+        //        {
+
+
+        //            Routing.RegisterRoutes(RouteTable.Routes);
+        //            //Routing.RegisterPermissionRoutes(RouteTable.Routes);
+
+
+        //            Session["__GetCompanyId__"] = dt.Rows[0]["CompanyId"].ToString();
+        //            string companyId = Session["__GetCompanyId__"].ToString();
+        //            Session["__GetUID__"] = dt.Rows[0]["UserId"].ToString();
+        //            Session["__isLvAuthority__"] = dt.Rows[0]["isLvAuthority"].ToString();
+        //            Session["__LvOnlyDpt__"] = dt.Rows[0]["LvOnlyDpt"].ToString();
+        //            Session["__LvEmpType__"] = dt.Rows[0]["LvEmpType"].ToString();
+        //            Session["__IsCompliance__"] = dt.Rows[0]["IsCompliance"].ToString();
+        //            Session["__UserNameText__"] = txtUsername.Text.Trim();
+
+
+        //            HttpCookie setCookies = new HttpCookie("userInfo");
+
+
+        //            setCookies["__getUserId__"] = dt.Rows[0]["UserId"].ToString();
+        //            setCookies["__getFirstName__"] = dt.Rows[0]["EmpName"].ToString();
+        //            setCookies["__getLastName__"] = "";
+        //            setCookies["__getUserType__"] = dt.Rows[0]["UserType"].ToString();
+        //            setCookies["__CompanyId__"] = dt.Rows[0]["CompanyId"].ToString();
+        //            setCookies["__CompanyName__"] = ddlCompany.SelectedItem.Text;
+        //            setCookies["__CShortName__"] = dt.Rows[0]["ShortName"].ToString();
+        //            ViewState["__CShortName__"] = dt.Rows[0]["ShortName"].ToString();
+        //            setCookies["__isLvAuthority__"] = dt.Rows[0]["isLvAuthority"].ToString();
+        //            setCookies["__LvOnlyDpt__"] = dt.Rows[0]["LvOnlyDpt"].ToString();
+        //            setCookies["__LvEmpType__"] = dt.Rows[0]["LvEmpType"].ToString();
+        //            setCookies["__DptId__"] = dt.Rows[0]["DptId"].ToString();
+        //            ViewState["__IsCompliance__"] = dt.Rows[0]["IsCompliance"].ToString();
+        //            setCookies["__IsCompliance__"] = dt.Rows[0]["IsCompliance"].ToString();
+        //            setCookies["__UserNameText__"] = txtUsername.Text.Trim();
+        //            setCookies["__getEmpId__"] = dt.Rows[0]["EmpId"].ToString();
+        //            //setCookies.Expires = DateTime.Now.AddMinutes(30);
+        //            Response.Cookies.Add(setCookies);
+
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //         //   lblMessage.InnerText = "warning->Please type valid user name and password and right company.";
+        //            Session["__getUserId__"] = "0";
+        //            return false;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        string error = ex.Message;
+        //        string fileName = "RouteLoginError.txt";
+        //        string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+        //        string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        //        string logMessage = $"[{timestamp}] {error}{Environment.NewLine}";
+        //        File.AppendAllText(filePath, logMessage);
+        //        return false;
+        //    }
+        //    finally
+        //    {
+        //        sqlDB.connection.Close();
+        //    }
+        //}
     }
 }

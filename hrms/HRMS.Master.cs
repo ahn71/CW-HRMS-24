@@ -95,7 +95,8 @@ namespace SigmaERP.hrms
                 catch (Exception ex)
                 {
                     //Response.Redirect("~/ControlPanel/Login.aspx");
-                    Response.Redirect("~/hrms/UI/auth/login.aspx");
+                    // Response.Redirect("~/hrms/UI/auth/login.aspx");
+                    Response.RedirectToRoute(Routing.LoginRouteName);
                 }
             }
         }      

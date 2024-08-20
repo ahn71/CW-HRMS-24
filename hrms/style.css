@@ -36224,3 +36224,18 @@ body:after {
     overflow: auto;
     /*background-color: #f0f8ff;*/
 }
+
+/*#leveSubmanu {
+    background-color: rgba(var(--color-linkedin-rgba), 0.1);
+}*/
+
+/*.hexadash-top-menu .subMenu {
+
+    transition-duration: 5ms !important;
+}
+.hexadash-top-menu > ul > li .megaMenu-wrapper {
+    transition-duration: 5ms !important;
+}
+.hexadash-top-menu > ul > li:hover {
+      transition-duration: 5ms !important;
+}*/
