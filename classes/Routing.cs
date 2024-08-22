@@ -25,7 +25,7 @@ namespace SigmaERP.classes
         private static string userPhyLocation = "~/hrms/user.aspx";
 
         public static string dashboardRoutName = "Dashboard";
-        public static string dashboardUrl = rootURL + "dashboardtest";
+        public static string dashboardUrl = rootURL + "dashboard";
         private static string dashboardPhyLocation = "~/hrms/dashboard.aspx";
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
@@ -50,16 +50,18 @@ namespace SigmaERP.classes
             public string Message { get; set; }
             public List<PermissionRoute> Data { get; set; }
         }
-
+      
         private static string ApiRootUrl = "https://localhost:7220";
         private static string UserWithModuleUrl = ApiRootUrl + "/api/User/userWithModule";
         private static string UserWithPermissionUrl = ApiRootUrl + "/api/User/userWithPermission";
 
+        private static string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJpYXQiOiIxNzI0MjU4NjcwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Ikh1c0xTdEszcUdTRWFlTU9DVnNHMkE9PSIsImV4cCI6MTcyNjg1MDY3MH0.uk0BVPbbe7SdRQ08VoLarZY0L2EFMndoeXzs5MPQZLw";
         public static List<RouteDTO> FetchRoutesFromApi(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             WebRequest webRequest = WebRequest.Create(url);
             webRequest.Method = "GET";
+            webRequest.Headers["Authorization"] = $"Bearer {token}";
 
             try
             {
@@ -69,21 +71,23 @@ namespace SigmaERP.classes
                 {
                     string response = sr.ReadToEnd();
                     var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
-                    return apiResponse?.Data ?? new List<RouteDTO> ();
+                    return apiResponse?.Data ?? new List<RouteDTO>();
                 }
             }
             catch (WebException ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
-                return new List<RouteDTO> ();
+                return new List<RouteDTO>();
             }
         }
+
 
         public static List<PermissionRoute> FetchPermissionRoutesFromApi(string url)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             WebRequest webRequest = WebRequest.Create(url);
             webRequest.Method = "GET";
+            webRequest.Headers["Authorization"] = $"Bearer {token}";
             try
             {
                 using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
@@ -148,7 +152,8 @@ namespace SigmaERP.classes
             {
                 routes.MapPageRoute(permissionRoute.PermissionName, rootURL + permissionRoute.Url, permissionRoute.PhysicalLocation);
             }
-
+            //routes.MapPageRoute("ErrorRoute", "{*.aspx}", "~/Error.aspx");
+            //routes.RouteExistingFiles = true;
         }
 
     }

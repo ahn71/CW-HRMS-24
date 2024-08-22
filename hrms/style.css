@@ -36225,11 +36225,42 @@ body:after {
     /*background-color: #f0f8ff;*/
 }
 
-/*#leveSubmanu {
+.hexadash-top-menu .subMenu{
+    left:unset !important;
+    width:225px !important;
+}
+.hexadash-top-menu > ul > li .megaMenu-wrapper.megaMenu-md {
+    width: 750px;
+    padding: 5px 0 18px;
+}
+.hexadash-top-menu > ul > li .megaMenu-wrapper.megaMenu-md > li {
+        position: relative;
+        flex: 0 0 33.33%;
+}
+
+.hexadash-top-menu > ul > li .megaMenu-wrapper.megaMenu-md > li .mega-title {
+    display: inline-block;
+    margin: 20px 0 14px 0;
+    position: relative;
+    font-size: 14px;
+    font-weight: 500;
+    padding-left: 45px;
+    color: var(--color-dark);
+}
+.hexadash-top-menu > ul > li .megaMenu-wrapper.megaMenu-md > li .mega-title:after {
+    position: absolute;
+    height: 5px;
+    width: 5px;
+    border-radius: 50%;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #c6d0dc;
+    content: "";
+    /*#leveSubmanu {
     background-color: rgba(var(--color-linkedin-rgba), 0.1);
 }*/
-
-/*.hexadash-top-menu .subMenu {
+    /*.hexadash-top-menu .subMenu {
 
     transition-duration: 5ms !important;
 }

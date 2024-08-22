@@ -148,6 +148,9 @@
 
    </main>
     <script>
+
+        var token = '<%= Session["__UserToken__"] %>';
+
         function BoxExpland() {
             var scrollTop = $(window).scrollTop();
 

@@ -149,7 +149,8 @@
         //    $("#addnew").text(newText);
         //}
 
-
+        var token = '<%= Session["__UserToken__"] %>';
+        console.log('this is token you can use it :', token);
         //var rootUrl = 'http://localhost:5081';
         var rootUrl = 'https://localhost:7220';
         var GetByIdPermissionUrl = rootUrl + '/api/UserPermissions/permissions';
@@ -159,7 +160,7 @@
         var updatePermissioneUrl = rootUrl + '/api/UserPermissions/permissions/update';
         var DeleteUrl = rootUrl + '/api/UserPermissions/permissions/delete';
 
-        var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+        //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
         function GetPermission() {
             ApiCall(GetPermissioneUrl, token)

@@ -3,6 +3,7 @@ using SigmaERP.classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -28,11 +29,13 @@ namespace SigmaERP.hrms
                     else
                     {
 
-                        UserName.InnerText = getCookies["__getFirstName__"].ToString();
+                        ////UserName.InnerText = getCookies["__getFirstName__"].ToString();
+                        UserName.InnerText = Session["__UserNameText__"].ToString();
                         ViewState["__getUserId__"] = getCookies["__getUserId__"].ToString();
                         Session["__GetUID__"] = ViewState["__getUserId__"].ToString();
-                        UserType.InnerText = "  " + ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString());
-                      //  GSName.InnerText = getCookies["__CompanyName__"].ToString();
+                        UserEmail.InnerText = Session["__UserEmailText__"].ToString();
+                        //UserType.InnerText = "  " + ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString());
+                        //  GSName.InnerText = getCookies["__CompanyName__"].ToString();
 
                         Session["__GetCompanyId__"] = ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
@@ -41,7 +44,7 @@ namespace SigmaERP.hrms
                         Session["__LvEmpType__"] = getCookies["__LvEmpType__"].ToString();
                         Session["__IsCompliance__"] = getCookies["__IsCompliance__"].ToString();
                         Session["__UserNameText__"] = getCookies["__UserNameText__"].ToString();
-
+               
                         if (Session["__IsCompliance__"].ToString().Equals("True"))
                         {
                             try
@@ -113,7 +116,8 @@ namespace SigmaERP.hrms
                 Response.Cookies.Add(setCookies);
                 FormsAuthentication.SignOut();
                 // Response.Redirect("~/ControlPanel/Login.aspx",false);
-                Response.Redirect("~/hrms/UI/auth/login.aspx", false);
+                Response.Redirect("/hrms/login", false);
+
             }
             catch (Exception ex) { }
         }

@@ -118,8 +118,10 @@
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
          var updateRolesUrl = rootUrl + '/api/UserRoles/update';
          var DeleteRoleUrl = rootUrl + '/api/UserRoles/delete';
-         var getStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
-        var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+        var getStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
+        var token = '<%= Session["__UserToken__"] %>';
+        console.log('this is token you can use it :', token);
+        //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
         $(document).ready(function () {
            

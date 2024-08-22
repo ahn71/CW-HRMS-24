@@ -6,7 +6,7 @@ var PostModuleUrl = rootUrl + '/api/UserModules/modules/create';
 var updateModuleUrl = rootUrl + '/api/UserModules/modules/update';
 var DeleteModuleUrl = rootUrl + '/api/UserModules/modules/delete';
 
-var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVl             IuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+//var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 function GetModule() {
     ApiCall(GetModuleUrl, token )
         .then(function (response) {
