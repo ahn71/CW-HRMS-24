@@ -56,10 +56,14 @@ namespace SigmaERP.classes
         private static string UserWithPermissionUrl = ApiRootUrl + "/api/User/userWithPermission";
 
         private static string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJpYXQiOiIxNzI0MjU4NjcwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Ikh1c0xTdEszcUdTRWFlTU9DVnNHMkE9PSIsImV4cCI6MTcyNjg1MDY3MH0.uk0BVPbbe7SdRQ08VoLarZY0L2EFMndoeXzs5MPQZLw";
-        public static List<RouteDTO> FetchRoutesFromApi(string url)
+        public static List<RouteDTO> FetchRoutesFromApi(string url, int userId)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            WebRequest webRequest = WebRequest.Create(url);
+
+            // Append UserId as a query string parameter to the URL
+            string fullUrl = $"{url}?userId={userId}";
+
+            WebRequest webRequest = WebRequest.Create(fullUrl);
             webRequest.Method = "GET";
             webRequest.Headers["Authorization"] = $"Bearer {token}";
 
@@ -82,10 +86,13 @@ namespace SigmaERP.classes
         }
 
 
-        public static List<PermissionRoute> FetchPermissionRoutesFromApi(string url)
+
+        public static List<PermissionRoute> FetchPermissionRoutesFromApi(string url , int userId)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            WebRequest webRequest = WebRequest.Create(url);
+            string fullUrl = $"{url}?userId={userId}";
+
+            WebRequest webRequest = WebRequest.Create(fullUrl);
             webRequest.Method = "GET";
             webRequest.Headers["Authorization"] = $"Bearer {token}";
             try
@@ -125,12 +132,12 @@ namespace SigmaERP.classes
         //        routes.MapPageRoute(_route.ModuleName, rootURL + _route.ModuleUrl, _route.ModulePhysicalLocation);
         //    }
         //}
-
-        public static void RegisterRoutes(RouteCollection routes)
+       
+        public static void RegisterRoutes(RouteCollection routes , int userId)
         {
+            //int userId = Int32.Parse( HttpContext.Current.Session["__GetUID__"]);
 
-
-            List <RouteDTO > moduleRoutes = FetchRoutesFromApi(UserWithModuleUrl);
+            List <RouteDTO > moduleRoutes = FetchRoutesFromApi(UserWithModuleUrl, userId);
             //  routes.Clear();
             RegisterInitialRoutes(routes);
             foreach (RouteDTO moduleRoute in moduleRoutes)
@@ -147,7 +154,7 @@ namespace SigmaERP.classes
                
             }
  
-            List<PermissionRoute> permissionRoutes = FetchPermissionRoutesFromApi(UserWithPermissionUrl);
+            List<PermissionRoute> permissionRoutes = FetchPermissionRoutesFromApi(UserWithPermissionUrl, userId);
             foreach (PermissionRoute permissionRoute in permissionRoutes)
             {
                 routes.MapPageRoute(permissionRoute.PermissionName, rootURL + permissionRoute.Url, permissionRoute.PhysicalLocation);

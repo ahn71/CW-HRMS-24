@@ -261,7 +261,7 @@ namespace SigmaERP.hrms.UI.auth
 
                 if (jsonResponse.statusCode == 200)
                 {
-                    classes.Routing.RegisterRoutes(RouteTable.Routes);
+                    
                     var userData = jsonResponse.data;
                     var accessToken = jsonResponse.accessToken;
                     Session["__GetCompanyId__"] = companyId;  
@@ -273,7 +273,8 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__IsCompliance__"] = "0";
                     Session["__UserNameText__"] = username;
                     Session["__UserEmailText__"] = userData.email;
-                    
+                    int userId = userData.userId;
+                    classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
 
 
                     // Set cookie values

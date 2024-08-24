@@ -23,3 +23,6 @@ Parameter name: name
 [2024-08-21 15:17:15] Accessed JObject values with invalid key value: 0. Object property name expected.
 [2024-08-21 15:24:35] Accessed JObject values with invalid key value: 0. Object property name expected.
 [2024-08-21 15:24:56] Accessed JObject values with invalid key value: 0. Object property name expected.
+[2024-08-23 13:07:02] Object reference not set to an instance of an object.
+[2024-08-23 15:38:09] The best overloaded method match for 'SigmaERP.classes.Routing.RegisterRoutes(System.Web.Routing.RouteCollection, int)' has some invalid arguments
+[2024-08-23 15:38:31] The best overloaded method match for 'SigmaERP.classes.Routing.RegisterRoutes(System.Web.Routing.RouteCollection, int)' has some invalid arguments
