@@ -10,35 +10,46 @@ using ComplexScriptingSystem;
 using System.Drawing;
 using System.Data.SqlClient;
 using SigmaERP.classes;
-
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.payroll.advance
 {
     public partial class advance_monthly_installment_setup : System.Web.UI.Page
     {
-        DataTable dt;
+        //permission {View=354 Add=355 Delete=356}
+    DataTable dt;
         string query = "";
         int InstallmentTotalAmount = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+            int[] pagePermission = { 354,355,356 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtDate.Text = DateTime.Now.ToString("MM-yyyy");
                 ViewState["__EditSuccessStatus__"] = "True";
                 ddlCompanyList.SelectedIndex = 0;
                 lblTtile.Text = "Advanced List For Accept Advance Installment Of " + DateTime.Now.ToString("MM-yyyy");
-                setPrivilege();
+                setPrivilege(userPagePermition);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
             }
         }
 
         DataTable dtSetPrivilege;
-        private void setPrivilege()
+        private void setPrivilege(int[]permissions)
         {
             try
             {
@@ -70,24 +81,32 @@ namespace SigmaERP.payroll.advance
                         btnSet.Enabled = false;
                     }
 
-                    dtSetPrivilege = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='advancsetting.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
+                    //dtSetPrivilege = new DataTable();
+                  //  sqlDB.fillDataTable("select * from UserPrivilege where PageName='advancsetting.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
+                    //if (dtSetPrivilege.Rows.Count > 0)
+                    //{
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                    //    {
 
-                            gvAdvaceList.Visible = true;
-                        }
+                    //        gvAdvaceList.Visible = true;
+                    //    }
 
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["WriteAction"].ToString()).Equals(true))
-                        {
-                            btnSet.CssClass = "";
-                            btnSet.Enabled = false;
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["WriteAction"].ToString()).Equals(true))
+                    //    {
+                    //        btnSet.CssClass = "";
+                    //        btnSet.Enabled = false;
 
 
-                        }
-                    }
+                    //    }
+                    //}
+
+                   if(permissions.Contains(354))
+                            ViewState["__ReadAction__"] = "1";
+                    if (permissions.Contains(355))
+                        ViewState["__WriteAction__"] = "1";
+                    if (permissions.Contains(356))
+                        ViewState["__UpdateAction__"] = "1";
+                    checkInitialPermission();
                 }
             }
             catch { }
@@ -288,6 +307,23 @@ namespace SigmaERP.payroll.advance
                 Label lblTotalInstallmentAmount = (Label)e.Row.FindControl("lblTotalInstallmentAmount");
                 lblTotalInstallmentAmount.Text = InstallmentTotalAmount.ToString();
             }
+
+            try
+            {
+                if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                {
+                    Button btnEdit = (Button)e.Row.FindControl("btnEdit");
+                    btnEdit.Enabled = false;
+                    btnEdit.ForeColor= Color.Silver;
+
+                }
+            }
+            catch 
+            {
+
+                
+            }
+ 
         }
 
        
@@ -319,6 +355,20 @@ namespace SigmaERP.payroll.advance
         protected void SelectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             InstallmentTotal();
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSet.Enabled = false;
+                btnSet.CssClass = "";
+            }
+            else
+            {
+                btnSet.Enabled = true;
+                btnSet.CssClass = "Pbutton";
+            }
         }
     }
 }

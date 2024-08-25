@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,20 +16,26 @@ namespace SigmaERP.pf
     public partial class pfentrypanel : System.Web.UI.Page
     {
         string query = "";
+        //Permission(add=366)
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
+                ViewState["__WriteAction__"] = "0";
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();
                 lblMessage.InnerText = "";
+                int[] pagePermission = { 366 };
                 if (!IsPostBack)
                 {
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        //Response.Redirect("../hrms/dashboard.aspx");
                     classes.commonTask.loadEmpTye(rblEmployeeType);
                     rblEmployeeType.SelectedValue = "1";
                     classes.commonTask.loadEmpTye(rblEmployeeType2);
                     rblEmployeeType2.SelectedValue = "1";
-                    setPrivilege();
+                    setPrivilege(userPagePermition);
 
                 }
             }
@@ -36,7 +43,7 @@ namespace SigmaERP.pf
            
 
         }
-        private void setPrivilege()
+        private void setPrivilege(int[]permission)
         {
             try
             {
@@ -49,13 +56,18 @@ namespace SigmaERP.pf
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForpfentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pfentrypanel.aspx", gvpfpendinglist, gvpflist, btnSubmit, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForpfentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pfentrypanel.aspx", gvpfpendinglist, gvpflist, btnSubmit, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];                
-                if (!classes.commonTask.HasBranch())
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];  
+                
+                if(permission.Contains(366))
+                    ViewState["__WriteAction__"] ="0";
+                checkInitialPermission();
+                    if (!classes.commonTask.HasBranch())
                 {
                     ddlCompanyList.Enabled = false;
                     ddlCompanyList2.Enabled = false;
@@ -342,6 +354,20 @@ namespace SigmaERP.pf
         protected void rblEmployeeType2_SelectedIndexChanged(object sender, EventArgs e)
         {
             pflist();
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSubmit.Enabled = false;
+                btnSubmit.CssClass = "";
+
+            }
+            else
+            {
+                btnSubmit.Enabled = true;
+                btnSubmit.CssClass = "Pbutton";
+            }
         }
     }
 }

@@ -11,25 +11,35 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.hrd
 {
     public partial class shift_config : System.Web.UI.Page
     {
+        // permission(View=203 Add=204 Edit=205 Delete=206)
         string sqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+            int[] pagePermission = { 203, 204, 205, 206 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
                 
             }
         }
 
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -39,14 +49,21 @@ namespace SigmaERP.hrd
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "shift_config.aspx", ddlCompanyList, gvShiftConfigurationList, btnSave);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // string[] AccessPermission = new string[0];
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "shift_config.aspx", ddlCompanyList, gvShiftConfigurationList, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
-             
+
+                if (permission.Contains(203))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(204))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(205))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permission.Contains(206))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
+
                 txtShiftName.Focus();
                 ViewState["__preRIndex__"] = "No";
                 // loadShift_Config("");
@@ -444,8 +461,8 @@ namespace SigmaERP.hrd
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+            //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
+            //{
                 Button lnk = new Button();
                 try
                 {
@@ -470,7 +487,7 @@ namespace SigmaERP.hrd
 
                 }
                 catch { }
-            }
+            //}
         }
 
         protected void gvShiftConfigurationList_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -512,6 +529,22 @@ namespace SigmaERP.hrd
         protected void ddlDepartmentList_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadShiftConfiguration(); 
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Rbutton";
+            }
+            else
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+
+
         }
     }
 }

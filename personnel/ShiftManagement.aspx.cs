@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,10 +17,11 @@ namespace SigmaERP.personnel
 {
     public partial class ShiftManagement : System.Web.UI.Page
     {
+        //perission=431;
         string SqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
-        { 
-
+        {
+            int[] pagePermission = { 431 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
@@ -32,6 +34,9 @@ namespace SigmaERP.personnel
             lblErrorMessage.Text = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 lblErrorMessage.Text = "";
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())

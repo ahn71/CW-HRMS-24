@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,16 +17,27 @@ namespace SigmaERP.personnel
 {
     public partial class for_approve_list : System.Web.UI.Page
     {
-
+        //permission(View=301 Forward=302 Approve=303 Reject=304)
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0"; //forward
+            ViewState["__UpdateAction__"] = "0"; //Approve
+            ViewState["__DeletAction__"] = "0";  //reject
+
+            int[] pagePermission = { 301, 302, 303, 304 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
-                setPrivilege();               
+                setPrivilege(userPagePermition);               
                 searchLeaveApplicationForApproved();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
@@ -33,7 +45,7 @@ namespace SigmaERP.personnel
             }
         }
         DataTable dtSetPrivilege;
-        private void setPrivilege()
+        private void setPrivilege(int [] permission)
         {
             try
             {
@@ -49,10 +61,19 @@ namespace SigmaERP.personnel
                 ViewState["__LvOnlyDpt__"] = dt.Rows[0]["LvOnlyDpt"].ToString();
                 ViewState["__LvAuthorityAction__"] = dt.Rows[0]["LvAuthorityAction"].ToString();
                 ViewState["__DptId__"] = dt.Rows[0]["DptId"].ToString();
-                
+
                 // below part for supper admin and master admin.there must be controll everythings.remember that super admin not seen another super admin information
                 //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
                 //{
+                if (permission.Contains(301))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(302))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(303))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permission.Contains(304))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
 
                 classes.commonTask.LoadBranch(ddlCompanyList);
                     classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());
@@ -833,6 +854,42 @@ namespace SigmaERP.personnel
                 else
                     ckbAll.Checked = true;
             }
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnForword.Enabled = true;
+                btnForword.CssClass = "hand";
+            }
+            else
+            {
+                btnForword.Enabled = false;
+                btnForword.CssClass = "";
+            }
+            if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+            {
+                btnYes.Enabled = true;
+                btnYes.CssClass = "hand";
+            }
+            else
+            {
+                btnYes.Enabled = false;
+                btnYes.CssClass = "";
+            }
+
+            if (ViewState["__DeletAction__"].ToString().Equals("0"))
+            {
+                btnNot.Enabled = true;
+                btnNot.CssClass = "hand";
+            }
+            else
+            {
+                btnNot.Enabled = false;
+                btnNot.CssClass = "";
+            }
+           
         }
     }
 }

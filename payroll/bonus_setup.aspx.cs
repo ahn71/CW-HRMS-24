@@ -10,22 +10,34 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.payroll
 {
     public partial class bonus_setup : System.Web.UI.Page
     {
+
+        //permission(View=394 Add=395 Update=396 Delete=397)
         DataTable dt;
        static DataTable dtSetPrivilege;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+            int[] pagePermission = { 394, 395, 396, 397 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
                 loadBounsInfo();
                 loadReligionForBonusGenerate();
                 ViewState["__BonusName__"] = "";
@@ -36,7 +48,7 @@ namespace SigmaERP.payroll
         }
 
         //DataTable dtSetPrivilege;
-        private void setPrivilege()
+        private void setPrivilege(int[]permission)
         {
             try
             {
@@ -46,77 +58,88 @@ namespace SigmaERP.payroll
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
-                {
-                    classes.commonTask.LoadBranch(ddlCompanyName);
-                    return;
-                }
-                else
-                {
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
+                //{
+                //    classes.commonTask.LoadBranch(ddlCompanyName);
+                //    return;
+                //}
+                //else
+                //{
                     ddlCompanyName.Enabled = false;
                     classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
-                    if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
-                    {
-                        divBonusList.Visible = false;
-                        //gvBonusSetupList.Visible = false;
-                      
-                    }
-                    else
-                    {
-                        btnSave.CssClass = "";
-                        btnSave.Enabled = false;
 
-                    }
-                    dtSetPrivilege = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_setup.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            divBonusList.Visible = true;
-                            //gvBonusSetupList.Visible = true;
-                        }
-                        else divBonusList.Visible = false;
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["WriteAction"].ToString()).Equals(true))
-                        {
-                            btnSave.Enabled = true;
-                            btnSave.CssClass = "Pbutton";
-                        }
-                        else 
-                        {
-                            btnSave.Enabled = false;
-                            btnSave.CssClass = "";
-                            //btnSave.CssClass = "";
-                            //btnSave.Enabled = false;
-                            hfWriteAction.Value = "False";
-                        }
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["UpdateAction"].ToString()).Equals(true) || bool.Parse(dtSetPrivilege.Rows[0]["DeleteAction"].ToString()).Equals(true))
-                            divBonusList.Visible = true;
-                        
-                        //if (bool.Parse(dtSetPrivilege.Rows[0]["UpdateAction"].ToString()).Equals(false))
-                        //{
+                    if (permission.Contains(394))
+                        ViewState["__ReadAction__"] = "1";
+                    if (permission.Contains(395))
+                        ViewState["__WriteAction__"] = "1";
+                    if (permission.Contains(396))
+                        ViewState["__UpdateAction__"] = "1";
+                    if (permission.Contains(397))
+                        ViewState["__DeletAction__"] = "1";
+                    checkInitialPermission();
 
-                        //    hfUpdateAction.Value = "False";
 
-                        //    if (ViewState["__WriteAction__"].ToString() == "1")
-                        //    {
+                    //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
+                    //{
+                    //    divBonusList.Visible = false;
+                    //    //gvBonusSetupList.Visible = false;
 
-                        //        btnSave.Enabled = true;
-                        //    }
-                        //    else
-                        //    {
+                    //}
+                    //else
+                    //{
+                    //    btnSave.CssClass = "";
+                    //    btnSave.Enabled = false;
 
-                        //        btnSave.CssClass = "";
-                        //        btnSave.Enabled = false;
-                        //    }
-                        //}
-                        //if (bool.Parse(dtSetPrivilege.Rows[0]["DeleteAction"].ToString()).Equals(false))
-                        //{
-                        //    ViewState["__DeletAction__"] = "0";
-                        //}
-                    }
+                    //}
+                    //dtSetPrivilege = new DataTable();
+                    //sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_setup.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                    //if (dtSetPrivilege.Rows.Count > 0)
+                    //{
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                    //    {
+                    //        divBonusList.Visible = true;
+                    //        //gvBonusSetupList.Visible = true;
+                    //    }
+                    //    else divBonusList.Visible = false;
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["WriteAction"].ToString()).Equals(true))
+                    //    {
+                    //        btnSave.Enabled = true;
+                    //        btnSave.CssClass = "Pbutton";
+                    //    }
+                    //    else 
+                    //    {
+                    //        btnSave.Enabled = false;
+                    //        btnSave.CssClass = "";
+                    //        //btnSave.CssClass = "";
+                    //        //btnSave.Enabled = false;
+                    //        hfWriteAction.Value = "False";
+                    //    }
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["UpdateAction"].ToString()).Equals(true) || bool.Parse(dtSetPrivilege.Rows[0]["DeleteAction"].ToString()).Equals(true))
+                    //        divBonusList.Visible = true;
 
-                }
+                    //if (bool.Parse(dtSetPrivilege.Rows[0]["UpdateAction"].ToString()).Equals(false))
+                    //{
+
+                    //    hfUpdateAction.Value = "False";
+
+                    //    if (ViewState["__WriteAction__"].ToString() == "1")
+                    //    {
+
+                    //        btnSave.Enabled = true;
+                    //    }
+                    //    else
+                    //    {
+
+                    //        btnSave.CssClass = "";
+                    //        btnSave.Enabled = false;
+                    //    }
+                    //}
+                    //if (bool.Parse(dtSetPrivilege.Rows[0]["DeleteAction"].ToString()).Equals(false))
+                    //{
+                    //    ViewState["__DeletAction__"] = "0";
+                //    //}
+                //}
+           
 
             }
             catch { }
@@ -298,58 +321,36 @@ namespace SigmaERP.payroll
 
 
 
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
-            {
+            //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
+            //{
 
-                return;
-            }
-            try 
+            //    return;
+            //}
+            try
             {
-                if (dtSetPrivilege.Rows.Count <= 0)
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
                 {
-                    try
-                    {
-                        Button btnDel = (Button)e.Row.FindControl("btnDelete");
-                        btnDel.Enabled = false;
-                        btnDel.ForeColor = Color.Black;
-                        btnDel.OnClientClick = "return false";
-                    }
-                    catch { }
-                    try
-                    {
-                            Button btnAlt = (Button)e.Row.FindControl("btnAlter");
-                            btnAlt.Enabled = false;
-                            btnAlt.ForeColor = Color.Black;
-                    }
-                    catch { }
-                    return;
+                    Button lnkDelete = (Button)e.Row.FindControl("btnDelete");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.OnClientClick = "return false";
+                    lnkDelete.ForeColor = Color.Silver;
                 }
+
             }
             catch { }
             try
             {
-                if (bool.Parse(dtSetPrivilege.Rows[0]["DeleteAction"].ToString()).Equals(false))
+                if (ViewState["__UpdateAction__"].ToString().Equals("0"))
                 {
-                    Button btnDel = (Button)e.Row.FindControl("btnDelete");
-                    btnDel.Enabled = false;
-                    btnDel.ForeColor = Color.Black;
-                    btnDel.OnClientClick = "return false";
+                    Button btnPreview = (Button)e.Row.FindControl("btnAlter");
+                    btnPreview.Enabled = false;
+                    btnPreview.ForeColor = Color.Silver;
                 }
-               
+
             }
             catch { }
-            try
-            {
-                if (bool.Parse(dtSetPrivilege.Rows[0]["UpdateAction"].ToString()).Equals(false))
-                {
-                    Button btnAlt = (Button)e.Row.FindControl("btnAlter");
-                    btnAlt.Enabled = false;
-                    btnAlt.ForeColor = Color.Black;
-                    //Button btn = (Button)e.Row.FindControl("btnAlter");
-                    //btn.Enabled = false;    
-                }
-            }
-            catch { }
+           
+ 
            
             
         }
@@ -390,6 +391,22 @@ namespace SigmaERP.payroll
                  */
             }
             catch { }
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+            }
+
         }
     }
 }

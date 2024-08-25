@@ -9,26 +9,44 @@ using System.Data;
 using System.Data.SqlClient;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
+using System.Drawing;
 
 namespace SigmaERP.payroll.advance
 {
     public partial class advance_entry : System.Web.UI.Page
     {
         // Status {0=Due/Current Loan,1=Paid,2=Cash Refund,3=Waived }
+
+        //permission(View=347,Add=348,update=349,Delete=350,Refund=351,Waive=352,Paid=353)
         DataTable dt;
         DataTable dtSetPrivilege;
         string query = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+            ViewState["__Refund__"] = "0";
+            ViewState["__Waive__"] = "0";
+            ViewState["__Paid__"] = "0";
+
+            int[] pagePermission = { 347,348,349,350,351,352,353 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 txtToDate.Text = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) + "-" + DateTime.Now.ToString("MM-yyyy");
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
-                setPrivilege();
+                setPrivilege(userPagePermition);
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
                 
@@ -56,7 +74,7 @@ namespace SigmaERP.payroll.advance
             }
             catch { }
         }
-        private void setPrivilege()
+        private void setPrivilege(int[]permissions)
         {
             try
             {
@@ -65,15 +83,29 @@ namespace SigmaERP.payroll.advance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 string DptId = getCookies["__DptId__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
-
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
+                if(permissions.Contains(347))
+                    ViewState["__ReadAction__"] = "1";
+                if(permissions.Contains(348))
+                    ViewState["__WriteAction__"] = "1";
+                if(permissions.Contains(349))
+                    ViewState["__UpdateAction__"] = "1";
+                if(permissions.Contains(350))
+                    ViewState["__DeletAction__"] = "1";
+                if(permissions.Contains(351))
+                    ViewState["__Refund__"] = "1";
+                if(permissions.Contains(352))
+                    ViewState["__Waive__"] = "1";
+                if(permissions.Contains(353))
+                    ViewState["__Paid__"] = "1";
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString());
-               
+                checkInitialPermission();
 
 
 
@@ -129,8 +161,16 @@ namespace SigmaERP.payroll.advance
                     e.Row.Attributes["onmouseover"] = "javascript:SetMouseOver(this)";
                     e.Row.Attributes["onmouseout"] = "javascript:SetMouseOut(this)";
                 }
+
             }
             catch { }
+            try
+            {
+                gvButtonPermission(e);
+               
+            }
+            catch { }
+
         }
         protected void ddlCompanyList_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -215,6 +255,58 @@ namespace SigmaERP.payroll.advance
                     return false;
                 return true;
             } catch(Exception ex ) { return false; }
+        }
+
+        public void gvButtonPermission(GridViewRowEventArgs e)
+        {
+            if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+            {
+                Button btnAlter = (Button)e.Row.FindControl("btnAlter");
+                btnAlter.Enabled = false;
+                btnAlter.OnClientClick = "return false";
+                btnAlter.ForeColor = Color.Silver;
+            }
+            if (ViewState["__Refund__"].ToString().Equals("0"))
+            {
+                Button btnRefund = (Button)e.Row.FindControl("btnRefund");
+                btnRefund.Enabled = false;
+                btnRefund.OnClientClick = "return false";
+                btnRefund.ForeColor = Color.Silver;
+            }
+            if (ViewState["__Waive__"].ToString().Equals("0"))
+            {
+                Button btnWaive = (Button)e.Row.FindControl("btnWaive");
+                btnWaive.Enabled = false;
+                btnWaive.OnClientClick = "return false";
+                btnWaive.ForeColor = Color.Silver;
+            }
+            if (ViewState["__Paid__"].ToString().Equals("0"))
+            {
+                Button btnPaid = (Button)e.Row.FindControl("btnPaid");
+                btnPaid.Enabled = false;
+                btnPaid.OnClientClick = "return false";
+                btnPaid.ForeColor = Color.Silver;
+            }
+
+            if (ViewState["__DeletAction__"].ToString().Equals("0"))
+            {
+                Button btnRemove = (Button)e.Row.FindControl("btnRemove");
+                btnRemove.Enabled = false;
+                btnRemove.OnClientClick = "return false";
+                btnRemove.ForeColor = Color.Silver;
+            }
+        
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnAddNew.Visible = false;
+            }
+            else
+            {
+                btnAddNew.Visible = true;
+            }
         }
 
     }

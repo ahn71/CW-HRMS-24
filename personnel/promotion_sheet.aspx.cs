@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,16 +14,21 @@ namespace SigmaERP.personnel
 {
     public partial class promotion_sheet : System.Web.UI.Page
     {
+        //Permissiion=342
         DataTable dt;
         DataTable dtSetPrivilege;
         string CompanyId = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 342 };
             lblMessage.InnerText = "";
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
-            {               
+            {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 classes.commonTask.loadEmpTye(rbEmpList);
                 if (!classes.commonTask.HasBranch())

@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,14 +16,20 @@ namespace SigmaERP.attendance
 {
     public partial class GeneralDay : System.Web.UI.Page
     {
+        //permission=325;
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+            int[] pagePermission = { 325 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 ViewState["__preRIndex__"] = "No";
                 setPrivilege();

@@ -1,10 +1,12 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -14,21 +16,33 @@ namespace SigmaERP.pf
 {
     public partial class pf_YearlyExpense : System.Web.UI.Page
     {
+        //permission(View=379,Ad=380,Update=381 Delete=382)
         string CompanyId = "";
         string sqlcmd = "";
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+            int[] pagePermission = { 379, 380, 381, 382 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    //Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
+
 
             }
         }
-        private void setPrivilege()
+        private void setPrivilege(int[]permission)
         {
             try
             {
@@ -39,13 +53,20 @@ namespace SigmaERP.pf
 
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_YearlyExpense.aspx", ddlCompanyName, gvPFSettings, btnSave);
-                
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_YearlyExpense.aspx", ddlCompanyName, gvPFSettings, btnSave);
+
+                if (permission.Contains(379))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(380))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(381))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permission.Contains(382))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
                 commonTask.loadPFCompany(ddlCompanyName);
                 //if (!classes.commonTask.HasBranch())
                 //    ddlCompanyName.Enabled = false;
@@ -161,6 +182,49 @@ namespace SigmaERP.pf
                 lblMessage.InnerText = "success->Successfully  Deleted";
                 gvPFSettings.Rows[rIndex].Visible = false;
             }
+        }
+
+        protected void gvPFSettings_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            try
+            {
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                {
+                    LinkButton lnkDelete = (LinkButton)e.Row.FindControl("lnkDelete");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.OnClientClick = "return false";
+                    lnkDelete.ForeColor = Color.Silver;
+                }
+
+            }
+            catch { }
+            try
+            {
+                if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                {
+                    LinkButton lnkAlter = (LinkButton)e.Row.FindControl("lnkAlter");
+                    lnkAlter.Enabled = false;
+                    lnkAlter.ForeColor = Color.Silver;
+                }
+
+            }
+            catch { }
+
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+            }
+
         }
     }
 }

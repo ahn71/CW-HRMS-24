@@ -1,9 +1,11 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -14,16 +16,25 @@ namespace SigmaERP.payroll
     public partial class bonus_decrease : System.Web.UI.Page
     {
         string CompanyId;
+        //permission(View=403 Increase=404 Decrease=405)
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";  //increase
+            ViewState["__DeletAction__"] = "0"; //decreese
+            int[] pagePermission = { 403, 404, 405 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
 
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
 
-                setPrivilege();
+                setPrivilege(userPagePermition);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -34,7 +45,7 @@ namespace SigmaERP.payroll
         }
 
         DataTable dtSetPrivilege;
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -44,36 +55,43 @@ namespace SigmaERP.payroll
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
-                {
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
+                //{
                   
-                    classes.commonTask.LoadBranch(ddlCompanyList);                   
-                  //  classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
+                //    classes.commonTask.LoadBranch(ddlCompanyList);                   
+                //  //  classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
 
-                }
-                else
-                {
+                //}
+                //else
+                //{
                    
-                    dtSetPrivilege = new DataTable();                    
-                    classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
-                   // classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
+                 dtSetPrivilege = new DataTable();                    
+                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                    if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
-                    {
-                      
-                    }
+                if(permission.Contains(403))
+                    ViewState["__ReadAction__"] = "1";
+                if(permission.Contains(404))
+                    ViewState["__WriteAction__"] = "1";
+                if(permission.Contains(405))
+                    ViewState["__DeletAction__"] = "1";
+                //   // classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
 
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='aplication.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                //    if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
+                //    {
 
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                           
-                        }
+                //    }
 
-                    }
-                }
+                //    sqlDB.fillDataTable("select * from UserPrivilege where PageName='aplication.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+
+                //    if (dtSetPrivilege.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                //        {
+
+                //        }
+
+                //    }
+                //}
                 CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
                 classes.Payroll.loadBonusTypeByCompany(ddlBonusType, CompanyId);
                 addAllTextInShift();
@@ -276,6 +294,30 @@ namespace SigmaERP.payroll
                     e.Row.Attributes["onmouseover"] = "javascript:SetMouseOver(this)";
                     e.Row.Attributes["onmouseout"] = "javascript:SetMouseOut(this)";
                 }
+
+                try
+                {
+                    if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                    {
+                        Button btnDecrease = (Button)e.Row.FindControl("btnDecrease");
+                        btnDecrease.Enabled = false;
+                        btnDecrease.OnClientClick = "return false";
+                        btnDecrease.ForeColor = Color.Silver;
+                    }
+
+                }
+                catch { }
+                try
+                {
+                    if (ViewState["__WriteAction__"].ToString().Equals("0"))
+                    {
+                        Button btnIncrease = (Button)e.Row.FindControl("btnIncrease");
+                        btnIncrease.Enabled = false;
+                        btnIncrease.ForeColor = Color.Silver;
+                    }
+
+                }
+                catch { }
             }
             catch { }
         }

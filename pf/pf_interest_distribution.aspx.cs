@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,8 +15,13 @@ namespace SigmaERP.pf
 {
     public partial class pf_interest_distribution : System.Web.UI.Page
     {
+        //permission(view=383 Add/Proceess=384)
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+
+            int[] pagePermission = { 383,384 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
@@ -23,11 +29,16 @@ namespace SigmaERP.pf
             if (!IsPostBack)
             {
                 txtDate.Text = txtToDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
+
+               
 
             }
         }
-        private void setPrivilege()
+        private void setPrivilege(int[]permission)
         {
             try
             {
@@ -39,16 +50,20 @@ namespace SigmaERP.pf
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_interest_distribution.aspx", ddlCompanyName, gvPFSettings, btnSave);
                 if (btnSave.Enabled)
                     Button1.Enabled = true;
                 else
                     Button1.Enabled = false;
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+              
+                if(permission.Contains(383))
+                    ViewState["__ReadAction__"] = "1";
+                if(permission.Contains(384))
+                    ViewState["__WriteAction__"] = "1";
+                checkInitialPermission();
                 //loadInterest();
                 commonTask.loadPFCompany(ddlCompanyName);
                 //if (!classes.commonTask.HasBranch())
@@ -316,6 +331,22 @@ namespace SigmaERP.pf
                 
             
             
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                Button1.Enabled = false;
+                Button1.CssClass = "";
+
+            }
+            else
+            {
+                Button1.Enabled = true;
+                Button1.CssClass = "Pbutton";
+            }
+
         }
     }
 }

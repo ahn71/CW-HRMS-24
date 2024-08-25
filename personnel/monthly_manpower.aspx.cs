@@ -10,6 +10,7 @@ using System.Globalization;
 using ComplexScriptingSystem;
 using System.Data.SqlClient;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
@@ -18,11 +19,16 @@ namespace SigmaERP.personnel
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 279 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtDate.Text = "01-" + "01-" + DateTime.Now.Year.ToString();
                 txtFromDate.Text = "31-" + "12-" + DateTime.Now.Year.ToString();                

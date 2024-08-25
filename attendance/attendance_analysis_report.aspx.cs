@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,13 +15,19 @@ namespace SigmaERP.attendance
     public partial class attendance_analysis_report : System.Web.UI.Page
     {
         DataTable dt;
+        //permission=327
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
+            int[] pagePermission = { 327 };
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 txtToDate.Text =  DateTime.Now.ToString("dd-MM-yyyy");
                 setPrivilege();

@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,21 +18,32 @@ namespace SigmaERP.pf
     {
         string CompanyId = "";
         string sqlcmd = "";
+
+        //permission(View=371,Ad=372,Update=373 Delete=374)
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+            int[] pagePermission = { 371, 372, 373, 374 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 txtFromDateP.Text = "01-01-" + DateTime.Now.ToString("yyyy");
                 txtToDateP.Text = "31-12-" + DateTime.Now.ToString("yyyy");
-                setPrivilege();
+                setPrivilege(userPagePermition);
 
             }
 
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -44,12 +56,18 @@ namespace SigmaERP.pf
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_FDR.aspx", ddlCompanyName, gvPFSettings, btnSave);
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_FDR.aspx", ddlCompanyName, gvPFSettings, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                if (permission.Contains(371))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(372))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(373))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permission.Contains(374))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
                 commonTask.loadPFInvestmentType(ddlType);
                 commonTask.loadPFCompany(ddlCompanyName);
                 loadPFSettings();
@@ -229,8 +247,7 @@ namespace SigmaERP.pf
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+          
                 try
                 {
                     if (ViewState["__DeletAction__"].ToString().Equals("0"))
@@ -254,7 +271,7 @@ namespace SigmaERP.pf
 
                 }
                 catch { }
-            }
+            
         }
 
         protected void btnNew_Click(object sender, EventArgs e)
@@ -344,8 +361,31 @@ namespace SigmaERP.pf
              catch { }
          }
 
-      
 
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+            }
+            if (ViewState["__ReadAction__"].ToString().Equals("0"))
+            {
+                btnPrint.Enabled = false;
+                btnPrint.CssClass = "";
+            }
+            else
+            {
+                btnPrint.Enabled = true;
+                btnPrint.CssClass = "Pbutton";
+            }
+        }
 
     }
 }

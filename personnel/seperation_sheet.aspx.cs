@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,9 +21,13 @@ namespace SigmaERP.personnel
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-            
+            int[] pagePermission = { 284 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 setPrivilege();
                 classes.commonTask.LoadEmpTypeWithAll(rbEmpList);
                // classes.commonTask.loadEmpTye(rbEmpList);

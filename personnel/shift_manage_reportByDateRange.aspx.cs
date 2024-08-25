@@ -7,20 +7,26 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class shift_manage_reportByDateRange : System.Web.UI.Page
     {
+        //permission=438
         DataTable dt;
         DataTable dtSetPrivilege;
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-            lblMessage.InnerText = "";           
+            lblMessage.InnerText = "";
+            int[] pagePermission = { 437 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;

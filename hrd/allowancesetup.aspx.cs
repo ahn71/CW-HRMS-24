@@ -10,26 +10,35 @@ using System.Data;
 using System.Data.SqlClient;
 using SigmaERP.classes;
 using System.Drawing;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class allowancesetup : System.Web.UI.Page
     {
         DataTable dt;
-
+        //permission(View=227 Add=228 Edit=229)
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            int[] pagePermission = { 227, 228, 229 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
                 loadAllowanceType();               
 
             }
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -40,10 +49,13 @@ namespace SigmaERP.personnel
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "allowancesetup.aspx", gvAllownceList, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                if (permission.Contains(227))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(228))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(229))
+                    ViewState["__UpdateAction__"] = "1";
+                checkInitialPermission();
 
             }
             catch { }
@@ -196,6 +208,20 @@ namespace SigmaERP.personnel
                 catch { }
             }
         }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Rbutton";
+            }
+            else
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
 
+
+        }
     }
 }

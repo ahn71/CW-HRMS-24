@@ -1,5 +1,6 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,10 +14,16 @@ namespace SigmaERP.personnel
 {
     public partial class FloorAssigne : System.Web.UI.Page
     {
+        //permission=436
         DataTable dt;
         DataTable dtFloorlist;
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 436 };
+            int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+            if (!userPagePermition.Any())
+                Response.Redirect("../hrms/dashboard.aspx");
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";

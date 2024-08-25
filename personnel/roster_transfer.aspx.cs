@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,12 +15,18 @@ namespace SigmaERP.personnel
 {
     public partial class roster_transfer : System.Web.UI.Page
     {
+        //permission=434
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 434 };
+
             lblErrorMessage.Text = "";
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;

@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,14 +14,19 @@ namespace SigmaERP.payroll
 {
     public partial class earnleave_payment_sheet : System.Web.UI.Page
     {
+        //permission=313
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            int[] pagePermission = { 313 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.LoadEmpType(rblEmployeeType);               
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())

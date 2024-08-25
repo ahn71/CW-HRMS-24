@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,20 +16,31 @@ namespace SigmaERP.vat_tax
 {
     public partial class vat_rate_settings : System.Web.UI.Page
     {
+        //permission(View=411 Add=412 Update=413 Delete=414)
         string CompanyId = "";
         string sqlcmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+
+            int[] pagePermission = { 411, 412, 413,414 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
             }
 
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -40,13 +52,19 @@ namespace SigmaERP.vat_tax
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "vat_rate_settings.aspx", ddlCompanyName, gvvatraxrateSettings, btnSave);
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+              //  string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "vat_rate_settings.aspx", ddlCompanyName, gvvatraxrateSettings, btnSave);
+                if(permission.Contains(411))
+                    ViewState["__ReadAction__"] = "1";
+                if(permission.Contains(412))
+                    ViewState["__WriteAction__"] = "1";
+                if(permission.Contains(413))
+                    ViewState["__UpdateAction__"] = "1";
+                if(permission.Contains(414))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];                
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -202,8 +220,7 @@ namespace SigmaERP.vat_tax
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+       
                 try
                 {
                     if (ViewState["__DeletAction__"].ToString().Equals("0"))
@@ -227,12 +244,28 @@ namespace SigmaERP.vat_tax
 
                 }
                 catch { }
-            }
+            
         }
 
         protected void rblTaxpayerType_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadVatTaxRateSettings(); 
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+
+
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+            }
+
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.SqlClient;
 using SigmaERP.classes;
 using System.Drawing;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
@@ -18,17 +19,28 @@ namespace SigmaERP.personnel
         DataTable dt;
         SqlCommand cmd;
         string query = "";
-       // 280
-281
-282
-283
+
+        // Separation Entry=280,
+        //Current Separation  List=281
+        //Separation Activation =282
+        //Separation Activation Log=283
         protected void Page_Load(object sender, EventArgs e)
         {
+  
+                ViewState["__SeparationEntry=__"] = "0";
+                ViewState["__CurrentSeparationList__"] = "0";
+                ViewState["__SeparationActivation__"] = "0";
+                ViewState["__SeparationActivationLog__"] = "0";
+
+            int[] pagePermission = { 280, 281, 282, 283 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                
                 loadSeparationInfo();
@@ -43,9 +55,28 @@ namespace SigmaERP.personnel
                 }
 
                 classes.Employee.LoadEmpCardNo_ForSeperation(ddlEmpCardNo,ddlCompany.SelectedValue);
-                load_CurrentSeperationList();
-                load_SeperationListForActivation();
-                load_SeperationActivation_Log();
+                if (userPagePermition.Contains(280))
+                {
+                    tabPanel1.Visible = true;
+                }
+                else
+                {
+                    tabPanel1.Visible = false;
+                }
+
+
+
+                if (userPagePermition.Contains(281))
+                    load_CurrentSeperationList();
+                if (userPagePermition.Contains(282))
+                    load_SeperationListForActivation();
+                else
+                    tabSeperationActivation.Visible = false;
+                if (userPagePermition.Contains(283))
+                    load_SeperationActivation_Log();
+                else
+                    TabPanel2.Visible = false;
+
             }
         }
         private void setPrivilege()
@@ -58,20 +89,18 @@ namespace SigmaERP.personnel
                 ViewState["__G_UserId__"] = getUserId;
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "separation.aspx", ddlCompany, gvSeparationList, btnSave);
-                
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "separation.aspx", ddlCompany, gvSeparationList, btnSave);
 
-                if (ViewState["__ReadAction__"].ToString().Equals("0"))
-                {
-                    gvCurrentSeperationList.Visible = false;
-                }
-              
-            
+             
+
+                //if (ViewState["__ReadAction__"].ToString().Equals("0"))
+                //{
+                //    gvCurrentSeperationList.Visible = false;
+                //}
+
+                tabSeperationActivation.Visible = true;
                ddlSearchCompany.DataTextField = "Text";
                ddlSearchCompany.DataValueField = "Value";;
                ddlSearchCompany.DataSource = ddlCompany.Items;
@@ -202,16 +231,16 @@ namespace SigmaERP.personnel
 
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "ClearInputBox();", true);
                     btnSave.Text = "Save";
-                    if (ViewState["__WriteAction__"].Equals("0"))
-                    {
-                        btnSave.Enabled = false;
-                        btnSave.CssClass = "";
-                    }
-                    else
-                    {
-                        btnSave.Enabled = true;
-                        btnSave.CssClass = "css_btn Ptbut";
-                    }
+                    //if (ViewState["__WriteAction__"].Equals("0"))
+                    //{
+                    //    btnSave.Enabled = false;
+                    //    btnSave.CssClass = "";
+                    //}
+                    //else
+                    //{
+                    //    btnSave.Enabled = true;
+                    //    btnSave.CssClass = "css_btn Ptbut";
+                    //}
                     ddlEmpCardNo.Enabled = true;
                     ddlSeparationType.SelectedIndex = 0;
                     txtEffectiveDate.Text = "";
@@ -262,16 +291,17 @@ namespace SigmaERP.personnel
                     else if (gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[6].Text.ToLower().Equals("discharged")) ddlSeparationType.SelectedValue = "6";
                     else if (gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[6].Text.ToLower().Equals("unauthorized")) ddlSeparationType.SelectedValue = "7";
                     btnSave.Text = "Update";
-                    if (ViewState["__UpdateAction__"].ToString().Equals("1"))
-                    {
-                        btnSave.Enabled = true;
-                        btnSave.CssClass = "css_btn Ptbut";
-                    }
-                    if (ViewState["__DeletAction__"].ToString().Equals("0"))
-                    {
-                        btnDelete.Visible = true;
-                        btnDelete.CssClass = "css_btn Ptbut";
-                    }
+                    //if (ViewState["__UpdateAction__"].ToString().Equals("1"))
+                    //{
+                    //    btnSave.Enabled = true;
+                    //    btnSave.CssClass = "css_btn Ptbut";
+                    //}
+                    //if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                    //if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                    //{
+                    //    btnDelete.Visible = true;
+                    //    btnDelete.CssClass = "css_btn Ptbut";
+                    //}
                     ViewState["__G_EmpId__"] = gvSeparationList.DataKeys[Convert.ToInt32(e.CommandArgument.ToString())].Values[3].ToString();
                     ViewState["__G_EmpCardNo__"] = gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[2].Text;
                     ViewState["__G_EmpTypeId__"] = gvSeparationList.DataKeys[Convert.ToInt32(e.CommandArgument.ToString())].Values[1].ToString();
@@ -476,23 +506,22 @@ namespace SigmaERP.personnel
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+         
 
                 try
                 {
 
-                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
-                    {
-                        Button btnAlter = new Button();
-                        btnAlter = (Button)e.Row.FindControl("btnAlter");
-                        btnAlter.Enabled = false;
-                        btnAlter.ForeColor = Color.Silver;
-                    }
+                    //if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                    //{
+                    //    Button btnAlter = new Button();
+                    //    btnAlter = (Button)e.Row.FindControl("btnAlter");
+                    //    btnAlter.Enabled = false;
+                    //    btnAlter.ForeColor = Color.Silver;
+                    //}
 
                 }
                 catch { }
-            }
+            
         }
 
         protected void gvCurrentSeperationList_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -644,24 +673,23 @@ namespace SigmaERP.personnel
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+         
                 Button btn;
                
                 try
                 {
-                    if (ViewState["__WriteAction__"].ToString().Equals("0"))
-                    {
-                        btn = new Button();
-                        btn = (Button)e.Row.FindControl("btnActive");
-                        btn.Enabled = false;
-                        btn.ForeColor = Color.Silver;
-                    }
+                    //if (ViewState["__WriteAction__"].ToString().Equals("0"))
+                    //{
+                    //    btn = new Button();
+                    //    btn = (Button)e.Row.FindControl("btnActive");
+                    //    btn.Enabled = false;
+                    //    btn.ForeColor = Color.Silver;
+                    //}
 
                 }
                 catch { }
             }
-        }
+        
         
 
 

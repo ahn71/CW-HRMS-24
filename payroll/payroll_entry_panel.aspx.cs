@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,13 +17,25 @@ namespace SigmaERP.payroll
     public partial class payroll_entry_panel : System.Web.UI.Page
     {
         DataTable dt;
+
+        //View=328 Add=329 update=330
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__WriteAction__"] = "0";
+           // ViewState["__DeletAction__"] = "1";
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__UpdateAction__"] = "1";
+
+            int[] pagePermission = { 328,329,330 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack) {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
+                setPrivilege(userPagePermition);
                 ViewState["__IsChanged__"] = "no";
                 Session["OPERATION_PROGRESS"] = 0;
                 Office_IsGarments();
@@ -56,28 +69,35 @@ namespace SigmaERP.payroll
             }
             catch { }
         }
-        private void setPrivilege()
+        private void setPrivilege(int [] permissions)
         {
             try
             {
                 
-                ViewState["__WriteAction__"] = "1";
-                ViewState["__DeletAction__"] = "1";
-                ViewState["__ReadAction__"] = "1";
-                ViewState["__UpdateAction__"] = "1";
+                //ViewState["__WriteAction__"] = "1";
+                //ViewState["__DeletAction__"] = "1";
+                //ViewState["__ReadAction__"] = "1";
+                //ViewState["__UpdateAction__"] = "1";
+
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
 
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadBranch(ddlCompanyList2, ViewState["__CompanyId__"].ToString());
+
 
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForpayrollentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_entry_panel.aspx", gvSalaryList, btnSave, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
+                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForpayrollentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_entry_panel.aspx", gvSalaryList, btnSave, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                if (permissions.Contains(328))
+                    ViewState["__ReadAction__"] = "1";
+                if (permissions.Contains(329))
+                    ViewState["__WriteAction__"] = "1";
+                if (permissions.Contains(330))
+                    ViewState["__UpdateAction__"] = "1";
+                checkInitialPermission();
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 ddlCompanyList2.SelectedValue = ViewState["__CompanyId__"].ToString();
                 if (ViewState["__WriteAction__"].ToString().Equals("0"))
@@ -479,9 +499,7 @@ namespace SigmaERP.payroll
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
-                
+      
                
                 try
                 {
@@ -494,7 +512,7 @@ namespace SigmaERP.payroll
 
                 }
                 catch { }
-            }
+            
         }
         
 
@@ -511,7 +529,8 @@ namespace SigmaERP.payroll
                     IndividualSalary();               
                     tc1.ActiveTabIndex = 0;
                     txtFinding.Visible = false;
-                
+                    btnSave.Enabled = true;
+                    btnSave.CssClass = "Pbutton";
                 }
             }
             catch { }
@@ -776,6 +795,20 @@ namespace SigmaERP.payroll
             }
             catch { }
         }      
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+            }
+        }
      
       
     }

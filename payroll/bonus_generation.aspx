@@ -110,7 +110,7 @@
 
                         </div>
                         <div class="bonus_generation" style="width: 66%; margin: 0px auto;">   
-                            <asp:GridView runat="server" ID="gvSalaryList" CssClass="gvdisplay1" DataKeyNames="BID" AutoGenerateColumns="false" HeaderStyle-BackColor="#ffa500" HeaderStyle-Height="28px" HeaderStyle-ForeColor="White" Width="100%" OnRowCommand="gvSalaryList_RowCommand">
+                            <asp:GridView runat="server" ID="gvSalaryList" CssClass="gvdisplay1" DataKeyNames="BID" AutoGenerateColumns="false" HeaderStyle-BackColor="#ffa500" HeaderStyle-Height="28px" HeaderStyle-ForeColor="White" Width="100%" OnRowCommand="gvSalaryList_RowCommand" OnRowDataBound="gvSalaryList_RowDataBound" >
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <HeaderTemplate>SL</HeaderTemplate>

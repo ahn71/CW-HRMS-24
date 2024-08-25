@@ -1,5 +1,6 @@
 ﻿using adviitRuntimeScripting;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,16 +14,24 @@ namespace SigmaERP.leave
 {
     public partial class earnleave_generation : System.Web.UI.Page
     {
+        //permission=449
         DataTable dt;
         string sqlCmd = "";
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            int[] pagePermission = { 449 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 ViewState["___IsGerments__"] = classes.Payroll.Office_IsGarments();
                 ViewState["__FindName__"] = "No";
                 classes.commonTask.LoadBranch(ddlCompanyList);

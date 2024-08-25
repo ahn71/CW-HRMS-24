@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,12 +14,13 @@ using System.Web.UI.WebControls;
 
 namespace SigmaERP.personnel
 {
+    //permission=432
     public partial class shift_roster_extend : System.Web.UI.Page
     {
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            int[] pagePermission = { 432 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
@@ -33,6 +35,9 @@ namespace SigmaERP.personnel
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;

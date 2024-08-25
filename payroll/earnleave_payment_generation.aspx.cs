@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,13 +14,20 @@ namespace SigmaERP.payroll
 {
     public partial class earnleave_payment_generation : System.Web.UI.Page
     {
+        //permission=312
         DataTable dt;
         string sqlCmd = "";
         string CompanyId = "";
+       
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 312 };
             if (!IsPostBack)
             {
+
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 loadEarnLeaveGeneration();
             }
@@ -33,8 +41,9 @@ namespace SigmaERP.payroll
                 Session["__getUserId__"] = getUserId;
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"]= CompanyId = getCookies["__CompanyId__"].ToString();
-                string[] AccessPermission = new string[0];               
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_generation.aspx", ddlCompanyList, btnGenerate, btnGenerate,gvEarnLeaveGenerationList);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // string[] AccessPermission = new string[0];               
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_generation.aspx", ddlCompanyList, btnGenerate, btnGenerate,gvEarnLeaveGenerationList);
             }
             catch { }
         }

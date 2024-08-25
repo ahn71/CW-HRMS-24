@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,13 +18,20 @@ namespace SigmaERP.payroll.advance
         DataTable dt;
         DataTable dtSetPrivilege;
         string query = "";
+
+        //permission=358;
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+            int[] pagePermission = { 357 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 //txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 //txtToDate.Text = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) + "-" + DateTime.Now.ToString("MM-yyyy");
                 commonTask.LoadEmpTypeWithAll(rblEmpType,"");
@@ -47,7 +55,8 @@ namespace SigmaERP.payroll.advance
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 string DptId = getCookies["__DptId__"].ToString();
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
 
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ViewState["__WriteAction__"] = AccessPermission[1];

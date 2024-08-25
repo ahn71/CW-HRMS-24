@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,15 +15,25 @@ namespace SigmaERP.vat_tax
 {
     public partial class allowance_calculation_settingsvat : System.Web.UI.Page
     {
+
+        //permission(View=406 Add=407 Update=408)
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
 
+            int[] pagePermission = { 406,407,408 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
+                setPrivilege(userPagePermition);
                 //loadAllowanceCalculationSettings();
                 classes.commonTask.loadEmpTypeInRadioButtonList(rblEmpType);
                 classes.commonTask.loadEmpTypeInRadioButtonList(rblEmployeeType2);
@@ -37,7 +48,7 @@ namespace SigmaERP.vat_tax
             }
         }
 
-        private void setPrivilege()
+        private void setPrivilege(int[]permission)
         {
             try
             {
@@ -47,12 +58,21 @@ namespace SigmaERP.vat_tax
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string[] AccessPermission = new string[0];
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "allowance_calculation_settingsvat.aspx", gvSalaryCalculationList, gvAllowanceAmountList, btnSave, btnSave2, ddlCompanyList, ViewState["__CompanyId__"].ToString(), ddlCompanyList2);
-                                                           
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadBranch(ddlCompanyList2, ViewState["__CompanyId__"].ToString());
+
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "allowance_calculation_settingsvat.aspx", gvSalaryCalculationList, gvAllowanceAmountList, btnSave, btnSave2, ddlCompanyList, ViewState["__CompanyId__"].ToString(), ddlCompanyList2);
+
+                if(permission.Contains(406))
+                    ViewState["__ReadAction__"] = "1";
+                if(permission.Contains(407))
+                    ViewState["__WriteAction__"] = "1";
+                if(permission.Contains(408))
+                    ViewState["__UpdateAction__"] = "1";
+
+                checkInitialPermission();
+
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 ddlCompanyList2.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -479,8 +499,7 @@ namespace SigmaERP.vat_tax
 
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+           
 
                 try
                 {
@@ -493,7 +512,7 @@ namespace SigmaERP.vat_tax
 
                 }
                 catch { }
-            }
+            
         }
 
         protected void gvSalaryCalculationList_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -504,7 +523,9 @@ namespace SigmaERP.vat_tax
                 {
                     int rIndex = Convert.ToInt32(e.CommandArgument.ToString());
                     loadAllowanceCalculationSettings(gvSalaryCalculationList.DataKeys[rIndex].Value.ToString());
-
+                    btnSave.Enabled = true;
+                    btnSave.Text = "Update";
+                    btnSave.CssClass = "Pbutton";
                 }
             }
             catch { }
@@ -789,7 +810,9 @@ namespace SigmaERP.vat_tax
                 {
                     int rIndex = Convert.ToInt32(e.CommandArgument.ToString());
                     loadAllowanceCalculationAmountSettings(gvAllowanceAmountList.DataKeys[rIndex].Value.ToString(), rIndex);
-
+                    btnSave2.Enabled = true;
+                    btnSave2.Text = "Update";
+                    btnSave2.CssClass = "PButton";
                 }
             }
             catch { }
@@ -861,6 +884,25 @@ namespace SigmaERP.vat_tax
         protected void btnClear2_Click(object sender, EventArgs e)
         {
             ClearAmountBox();
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave2.Enabled = false;
+                btnSave.CssClass = "";
+                btnSave2.CssClass = "";
+
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave2.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+                btnSave2.CssClass = "Pbutton";
+            }
+
         }
     }
 }

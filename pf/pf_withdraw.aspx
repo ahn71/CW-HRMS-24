@@ -110,7 +110,7 @@
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">  
                            
         <ContentTemplate>                    
-                    <asp:GridView ID="gvPFWithdrawList" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="EmpId"   AllowPaging="True"  PageSize="25"  OnRowCommand="gvPFWithdrawList_RowCommand"  >
+                    <asp:GridView ID="gvPFWithdrawList" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="EmpId"   AllowPaging="True"  PageSize="25"  OnRowCommand="gvPFWithdrawList_RowCommand" OnRowDataBound="gvPFWithdrawList_RowDataBound" >
 <HeaderStyle BackColor="#FFA500" Font-Bold="True" Font-Size="14px" ForeColor="White" Height="28px"></HeaderStyle>
                         <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                        <RowStyle HorizontalAlign="Center" />

@@ -8,11 +8,13 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
     public partial class WeekendInfoReport : System.Web.UI.Page
     {
+        //permission=326;
         DataTable dt;
         DataTable dtSetPrivilege;
         string CompanyId = "";
@@ -20,11 +22,16 @@ namespace SigmaERP.attendance
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 326 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtToDate.Text= txtFromDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 setPrivilege();

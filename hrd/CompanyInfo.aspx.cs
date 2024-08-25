@@ -12,6 +12,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Drawing;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.hrd
 {
@@ -19,16 +20,27 @@ namespace SigmaERP.hrd
     {
         static string imageName;
         string HeadOfficeId;     
+        //permision(View=235 Add=236 Edit=237 Delete=238)
         protected void Page_Load(object sender, EventArgs e)
         {
+            ViewState["__ReadAction__"] = "0";
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__UpdateAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+
+            int[] pagePermission = { 235, 236, 237, 238 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             divMsg.InnerText = "";
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
+                setPrivilege(userPagePermition);
                 loadCompanyInfoInfo();
                 LoadCompanyId();
                 LoadBusinessType();
@@ -61,7 +73,7 @@ namespace SigmaERP.hrd
                 lblMessage.InnerText = "error->" + ex.Message;
             }
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -78,11 +90,17 @@ namespace SigmaERP.hrd
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "CompanyInfo.aspx", gvCompanyInfo, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
-              
+                if (permission.Contains(235))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(236))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(237))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permission.Contains(238))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
+
+
             }
             catch { }
         }
@@ -735,6 +753,22 @@ namespace SigmaERP.hrd
             if (dt.Rows.Count > 0)
                 return false;
             else return true;
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Rbutton";
+            }
+            else
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+
+
         }
     }
 }

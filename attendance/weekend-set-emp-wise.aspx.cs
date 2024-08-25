@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,6 +12,8 @@ using System.Web.UI.WebControls;
 
 namespace SigmaERP.attendance
 {
+
+    //permission=324;
     public partial class weekend_set_emp_wise : System.Web.UI.Page
     {
         DataTable dt;
@@ -18,9 +21,14 @@ namespace SigmaERP.attendance
         string sqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 324 }; 
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);                
                 setPrivilege();
                 SetupTypeWiseShowHide();

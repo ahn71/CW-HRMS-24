@@ -12,24 +12,31 @@ using System.Data.SqlClient;
 using System.Drawing;
 using SigmaERP.classes;
 using System.IO;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class aplication : System.Web.UI.Page
     {
         string sqlCmd = "";
-        
+
+        //permission=296
         DataTable DTLocal = null;
         string[] getColumns;
         string[] getValues;
         SqlCommand cmd;
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = {296};
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 txtApplyDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 txtApplyDate.Enabled = false;
                 ViewState["__FindName__"] = "No";

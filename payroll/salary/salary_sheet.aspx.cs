@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,14 +14,19 @@ namespace SigmaERP.payroll.salary
 {
     public partial class salary_sheet : System.Web.UI.Page
     {
+        //Permission=337
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            int[] pagePermission = { 337 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 classes.commonTask.loadEmpTye(rblEmployeeType);
                 rblEmployeeType.SelectedValue = "1";
                 setPrivilege();

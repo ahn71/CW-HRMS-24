@@ -9,6 +9,7 @@ using System.Data;
 using System.Data.SqlClient;
 using SigmaERP.classes;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
@@ -18,10 +19,15 @@ namespace SigmaERP.personnel
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 277 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 setPrivilege();               
                 classes.commonTask.LoadEmpType(rblEmpType);
                 ddlBranch.SelectedValue = ViewState["__CompanyId__"].ToString();

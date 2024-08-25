@@ -9,18 +9,25 @@ using System.Data;
 using ComplexScriptingSystem;
 using adviitRuntimeScripting;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.payroll.salary
 {
     public partial class ot_payment : System.Web.UI.Page
     {
+        //permissons=338;
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 338 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;

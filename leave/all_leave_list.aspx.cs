@@ -11,23 +11,29 @@ using System.Data.SqlClient;
 using System.Drawing;
 using SigmaERP.classes;
 using System.IO;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class week_end_list_all : System.Web.UI.Page
     {
+        //permission=309
         DataTable dt;
        static DataTable dtSetPrivilege;
         string query = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 309};
             try { 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                    classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect("../hrms/dashboard.aspx");
+                        classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                     txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");                  
                     txtToDate.Text = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)+"-"+ DateTime.Now.ToString("MM-yyyy");
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();

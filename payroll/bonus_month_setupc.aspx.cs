@@ -1,7 +1,9 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Data;
+using System.Linq;
 using System.Web;
 using System.Web.UI.WebControls;
 
@@ -9,14 +11,15 @@ namespace SigmaERP.payroll
 {
     public partial class bonus_month_setupc : System.Web.UI.Page
     {
+        //permission(View=398 Add=399 Delete=100)
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
-
+          
             if (!IsPostBack)
-            {
+            {;
                 setPrivilege();
                 // classes.commonTask.loadEmpTypeInRadioButtonList(rbEmpTypeList);
                 loadSlabType();
@@ -47,6 +50,11 @@ namespace SigmaERP.payroll
                 {
                     ddlComapnyList.Enabled = false;
                     classes.commonTask.LoadBranch(ddlComapnyList, ViewState["__CompanyId__"].ToString());
+
+
+
+
+
                     if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
                     {
                         btnDelete.Enabled = false;
@@ -278,6 +286,31 @@ namespace SigmaERP.payroll
                 }
             }
             catch { }
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSet.Enabled = false;
+                btnSet.CssClass = "";
+
+            }
+            else
+            {
+                btnSet.Enabled = true;
+                btnSet.CssClass = "Pbutton";
+            }
+            if (ViewState["__DeletAction__"].ToString().Equals("1"))
+            {
+                btnDelete.Enabled = false;
+                btnDelete.CssClass = "";
+            }
+            else
+            {
+                btnDelete.Enabled = true;
+                btnDelete.CssClass = "Pbutton";
+            }
         }
 
 

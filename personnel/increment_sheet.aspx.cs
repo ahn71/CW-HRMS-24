@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,12 +17,17 @@ namespace SigmaERP.personnel
         string CompanyId = "";
         DataTable dt;
         DataTable dtSetPrivilege;
+        //permission=346
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = {346};
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
                 setPrivilege();
                 classes.commonTask.LoadEmpType(rbEmpList);
                 //classes.commonTask.LoadMonthName(ddlMonthName);

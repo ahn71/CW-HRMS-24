@@ -13,23 +13,31 @@ using System.Drawing;
 using System.Web.SessionState;
 using System.Threading;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.payroll
 {
     public partial class bonus_generation : System.Web.UI.Page
     {
+        //permission=(Process=401,Delete=402) 
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
-            
+
+            ViewState["__WriteAction__"] = "0";
+            ViewState["__DeletAction__"] = "0";
+            int[] pagePermission = { 401,402 };
 
             if (!IsPostBack)
             {
                 Session["OPERATION_PROGRESS"] = 0;
-                setPrivilege();
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect("../hrms/dashboard.aspx");
+                setPrivilege(userPagePermition);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -41,7 +49,7 @@ namespace SigmaERP.payroll
         }
 
 
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -52,28 +60,34 @@ namespace SigmaERP.payroll
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
-                {
-                    classes.commonTask.LoadBranch(ddlCompanyList);
-                    return;
-                }
-                else
-                {
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
+                //{
+                //    classes.commonTask.LoadBranch(ddlCompanyList);
+                //    return;
+                //}
+                //else
+                //{
                     classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
-                    ddlCompanyList.Enabled = false;
-                    //operation.Enabled = false;
-                    //operation.CssClass = "";
-                    DataTable dt = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_generation.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dt.Rows[0]["GenerateAction"].ToString()).Equals(true))
-                        {
-                            //btnGeneration.CssClass = "css_btn";
-                            //btnGeneration.Enabled = true;
-                        }
-                    }
-                }
+
+                if(permission.Contains(402))
+                    ViewState["__WriteAction__"] = "0";
+                if(permission.Contains(403))
+                    ViewState["__DeletAction__"] = "0";
+                checkInitialPermission();
+                //ddlCompanyList.Enabled = false;
+                ////operation.Enabled = false;
+                ////operation.CssClass = "";
+                //DataTable dt = new DataTable();
+                //sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_generation.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    if (bool.Parse(dt.Rows[0]["GenerateAction"].ToString()).Equals(true))
+                //    {
+                //        //btnGeneration.CssClass = "css_btn";
+                //        //btnGeneration.Enabled = true;
+                //    }
+                //}
+                //}
             }
             catch { }
         }
@@ -630,6 +644,38 @@ namespace SigmaERP.payroll
             }
             catch (Exception ex) { lblMessage.InnerText = "error-> " + ex.Message; return false; }
 
+        }
+
+        protected void gvSalaryList_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            try
+            {
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                {
+                    Button btnRemove = (Button)e.Row.FindControl("btnRemove");
+                    btnRemove.Enabled = false;
+                    btnRemove.OnClientClick = "return false";
+                    btnRemove.ForeColor = Color.Silver;
+                }
+
+            }
+            catch { }
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnGeneration.Enabled = false;
+                btnGeneration.CssClass = "";
+
+            }
+            else
+            {
+                btnGeneration.Enabled = true;
+                btnGeneration.CssClass = "Pbutton";
+            }
+    
         }
     }
 }
