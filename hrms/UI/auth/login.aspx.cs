@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using Newtonsoft.Json;
+using SigmaERP.hrms.BLL;
 //using SigmaERP.classes;
 using SigmaERP.hrms.Data;
 using System;
@@ -21,6 +22,7 @@ namespace SigmaERP.hrms.UI.auth
     public partial class login : System.Web.UI.Page
     {
         DataTable dt;
+        ApiConnector apiConnector;
         protected void Page_Load(object sender, EventArgs e)
         {           
 
@@ -200,8 +202,8 @@ namespace SigmaERP.hrms.UI.auth
             }
         }
 
-        private static string ApiRootUrl = "https://localhost:7220";
-        private static string LoginUrl = ApiRootUrl + "/api/LogIn/Login";
+       
+       // private static string LoginUrl = ApiConnector.RootUrl + "/api/LogIn/Login";
         public string Login(string url, string userName, string userPassword, string CompanyId)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -256,7 +258,10 @@ namespace SigmaERP.hrms.UI.auth
                 string username = txtUsername.Text.Trim();
                 string password = txtPassword.Text.Trim();
                 string companyId = ddlCompany.SelectedValue;
-                string response = Login(LoginUrl, username, password, companyId);
+               // ApiConnector apiConnector = new ApiConnector();
+                if (apiConnector == null)
+                    apiConnector = new ApiConnector();
+                string response = apiConnector.Login("/api/LogIn/Login", username, password, companyId);
                 var jsonResponse = JsonConvert.DeserializeObject<dynamic>(response);
 
                 if (jsonResponse.statusCode == 200)

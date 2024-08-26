@@ -3606,6 +3606,7 @@
       <DependentUpon>hrd_default.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\BLL\AccessControl.cs" />
+    <Compile Include="hrms\BLL\ApiConnector.cs" />
     <Compile Include="hrms\dashboard.aspx.cs">
       <DependentUpon>dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
