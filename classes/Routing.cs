@@ -8,6 +8,8 @@ using System.Net;
 using System.Web;
 using System.Web.Routing;
 using SigmaERP.hrms.DTO;
+using SigmaERP.hrms.BLL;
+
 namespace SigmaERP.classes
 {
     public static class Routing
@@ -50,8 +52,8 @@ namespace SigmaERP.classes
             public string Message { get; set; }
             public List<PermissionRoute> Data { get; set; }
         }
-      
-        private static string ApiRootUrl = "https://localhost:7220";
+
+        public static string ApiRootUrl = ApiConnector.RootUrl;
         private static string UserWithModuleUrl = ApiRootUrl + "/api/User/userWithModule";
         private static string UserWithPermissionUrl = ApiRootUrl + "/api/User/userWithPermission";
 

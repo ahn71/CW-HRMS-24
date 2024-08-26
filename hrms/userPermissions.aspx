@@ -152,7 +152,7 @@
         var token = '<%= Session["__UserToken__"] %>';
         console.log('this is token you can use it :', token);
         //var rootUrl = 'http://localhost:5081';
-        var rootUrl = 'https://localhost:7220';
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
         var GetByIdPermissionUrl = rootUrl + '/api/UserPermissions/permissions';
         var GetModuleForDdlUrl = rootUrl + '/api/UserModules/modules';
         var GetPermissioneUrl = rootUrl + '/api/UserPermissions/permissions';
@@ -495,6 +495,7 @@
         });
 
     </script>
+    <script src="assets/theme_assets/js/RootUrl.js"></script>
     <script src="assets/theme_assets/js/apiHelper.js"></script>
     <style>
         .jstree .jstree-loading {

@@ -111,7 +111,7 @@
     <script>
         //var rootUrl = 'http://localhost:5081';
 
-        var rootUrl = 'https://localhost:7220';
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
         var postRolesUrl = rootUrl + '/api/UserRoles/create';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
@@ -573,6 +573,7 @@
     </script>
 
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
+
    <script src="assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>
