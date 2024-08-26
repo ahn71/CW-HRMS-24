@@ -238,7 +238,9 @@
          console.log('this is token you can use it :',token);
 
 
-         var rootUrl = 'https://localhost:7220';
+         //var rootUrl = 'https://localhost:7220';
+         var rootUrl = '<%= Session["__RootUrl__"]%>';
+
          var getUsersUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getEmployeeUrl = rootUrl + '/api/Employee/EmployeeName';
@@ -1105,6 +1107,7 @@
         
     </style>
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
+
     <script src="assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>

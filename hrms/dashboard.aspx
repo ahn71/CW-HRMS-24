@@ -971,7 +971,8 @@
 
     <script>
 
-        var rootUrl = 'http://cw-hrms-api.codehosting.xyz';
+        //var rootUrl = 'http://cw-hrms-api.codehosting.xyz';
+          var rootUrl = '<%= Session["__RootUrl__"]%>';
         //var rootUrl = 'http://localhost:8081';
 
         var DailyAttUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceStatus';

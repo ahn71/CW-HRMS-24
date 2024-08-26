@@ -142,7 +142,7 @@
 
     <script>
         //var rootUrl = 'http://localhost:5081';
-        var rootUrl = 'https://localhost:7220';
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
@@ -590,7 +590,6 @@
         }
 
     </script>
-
      <script src="assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>

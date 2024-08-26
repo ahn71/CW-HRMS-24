@@ -10,8 +10,8 @@ namespace SigmaERP.hrms.BLL
 {
     public  class ApiConnector
     {
-      //  private string RootUrl = "https://localhost:7220";
-       private string RootUrl = "http://cw-hrms-api.codehosting.xyz";
+       //public static string RootUrl = "https://localhost:7220";
+       public static string RootUrl = "http://cw-hrms-api.codehosting.xyz";
 
         public string Login(string url, string userName, string userPassword, string CompanyId)
         {

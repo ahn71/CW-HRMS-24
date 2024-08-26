@@ -150,7 +150,7 @@
     <script>
 
         var token = '<%= Session["__UserToken__"] %>';
-
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
         function BoxExpland() {
             var scrollTop = $(window).scrollTop();
 
