@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,8 +11,8 @@ namespace SigmaERP.hrms.BLL
 {
     public  class ApiConnector
     {
-        //public static string RootUrl = "https://localhost:7220";
-        public static string RootUrl = "http://cw-hrms-api.codehosting.xyz";
+       //public static string RootUrl = "https://localhost:7220";
+       public static string RootUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
 
         public string Login(string url, string userName, string userPassword, string CompanyId)
         {
