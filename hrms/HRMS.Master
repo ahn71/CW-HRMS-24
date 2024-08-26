@@ -96,11 +96,15 @@
                    <li class="mega-item has-subMenu">
                        <a href="attendance" class="">Attendance</a>
                        <ul class="megaMenu-wrapper megaMenu-md">
+                          <% if (IsRouteExists("attendance/month-setup") || IsRouteExists("attendance/processing") || IsRouteExists("attendance/manually-count") ||
+                             IsRouteExists("attendance/list") || IsRouteExists("attendance/daily-summary-report") || IsRouteExists("attendance/daily-in-out-report") || IsRouteExists("attendance/manual-report") || IsRouteExists("attendance/monthly-report") ||IsRouteExists("attendance/manpower-wise"))
+                           { %>
+
                            <li class="bordered">
                                <span class="mega-title">Attendance</span>
                                <ul>
                                    <% if (IsRouteExists("attendance/month-setup"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/month-setup" runat="server" class="">
                                            <span class="menu-text">Month Setup</span>
@@ -108,7 +112,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/processing"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/processing" runat="server" class="">
                                            <span class="menu-text">Attendance Processing</span>
@@ -116,7 +120,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/manually-count"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/manually-count" runat="server" class="">
                                            <span class="menu-text">Manually Count</span>
@@ -124,7 +128,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/list"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/list" runat="server" class="">
                                            <span class="menu-text">Attendance List</span>
@@ -132,7 +136,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/daily-summary-report"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/daily-summary-report" class="">
                                            <span class="menu-text">Att Summary</span>
@@ -140,7 +144,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/daily-in-out-report"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/daily-in-out-report" class="">
                                            <span class="menu-text">In-Out Report</span>
@@ -148,7 +152,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/manual-report"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/manual-report" class="">
                                            <span class="menu-text">Manual Report</span>
@@ -156,7 +160,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/monthly-report"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/monthly-report" class="">
                                            <span class="menu-text">Monthly Status</span>
@@ -164,7 +168,7 @@
                                    </li>
                                    <% } %>
                                    <% if (IsRouteExists("attendance/manpower-wise"))
-                                       { %>
+    { %>
                                    <li class="l_sidebar">
                                        <a href="attendance/manpower-wise" class="">
                                            <span class="menu-text">Manpower Wise Attendance</span>
@@ -173,6 +177,7 @@
                                    <% } %>
                                </ul>
                            </li>
+                           <%} %>
                            <% if (IsRouteExists("attendance/out-duty-add") || IsRouteExists("attendance/out-duty-list") || IsRouteExists("attendance/out-duty-approval") ||
                                 IsRouteExists("attendance/out-duty-report") || IsRouteExists("attendance/absent-notification") || IsRouteExists("attendance/manpower-statement") || IsRouteExists("attendance/weekend-setup") || IsRouteExists("attendance/general-day-setup") || IsRouteExists("attendance/weekend-info-report") || IsRouteExists("attendance/attendance-analysis"))
                                     { %>
@@ -274,60 +279,65 @@
                         </li>
 
                            <%} %>
+
+                           <% if (IsRouteExists("roster/create") || IsRouteExists("roster/extend") || IsRouteExists("roster/view-remove") ||
+                             IsRouteExists("roster/transfer") || IsRouteExists("roster/missing") || IsRouteExists("roster/place-assign") || IsRouteExists("roster/report") || IsRouteExists("roster/report-by-date"))
+                               { %>
+
                             <li class="bordered">
                              <span class="mega-title">Roster Information</span>
                              <ul>
                                  <% if (IsRouteExists("roster/create"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/create" runat="server">Roster Create</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/extend"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/extend" runat="server">Roster Extend</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/view-remove"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/view-remove" runat="server">Roster View & Remove</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/transfer"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/transfer" runat="server">Roster Transfer</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/missing"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/missing" runat="server">Roster Missing</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/place-assign"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/place-assign" runat="server">Place Assign</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/report"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/report" runat="server">Roster Manage Report</a>
                                  </li>
                                  <% } %>
 
                                  <% if (IsRouteExists("roster/report-by-date"))
-                                     { %>
+        { %>
                                  <li>
                                      <a class="" href="roster/report-by-date" runat="server">Roster Report By Date Range</a>
                                  </li>
@@ -335,6 +345,7 @@
 
                                </ul>
                           </li>
+                           <%} %>
 
                            <!-- Add other sections here like Out Duty, Roster Information -->
                        </ul>
