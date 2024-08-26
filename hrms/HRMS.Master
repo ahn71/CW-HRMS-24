@@ -1304,6 +1304,9 @@
                </div>
             </li>
             <!-- ends: .nav-notification -->
+          <% if (IsRouteExists("settings"))
+              { %>
+
             <li class="nav-settings">
                <div class="dropdown-custom">
                   <a href="javascript:;" class="nav-item-toggle">
@@ -1312,16 +1315,20 @@
                   <div class="dropdown-parent-wrapper">
                      <div class="dropdown-wrapper dropdown-wrapper--large">
                         <ul class="list-settings">
+                            <% if (IsRouteExists("settings/department"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class="IconStyle uil uil-sitemap"></i></div>
                               <div class="flex-grow-1">
                                  <h6>
-                            <%--        <a href="/hrd/department.aspx" class="stretched-link">Department</a>--%>
                            <a href="settings/department" runat="server" class="stretched-link">Department</a>
                                  </h6>
                                  <p>Setup Department</p>
                               </div>
                            </li>
+                            <%} %>
+                            <% if (IsRouteExists("settings/designation"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" IconStyle uil uil-bag"></i></div>
                               <div class="flex-grow-1">
@@ -1331,6 +1338,9 @@
                                  <p>Setup Designation</p>
                               </div>
                            </li>
+                              <%} %>
+                              <% if (IsRouteExists("settings/grade"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" gradeIconStyle uil uil-star"></i></div>
                               <div class="flex-grow-1">
@@ -1340,6 +1350,9 @@
                                  <p>Setup Salary Grade</p>
                               </div>
                            </li>
+                              <%} %>
+                              <% if (IsRouteExists("settings/shift"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" gradeIconStyle fas fa-people-arrows"></i></div>
                               <div class="flex-grow-1">
@@ -1349,6 +1362,9 @@
                                  <p>Setup Shift</p>
                               </div>
                            </li>
+                              <%} %>
+                            <% if (IsRouteExists("settings/qualification"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" QualiStyle fas fa-graduation-cap"></i></div>
                               <div class="flex-grow-1">
@@ -1358,6 +1374,9 @@
                                  <p>Setup Qualification</p>
                               </div>
                            </li>
+                              <%} %>
+                              <% if (IsRouteExists("settings/religion"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" QualiStyle fas fa-praying-hands"></i></div>
                               <div class="flex-grow-1">
@@ -1367,6 +1386,9 @@
                                  <p>Setup Religion</p>
                               </div>
                            </li>
+                              <%} %>
+                              <% if (IsRouteExists("settings/district"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class="DistrictStyle fas fa-map-marker-alt"></i></div>
                               <div class="flex-grow-1">
@@ -1376,6 +1398,9 @@
                                  <p>Setup District</p>
                               </div>
                            </li>
+                             <%} %>
+                             <% if (IsRouteExists("settings/thana"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" DistrictStyle uil uil-university"></i></div>
                               <div class="flex-grow-1">
@@ -1385,6 +1410,9 @@
                                  <p>Setup Thana </p>
                               </div>
                            </li>
+                            <%} %>
+                             <% if (IsRouteExists("settings/stamp-deduction"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" IconStyle fas fa-stamp"></i></div>
                               <div class="flex-grow-1">
@@ -1394,6 +1422,9 @@
                                  <p>Setup Stamp Deduction</p>
                               </div>
                            </li>
+                            <%} %>
+                            <% if (IsRouteExists("settings/line-group"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" IconStyle uil uil-align-left"></i></div>
                               <div class="flex-grow-1">
@@ -1403,6 +1434,9 @@
                                  <p>Setup Line/Group</p>
                               </div>
                            </li>
+                            <%} %>
+                             <% if (IsRouteExists("settings/company"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" QualiStyle uil uil-shop"></i></div>
                               <div class="flex-grow-1">
@@ -1413,6 +1447,9 @@
                                  <p>Setup Company</p>
                               </div>
                            </li>
+                            <%} %>
+                             <% if (IsRouteExists("settings/others"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class="QualiStyle fas fa-angle-double-right"></i></div>
                               <div class="flex-grow-1">
@@ -1423,6 +1460,9 @@
                                  <p>setup Others</p>
                               </div>
                            </li>
+                            <%} %>
+                            <% if (IsRouteExists("settings/floor"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class=" QualiStyle uil uil-layer-group"></i></div>
                               <div class="flex-grow-1">
@@ -1433,6 +1473,9 @@
                                  <p>Setup Floor</p>
                               </div>
                            </li>
+                            <%} %>
+                              <% if (IsRouteExists("settings/business"))
+    { %>
                            <li class="d-flex">
                               <div class="me-3"><i class="QualiStyle uil uil-globe"></i></div>
                               <div class="flex-grow-1">
@@ -1443,11 +1486,13 @@
                                  <p>Setup Business Type</p>
                               </div>
                            </li>
+                            <%} %>
                         </ul>
                      </div>
                   </div>
                </div>
             </li>
+          <%} %>
             <li class="nav-author">
                <div class="dropdown-custom">
                   <a href="javascript:;" class="nav-item-toggle"><img src="user_img_default.jpg" alt="" class="rounded-circle">
