@@ -278,7 +278,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__IsCompliance__"] = "0";
                     Session["__UserNameText__"] = username;
                     Session["__UserEmailText__"] = userData.email;
-                    Session["__RootUrl__"] = "http://cw-hrms-api.codehosting.xyz";
+                    Session["__RootUrl__"] = ApiConnector.RootUrl;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
 
