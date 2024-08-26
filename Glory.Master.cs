@@ -10,6 +10,7 @@ using adviitRuntimeScripting;
 using System.Data;
 using System.Web.Services;
 using System.Web.Security;
+using SigmaERP.classes;
 
 namespace SigmaERP
 {
@@ -25,7 +26,8 @@ namespace SigmaERP
                     if (getCookies == null || getCookies.Value == "")
                     {
                        // Response.Redirect("~/ControlPanel/Login.aspx");
-                        Response.Redirect("~/hrms/UI/auth/login.aspx");
+                        //Response.Redirect("~/hrms/UI/auth/login.aspx");
+                        Response.RedirectToRoute(Routing.LoginRouteName);
                     }
                     else
                     {
@@ -108,7 +110,8 @@ namespace SigmaERP
                 catch (Exception ex)
                 {
                     //Response.Redirect("~/ControlPanel/Login.aspx");
-                    Response.Redirect("~/hrms/UI/auth/login.aspx");
+                    // Response.Redirect("~/hrms/UI/auth/login.aspx");
+                    Response.RedirectToRoute(Routing.LoginRouteName);
                 }
             }
         }

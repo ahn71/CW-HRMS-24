@@ -42,7 +42,7 @@
 
     <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Bonus Generation (Actual)</h2>
+            <h2>Bonus Processing (Actual)</h2>
         </div>
         <div class="main_box_body Pbody">
             <div class="main_box_content">
@@ -104,7 +104,7 @@
 
                         <div class="payroll_generation_button">
 
-                            <asp:Button ID="btnGeneration" OnClick="btnGeneration_Click" OnClientClick="return imgShow();" runat="server" CssClass="Pbutton" Text="Generation" />
+                            <asp:Button ID="btnGeneration" OnClick="btnGeneration_Click" OnClientClick="return imgShow();" runat="server" CssClass="Pbutton" Text="Process" />
                             <%--<button  id="operation" class="Pbutton" >Generation</button>--%>
                             <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/payroll_default.aspx" CssClass="Pbutton" />
 

@@ -28,8 +28,6 @@
             margin: 0 auto;
         }
 
-
-
         body {
             font-family: sans-serif;
         }
@@ -194,7 +192,7 @@
         <div class="row gx-0">
             <div class="col-lg-4 p-0">
                 <div class="sign-in-form">
-                    <img class="login-logo" src="./logo.png" alt="logo">
+                    <img class="login-logo" src="/hrms/UI/auth/logo.png" alt="logo">
                     <p class="text-center fw-bold mt-2 mb-4 welcome-text">Welcome to CW-HRMS</p>
 
                     <form class="mt-3" id="form1" runat="server">
@@ -256,7 +254,7 @@
             </div>
 
             <div class="col-lg-8 d-lg-flex justify-content-center align-items-center login-bg d-none  p-0">
-                <img class="login-image" src="cw-hrms.png" alt="image">
+                <img class="login-image" src="/hrms/UI/auth/cw-hrms.png" alt="image">
             </div>
         </div>
 

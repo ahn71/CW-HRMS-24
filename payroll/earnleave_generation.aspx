@@ -19,7 +19,7 @@
                        <li> <a class="seperator" href="#"></a>/</li>                  
                         <li> <a href="/payroll/salary_index.aspx">Salary</a></li>
                         <li> <a class="seperator" href="#"></a>/</li>
-                       <li> <a href="#" class="ds_negevation_inactive Pactive">Payroll Generation</a></li>
+                       <li> <a href="#" class="ds_negevation_inactive Pactive">Payroll Generate</a></li>
                    </ul>               
              </div>
           
@@ -28,7 +28,7 @@
 
     <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Earn Leave Generation</h2>
+            <h2>Earn Leave Generate</h2>
         </div>
     	<div class="main_box_body_leave">
         	<div class="main_box_content_leave">

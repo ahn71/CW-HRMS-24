@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace SigmaERP.hrms
+namespace SigmaERP.hrms.UI.access
 {
-    public partial class WebForm1 : System.Web.UI.Page
+    public partial class UserCreate : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {

@@ -43,9 +43,25 @@
                            <div class="row">
                                <div class="col-lg-8">
                                    <div class="row">
-                                       <div class="col-lg-4" id="ddlReference">
+                                       <div class="col-lg-4" ">
                                            <div class="form-group">
                                                <label id="lblHidenUserId" style="display: none"></label>
+                                               <label for="ddlCompany" class="color-dark fs-14 fw-500 align-center mb-10">Company</label>
+                                               <div class="support-form__input-id">
+                                                   <div class="dm-select ">
+
+                                          <%--             <select name="ddlCompany" runat="server" id="ddlCompany" class="select-search form-control">
+                                                           <option value="0">---Select---</option>
+                                                       </select>--%>
+                                                        <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control"></asp:DropDownList>
+
+                                                   </div>
+                                                   <span class="text-danger" id="ddlcompanyError"></span>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-lg-4" id="ddlReference">
+                                           <div class="form-group">
                                                <label for="ddlReferenceEmp" class="color-dark fs-14 fw-500 align-center mb-10">Employee</label>
                                                <div class="support-form__input-id">
                                                    <div class="dm-select ">
@@ -217,6 +233,11 @@
 
    </main>
      <script>
+
+         var token = '<%= Session["__UserToken__"] %>';
+         console.log('this is token you can use it :',token);
+
+
          var rootUrl = 'https://localhost:7220';
          var getUsersUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
@@ -228,7 +249,8 @@
          var DeleteUserUrl = rootUrl + '/api/User/users/delete';
          var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
 
-         var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+
+         //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
          $(document).ready(function () {
              IsGuestUser();
@@ -743,6 +765,7 @@
          }
          function PostUsers() {
              var refaranceEmp = $('#ddlReferenceEmp').val();
+             var Company = $('#ddlCompany').val();
              var firstName = $('#txtFirstName').val().trim();
              var lastName = $('#txtLastName').val().trim();
              var userName = $('#txtUserName').val().trim();
@@ -772,6 +795,7 @@
 
 
              var postData = {
+                  CompanyId: Company,
                  FirstName: firstName,
                  LastName: lastName,
                  UserName: userName,
@@ -810,10 +834,11 @@
                      });
                  });
          }
-
+        
          function updateUsers() {
                  var userId = $('#lblHidenUserId').val();
                  var refaranceEmp = $('#ddlReferenceEmp').val();
+                 var Company = $('#ddlCompany').val();
                  var firstName = $('#txtFirstName').val().trim();
                  var lastName = $('#txtLastName').val().trim();
                  var userName = $('#txtUserName').val().trim();
@@ -842,7 +867,8 @@
              var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
              var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
 
-                var updateData = {
+             var updateData = {
+                    CompanyId: Company,
                     FirstName: firstName,
                     LastName: lastName,
                     UserName: userName,
@@ -904,6 +930,7 @@
                      $('#chkIsActive').prop('checked', data.isGuestUser);
                      $('#chkIsGetUser').prop('checked', data.isActive);
                      $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
+                     $('#ddlCompany').val(data.companyId).change();
                      var GuestUser = data.isGuestUser;
 
                      additionalPermissions = [];

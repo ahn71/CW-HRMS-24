@@ -11,7 +11,15 @@ namespace SigmaERP.hrms
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                string token = Session["__UserToken__"]?.ToString();
+                Console.WriteLine(token);
 
+                classes.commonTask.LoadBranch(ddlCompany);
+                ddlCompany.SelectedIndex = 1;
+                //ViewState["__IsCompliance__"] = "False";
+            }
         }
     }
 }
