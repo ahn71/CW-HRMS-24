@@ -18,7 +18,7 @@ namespace SigmaERP
                 if (!IsPostBack)
                 {
                     HttpCookie getCookies = Request.Cookies["userInfo"];
-                    ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+                    //ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
                     if (getCookies == null || getCookies.Value == "")
                     {
                         Response.Redirect("~/ControlPanel/Login.aspx");
@@ -55,45 +55,45 @@ namespace SigmaERP
                     }
                     divAttProcessing.Visible = false;
                     //if (ViewState["__CShortName__"].ToString().Equals("MRC"))// Marico
-                    if (ViewState["__CShortName__"].ToString().Equals("MRC"))// Marico
-                    {
-                        divAttReportDaterange.Visible = true;
-                        divManpowerWiseAttendance.Visible = false;
-                    }
-                    else
-                    {
-                        divAttReportDaterange.Visible = false;
-                        divManpowerWiseAttendance.Visible = true;
+                    //if (ViewState["__CShortName__"].ToString().Equals("MRC"))// Marico
+                    //{
+                    //    divAttReportDaterange.Visible = true;
+                    //    divManpowerWiseAttendance.Visible = false;
+                    //}
+                    //else
+                    //{
+                    //    divAttReportDaterange.Visible = false;
+                    //    divManpowerWiseAttendance.Visible = true;
 
-                    }
-                    if (Session["__UserNameText__"].ToString() == "common" && !ViewState["__CShortName__"].ToString().Equals("MRC"))
-                    {
-                        try
-                        {
-                            divMonthSetup.Visible = false;
-                            divMonthSetupComp.Visible = false;
-                            divAttProcessing.Visible = false;
-                            divAttProcessingNew.Visible = false;
-                            divManuallyCount.Visible = false;
-                            divAttendanceList.Visible = false;
-                            divAttSummary.Visible = false;
-                            divInOutReport.Visible = false;
-                            divManualReport.Visible = false;
-                            divManpowerStatement.Visible = false;
-                            divManpowerWiseAttendance.Visible = false;
-                            divOvertimeReport.Visible = false;
-                            divAbsentNotification.Visible = false;                           
-                            divOutdutyApproval.Visible = false;
-                            divOutdutyReport.Visible = false;
-                            divWeekendSetEmpWise.Visible = false;
-                            divGeneralDay.Visible = false;
-                            divWeekendInfoReport.Visible = false;
-                            divMonthlyStatus.Visible = false;
+                    //}
+                    //if (Session["__UserNameText__"].ToString() == "common" && !ViewState["__CShortName__"].ToString().Equals("MRC"))
+                    //{
+                    //    try
+                    //    {
+                    //        divMonthSetup.Visible = false;
+                    //        divMonthSetupComp.Visible = false;
+                    //        divAttProcessing.Visible = false;
+                    //        divAttProcessingNew.Visible = false;
+                    //        divManuallyCount.Visible = false;
+                    //        divAttendanceList.Visible = false;
+                    //        divAttSummary.Visible = false;
+                    //        divInOutReport.Visible = false;
+                    //        divManualReport.Visible = false;
+                    //        divManpowerStatement.Visible = false;
+                    //        divManpowerWiseAttendance.Visible = false;
+                    //        divOvertimeReport.Visible = false;
+                    //        divAbsentNotification.Visible = false;                           
+                    //        divOutdutyApproval.Visible = false;
+                    //        divOutdutyReport.Visible = false;
+                    //        divWeekendSetEmpWise.Visible = false;
+                    //        divGeneralDay.Visible = false;
+                    //        divWeekendInfoReport.Visible = false;
+                    //        divMonthlyStatus.Visible = false;
 
 
-                        }
-                        catch { Response.Redirect("~/default.aspx"); }
-                    }
+                    //    }
+                    //    catch { Response.Redirect("~/default.aspx"); }
+                    //}
                 }
 
 

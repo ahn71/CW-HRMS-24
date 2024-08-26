@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
 using System.Web;
+using System.Web.Routing;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -15,10 +16,15 @@ namespace SigmaERP.hrms
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+          
+
             if (!IsPostBack)
             {
                 try
                 {
+                    //string url = "attendance/month-setup";
+                  
+
                     HttpCookie getCookies = Request.Cookies["userInfo"];
                     if (getCookies == null || getCookies.Value == "")
                     {
@@ -102,8 +108,21 @@ namespace SigmaERP.hrms
                     Response.RedirectToRoute(Routing.LoginRouteName);
                 }
             }
-        }      
+        }
 
+
+        public bool IsRouteExists(string url)
+        {
+            foreach (Route route in RouteTable.Routes)
+            {
+                var routeUrl = route.Url?.ToLower();
+                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         protected void btnLogout_Click(object sender, EventArgs e)
         {
             try

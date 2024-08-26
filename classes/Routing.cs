@@ -37,12 +37,12 @@ namespace SigmaERP.classes
 
 
 
-        public class ApiResponse
-        {
-            public int StatusCode { get; set; }
-            public string Message { get; set; }
-            public List<RouteDTO> Data { get; set; }
-        }
+        //public class ApiResponse
+        //{
+        //    public int StatusCode { get; set; }
+        //    public string Message { get; set; }
+        //    public List<RouteDTO> Data { get; set; }
+        //}
 
         public class ApiResponsePerm
         {
@@ -56,6 +56,42 @@ namespace SigmaERP.classes
         private static string UserWithPermissionUrl = ApiRootUrl + "/api/User/userWithPermission";
 
         private static string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJpYXQiOiIxNzI0MjU4NjcwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Ikh1c0xTdEszcUdTRWFlTU9DVnNHMkE9PSIsImV4cCI6MTcyNjg1MDY3MH0.uk0BVPbbe7SdRQ08VoLarZY0L2EFMndoeXzs5MPQZLw";
+
+        public class ParentDTO
+        {
+            public int ParentModuleID { get; set; }
+            public string ParentModuleName { get; set; }
+            public string ParentPhysicalLocation { get; set; }
+            public string ParentUrl { get; set; }
+        }
+
+        public class ChildDTO
+        {
+            public int ChildModuleID { get; set; }
+            public string ChildModuleName { get; set; }
+            public string ChildPhysicalLocation { get; set; }
+            public string ChildUrl { get; set; }
+        }
+
+        public class ParentChildDTO
+        {
+            public ParentDTO Parent { get; set; }
+            public List<ChildDTO> Children { get; set; }
+        }
+
+        public class ApiResponse
+        {
+            public int StatusCode { get; set; }
+            public string Message { get; set; }
+            public List<ParentChildDTO> Data { get; set; }
+        }
+
+        public class RouteDTO
+        {
+            public string ModuleName { get; set; }
+            public string PhysicalLocation { get; set; }
+            public string Url { get; set; }
+        }
         public static List<RouteDTO> FetchRoutesFromApi(string url, int userId)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -74,8 +110,39 @@ namespace SigmaERP.classes
                 using (StreamReader sr = new StreamReader(stream))
                 {
                     string response = sr.ReadToEnd();
+
+                    // Deserialize the response
                     var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
-                    return apiResponse?.Data ?? new List<RouteDTO>();
+
+                    // Map the data to RouteDTO
+                    List<RouteDTO> routes = new List<RouteDTO>();
+
+                    if (apiResponse?.Data != null)
+                    {
+                        foreach (var parentChild in apiResponse.Data)
+                        {
+                            // Add the parent module as a RouteDTO
+                            routes.Add(new RouteDTO
+                            {
+                                ModuleName = parentChild.Parent.ParentModuleName,
+                                PhysicalLocation = parentChild.Parent.ParentPhysicalLocation,
+                                Url = parentChild.Parent.ParentUrl
+                            });
+
+                            // Add each child module as a RouteDTO
+                            foreach (var child in parentChild.Children)
+                            {
+                                routes.Add(new RouteDTO
+                                {
+                                    ModuleName = child.ChildModuleName,
+                                    PhysicalLocation = child.ChildPhysicalLocation,
+                                    Url = child.ChildUrl
+                                });
+                            }
+                        }
+                    }
+
+                    return routes;
                 }
             }
             catch (WebException ex)
@@ -84,6 +151,35 @@ namespace SigmaERP.classes
                 return new List<RouteDTO>();
             }
         }
+
+        //public static List<RouteDTO> FetchRoutesFromApi(string url, int userId)
+        //{
+        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+        //    // Append UserId as a query string parameter to the URL
+        //    string fullUrl = $"{url}?userId={userId}";
+
+        //    WebRequest webRequest = WebRequest.Create(fullUrl);
+        //    webRequest.Method = "GET";
+        //    webRequest.Headers["Authorization"] = $"Bearer {token}";
+
+        //    try
+        //    {
+        //        using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+        //        using (Stream stream = httpWebResponse.GetResponseStream())
+        //        using (StreamReader sr = new StreamReader(stream))
+        //        {
+        //            string response = sr.ReadToEnd();
+        //            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
+        //            return apiResponse?.Data ?? new List<RouteDTO>();
+        //        }
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        Console.WriteLine("Error: " + ex.Message);
+        //        return new List<RouteDTO>();
+        //    }
+        //}
 
 
 

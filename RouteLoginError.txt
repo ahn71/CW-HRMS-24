@@ -26,3 +26,9 @@ Parameter name: name
 [2024-08-23 13:07:02] Object reference not set to an instance of an object.
 [2024-08-23 15:38:09] The best overloaded method match for 'SigmaERP.classes.Routing.RegisterRoutes(System.Web.Routing.RouteCollection, int)' has some invalid arguments
 [2024-08-23 15:38:31] The best overloaded method match for 'SigmaERP.classes.Routing.RegisterRoutes(System.Web.Routing.RouteCollection, int)' has some invalid arguments
+[2024-08-25 16:25:32] VirtualPath must be a non-empty string starting with ~/.
+Parameter name: virtualPath
+[2024-08-25 16:25:36] VirtualPath must be a non-empty string starting with ~/.
+Parameter name: virtualPath
+[2024-08-26 01:43:37] Object reference not set to an instance of an object.
+[2024-08-26 01:43:42] Object reference not set to an instance of an object.
