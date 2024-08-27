@@ -31,7 +31,7 @@ namespace SigmaERP.attendance
             sqlDB.connectDB();
 
             string perMissionList = "";
-            int[] pagePermission = { 191, 192, 193, 194 };
+            int[] pagePermission = { 255, 256, 257, 258 };
 
             if (!IsPostBack)
             {
@@ -40,10 +40,9 @@ namespace SigmaERP.attendance
                 ViewState["__UpdateAction__"] = "0";
                 ViewState["__DeletAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
-                //if (!userPagePermition.Any())
-                //{
-                //    return;
-                //}
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 //checkPermissiomn(userPagePermition);
                 ViewState["__preRIndex__"] = "No";
                 ViewState["__IsCalculated__"] = "No";

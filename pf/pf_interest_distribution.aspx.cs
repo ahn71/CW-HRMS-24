@@ -31,7 +31,7 @@ namespace SigmaERP.pf
                 txtDate.Text = txtToDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege(userPagePermition);
 
                

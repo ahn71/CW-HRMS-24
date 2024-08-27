@@ -29,7 +29,7 @@ namespace SigmaERP.attendance
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
                 Session["__dtClient__"] = "";
                 ViewState["__rIndex__"] = "";                

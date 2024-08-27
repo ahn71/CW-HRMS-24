@@ -22,7 +22,7 @@ namespace SigmaERP.personnel
             int[] pagePermission = { 436 };
             int[] userPagePermition = AccessControl.hasPermission(pagePermission);
             if (!userPagePermition.Any())
-                Response.Redirect("../hrms/dashboard.aspx");
+                Response.Redirect(Routing.defualtUrl);
 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();

@@ -32,7 +32,7 @@ namespace SigmaERP.vat_tax
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                     setPrivilege();               
                 Session["__CID__"] = ddlCompanyList.SelectedValue;                
                 if (!classes.commonTask.HasBranch())

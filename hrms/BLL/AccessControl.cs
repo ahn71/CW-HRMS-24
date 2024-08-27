@@ -11,7 +11,7 @@ namespace SigmaERP.hrms.BLL
     {
         public static int[] hasPermission(int[] PagePermissions)
         {
-            int[] verifiedPermission={8,9};
+            int[] verifiedPermission;
             int[] userPermissionArray = HttpContext.Current.Session["__ActualPermission__"].ToString().Split(',').Select(int.Parse).ToArray();
             verifiedPermission = PagePermissions.Intersect(userPermissionArray).ToArray();
 

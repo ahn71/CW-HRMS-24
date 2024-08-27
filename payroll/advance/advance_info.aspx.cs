@@ -26,7 +26,7 @@ namespace SigmaERP.payroll
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
                 classes.commonTask.LoadEmpType(rblEmpType);
                 setPrivilege();

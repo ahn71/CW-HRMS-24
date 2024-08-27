@@ -32,7 +32,7 @@ namespace SigmaERP.hrd
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege(userPagePermition);
             
                 LoadQualification("");

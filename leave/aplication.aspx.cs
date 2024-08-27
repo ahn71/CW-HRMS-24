@@ -35,7 +35,7 @@ namespace SigmaERP.personnel
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
                 txtApplyDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 txtApplyDate.Enabled = false;

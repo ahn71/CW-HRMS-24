@@ -14,7 +14,10 @@ namespace SigmaERP.classes
 {
     public static class Routing
     {
+
         private static string rootURL = "hrms/";
+
+        
 
         public static string LoginRouteName = "LoginRoute";
         public static string LoginRouteUrl = rootURL + "login";
@@ -29,6 +32,8 @@ namespace SigmaERP.classes
         public static string dashboardRoutName = "Dashboard";
         public static string dashboardUrl = rootURL + "dashboard";
         private static string dashboardPhyLocation = "~/hrms/dashboard.aspx";
+
+        public static string defualtUrl ="~/"+ dashboardUrl;
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
             routes.Clear();

@@ -26,7 +26,7 @@ namespace SigmaERP.attendance
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
                 txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 txtToDate.Text =  DateTime.Now.ToString("dd-MM-yyyy");
