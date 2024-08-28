@@ -101,14 +101,12 @@
                 }
             },
             willClose: () => {
-                // Redirect to dashboard URL if cancel button is clicked
-                window.location.href = 'dashboard'; // Replace '/dashboard' with your actual dashboard URL
+                document.getElementById('<%= devhiddenPassword.ClientID %>').value = '';
             },
             allowOutsideClick: false 
         });
     });
 </script>
-
 
 
 

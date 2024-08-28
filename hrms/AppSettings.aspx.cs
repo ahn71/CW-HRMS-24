@@ -12,15 +12,10 @@ namespace SigmaERP.hrms
         protected void Page_Load(object sender, EventArgs e)
         {
             DevloperContent.Visible = false;
-            if (Session["__DevloperLogin__"] == null)
-            {
-                Session["__DevloperLogin__"] = false;
-            }
             if (IsPostBack && Request["__EVENTTARGET"] == "passwordSubmit")
             {
                 string password = devhiddenPassword.Value;
-                if (!(bool)Session["__DevloperLogin__"])
-                {
+               
                     if (Session["__DevloperPassword__"] != null)
                     {
                         if (password == Session["__DevloperPassword__"].ToString())
@@ -37,17 +32,14 @@ namespace SigmaERP.hrms
                     {
                         DevloperContent.Visible = false;
                     }
-                }
-                else
-                {
-                    DevloperContent.Visible = true;
-                }
+                
+
             }
         }
         //git test
         protected void logout_Click(object sender, EventArgs e)
         {
-            Session["__DevloperLogin__"]=false;
+            //Session["__DevloperLogin__"]=false;
             Response.Redirect("dashboard");
         }
     }
