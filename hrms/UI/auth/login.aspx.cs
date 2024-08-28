@@ -295,16 +295,21 @@ namespace SigmaERP.hrms.UI.auth
                         ["__getFirstName__"] = userData.firstName.ToString(),
                         ["__getLastName__"] = userData.lastName.ToString(),
                         ["__getUserType__"] = userData.isGuestUser.ToString(),
-                        ["__CompanyId__"] = companyId,  // Changed to use the provided companyId
+                        ["__CompanyId__"] = companyId, 
                         ["__CompanyName__"] = ddlCompany.SelectedItem.Text,
+                        ["__CShortName__"] = "",
+                        ["__DptId__"] = userData.dptId.ToString(),
                         ["__isLvAuthority__"] = "0",
                         ["__LvOnlyDpt__"] = "0",
                         ["__LvEmpType__"] = "0",
                         ["__IsCompliance__"] = "0",
                         ["__UserNameText__"] = username,
-                        ["__getEmpId__"] = userData.empId.ToString() // Changed to empId from referenceID
-                    };
+                        ["__getEmpId__"] = userData.empId.ToString()
+                       
+                };
                     Response.Cookies.Add(setCookies);
+                    ViewState["__IsCompliance__"] = "0";
+                    ViewState["__CShortName__"] = "";
 
                     return true;
                 }
