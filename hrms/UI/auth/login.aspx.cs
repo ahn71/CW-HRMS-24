@@ -51,7 +51,7 @@ namespace SigmaERP.hrms.UI.auth
                     checkForActivePromotion_SalaryIncrement();
 
                 }
-                getUserpermission();
+                //getUserpermission();
                 Response.Redirect("~/default.aspx");
             }
         }
@@ -270,9 +270,11 @@ namespace SigmaERP.hrms.UI.auth
                     
                     var userData = jsonResponse.data;
                     var accessToken = jsonResponse.accessToken;
+                    var permission = jsonResponse.permission;
                     Session["__GetCompanyId__"] = companyId;  
                     Session["__GetUID__"] = userData.userId.ToString();
                     Session["__UserToken__"] = accessToken.ToString();
+                    Session["__ActualPermission__"] = permission.ToString();
                     Session["__isLvAuthority__"] = "0";
                     Session["__LvOnlyDpt__"] = "0";
                     Session["__LvEmpType__"] = "0";
