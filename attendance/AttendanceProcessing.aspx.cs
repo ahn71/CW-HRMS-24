@@ -49,7 +49,7 @@ namespace SigmaERP.attendance
                 ViewState["__getUserId__"] = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+                ViewState["__CShortName__"] = "";
 
 
                 string[] AccessPermission = new string[0];

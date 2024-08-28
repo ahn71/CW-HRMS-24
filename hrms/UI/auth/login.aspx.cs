@@ -281,7 +281,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__UserEmailText__"] = userData.email;
                     Session["__RootUrl__"] = ApiConnector.RootUrl;
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
-
+                    //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
 
