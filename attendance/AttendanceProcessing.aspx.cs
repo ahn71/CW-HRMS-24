@@ -17,9 +17,10 @@ namespace SigmaERP.attendance
     public partial class AttendanceProcessing : System.Web.UI.Page
     {
         string sqlCmd = "";
-        int[] pagePermission = { 260 };
+       
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 260 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
            
@@ -29,7 +30,7 @@ namespace SigmaERP.attendance
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
 
-
+               
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 ViewState["__OT__"] = "0";
                 setPrivilege();
@@ -37,7 +38,7 @@ namespace SigmaERP.attendance
             if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
            
-            setPrivilege();
+         
         }
 
         private void setPrivilege()
@@ -52,7 +53,7 @@ namespace SigmaERP.attendance
                 ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
 
 
-                string[] AccessPermission = new string[0];
+              //  string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "import_data.aspx", ddlCompanyList, btnImport);
