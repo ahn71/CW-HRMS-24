@@ -35,7 +35,7 @@ namespace SigmaERP.attendance
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 setPrivilege();               
-              if (!classes.commonTask.HasBranch())
+              if (!classes.commonTask.HasBranch()) 
                   ddlCompany.Enabled = false;
               ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
               Session["__MinDigits__"] = "6";

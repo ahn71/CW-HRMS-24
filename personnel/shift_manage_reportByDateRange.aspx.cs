@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.hrms.BLL;
+using SigmaERP.classes;
 
 namespace SigmaERP.personnel
 {
