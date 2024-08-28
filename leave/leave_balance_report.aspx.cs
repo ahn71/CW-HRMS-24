@@ -44,12 +44,12 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
-                string[] AccessPermission = new string[0];
-                //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "leave_balance_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];             
-                    classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());                      
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                ////System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "leave_balance_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];             
+                classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());                      
 
                 addAllTextInShift();
 

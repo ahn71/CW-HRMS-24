@@ -16,6 +16,7 @@ namespace SigmaERP.personnel
 {
     public partial class monthly_manpower : System.Web.UI.Page
     {
+        //permission=279
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -46,10 +47,11 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyy, ViewState["__CompanyId__"].ToString());
+               // string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyy, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyy, WarningMessage, tblGenerateType, btnPreview);
+               // ViewState["__ReadAction__"] = AccessPermission[0];
 
                 ddlCompanyy.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.LoadInitialShift(ddlShift, ddlCompanyy.SelectedValue);

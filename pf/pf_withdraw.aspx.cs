@@ -22,10 +22,7 @@ namespace SigmaERP.pf
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
+
             int[] pagePermission = { 387, 388, 389, 390 };
 
             sqlDB.connectionString = Glory.getConnectionString();
@@ -33,6 +30,11 @@ namespace SigmaERP.pf
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -52,8 +54,9 @@ namespace SigmaERP.pf
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_withdraw.aspx", ddlCompanyName, gvPFWithdrawList, btnSave);
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_withdraw.aspx", ddlCompanyName, gvPFWithdrawList, btnSave);
 
                 classes.commonTask.loadPFMemberListForWithdraw(ddlEmployeeList, ViewState["__CompanyId__"].ToString());                
                 if (!classes.commonTask.HasBranch())

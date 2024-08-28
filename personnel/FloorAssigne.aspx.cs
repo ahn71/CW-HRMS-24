@@ -50,34 +50,34 @@ namespace SigmaERP.personnel
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
 
                 //SetUserType();
-                if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin"))
-                {
+                //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin"))
+                //{
 
-                    DataTable dt = new DataTable();
+                //    DataTable dt = new DataTable();
 
-                    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='FloorAssigne.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dt.Rows[0]["ReadAction"].ToString()).Equals(false))
-                        {
-                            ViewState["__ReadAction__"] = "0";
-                            btnPrint.Enabled = false;
-                            btnPrint.CssClass = "";
-                        }
-                        if (bool.Parse(dt.Rows[0]["WriteAction"].ToString()).Equals(false))
-                        {
-                            ViewState["__WriteAction__"] = "0";                        
-                        }
-                    }
-                    else
-                    {
-                        ViewState["__ReadAction__"] = "0";
-                        btnPrint.Enabled = false;
-                        btnPrint.CssClass = "";
-                        ViewState["__WriteAction__"] = "0"; 
-                        return;
-                    }
-                }
+                //    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='FloorAssigne.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
+                //    if (dt.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dt.Rows[0]["ReadAction"].ToString()).Equals(false))
+                //        {
+                //            ViewState["__ReadAction__"] = "0";
+                //            btnPrint.Enabled = false;
+                //            btnPrint.CssClass = "";
+                //        }
+                //        if (bool.Parse(dt.Rows[0]["WriteAction"].ToString()).Equals(false))
+                //        {
+                //            ViewState["__WriteAction__"] = "0";                        
+                //        }
+                //    }
+                //    else
+                //    {
+                //        ViewState["__ReadAction__"] = "0";
+                //        btnPrint.Enabled = false;
+                //        btnPrint.CssClass = "";
+                //        ViewState["__WriteAction__"] = "0"; 
+                //        return;
+                //    }
+                //}
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyList);
                 loadRecentloyTransferShiftDepartment();

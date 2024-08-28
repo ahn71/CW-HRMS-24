@@ -22,17 +22,18 @@ namespace SigmaERP.pf
         //permission(View=367 Add=368 Update=369 Delete=370)
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
-
+           
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             int[] pagePermission = { 367,368,369,370 };
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -54,7 +55,7 @@ namespace SigmaERP.pf
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
-                string[] AccessPermission = new string[0];
+                //string[] AccessPermission = new string[0];
                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_ManualEntry.aspx", ddlCompanyName, gvMonthlyPFList, btnSave);
 
                 //ViewState["__ReadAction__"] = AccessPermission[0];

@@ -21,16 +21,17 @@ namespace SigmaERP.pf
         {
             try
             {
-                ViewState["__WriteAction__"] = "0";
+               
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();
                 lblMessage.InnerText = "";
                 int[] pagePermission = { 366 };
                 if (!IsPostBack)
                 {
+                    ViewState["__WriteAction__"] = "0";
                     int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                     if (!userPagePermition.Any())
-                        //Response.Redirect(Routing.defualtUrl);
+                        Response.Redirect(Routing.defualtUrl);
                     classes.commonTask.loadEmpTye(rblEmployeeType);
                     rblEmployeeType.SelectedValue = "1";
                     classes.commonTask.loadEmpTye(rblEmployeeType2);
@@ -55,9 +56,9 @@ namespace SigmaERP.pf
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
+                //string[] AccessPermission = new string[0];
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
-                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadBranch(ddlCompanyList2, ViewState["__CompanyId__"].ToString());
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForpfentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pfentrypanel.aspx", gvpfpendinglist, gvpflist, btnSubmit, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
 
                 //ViewState["__ReadAction__"] = AccessPermission[0];
@@ -65,7 +66,7 @@ namespace SigmaERP.pf
                 //ViewState["__DeletAction__"] = AccessPermission[3];  
                 
                 if(permission.Contains(366))
-                    ViewState["__WriteAction__"] ="0";
+                    ViewState["__WriteAction__"] ="1";
                 checkInitialPermission();
                     if (!classes.commonTask.HasBranch())
                 {

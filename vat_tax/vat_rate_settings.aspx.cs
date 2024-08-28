@@ -21,10 +21,7 @@ namespace SigmaERP.vat_tax
         string sqlcmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
+
 
             int[] pagePermission = { 411, 412, 413,414 };
 
@@ -33,6 +30,11 @@ namespace SigmaERP.vat_tax
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -64,7 +66,7 @@ namespace SigmaERP.vat_tax
                 if(permission.Contains(414))
                     ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
-
+                string jku = ViewState["__UpdateAction__"].ToString();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -134,7 +136,7 @@ namespace SigmaERP.vat_tax
         {
             try
             {
-
+                string hhh = ViewState["__UpdateAction__"].ToString();
                 if (e.CommandName.Equals("Alter"))
                 {
                     string a = ViewState["__preRIndex__"].ToString();
@@ -145,7 +147,8 @@ namespace SigmaERP.vat_tax
                     ViewState["__preRIndex__"] = rIndex;
                     setValueToControl(rIndex, gvvatraxrateSettings.DataKeys[rIndex].Values[0].ToString(), gvvatraxrateSettings.DataKeys[rIndex].Values[1].ToString(), gvvatraxrateSettings.DataKeys[rIndex].Values[2].ToString());
                     btnSave.Text = "Update";
-                    if (ViewState["__UpdateAction__"].Equals("0"))
+                    string kkk = ViewState["__UpdateAction__"].ToString();
+                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
                     {
                         btnSave.Enabled = false;
                         btnSave.CssClass = "";

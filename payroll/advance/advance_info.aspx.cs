@@ -70,28 +70,28 @@ namespace SigmaERP.payroll
                     //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
                     //}
 
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='advance_info.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                    //sqlDB.fillDataTable("select * from UserPrivilege where PageName='advance_info.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
 
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPreview.CssClass = "css_btn"; btnPreview.Enabled = true;
-                        }
-                        else
-                        {
-                            tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                        }
+                    //if (dtSetPrivilege.Rows.Count > 0)
+                    //{
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                    //    {
+                    //        btnPreview.CssClass = "css_btn"; btnPreview.Enabled = true;
+                    //    }
+                    //    else
+                    //    {
+                    //        tblGenerateType.Visible = false;
+                    //        WarningMessage.Visible = true;
+                    //        btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                    //    }
 
-                    }
-                    else
-                    {
-                        tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    tblGenerateType.Visible = false;
+                    //    WarningMessage.Visible = true;
+                    //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                    //}
 
                 }
 

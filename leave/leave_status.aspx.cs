@@ -7,18 +7,23 @@ using System.Web.UI.WebControls;
 using System.Data;
 
 using adviitRuntimeScripting;
+using SigmaERP.hrms.BLL;
+using SigmaERP.classes;
 
 namespace SigmaERP.personnel
 {
     public partial class leave_status : System.Web.UI.Page
     {
-       
+        int[] pagePermission = { 314 };
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 classes.commonTask.LoadMonthName(ddlMonth);
             }
@@ -30,24 +35,24 @@ namespace SigmaERP.personnel
             try
             {
                 HttpCookie getCookies = Request.Cookies["userInfo"];
-                string getUserId = getCookies["__getUserId__"].ToString();
-                if (getCookies["__getUserType__"].ToString().Equals("Super Admin")) return;
-                else
-                {
-                    DataTable dt = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='leave_status.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
-                    if (dt.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dt.Rows[0]["GenerateAction"].ToString()).Equals(false))
-                        {
-                            btnPreview.CssClass = "";
-                            btnPreview.Enabled = false;
-                            btnMaternityLeave.CssClass = "";
-                            btnMaternityLeave.Enabled = false;
+                //string getUserId = getCookies["__getUserId__"].ToString();
+                //if (getCookies["__getUserType__"].ToString().Equals("Super Admin")) return;
+                //else
+                //{
+                //    DataTable dt = new DataTable();
+                //    sqlDB.fillDataTable("select * from UserPrivilege where PageName='leave_status.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
+                //    if (dt.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dt.Rows[0]["GenerateAction"].ToString()).Equals(false))
+                //        {
+                //            btnPreview.CssClass = "";
+                //            btnPreview.Enabled = false;
+                //            btnMaternityLeave.CssClass = "";
+                //            btnMaternityLeave.Enabled = false;
 
-                        }
-                    }
-                }
+                //        }
+                //    }
+                //}
 
             }
             catch { }

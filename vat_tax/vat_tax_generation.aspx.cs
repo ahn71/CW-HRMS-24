@@ -33,7 +33,7 @@ namespace SigmaERP.vat_tax
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
-                    setPrivilege();               
+                 setPrivilege();               
                 Session["__CID__"] = ddlCompanyList.SelectedValue;                
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
@@ -54,8 +54,9 @@ namespace SigmaERP.vat_tax
                 ViewState["__getUserId__"] = getUserId;
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "vat_tax_generation.aspx", ddlCompanyList, btnGenerate);  
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "vat_tax_generation.aspx", ddlCompanyList, btnGenerate);  
             }
             catch { }
         }
