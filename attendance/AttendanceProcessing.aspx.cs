@@ -37,7 +37,6 @@ namespace SigmaERP.attendance
             if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
            
-            setPrivilege();
         }
 
         private void setPrivilege()
