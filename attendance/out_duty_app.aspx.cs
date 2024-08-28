@@ -66,28 +66,29 @@ namespace SigmaERP.attendance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();           
                 ViewState["__EmpId__"] = getCookies["__getEmpId__"].ToString();
 
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "aplication.aspx", ddlCompanyList, btnSave);
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "aplication.aspx", ddlCompanyList, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
 
                 ViewState["__IsODAuthority__"] = commonTask.IsODAuthority(ViewState["__CompanyId__"].ToString());
 
-                if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()) == "User")
-                {
+                //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()) == "User")
+                //{
                     ViewState["__ReadAction__"] = "1";
                     findEmpInfo();
                     trEmpCardNo.Visible = false;
 
-                }
-                if (ViewState["__ReadAction__"].ToString().Equals("0"))
-                {
+                //}
+                //if (ViewState["__ReadAction__"].ToString().Equals("0"))
+                //{
                     gvOutDuty.Visible = false;
-                }
+                //}
                 loadOutDuty(ViewState["__CompanyId__"].ToString());
 
             }

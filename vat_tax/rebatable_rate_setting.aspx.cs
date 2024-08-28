@@ -20,10 +20,7 @@ namespace SigmaERP.vat_tax
         string sqlcmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
+       
 
             int[] pagePermission = { 419, 420, 421, 422 };
 
@@ -32,10 +29,15 @@ namespace SigmaERP.vat_tax
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    //Response.Redirect(Routing.defualtUrl);
-                    setPrivilege(userPagePermition);
+                    Response.Redirect(Routing.defualtUrl);
+                setPrivilege(userPagePermition);
 
             }
 

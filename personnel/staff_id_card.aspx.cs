@@ -15,6 +15,7 @@ namespace SigmaERP.personnel
 {
     public partial class staff_id_card : System.Web.UI.Page
     {
+        //permission=277
         DataTable dt;
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
@@ -47,10 +48,11 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];                
+                classes.commonTask.LoadBranch(ddlBranch, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];                
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "staff_id_card.aspx", ddlBranch, WarningMessage, tblGenerateType, btnpreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "staff_id_card.aspx", ddlBranch, WarningMessage, tblGenerateType, btnpreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
 
                
 

@@ -51,9 +51,9 @@ namespace SigmaERP.pf
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
-                string[] AccessPermission = new string[0];
+               // string[] AccessPermission = new string[0];
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_interest_distribution.aspx", ddlCompanyName, gvPFSettings, btnSave);
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pf_interest_distribution.aspx", ddlCompanyName, gvPFSettings, btnSave);
                 if (btnSave.Enabled)
                     Button1.Enabled = true;
                 else

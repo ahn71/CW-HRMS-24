@@ -70,9 +70,9 @@ namespace SigmaERP.payroll
                     classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
                 if(permission.Contains(402))
-                    ViewState["__WriteAction__"] = "0";
+                    ViewState["__WriteAction__"] = "1";
                 if(permission.Contains(403))
-                    ViewState["__DeletAction__"] = "0";
+                    ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
                 //ddlCompanyList.Enabled = false;
                 ////operation.Enabled = false;

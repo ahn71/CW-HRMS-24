@@ -46,36 +46,36 @@ namespace SigmaERP.personnel
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string getUserId = getCookies["__getUserId__"].ToString();
                 string cmpID = ViewState["__CompanyId__"].ToString();
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
-                {
-                    dtSetPrivilege = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='shift_manage_report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPrint.CssClass = "css_btn Ptbut"; btnPrint.Enabled = true;
-                            btnSearch.CssClass = "css_btn Ptbut"; btnSearch.Enabled = true;
-                        }
-                        else
-                        {
-                         // tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPrint.Enabled = false;
-                            btnPrint.CssClass = "";
-                            btnSearch.CssClass = ""; btnSearch.Enabled = false;
-                        }
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
+                //{
+                //    dtSetPrivilege = new DataTable();
+                //    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='shift_manage_report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                //    if (dtSetPrivilege.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                //        {
+                //            btnPrint.CssClass = "css_btn Ptbut"; btnPrint.Enabled = true;
+                //            btnSearch.CssClass = "css_btn Ptbut"; btnSearch.Enabled = true;
+                //        }
+                //        else
+                //        {
+                //         // tblGenerateType.Visible = false;
+                //            WarningMessage.Visible = true;
+                //            btnPrint.Enabled = false;
+                //            btnPrint.CssClass = "";
+                //            btnSearch.CssClass = ""; btnSearch.Enabled = false;
+                //        }
 
-                    }
-                    else
-                    {
-                      //tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPrint.Enabled = false;
-                        btnPrint.CssClass = "";
-                        btnSearch.CssClass = ""; btnSearch.Enabled = false;
-                    }
-                }
+                //    }
+                //    else
+                //    {
+                //      //tblGenerateType.Visible = false;
+                //        WarningMessage.Visible = true;
+                //        btnPrint.Enabled = false;
+                //        btnPrint.CssClass = "";
+                //        btnSearch.CssClass = ""; btnSearch.Enabled = false;
+                //    }
+                //}
                 classes.commonTask.LoadBranch(ddlCompanyList);
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);     

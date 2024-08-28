@@ -49,13 +49,14 @@ namespace SigmaERP.personnel
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
 
-                string[] AccessPermission = new string[0];
-                
-AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyDeleteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "ShiftManageRemove.aspx",ddlCompanyList,gvEmpList,btnDelete);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //                string[] AccessPermission = new string[0];
 
-                ViewState["__ReadAction__"] = AccessPermission[0];             
-                ViewState["__DeletAction__"] = AccessPermission[3];                                
-                
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyDeleteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "ShiftManageRemove.aspx",ddlCompanyList,gvEmpList,btnDelete);
+
+                //                ViewState["__ReadAction__"] = AccessPermission[0];             
+                //                ViewState["__DeletAction__"] = AccessPermission[3];                                
+
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
 
                 classes.commonTask.loadDepartmentListByCompanyWithAll(ddlDepartment, ddlCompanyList.SelectedValue);

@@ -23,10 +23,7 @@ namespace SigmaERP.pf
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
+           
             int[] pagePermission = { 379, 380, 381, 382 };
 
             sqlDB.connectionString = Glory.getConnectionString();
@@ -34,9 +31,13 @@ namespace SigmaERP.pf
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    //Response.Redirect(Routing.defualtUrl);
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege(userPagePermition);
 
 
