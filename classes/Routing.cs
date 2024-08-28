@@ -14,31 +14,33 @@ namespace SigmaERP.classes
 {
     public static class Routing
     {
-
         private static string rootURL = "hrms/";
-
-        
 
         public static string LoginRouteName = "LoginRoute";
         public static string LoginRouteUrl = rootURL + "login";
         private static string LoginRoutePhysicalFile = "~/hrms/UI/auth/login.aspx";
 
 
-        public static string userName = "AccessControlUser";
-       // public static string userUrl = rootURL + "access-control/users";
-        public static string userUrl = rootURL + "users";
-        private static string userPhyLocation = "~/hrms/user.aspx";
+       // public static string userName = "AccessControlUser";
+       //// public static string userUrl = rootURL + "access-control/users";
+       // public static string userUrl = rootURL + "users";
+       // private static string userPhyLocation = "~/hrms/user.aspx";
 
         public static string dashboardRoutName = "Dashboard";
         public static string dashboardUrl = rootURL + "dashboard";
         private static string dashboardPhyLocation = "~/hrms/dashboard.aspx";
 
-        public static string defualtUrl ="~/"+ dashboardUrl;
+        public static string appSettingsName = "appSettings";
+        public static string appSettingsUrl = rootURL + "app-settings";
+        private static string appSettingsPhyLocation = "~/hrms/AppSettings.aspx";
+
+        public static string defualtUrl = "~/" + dashboardUrl;
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
             routes.Clear();
             routes.MapPageRoute(LoginRouteName, LoginRouteUrl, LoginRoutePhysicalFile);
             routes.MapPageRoute(dashboardRoutName, dashboardUrl, dashboardPhyLocation);
+            routes.MapPageRoute(appSettingsName, appSettingsUrl, appSettingsPhyLocation);
             //routes.MapPageRoute(userName, userUrl, userPhyLocation);
         }
 
@@ -102,14 +104,10 @@ namespace SigmaERP.classes
         public static List<RouteDTO> FetchRoutesFromApi(string url, int userId)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            // Append UserId as a query string parameter to the URL
             string fullUrl = $"{url}?userId={userId}";
-
             WebRequest webRequest = WebRequest.Create(fullUrl);
             webRequest.Method = "GET";
             webRequest.Headers["Authorization"] = $"Bearer {token}";
-
             try
             {
                 using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
@@ -159,35 +157,6 @@ namespace SigmaERP.classes
             }
         }
 
-        //public static List<RouteDTO> FetchRoutesFromApi(string url, int userId)
-        //{
-        //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-        //    // Append UserId as a query string parameter to the URL
-        //    string fullUrl = $"{url}?userId={userId}";
-
-        //    WebRequest webRequest = WebRequest.Create(fullUrl);
-        //    webRequest.Method = "GET";
-        //    webRequest.Headers["Authorization"] = $"Bearer {token}";
-
-        //    try
-        //    {
-        //        using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
-        //        using (Stream stream = httpWebResponse.GetResponseStream())
-        //        using (StreamReader sr = new StreamReader(stream))
-        //        {
-        //            string response = sr.ReadToEnd();
-        //            var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response);
-        //            return apiResponse?.Data ?? new List<RouteDTO>();
-        //        }
-        //    }
-        //    catch (WebException ex)
-        //    {
-        //        Console.WriteLine("Error: " + ex.Message);
-        //        return new List<RouteDTO>();
-        //    }
-        //}
-
 
 
         public static List<PermissionRoute> FetchPermissionRoutesFromApi(string url , int userId)
@@ -216,32 +185,12 @@ namespace SigmaERP.classes
                 return new List<PermissionRoute>();
             }
         }
-        //public static void RegisterPermissionRoutes(RouteCollection routesPerm)
-        //{
-        //    routesPerm.Clear();
 
-        //    List<PermissionRoute> _routes = FetchPermissionRoutesFromApi(UserWithPermissionUrl);
-
-        //    foreach (PermissionRoute _route in _routes)
-        //    {
-        //        routesPerm.MapPageRoute(_route.PermissionName, rootURL + _route.Url, _route.PhysicalLocation);
-        //    }
-
-        //    List<Route> _routes = FetchRoutesFromApi(UserWithModuleUrl);
-
-        //    routes.Clear();
-        //    foreach (Route _route in _routes)
-        //    {
-        //        routes.MapPageRoute(_route.ModuleName, rootURL + _route.ModuleUrl, _route.ModulePhysicalLocation);
-        //    }
-        //}
        
         public static void RegisterRoutes(RouteCollection routes , int userId)
         {
-            //int userId = Int32.Parse( HttpContext.Current.Session["__GetUID__"]);
-
+           
             List <RouteDTO > moduleRoutes = FetchRoutesFromApi(UserWithModuleUrl, userId);
-            //  routes.Clear();
             RegisterInitialRoutes(routes);
             foreach (RouteDTO moduleRoute in moduleRoutes)
             {

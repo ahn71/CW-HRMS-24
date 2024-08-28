@@ -1123,6 +1123,7 @@
     <Content Include="hrd\SpecialTimeTable.aspx" />
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
+    <Content Include="hrms\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
     <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
     <Content Include="hrms\assets\theme_assets\js\charts.js" />
@@ -3604,6 +3605,13 @@
     </Compile>
     <Compile Include="hrd_default.aspx.designer.cs">
       <DependentUpon>hrd_default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\AppSettings.aspx.cs">
+      <DependentUpon>AppSettings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\AppSettings.aspx.designer.cs">
+      <DependentUpon>AppSettings.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\BLL\AccessControl.cs" />
     <Compile Include="hrms\BLL\ApiConnector.cs" />

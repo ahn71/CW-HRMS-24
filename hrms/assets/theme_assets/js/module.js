@@ -3,7 +3,7 @@
 //var rootUrl = 'https://localhost:7220';
 
 
-<reference path="rooturl.js" />
+
 var GetByIdModuleUrl = rootUrl + '/api/UserModules/modules';
 var GetModuleUrl = rootUrl + '/api/UserModules/modules';
 var PostModuleUrl = rootUrl + '/api/UserModules/modules/create';
