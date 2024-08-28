@@ -23,7 +23,7 @@ namespace SigmaERP.attendance
 
         SqlCommand cmd;
 
-        //View=191,Add=192, Delete=194,Edit=193
+        //View=255,Add=256, Delete=257,Edit=258
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -72,14 +72,14 @@ namespace SigmaERP.attendance
               //  AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "monthly_setup.aspx", ddlCompanyList, gvMonthSetup, btnSave);
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                if(accessPermission.Contains(191))
+                if(accessPermission.Contains(255))
                     ViewState["__ReadAction__"] ="1";
-                if(accessPermission.Contains(192))
+                if(accessPermission.Contains(256))
                     ViewState["__WriteAction__"] = "1";
-                if (accessPermission.Contains(193))
+                if (accessPermission.Contains(257))
                     ViewState["__UpdateAction__"] = "1";
-                if(accessPermission.Contains(194))
-                    ViewState["__DeletAction__"] = "0";
+                if(accessPermission.Contains(258))
+                    ViewState["__DeletAction__"] = "1";
                 cheCkInitialPermission();
 
 

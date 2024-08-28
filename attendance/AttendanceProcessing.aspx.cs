@@ -17,7 +17,7 @@ namespace SigmaERP.attendance
     public partial class AttendanceProcessing : System.Web.UI.Page
     {
         string sqlCmd = "";
-        int[] pagePermission = { 7 };
+        int[] pagePermission = { 260 };
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();

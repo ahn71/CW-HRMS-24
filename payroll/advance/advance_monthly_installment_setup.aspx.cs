@@ -60,26 +60,26 @@ namespace SigmaERP.payroll.advance
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
-                {
-                    classes.commonTask.LoadBranch(ddlCompanyList);
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
+                //{
+                //    classes.commonTask.LoadBranch(ddlCompanyList);
 
-                    return;
-                }
-                else
-                {
+                //    return;
+                //}
+                //else
+                //{
                     classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                    if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
-                    {
+                    //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
+                    //{
 
-                        gvAdvaceList.Visible = false;
-                    }
-                    else
-                    {
-                        btnSet.CssClass = "";
-                        btnSet.Enabled = false;
-                    }
+                    //    gvAdvaceList.Visible = false;
+                    //}
+                    //else
+                    //{
+                    //    btnSet.CssClass = "";
+                    //    btnSet.Enabled = false;
+                    //}
 
                     //dtSetPrivilege = new DataTable();
                   //  sqlDB.fillDataTable("select * from UserPrivilege where PageName='advancsetting.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dt);
@@ -107,7 +107,7 @@ namespace SigmaERP.payroll.advance
                     if (permissions.Contains(356))
                         ViewState["__UpdateAction__"] = "1";
                     checkInitialPermission();
-                }
+                //}
             }
             catch { }
         }

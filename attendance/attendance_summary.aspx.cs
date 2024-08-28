@@ -65,15 +65,15 @@ namespace SigmaERP.attendance
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserId__"] = getCookies["__getUserId__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
-                string[] AccessPermission = new string[0];              
-                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance_summary.aspx", ddlCompanyName, WarningMessage, btnPrintPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                if (ViewState["__ReadAction__"].ToString().Equals("0")) 
-                {
-                    btnSearch.Enabled = false;
-                    btnSearch.CssClass = "";
-                    tblGenerateType.Visible = false;
-                }
+               // string[] AccessPermission = new string[0];              
+                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance_summary.aspx", ddlCompanyName, WarningMessage, btnPrintPreview);
+               // ViewState["__ReadAction__"] = AccessPermission[0];
+                //if (ViewState["__ReadAction__"].ToString().Equals("0")) 
+                //{
+                //    btnSearch.Enabled = false;
+                //    btnSearch.CssClass = "";
+                //    tblGenerateType.Visible = false;
+                //}
                 classes.commonTask.LoadShiftNameByCompany(ViewState["__CompanyId__"].ToString(), ddlShiftName);
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();

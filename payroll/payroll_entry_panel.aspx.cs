@@ -88,7 +88,7 @@ namespace SigmaERP.payroll
                 classes.commonTask.LoadBranch(ddlCompanyList2, ViewState["__CompanyId__"].ToString());
 
 
-                string[] AccessPermission = new string[0];
+               //tring[] AccessPermission = new string[0];
                 // AccessPermission = checkUserPrivilege.checkUserPrivilegeForpayrollentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_entry_panel.aspx", gvSalaryList, btnSave, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
 
                 if (permissions.Contains(328))
@@ -100,11 +100,11 @@ namespace SigmaERP.payroll
                 checkInitialPermission();
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 ddlCompanyList2.SelectedValue = ViewState["__CompanyId__"].ToString();
-                if (ViewState["__WriteAction__"].ToString().Equals("0"))
-                {
-                    ddlEmpCardNo.Enabled = false;
-                    return;
-                }
+                //if (ViewState["__WriteAction__"].ToString().Equals("0"))
+                //{
+                //    ddlEmpCardNo.Enabled = false;
+                //    return;
+                //}
                 classes.Employee.LoadEmpCardNoForPayroll(ddlEmpCardNo, ddlCompanyList.SelectedValue);
                 classes.commonTask.LoadGrade(ddlGrade);
                 LoadAllownceSetting();

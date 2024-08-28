@@ -73,7 +73,7 @@ namespace SigmaERP.personnel
 
                 classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
 
-                string[] AccessPermission = new string[0];
+               // string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "promotion.aspx", ddlCompany, divpromotionList, btnSave);
 
                 if(permissions.Contains(339))
@@ -90,13 +90,13 @@ namespace SigmaERP.personnel
 
 
 
-                if (ViewState["__ReadAction__"].ToString().Equals("0"))
-                 {
-                    ddlCompany.Enabled = false;
-                    ddlEmpCardNo.Enabled = false;
-                    btnPromotionInfo.Enabled = false;
-                    btnPromotionInfo.CssClass = "";
-                }
+                //if (ViewState["__ReadAction__"].ToString().Equals("0"))
+                // {
+                //    ddlCompany.Enabled = false;
+                //    ddlEmpCardNo.Enabled = false;
+                //    btnPromotionInfo.Enabled = false;
+                //    btnPromotionInfo.CssClass = "";
+                //}
 
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
                     classes.Employee.LoadEmpCardNoForPayroll(ddlEmpCardNo, ViewState["__CompanyId__"].ToString());
