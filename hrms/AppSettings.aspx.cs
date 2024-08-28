@@ -44,7 +44,7 @@ namespace SigmaERP.hrms
                 }
             }
         }
-
+        //git test
         protected void logout_Click(object sender, EventArgs e)
         {
             Session["__DevloperLogin__"]=false;
