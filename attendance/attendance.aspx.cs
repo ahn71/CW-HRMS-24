@@ -50,7 +50,7 @@ namespace SigmaERP.attendance
                 ViewState["__OT__"] = "0"; ;
                 if (ForAlter[0] != " ") setValueForAlter(ForAlter[0],ForAlter[1],ForAlter[2],ForAlter[3],ForAlter[4],ForAlter[5],ForAlter[6],ForAlter[7],ForAlter[8]);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();

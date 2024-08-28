@@ -51,6 +51,7 @@ namespace SigmaERP.hrms.UI.auth
                     checkForActivePromotion_SalaryIncrement();
 
                 }
+                getUserpermission();
                 Response.Redirect("~/default.aspx");
             }
         }
@@ -416,5 +417,12 @@ namespace SigmaERP.hrms.UI.auth
         //        sqlDB.connection.Close();
         //    }
         //}
+
+
+
+        private void getUserpermission()
+        {
+            AccessControl.checkPermission(Convert.ToInt32(Session["__GetUID__"]));
+        }
     }
 }

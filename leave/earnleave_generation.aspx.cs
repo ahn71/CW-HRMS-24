@@ -30,7 +30,7 @@ namespace SigmaERP.leave
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
                 ViewState["___IsGerments__"] = classes.Payroll.Office_IsGarments();
                 ViewState["__FindName__"] = "No";

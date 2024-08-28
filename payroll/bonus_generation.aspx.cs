@@ -36,7 +36,7 @@ namespace SigmaERP.payroll
                 Session["OPERATION_PROGRESS"] = 0;
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege(userPagePermition);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;

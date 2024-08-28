@@ -12,23 +12,22 @@ namespace SigmaERP.hrms.BLL
         public static int[] hasPermission(int[] PagePermissions)
         {
             int[] verifiedPermission;
-            int[] userPermissionArray = checkPermission().Split(',').Select(int.Parse).ToArray();
+            int[] userPermissionArray = HttpContext.Current.Session["__ActualPermission__"].ToString().Split(',').Select(int.Parse).ToArray();
             verifiedPermission = PagePermissions.Intersect(userPermissionArray).ToArray();
 
             return verifiedPermission;
         }
 
-        public static string checkPermission()
+        public static void checkPermission(int userId)
         {
-            string query = "select ur.Permissions,u.AdditionalPermissions,u.RemovedPermissions from userRoles ur inner join users u on ur.userroleId=u.userroleId where u.UserId=69";
+            string query = "select ur.Permissions,u.AdditionalPermissions,u.RemovedPermissions from userRoles ur inner join users u on ur.userroleId=u.userroleId where u.UserId="+userId;
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             DataRow dataRow = dt.Rows[0];
             string permissions = dataRow["Permissions"].ToString();
             string AdditionalPermissions = dataRow["AdditionalPermissions"].ToString();
             string RemovedPermissions = dataRow["RemovedPermissions"].ToString();
             string actualPerm = actualPermission(permissions, AdditionalPermissions, RemovedPermissions);
-            return actualPerm;
-
+            HttpContext.Current.Session["__ActualPermission__"] = actualPerm;
         }
 
         private static string actualPermission(string permissions, string AdditionalPermissions, string RemovedPermissions)

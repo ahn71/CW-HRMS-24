@@ -17,7 +17,7 @@ namespace SigmaERP.attendance
     public partial class AttendanceProcessing : System.Web.UI.Page
     {
         string sqlCmd = "";
-        int[] pagePermission = { 260 };
+        int[] pagePermission = { 7 };
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
@@ -27,7 +27,7 @@ namespace SigmaERP.attendance
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
 
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);

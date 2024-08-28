@@ -35,7 +35,7 @@ namespace SigmaERP.attendance
                 //ClientScript.RegisterStartupScript(this.GetType(), "load", script, true);
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if(!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege(userPagePermition);
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());

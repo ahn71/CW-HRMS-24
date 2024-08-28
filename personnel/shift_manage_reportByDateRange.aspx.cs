@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.hrms.BLL;
+using SigmaERP.classes;
 
 namespace SigmaERP.personnel
 {
@@ -26,7 +27,7 @@ namespace SigmaERP.personnel
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;

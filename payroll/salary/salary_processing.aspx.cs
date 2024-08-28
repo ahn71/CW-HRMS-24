@@ -35,7 +35,7 @@ namespace SigmaERP.payroll.salary
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    //Response.Redirect("../hrms/dashboard.aspx");
+                    //Response.Redirect(Routing.defualtUrl);
 
                     txtGenerateMonth.Visible = true;
                 ddlMonthID.Visible = false;
