@@ -1113,10 +1113,10 @@
                                    </li>
                                    <% } %>
 
-                                   <% if (IsRouteExists("../personnel/OtherReports.aspx"))
+                                   <% if (IsRouteExists("personnel/letters"))
                                        { %>
                                    <li>
-                                       <a class="" href="../personnel/OtherReports.aspx" runat="server">Others Report</a>
+                                       <a class="" href="personnel/letters" runat="server">Letters</a>
                                    </li>
                                    <% } %>
                                </ul>

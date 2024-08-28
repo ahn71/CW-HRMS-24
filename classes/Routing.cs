@@ -34,6 +34,7 @@ namespace SigmaERP.classes
         public static string appSettingsUrl = rootURL + "app-settings";
         private static string appSettingsPhyLocation = "~/hrms/AppSettings.aspx";
 
+        public static string defualtUrl = "~/" + dashboardUrl;
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
             routes.Clear();

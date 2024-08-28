@@ -35,7 +35,7 @@ namespace SigmaERP.attendance
                     txtFromDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                     int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                     if (!userPagePermition.Any())
-                        Response.Redirect("../hrms/dashboard.aspx");
+                        Response.Redirect(Routing.defualtUrl);
                     setPrivilege();
                     //if (!classes.ServerTimeZone.IsBDTZone()) txtFromDate.Text = dptDate.Text = classes.ServerTimeZone.GetBangladeshNowDate();
                     //else txtFromDate.Text = dptDate.Text= DateTime.Now.ToString("dd-MM-yyyy");

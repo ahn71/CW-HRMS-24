@@ -13,7 +13,7 @@
                        <li><a href="#">/</a></li>
                        <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="#" class="ds_negevation_inactive Ptactive">Others Report</a></li>
+                       <li><a href="#" class="ds_negevation_inactive Ptactive">Letters</a></li>
                    </ul>               
              </div>
           
@@ -35,7 +35,7 @@
             <div class="row Ptrow">
 
                 <div class="employee_box_header PtBoxheader">
-                    <h2>Others Report</h2>
+                    <h2>Letters</h2>
                 </div>
                 <div class="employee_box_body">
                     <div class="employee_box_content">
@@ -88,7 +88,7 @@
                                 <asp:ListItem Value="apointment_letter">Appointment Letter</asp:ListItem>
                                 <asp:ListItem Value="joining_letter">Joining Letter</asp:ListItem>
                                 <asp:ListItem Value="nominee_report">Nominee Report</asp:ListItem>
-                                <asp:ListItem Value="wages_statment">Wages Statment</asp:ListItem>
+                                <asp:ListItem Value="wages_statment">Wages Statement</asp:ListItem>
                                 <asp:ListItem Value="medical_formet">Medical Format</asp:ListItem>
                                 <asp:ListItem Value="lady_worker_night_formate">Lady worker night format</asp:ListItem>
                                 <asp:ListItem Value="dismiss_letter">Dismiss Letter</asp:ListItem>

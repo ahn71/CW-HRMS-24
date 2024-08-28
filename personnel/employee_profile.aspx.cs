@@ -27,7 +27,7 @@ namespace SigmaERP.personnel
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 divindivisual.Visible = false;
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);

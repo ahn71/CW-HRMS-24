@@ -30,7 +30,7 @@ namespace SigmaERP.pf
                 {
                     int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                     if (!userPagePermition.Any())
-                        //Response.Redirect("../hrms/dashboard.aspx");
+                        //Response.Redirect(Routing.defualtUrl);
                     classes.commonTask.loadEmpTye(rblEmployeeType);
                     rblEmployeeType.SelectedValue = "1";
                     classes.commonTask.loadEmpTye(rblEmployeeType2);

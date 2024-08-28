@@ -32,7 +32,7 @@ namespace SigmaERP.personnel
             {
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect("../hrms/dashboard.aspx");
+                    Response.Redirect(Routing.defualtUrl);
 
                 ViewState["__AttBonusWorker__"] = "0";
                 ViewState["__AttBonusStaff__"] = "0";
