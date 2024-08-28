@@ -47,11 +47,11 @@ namespace SigmaERP.personnel
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
-
-                //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "promotion_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                ////------------load privilege setting inof from db------
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "promotion_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
                 classes.commonTask.LoadMonthForPromotion(ddlMonthName, ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
        

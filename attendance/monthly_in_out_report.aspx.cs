@@ -51,11 +51,11 @@ namespace SigmaERP.attendance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
 
-                string[] AccessPermission = new string[0];
+               // string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "monthly_in_out_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+              //  ViewState["__ReadAction__"] = AccessPermission[0];
                 classes.commonTask.loadMonthIdByCompany(ddlMonthList, ViewState["__CompanyId__"].ToString());
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
             }

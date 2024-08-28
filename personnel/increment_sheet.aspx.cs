@@ -46,11 +46,11 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "increment_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview,btnPreviewDetails);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "increment_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview,btnPreviewDetails);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
 
                 classes.commonTask.LoadMonthForIncreament(ddlMonthName, ViewState["__CompanyId__"].ToString());
                 classes.Employee.LoadEmpCardIncPro(ddlCardNo, "i", ViewState["__CompanyId__"].ToString());

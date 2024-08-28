@@ -18,7 +18,8 @@ namespace SigmaERP.attendance
     {
         DataTable dt;
        static  DataTable dtSetPrivilege;
-        static byte  searchStatus; 
+        static byte  searchStatus;
+        //permission(view=259,delete=262,update=263)
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();

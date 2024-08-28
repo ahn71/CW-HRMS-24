@@ -55,7 +55,7 @@ namespace SigmaERP.personnel
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
-                string[] AccessPermission = new string[0];
+               // string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "salary_increment.aspx", ddlCompany, divSalaryIncrementList, btnSave);
 
                 //ViewState["__ReadAction__"] = AccessPermission[0];
