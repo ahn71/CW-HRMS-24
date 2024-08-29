@@ -30,6 +30,9 @@ namespace SigmaERP.personnel
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                classes.commonTask.LoadBranch(ddlCompany);
+                ddlCompany.SelectedIndex = 1;
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -38,6 +41,7 @@ namespace SigmaERP.personnel
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;
+               
             }
         }
         //private void addAllTextInShift()

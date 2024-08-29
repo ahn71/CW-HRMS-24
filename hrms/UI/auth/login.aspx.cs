@@ -310,6 +310,7 @@ namespace SigmaERP.hrms.UI.auth
                     Response.Cookies.Add(setCookies);
                     ViewState["__IsCompliance__"] = "0";
                     ViewState["__CShortName__"] = "";
+                    ViewState["__CompanyId__"] = companyId.ToString();
 
                     return true;
                 }
