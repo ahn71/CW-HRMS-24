@@ -2059,6 +2059,7 @@
     <Content Include="payroll\salary\ot_payment.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
+    <Content Include="payroll\salary\salary_sheet_excel.aspx" />
     <Content Include="personnel\employee-list-allowing-compliance.aspx" />
     <Content Include="personnel\OtherReports.aspx" />
     <Content Include="personnel\promotion_sheetc.aspx" />
@@ -4999,6 +5000,13 @@
     </Compile>
     <Compile Include="payroll\salary\salary_sheet.aspx.designer.cs">
       <DependentUpon>salary_sheet.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\salary\salary_sheet_excel.aspx.cs">
+      <DependentUpon>salary_sheet_excel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\salary_sheet_excel.aspx.designer.cs">
+      <DependentUpon>salary_sheet_excel.aspx</DependentUpon>
     </Compile>
     <Compile Include="personnel\employee-list-allowing-compliance.aspx.cs">
       <DependentUpon>employee-list-allowing-compliance.aspx</DependentUpon>
