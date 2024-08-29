@@ -210,15 +210,29 @@ namespace SigmaERP.payroll
                     }
                     txtJoiningSalary.Text = dt.Rows[0]["EmpJoinigSalary"].ToString();
                     txtPresentSalary.Text = dt.Rows[0]["EmpPresentSalary"].ToString();
-                    txtBasic.Text = dt.Rows[0]["BasicSalary"].ToString();
-                    txtMedical.Text = dt.Rows[0]["MedicalAllownce"].ToString();
-                    lblHouseRent.Text = dt.Rows[0]["HouseRent_Persent"].ToString();
-                    hfTotalHouseRent.Value = dt.Rows[0]["HouseRent_Persent"].ToString();
+                    if (dt.Rows[0]["SalaryType"].ToString() == "Gross")
+                    {
+                        txtBasic.Text = "0";
+                        txtMedical.Text = "0";
+                        lblHouseRent.Text = "0";
+                        hfTotalHouseRent.Value = "0";
 
-                    txtHouseRent.Text = dt.Rows[0]["HouseRent"].ToString();
-                    txtConveyanceAllow.Text = dt.Rows[0]["ConvenceAllownce"].ToString();
-                    txtFoodAllowance.Text = dt.Rows[0]["FoodAllownce"].ToString();
-                    txtAttenBonus.Text = dt.Rows[0]["AttendanceBonus"].ToString();
+                        txtHouseRent.Text = "0";
+                        txtConveyanceAllow.Text = "0";
+                        txtFoodAllowance.Text = "0";
+                    }
+                    else
+                    {
+                        txtBasic.Text = dt.Rows[0]["BasicSalary"].ToString();
+                        txtMedical.Text = dt.Rows[0]["MedicalAllownce"].ToString();
+                        lblHouseRent.Text = dt.Rows[0]["HouseRent_Persent"].ToString();
+                        hfTotalHouseRent.Value = dt.Rows[0]["HouseRent_Persent"].ToString();
+
+                        txtHouseRent.Text = dt.Rows[0]["HouseRent"].ToString();
+                        txtConveyanceAllow.Text = dt.Rows[0]["ConvenceAllownce"].ToString();
+                        txtFoodAllowance.Text = dt.Rows[0]["FoodAllownce"].ToString();
+                    }
+                    
                     lblPF.Text = dt.Rows[0]["PF_Persent"].ToString();
                     txtOthers.Text = dt.Rows[0]["OthersAllownce"].ToString();
                     ddlDormitoryRent.SelectedValue = dt.Rows[0]["DormitoryRent"].ToString();
@@ -255,7 +269,8 @@ namespace SigmaERP.payroll
                     txtPFAmount.Text = dt.Rows[0]["PFAmount"].ToString();
                     hdfSalaryType.Value = dt.Rows[0]["SalaryType"].ToString();
                     SetSalaryType_Constraint();
-                    SetConstraint(dt.Rows[0]["EmpTypeId"].ToString());
+                    if (dt.Rows[0]["SalaryType"].ToString() != "Gross")
+                        SetConstraint(dt.Rows[0]["EmpTypeId"].ToString());
                     txtNightAllowance.Text = dt.Rows[0]["NightAllownce"].ToString();
                     ddlCompanyList.SelectedValue = ddlCompanyList2.SelectedValue;
 

@@ -29,14 +29,16 @@ namespace SigmaERP.personnel
             sqlDB.connectDB();
             lblMessage.InnerText = "";
 
-            ViewState["__ReadAction__"] ="0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
+            
 
             int[] pagePermission = { 269, 271, 272, 273 };
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
