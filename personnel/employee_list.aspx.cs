@@ -29,7 +29,7 @@ namespace SigmaERP.personnel
             sqlDB.connectDB();
             lblMessage.InnerText = "";
 
-            
+         
 
             int[] pagePermission = { 269, 271, 272, 273 };
             if (!IsPostBack)

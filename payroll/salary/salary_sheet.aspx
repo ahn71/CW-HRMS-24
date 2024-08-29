@@ -3,6 +3,7 @@
         #ContentPlaceHolder1_ContentPlaceHolder1_tblGenerateType {
             width:100%;
         }
+       
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -110,9 +111,18 @@
                                      
                                 </td>
                              <td>
-                                 <asp:CheckBox ID="chkBankForwardingLetter" runat="server" Text="Bank Forwarding Letter" />
+                                 <asp:CheckBox ID="chkBankForwardingLetter" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter" />
+                                
                              </td>
+                             
+                           
                             </tr>
+                         <tr>
+                             <td></td>
+                             <td></td>
+                             <td></td>
+                             <td> <asp:CheckBox ID="chkBankfordExcel" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter(Excel)" /></td>
+                         </tr>
                    </table>
                 </div>
                         <asp:Panel id="pnl1" runat="server" >
@@ -161,11 +171,14 @@
 
                     <asp:Button ID="btnPreview" runat="server" CssClass="Pbutton" Text="Preview" OnClick="btnPreview_Click"  />
                     <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/payroll_default.aspx" CssClass="Pbutton" />
+
+                   
                 </div>
                 
             </div>
                         </ContentTemplate>
                 </asp:UpdatePanel>
+                
         </div>
     </div>
      </div>

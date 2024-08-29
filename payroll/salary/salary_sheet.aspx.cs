@@ -49,7 +49,7 @@ namespace SigmaERP.payroll.salary
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+                ViewState["__CShortName__"] = "MRC";
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
 
                 //------------load privilege setting inof from db------
@@ -102,7 +102,13 @@ namespace SigmaERP.payroll.salary
             { lblMessage.InnerText = "warning->Please select any Month!"; ddlSelectMonth.Focus(); return; }
             if (rblGenerateType.SelectedItem.Text.Equals("All") && lstSelected.Items.Count < 1) { lblMessage.InnerText = "warning->Please select any Department"; lstSelected.Focus(); return; }
             if (!rblGenerateType.SelectedItem.Text.Equals("All") && txtEmpCardNo.Text.Trim().Length < 4) { lblMessage.InnerText = "warning->Please type valid Card No!(Minimum last 4 digit.)"; txtEmpCardNo.Focus(); return; }
-            generateSalarySheet();
+            if (chkBankfordExcel.Checked)
+            {
+                salarySheetExcel();
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx');", true);
+            }
+            else
+               generateSalarySheet();
         }
         private void generateSalarySheet()
         {
@@ -319,5 +325,14 @@ namespace SigmaERP.payroll.salary
         {
             classes.commonTask.AddRemoveAll(lstSelected, lstAll);
         }
+        private void salarySheetExcel()
+        {
+            string query = "select top(100) EmpId,EmpName,DptName,DsgName,PresentDay,AbsentDay,(CasualLeave + SickLeave + AnnualLeave) as leave,WeekendHoliday,EmpPresentSalary,AbsentDeduction,AdvanceDeduction,OthersDeduction,ProfitTax,(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as TotalDeduction,(EmpPresentSalary - (AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax)) as NetPayble from v_MonthlySalarySheet  where YearMonth = '2023-12-01'";
+            DataTable dt = CRUD.ExecuteReturnDataTable(query);
+            Session["__salarySheetExcel__"] = dt;
+        }
+
+        
+       
     }
 }
