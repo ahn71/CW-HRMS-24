@@ -513,19 +513,22 @@ namespace SigmaERP.classes
                 _attRecord.InSec = LogInTime.ToString("ss");
                 if (_attRecord.AttStatus == "A")
                 {
-                    if (OnePunchPresent)
+                if (OnePunchPresent)
+                {
+                    _attRecord.AttStatus = "P";
+                    _attRecord.PaybleDays = "1";
+                }                        
+                else
+                {
+                    if (LogInTime <= RosterStartTime.AddMinutes(AcceptableLate))
                         _attRecord.AttStatus = "P";
                     else
                     {
-                        if (LogInTime <= RosterStartTime.AddMinutes(AcceptableLate))
-                            _attRecord.AttStatus = "P";
-                        else
-                        {
-                            _attRecord.AttStatus = "L";
-                            _attRecord.LateTime = (LogInTime - RosterStartTime).ToString(); // to get late time                   
-                        }
+                        _attRecord.AttStatus = "L";
+                        _attRecord.LateTime = (LogInTime - RosterStartTime).ToString(); // to get late time                   
                     }
-                    _attRecord.StateStatus = "Present";
+                }
+                _attRecord.StateStatus = "Present";
                 }
                 if (LogOutTime > LogInTime)
                 {

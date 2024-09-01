@@ -102,12 +102,7 @@ namespace SigmaERP.payroll.salary
             { lblMessage.InnerText = "warning->Please select any Month!"; ddlSelectMonth.Focus(); return; }
             if (rblGenerateType.SelectedItem.Text.Equals("All") && lstSelected.Items.Count < 1) { lblMessage.InnerText = "warning->Please select any Department"; lstSelected.Focus(); return; }
             if (!rblGenerateType.SelectedItem.Text.Equals("All") && txtEmpCardNo.Text.Trim().Length < 4) { lblMessage.InnerText = "warning->Please type valid Card No!(Minimum last 4 digit.)"; txtEmpCardNo.Focus(); return; }
-            if (chkBankfordExcel.Checked)
-            {
-                salarySheetExcel();
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx');", true);
-            }
-            else
+        
                generateSalarySheet();
         }
         private void generateSalarySheet()
@@ -167,6 +162,18 @@ namespace SigmaERP.payroll.salary
                     }
                     Session["__SalarySheetBankFordLetter__"] = dt;
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetBankFordLetter');", true);
+                }
+                else if (chkBankfordExcel.Checked)
+                {
+                    getSQLCMD = @"select RoW_NUMBER() OVER(ORDER BY (SELECT 1)) AS SN,SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],DptName as [Department],DsgName as [Designation],PresentDay as [Present] ,AbsentDay as [Absent],(CasualLeave + SickLeave + AnnualLeave) as [Leave],WeekendHoliday as [W&H],EmpPresentSalary as [Gross Salary],AbsentDeduction as [Absent Deduction],AdvanceDeduction as [Advance],ProfitTax as [Tax],OthersDeduction as [Others Deduction],(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as [Total Deduction],TotalSalary as [Net Payble] from  v_MonthlySalarySheet where IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                           " ORDER BY CONVERT(int,DptId), CustomOrdering ";
+                    sqlDB.fillDataTable(getSQLCMD, dt);
+                    if (dt.Rows.Count == 0)
+                    {
+                        lblMessage.InnerText = "warning->Data not found."; return;
+                    }
+                    Session["__salarySheetExcel__"] = dt;
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx');", true);
                 }
                 else if (rblReportType.SelectedValue == "sheet" || rblReportType.SelectedValue == "slip")
                 {
@@ -325,12 +332,7 @@ namespace SigmaERP.payroll.salary
         {
             classes.commonTask.AddRemoveAll(lstSelected, lstAll);
         }
-        private void salarySheetExcel()
-        {
-            string query = "select top(100) EmpId,EmpName,DptName,DsgName,PresentDay,AbsentDay,(CasualLeave + SickLeave + AnnualLeave) as leave,WeekendHoliday,EmpPresentSalary,AbsentDeduction,AdvanceDeduction,OthersDeduction,ProfitTax,(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as TotalDeduction,(EmpPresentSalary - (AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax)) as NetPayble from v_MonthlySalarySheet  where YearMonth = '2023-12-01'";
-            DataTable dt = CRUD.ExecuteReturnDataTable(query);
-            Session["__salarySheetExcel__"] = dt;
-        }
+       
 
         
        
