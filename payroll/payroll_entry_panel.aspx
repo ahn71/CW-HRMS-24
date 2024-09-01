@@ -454,6 +454,17 @@
 
                                                 </td>
                                             </tr>
+                                            <tr id="tr4" runat="server" visible="true">
+                                                <td>TDS
+                                                </td>
+                                                <td>:
+                                                </td>
+                                                <td>
+
+                                                    <asp:TextBox ID="txtTDS" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
+
+                                                </td>
+                                            </tr>
                                         </table>
                                         <table class="em_button_table">
                                             <tr>

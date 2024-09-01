@@ -64,12 +64,12 @@ namespace SigmaERP.payroll.salary
                 }
                 hw.Write("</tr>");
                 var groupedData = dt.AsEnumerable()
-                    .GroupBy(row => row.Field<string>("DptName"))
+                    .GroupBy(row => row.Field<string>("Department"))
                     .Select(g => new
                     {
                         Department = g.Key,
                         Rows = g.CopyToDataTable(),
-                        Sum = g.Sum(row => Convert.ToDecimal(row["NetPayble"]))
+                        Sum = g.Sum(row => Convert.ToDecimal(row["Net Payable"]))
                     });
 
                 foreach (var group in groupedData)
