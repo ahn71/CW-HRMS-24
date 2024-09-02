@@ -111,7 +111,8 @@
                                      
                                 </td>
                              <td>
-                                 <asp:CheckBox ID="chkBankForwardingLetter" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter" />
+                                 <asp:CheckBox Visible="false" ID="chkBankForwardingLetter" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter" /> 
+                                <asp:CheckBox ID="chkExcel" CssClass="chkboxsalary" runat="server" Text="Salary Sheet(Excel)" />
                                 
                              </td>
                              
@@ -121,7 +122,7 @@
                              <td></td>
                              <td></td>
                              <td></td>
-                             <td> <asp:CheckBox ID="chkBankfordExcel" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter(Excel)" /></td>
+                             <td>  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
                          </tr>
                    </table>
                 </div>

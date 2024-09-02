@@ -9,7 +9,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <h3>Salary sheet report</h3>
+            <h3>Records</h3>
 
             <asp:Button runat="server" ID="btnExport" Text="Export" OnClick="btnExport_Click"/>
              <asp:GridView runat="server" ID="gvSalarySheetExcel">

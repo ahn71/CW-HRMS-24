@@ -175,13 +175,22 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetter;
         
         /// <summary>
-        /// chkBankfordExcel control.
+        /// chkExcel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkBankfordExcel;
+        protected global::System.Web.UI.WebControls.CheckBox chkExcel;
+        
+        /// <summary>
+        /// chkBankForwardingLetterXL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetterXL;
         
         /// <summary>
         /// pnl1 control.
