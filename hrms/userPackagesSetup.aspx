@@ -15,7 +15,7 @@
                                     <div class="col-lg-3">
                                       <div class="form-group">
                                         <label id="lblHidenPksId" style="display:none"></label>
-                                       <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Packages <span
+                                       <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Package <span
                                           class="text-danger">*</span></label>
                                        <div class="support-form__input-id">
                                            <div class="dm-select ">
@@ -117,7 +117,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Setup Packages List</h4>
+                                  <h4 style="margin-top: 13px;">Setuped Package</h4>
                               <div id="filter-form-container">
 
                               </div>
@@ -445,30 +445,35 @@
             $('#filter-form-container').empty();
 
             // Iterate through data and format rows
-            data.forEach(row => {
+            data.forEach((row, index) => {
+                // Add serial number (SL)
+                row.serialNo = index + 1;  // Starts SL from 1
+
                 row.actions = `
-            <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.psid}"><i class="uil uil-eye"></i></a></li>
-                <li><a href="javascript:void(0)" data-id="${row.psid}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>  
-                <li><a href="javascript:void(0)" data-id="${row.psid}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-            </ul>
+        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+            <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.psid}"><i class="uil uil-eye"></i></a></li>
+            <li><a href="javascript:void(0)" data-id="${row.psid}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>  
+            <li><a href="javascript:void(0)" data-id="${row.psid}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+        </ul>
         `;
+
                 row.isActive = `
-            <div class="form-check form-switch form-switch-primary form-switch-sm">
-                <input type="checkbox" class="form-check-input" id="switch-${row.id}" ${row.isActive ? 'checked' : ''}>
-                <label class="form-check-label" for="switch-${row.id}"></label>
-            </div>
+        <div class="form-check form-switch form-switch-primary form-switch-sm">
+            <input type="checkbox" class="form-check-input" id="switch-${row.id}" ${row.isActive ? 'checked' : ''}>
+            <label class="form-check-label" for="switch-${row.id}"></label>
+        </div>
         `;
+
                 row.features = `
-            <div class="features-icon-container">
-                <a href="javascript:void(0)" class="feature-btn" data-id="${row.id}"><i class="uil uil-star"></i></a>
-            </div>
+        <div class="features-icon-container">
+            <a href="javascript:void(0)" class="feature-btn" data-id="${row.id}"><i class="uil uil-star"></i></a>
+        </div>
         `;
             });
 
             // Define the table columns
             const columns = [
-                { "name": "psid", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                 { "name": "packageName", "title": "Package Name", "className": "userDatatable-content" },
                 { "name": "features", "title": "Features", "className": "userDatatable-content" },
                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -505,14 +510,13 @@
             });
 
             $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                const id = $(this).data('id');  // Corrected here
+                const id = $(this).data('id');
                 Delete(id);
                 console.log('Delete button clicked for ID:', id);
             });
 
             $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
                 const id = $(this).data('id');
-                // Handle the view action
                 console.log('View button clicked for ID:', id);
             });
         }

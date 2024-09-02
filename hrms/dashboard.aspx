@@ -977,7 +977,7 @@
 
         var DailyAttUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceStatus';
         var DailyAttSumUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceSummary';
-        var CurrentEmpStatusUrl = rootUrl + '/api/DailyAttendance/currentEmployeeStaus';
+        var CurrentEmpStatusUrl = rootUrl + '/api/DailyAttendance/currentEmployeeStatus';
         var GetTodaysCostingUrl = rootUrl + '/api/DailyAttendance/getTodaysCosting';
         var GetMonthlyCostingUrl = rootUrl + '/api/DailyAttendance/getlastMonthCosting';
         var GetLast7DaysPARatioUrl = rootUrl + '/api/DailyAttendance/dailyAttendancehistory';

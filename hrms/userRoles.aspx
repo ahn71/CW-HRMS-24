@@ -7,8 +7,20 @@
             <div class="crm mb-25">
                 <div class="container-fulid">
                     <div class="card card-Vertical card-default card-md mt-4 mb-4">
+                        <div class="card-header d-flex align-items-center">
+                            <div class="card-title d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <h4>Add Role</h4>
+                                </div>
+                            </div>
 
-                        <div id="Cardbox" class="card-body pb-md-30">
+                            <div class="btn-wrapper">
+                                <div class="dm-button-list d-flex flex-wrap align-items-end">
+                                    <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                             <div class="Vertical-form">
                                 <div class="row">
                                     <div class="col-lg-3">
@@ -18,7 +30,7 @@
                                             <label for="txtRole" class="color-dark fs-14 fw-500 align-center mb-10">
                                                 Role Name <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtRole" placeholder="Type Ordering">
+                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtRole" placeholder="Type Role Name">
                                             <span class="text-danger" id="errortxtRole"></span>
                                         </div>
                                     </div>
@@ -87,7 +99,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Setup Packages List</h4>
+                                  <h4 style="margin-top: 13px;">Roles</h4>
                               <div id="filter-form-container">
 
                               </div>
@@ -130,7 +142,26 @@
             GetRoles();
         });
 
+        function Cardbox() {
+            var CardboxElement = $("#Cardbox");
+            var addnewElement = $("#addnew");
 
+            if (addnewElement.html() === "Add New") {
+                CardboxElement.show();
+                addnewElement.text("Close");
+            } else {
+                ClearTextBox();
+                CardboxElement.hide();
+                addnewElement.html("Add New");
+
+            }
+        }
+        function ClearTextBox() {
+            $('#txtRole').val("");
+            $('#txtOrdaring').val("");
+            $('#chkIsActive').prop('checked', true);
+            $('#btnSave').text("Save");
+        }
 
          function ValidateAndPostModule() {
             var isValid = true;
@@ -298,8 +329,6 @@
                     console.error('Error occurred while fetching data:', error);
                 });
         }
-
-
         function bindTableData(data) {
             if ($('.adv-table').data('footable')) {
                 $('.adv-table').data('footable').destroy();
@@ -307,36 +336,41 @@
             $('.adv-table').html('');
             $('#filter-form-container').empty();
 
-            data.forEach(row => {
+            // Loop through the data and bind it to the table with serial numbers for display
+            data.forEach((row, index) => {
+                // Generate serial number based on the loop index (starting from 1) for display
+                row.serialNo = index + 1;
+
+                // Use the actual userRoleId for the actions
                 row.userRoleName = `
-        <div class="permission-name-container">
-            ${row.userRoleName}
-            <div class="actions-container">
-                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userRoleId}"><i class="uil uil-eye"></i></a></li>
-                    <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
-                    <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-                </ul>
+            <div class="permission-name-container">
+                ${row.userRoleName}
+                <div class="actions-container">
+                    <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                        <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userRoleId}"><i class="uil uil-eye"></i></a></li>
+                        <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                        <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
         `;
 
                 row.isActive = `
-        <div class="form-check form-switch form-switch-primary form-switch-sm">
-            <input type="checkbox" class="form-check-input" id="switch-${row.userRoleId}" ${row.isActive ? 'checked' : ''}>
-            <label class="form-check-label" for="switch-${row.userRoleId}"></label>
-        </div>
+            <div class="form-check form-switch form-switch-primary form-switch-sm">
+                <input type="checkbox" class="form-check-input" id="switch-${row.userRoleId}" ${row.isActive ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.userRoleId}"></label>
+            </div>
         `;
 
                 row.permissions = `
-        <div class="features-icon-container">
-            <a href="javascript:void(0)" class="feature-btn" data-id="${row.userRoleId}"><i class="uil uil-star"></i></a>
-        </div>
+            <div class="features-icon-container">
+                <a href="javascript:void(0)" class="feature-btn" data-id="${row.userRoleId}"><i class="uil uil-star"></i></a>
+            </div>
         `;
             });
 
             const columns = [
-                { "name": "userRoleId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                 { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
                 { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -366,27 +400,114 @@
             $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
                 const userRoleId = $(this).data('id');
                 FetchDataForEdit(userRoleId);
-                console.log('Edit button clicked for ID:', userRoleId);
+                console.log('Edit button clicked for userRoleId:', userRoleId);
             });
 
             $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                const id = $(this).data('id');
-                Delete(id);
-                console.log('Delete button clicked for ID:', id);
+                const userRoleId = $(this).data('id');
+                Delete(userRoleId);
+                console.log('Delete button clicked for userRoleId:', userRoleId);
             });
 
             $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-                const id = $(this).data('id');
-                // Handle the view action
-                console.log('View button clicked for ID:', id);
+                const userRoleId = $(this).data('id');
+                console.log('View button clicked for userRoleId:', userRoleId);
             });
 
             $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
-                const id = $(this).data('id');
-                console.log('Feature button clicked for ID:', id);
-                //FetchDataForEdit(id);
+                const userRoleId = $(this).data('id');
+                console.log('Feature button clicked for userRoleId:', userRoleId);
             });
         }
+
+
+        //function bindTableData(data) {
+        //    if ($('.adv-table').data('footable')) {
+        //        $('.adv-table').data('footable').destroy();
+        //    }
+        //    $('.adv-table').html('');
+        //    $('#filter-form-container').empty();
+
+        //    data.forEach(row => {
+        //        row.userRoleName = `
+        //<div class="permission-name-container">
+        //    ${row.userRoleName}
+        //    <div class="actions-container">
+        //        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+        //            <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userRoleId}"><i class="uil uil-eye"></i></a></li>
+        //            <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+        //            <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+        //        </ul>
+        //    </div>
+        //</div>
+        //`;
+
+        //        row.isActive = `
+        //<div class="form-check form-switch form-switch-primary form-switch-sm">
+        //    <input type="checkbox" class="form-check-input" id="switch-${row.userRoleId}" ${row.isActive ? 'checked' : ''}>
+        //    <label class="form-check-label" for="switch-${row.userRoleId}"></label>
+        //</div>
+        //`;
+
+        //        row.permissions = `
+        //<div class="features-icon-container">
+        //    <a href="javascript:void(0)" class="feature-btn" data-id="${row.userRoleId}"><i class="uil uil-star"></i></a>
+        //</div>
+        //`;
+        //    });
+
+        //    const columns = [
+        //        { "name": "userRoleId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+        //        { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
+        //        { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
+        //        { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+        //        { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
+        //    ];
+
+        //    try {
+        //        $('.adv-table').footable({
+        //            "columns": columns,
+        //            "rows": data,
+        //            "filtering": {
+        //                "enabled": true,
+        //                "placeholder": "Search...",
+        //                "dropdownTitle": "Search in:",
+        //                "position": "left",
+        //                "containers": "#filter-form-container",
+        //                "space": true
+        //            }
+        //        }).on('postinit.ft.table', function (e) {
+        //            $('.footable-loader').hide();
+        //        });
+        //    } catch (error) {
+        //        console.error("Error initializing Footable:", error);
+        //    }
+
+        //    // Clear and re-attach event listeners
+        //    $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+        //        const userRoleId = $(this).data('id');
+        //        FetchDataForEdit(userRoleId);
+        //        console.log('Edit button clicked for ID:', userRoleId);
+        //    });
+
+        //    $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+        //        const id = $(this).data('id');
+        //        Delete(id);
+        //        console.log('Delete button clicked for ID:', id);
+        //    });
+
+        //    $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+        //        const id = $(this).data('id');
+        //        // Handle the view action
+        //        console.log('View button clicked for ID:', id);
+        //    });
+
+        //    $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
+        //        const id = $(this).data('id');
+        //        console.log('Feature button clicked for ID:', id);
+        //        //FetchDataForEdit(id);
+        //    });
+        //}
 
         var selectedPermissionIDs = [];
         var responseData = null;
@@ -482,6 +603,13 @@
         //    });
         //}
 
+        function BoxExpland() {
+            var scrollTop = $(window).scrollTop();
+
+            $("#Cardbox").show();
+            $("#addnew").text("Close");
+            $(window).scrollTop(scrollTop);
+        }
 
 
         var selectedPermissionIDsUpdate = []
@@ -496,7 +624,7 @@
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');
-                    //BoxExpland();
+                    BoxExpland();
                     var selectedPermissionIDs = JSON.parse(data.permissions);
                     if (Array.isArray(selectedPermissionIDs)) {
                         var treeData = transformToJSTreeFormats(responseData);

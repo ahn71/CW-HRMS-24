@@ -171,7 +171,7 @@
                             
 
                                <div class="col-lg-4" id="treeSection">
-                                   <p>Select Permissions</p>
+                                   <p>Select User Permissions</p>
                                    <div class="loader-size loaderPackages " style="display: none">
                                        <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
                                            <span class="spin-dot badge-dot dot-primary"></span>
@@ -201,7 +201,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Module List</h4>
+                                  <h4 style="margin-top: 13px;">Users</h4>
                               <div id="filter-form-container">
 
                             
@@ -475,7 +475,11 @@
              $('.adv-table').html('');
              $('#filter-form-container').empty();
 
+             let serialNumber = 1; // Initialize serial number
+
              data.forEach(row => {
+                 row.serial = serialNumber++; // Assign serial number to each row
+
                  row.name = `
         <div class="permission-name-container">
             ${row.name}
@@ -489,14 +493,14 @@
         </div>
         `;
 
-         row.isActive = `
+                 row.isActive = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
         </div>
         `;
-                 
-         row.isGuestUser = `
+
+                 row.isGuestUser = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
@@ -505,11 +509,10 @@
              });
 
              const columns = [
-                 { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                 { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                  { "name": "name", "title": "Name", "className": "userDatatable-content" },
                  { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
-                 { "name": "referenceID", "title": "Refer By", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
              ];
@@ -539,7 +542,7 @@
                  FetchDataForEdit(userId);
                  console.log('Edit button clicked for ID:', userId);
              });
-
+              
              $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
                  const id = $(this).data('id');
                  Delete(id);
@@ -548,7 +551,7 @@
 
              $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
                  const id = $(this).data('id');
-                  FetchDataForView(id);
+                 FetchDataForView(id);
                  console.log('View button clicked for ID:', id);
              });
 
@@ -558,6 +561,96 @@
                  //FetchDataForEdit(id);
              });
          }
+
+        // function bindTableData(data) {
+        //     if ($('.adv-table').data('footable')) {
+        //         $('.adv-table').data('footable').destroy();
+        //     }
+        //     $('.adv-table').html('');
+        //     $('#filter-form-container').empty();
+
+        //     data.forEach(row => {
+        //         row.name = `
+        //<div class="permission-name-container">
+        //    ${row.name}
+        //    <div class="actions-container">
+        //        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+        //            <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
+        //            <li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+        //            <li><a href="javascript:void(0)" data-id="${row.userId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
+        //        </ul>
+        //    </div>
+        //</div>
+        //`;
+
+        // row.isActive = `
+        //<div class="form-check form-switch form-switch-primary form-switch-sm">
+        //    <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
+        //    <label class="form-check-label" for="switch-${row.userId}"></label>
+        //</div>
+        //`;
+                 
+        // row.isGuestUser = `
+        //<div class="form-check form-switch form-switch-primary form-switch-sm">
+        //    <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
+        //    <label class="form-check-label" for="switch-${row.userId}"></label>
+        //</div>
+        //`;
+        //     });
+
+        //     const columns = [
+        //         { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+        //         { "name": "name", "title": "Name", "className": "userDatatable-content" },
+        //         { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
+        //         { "name": "email", "title": "Email", "className": "userDatatable-content" },
+        //         { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+        //         { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+        //     ];
+
+        //     try {
+        //         $('.adv-table').footable({
+        //             "columns": columns,
+        //             "rows": data,
+        //             "filtering": {
+        //                 "enabled": true,
+        //                 "placeholder": "Search...",
+        //                 "dropdownTitle": "Search in:",
+        //                 "position": "left",
+        //                 "containers": "#filter-form-container",
+        //                 "space": true
+        //             }
+        //         }).on('postinit.ft.table', function (e) {
+        //             $('.footable-loader').hide();
+        //         });
+        //     } catch (error) {
+        //         console.error("Error initializing Footable:", error);
+        //     }
+
+        //     // Clear and re-attach event listeners
+        //     $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+        //         const userId = $(this).data('id');
+        //         FetchDataForEdit(userId);
+        //         console.log('Edit button clicked for ID:', userId);
+        //     });
+
+        //     $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+        //         const id = $(this).data('id');
+        //         Delete(id);
+        //         console.log('Delete button clicked for ID:', id);
+        //     });
+
+        //     $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+        //         const id = $(this).data('id');
+        //          FetchDataForView(id);
+        //         console.log('View button clicked for ID:', id);
+        //     });
+
+        //     $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
+        //         const id = $(this).data('id');
+        //         console.log('Feature button clicked for ID:', id);
+        //         //FetchDataForEdit(id);
+        //     });
+        // }
          var selectedPermissionIDs = [];
          var responseData = null;
          function GetStpPkgFeatures() {
@@ -651,11 +744,9 @@
          //    });
          //}
 
-
-         
-
-         var selectedPermissionIDsUpdate = []
-         var selectedPermissionIDs = []
+         var selectedPermissionIDsUpdate = [];
+         var selectedPermissionIDsRolesWise = [];
+         var PreviusPermissionsID = [];
 
          function FetchDataRolesWise(moduleID) {
              ApiCallById(getRolesByIdUrl, token, moduleID)
@@ -663,41 +754,39 @@
                      console.log('Data:', response);
                      var data = response.data;
                      $('#lblHidenRolesId').val(data.userRoleId);
-                     //BoxExpland();
-                     selectedPermissionIDs = [];
-                     selectedPermissionIDs = JSON.parse(data.permissions);
-                     console.log('additionalPermissions:',additionalPermissions);
+                     // BoxExpland();
+                     selectedPermissionIDsRolesWise = [];
+                     selectedPermissionIDsRolesWise = JSON.parse(data.permissions);
+                     PreviusPermissionsID = [];
+                     PreviusPermissionsID = JSON.parse(data.permissions);
+                     console.log('additionalPermissions:', additionalPermissions);
                      console.log('removedPermissions:', removedPermissions);
 
                      if (IsEditData) {
                          if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
-                             // Remove permissions from selectedPermissionIDs
-                             selectedPermissionIDs = selectedPermissionIDs.filter(id => !removedPermissions.includes(id));
+                             // Remove permissions from selectedPermissionIDsRolesWise
+                             selectedPermissionIDsRolesWise = selectedPermissionIDsRolesWise.filter(id => !removedPermissions.includes(id));
 
-                             // Add new permissions to selectedPermissionIDs
+                             // Add new permissions to selectedPermissionIDsRolesWise
                              additionalPermissions.forEach(id => {
-                                 if (!selectedPermissionIDs.includes(id)) {
-                                     selectedPermissionIDs.push(id);
+                                 if (!selectedPermissionIDsRolesWise.includes(id)) {
+                                     selectedPermissionIDsRolesWise.push(id);
                                  }
                              });
 
-                             console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
+                             console.log('After update - selectedPermissionIDsRolesWise:', selectedPermissionIDsRolesWise);
                          } else {
-                             // If no removed or additional permissions, update selectedPermissionIDs with existing permissions
-                             console.log('Only roles data:', selectedPermissionIDs);
-                             selectedPermissionIDs = JSON.parse(data.permissions);
+                             // If no removed or additional permissions, update selectedPermissionIDsRolesWise with existing permissions
+                             console.log('Only roles data:', selectedPermissionIDsRolesWise);
+                             selectedPermissionIDsRolesWise = JSON.parse(data.permissions);
                          }
 
                          // Set IsEditData to false
                          IsEditData = false;
                      }
 
-
-
-
-
-                     console.log('Roles data:',selectedPermissionIDs);
-                     if (Array.isArray(selectedPermissionIDs)) {
+                     console.log('Roles data:', selectedPermissionIDsRolesWise);
+                     if (Array.isArray(selectedPermissionIDsRolesWise)) {
                          var treeData = transformToJSTreeFormats(responseData);
                          $('#treeContainer').jstree("destroy").empty();
                          $('#treeContainer').jstree({
@@ -716,23 +805,21 @@
                              },
                              'plugins': ['checkbox', 'wholerow']
                          }).on('ready.jstree', function (e, data) {
-                          
-                             selectedPermissionIDs.forEach(function (id) {
-                                 console.log("id.toString()", id.toString())
+
+                             selectedPermissionIDsRolesWise.forEach(function (id) {
+                                 console.log("id.toString()", id.toString());
                                  data.instance.select_node(id.toString());
                              });
                          }).on('changed.jstree', function (e, data) {
                              selectedPermissionIDsUpdate = [];
 
                              for (i = 0, j = data.selected.length; i < j; i++) {
-
                                  var node = data.instance.get_node(data.selected[i]);
                                  if (node && node.children.length === 0) {
                                      selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
                                  }
-                                 //console.log('node:', node);
                              }
-                             console.log('roles Data and Additional Data :', selectedPermissionIDsUpdate)
+                             console.log('roles Data and Additional Data:', selectedPermissionIDsUpdate);
                          });
                      } else {
                          console.error('responseData.features is not an array:', responseData.features);
@@ -742,6 +829,97 @@
                      console.error('Error:', error);
                  });
          }
+
+         
+
+         //var selectedPermissionIDsUpdate = []
+         //var selectedPermissionIDsRolesWise = []
+
+         //function FetchDataRolesWise(moduleID) {
+         //    ApiCallById(getRolesByIdUrl, token, moduleID)
+         //        .then(function (response) {
+         //            console.log('Data:', response);
+         //            var data = response.data;
+         //            $('#lblHidenRolesId').val(data.userRoleId);
+         //            //BoxExpland();
+         //            selectedPermissionIDs = [];
+         //            selectedPermissionIDs = JSON.parse(data.permissions);
+         //            console.log('additionalPermissions:',additionalPermissions);
+         //            console.log('removedPermissions:', removedPermissions);
+
+         //            if (IsEditData) {
+         //                if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
+         //                    // Remove permissions from selectedPermissionIDs
+         //                    selectedPermissionIDs = selectedPermissionIDs.filter(id => !removedPermissions.includes(id));
+
+         //                    // Add new permissions to selectedPermissionIDs
+         //                    additionalPermissions.forEach(id => {
+         //                        if (!selectedPermissionIDs.includes(id)) {
+         //                            selectedPermissionIDs.push(id);
+         //                        }
+         //                    });
+
+         //                    console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
+         //                } else {
+         //                    // If no removed or additional permissions, update selectedPermissionIDs with existing permissions
+         //                    console.log('Only roles data:', selectedPermissionIDs);
+         //                    selectedPermissionIDs = JSON.parse(data.permissions);
+         //                }
+
+         //                // Set IsEditData to false
+         //                IsEditData = false;
+         //            }
+
+
+
+
+
+         //            console.log('Roles data:',selectedPermissionIDs);
+         //            if (Array.isArray(selectedPermissionIDs)) {
+         //                var treeData = transformToJSTreeFormats(responseData);
+         //                $('#treeContainer').jstree("destroy").empty();
+         //                $('#treeContainer').jstree({
+         //                    'core': {
+         //                        'data': treeData,
+         //                        'themes': {
+         //                            'dots': true
+         //                        },
+         //                        'multiple': true,
+         //                        'animation': true,
+         //                        'check_callback': true
+         //                    },
+         //                    'checkbox': {
+         //                        'keep_selected_style': false,
+         //                        'tie_selection': true
+         //                    },
+         //                    'plugins': ['checkbox', 'wholerow']
+         //                }).on('ready.jstree', function (e, data) {
+                          
+         //                    selectedPermissionIDs.forEach(function (id) {
+         //                        console.log("id.toString()", id.toString())
+         //                        data.instance.select_node(id.toString());
+         //                    });
+         //                }).on('changed.jstree', function (e, data) {
+         //                    selectedPermissionIDsUpdate = [];
+
+         //                    for (i = 0, j = data.selected.length; i < j; i++) {
+
+         //                        var node = data.instance.get_node(data.selected[i]);
+         //                        if (node && node.children.length === 0) {
+         //                            selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
+         //                        }
+         //                        //console.log('node:', node);
+         //                    }
+         //                    console.log('roles Data and Additional Data :', selectedPermissionIDsUpdate)
+         //                });
+         //            } else {
+         //                console.error('responseData.features is not an array:', responseData.features);
+         //            }
+         //        })
+         //        .catch(function (error) {
+         //            console.error('Error:', error);
+         //        });
+         //}
          function transformToJSTreeFormats(data) {
              return data.map(function (item) {
 
@@ -778,7 +956,7 @@
              var isGuest = $('#chkIsGetUser').is(':checked');
              var treeInstance = $('#treeContainer').jstree(true);
 
-             var jsonRolesData = JSON.stringify(selectedPermissionIDs);
+             var jsonRolesData = JSON.stringify(PreviusPermissionsID);
              var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
 
              var rolesDataArray = JSON.parse(jsonRolesData);
@@ -850,9 +1028,8 @@
                  var isActive = $('#chkIsActive').is(':checked');
                  var isGuest = $('#chkIsGetUser').is(':checked');
 
-       
 
-             var jsonRolesData = JSON.stringify(selectedPermissionIDs);
+             var jsonRolesData = JSON.stringify(PreviusPermissionsID);
              var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
 
              var rolesDataArray = JSON.parse(jsonRolesData);

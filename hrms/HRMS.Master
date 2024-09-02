@@ -1057,24 +1057,24 @@
                                    </li>
                                    <% } %>
 
-                                   <% if (IsRouteExists("employees/list-report"))
+                                   <% if (IsRouteExists("employees/info-report"))
                                        { %>
                                    <li>
-                                       <a class="" href="employees/list-report" runat="server">Employee List Report</a>
+                                       <a class="" href="employees/info-report" runat="server">Employee info Report</a>
                                    </li>
                                    <% } %>
 
-                                   <% if (IsRouteExists("employees/separation-entry"))
+                                   <% if (IsRouteExists("employees/separation/entry"))
                                        { %>
                                    <li>
-                                       <a class="" href="employees/separation-entry" runat="server">Separation Entry Panel</a>
+                                       <a class="" href="employees/separation/entry" runat="server">Separation Entry</a>
                                    </li>
                                    <% } %>
 
-                                   <% if (IsRouteExists("employees/separation-report"))
+                                   <% if (IsRouteExists("employees/separation/report"))
                                        { %>
                                    <li>
-                                       <a class="" href="employees/separation-report" runat="server">Separation List Report</a>
+                                       <a class="" href="employees/separation/report" runat="server">Separation Report</a>
                                    </li>
                                    <% } %>
 
