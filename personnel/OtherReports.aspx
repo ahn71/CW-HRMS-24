@@ -83,7 +83,7 @@
                                 <asp:ListItem Value="1">Emergency Contact List</asp:ListItem>                                 
                             </asp:RadioButtonList>--%>
                             <asp:DropDownList ID="ddlReportType" ClientIDMode="Static" CssClass="form-control select_width" runat="server">
-                                <asp:ListItem Value="0" Selected="True">---Select---</asp:ListItem>
+                                <%--<asp:ListItem Value="0" Selected="True">---Select---</asp:ListItem>
                                 <asp:ListItem Value="job_application">Job Application</asp:ListItem>
                                 <asp:ListItem Value="apointment_letter">Appointment Letter</asp:ListItem>
                                 <asp:ListItem Value="joining_letter">Joining Letter</asp:ListItem>
@@ -99,7 +99,7 @@
                                 <asp:ListItem Value="incrementWithPromotion">Increment With Promotion Letter</asp:ListItem> 
                                 <asp:ListItem Value="1st_absent_letter">1st Absent Letter</asp:ListItem>
                                 <asp:ListItem Value="2nd_absent_letter">2nd Absent Letter</asp:ListItem>
-                                <asp:ListItem Value="3rd_absent_letter"> 3rd Absent Letter  </asp:ListItem>
+                                <asp:ListItem Value="3rd_absent_letter"> 3rd Absent Letter  </asp:ListItem>--%>
 
                             </asp:DropDownList>
 

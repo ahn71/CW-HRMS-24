@@ -2375,5 +2375,20 @@ namespace SigmaERP.classes
 
         }
 
+        public static void loadReportName(DropDownList dl, int [] permissionID)
+        {
+            string rpermissionId = string.Join(",", permissionID);
+            try
+            {
+                sqlDB.fillDataTable("select userPermId,PermissionName from userpermission where userPermId in("+ rpermissionId + ")", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "userPermId";
+                dl.DataTextField = "PermissionName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("---Select---", "0"));
+            }
+            catch { }
+        }
+
     }
 }
