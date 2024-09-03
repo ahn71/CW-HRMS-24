@@ -327,7 +327,8 @@ namespace SigmaERP.payroll.salary
         }
         private void salarySheetExcel()
         {
-            string query = "select top(100) EmpId,EmpName,DptName,DsgName,PresentDay,AbsentDay,(CasualLeave + SickLeave + AnnualLeave) as leave,WeekendHoliday,EmpPresentSalary,AbsentDeduction,AdvanceDeduction,OthersDeduction,ProfitTax,(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as TotalDeduction,(EmpPresentSalary - (AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax)) as NetPayble from v_MonthlySalarySheet  where YearMonth = '2023-12-01'";
+            string[] monthInfo = ddlSelectMonth.SelectedValue.Split('/');
+            string query = "select  EmpId,EmpName,DptName,DsgName,PresentDay,AbsentDay,(CasualLeave + SickLeave + AnnualLeave) as leave,WeekendHoliday,EmpPresentSalary,AbsentDeduction,AdvanceDeduction,OthersDeduction,ProfitTax,(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as TotalDeduction,(EmpPresentSalary - (AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax)) as NetPayble from v_MonthlySalarySheet  where YearMonth = '" + monthInfo[0].ToString() + "'";
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             Session["__salarySheetExcel__"] = dt;
         }
