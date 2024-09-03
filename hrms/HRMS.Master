@@ -12,7 +12,7 @@
    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
-  
+<%--      <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />--%>
 
    <!-- inject:css -->
 
@@ -1492,7 +1492,12 @@
     <script src="assets/vendor_assets/js/footable.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
 
     <script src="assets/vendor_assets/js/fullcalendar@5.2.0.js"></script>
     <script src="assets/vendor_assets/js/google-chart.js"></script>

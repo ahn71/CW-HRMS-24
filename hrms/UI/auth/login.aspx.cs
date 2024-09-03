@@ -33,7 +33,6 @@ namespace SigmaERP.hrms.UI.auth
                 ViewState["__IsCompliance__"] = "False";
             }
         }
-
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             if (LogingInfo())
@@ -49,12 +48,43 @@ namespace SigmaERP.hrms.UI.auth
                     checkForSeparationActive();
                     checkForActiveCommonIncrement();
                     checkForActivePromotion_SalaryIncrement();
-
                 }
-                //getUserpermission();
+
                 Response.Redirect("~/default.aspx");
             }
+            else
+            {
+                // Show SweetAlert message for failed login
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "swalAlert",
+                    "Swal.fire({ title: 'Login Failed', text: 'Invalid username or password. Please try again.', icon: 'error', confirmButtonText: 'OK' });", true);
+            }
         }
+
+        //protected void btnLogin_Click(object sender, EventArgs e)
+        //{
+        //    if (LogingInfo())
+        //    {
+        //        if (ViewState["__IsCompliance__"].ToString().Equals("True"))
+        //        {
+        //            checkForSeparationActiveCompliance();
+        //            classes.Payroll.checkForActiveCommonIncrementCompliance(ddlCompany.SelectedValue);
+        //            checkForActivePromotion_SalaryIncrementCompliance();
+        //        }
+        //        else
+        //        {
+        //            checkForSeparationActive();
+        //            checkForActiveCommonIncrement();
+        //            checkForActivePromotion_SalaryIncrement();
+
+        //        }
+        //        //getUserpermission();
+        //        Response.Redirect("~/default.aspx");
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //}
         private void checkForActivePromotion_SalaryIncrement()
         {
             try
