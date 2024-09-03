@@ -184,7 +184,10 @@ function bindTableData(data) {
     $('.adv-table').html('');
     $('#filter-form-container').empty();
 
-    data.forEach(row => {
+    data.forEach((row, index) => {
+        // Adding the serial number by using the index (starting from 1)
+        row.serialNo = index + 1;
+
         row.moduleName = `
             <div class="permission-name-container">
                 ${row.moduleName}
@@ -207,7 +210,8 @@ function bindTableData(data) {
     });
 
     const columns = [
-        { "name": "moduleId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+        { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // New serial number column
+        { "name": "moduleId", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
         { "name": "moduleName", "title": "Module Name", "className": "userDatatable-content" },
         { "name": "parentName", "title": "Parent Name", "className": "userDatatable-content" },
         { "name": "url", "title": "URL", "className": "userDatatable-content" },
@@ -255,6 +259,7 @@ function bindTableData(data) {
         console.log('View button clicked for ID:', id);
     });
 }
+
 
 
 

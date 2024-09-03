@@ -11,7 +11,7 @@
                   <div class="card-header d-flex align-items-center">
                      <div class="card-title d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
-                           <h4>Add Modules</h4>
+                           <h4>Add Module</h4>
                         </div>
                      </div>
 
@@ -119,7 +119,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Module List</h4>
+                                  <h4 style="margin-top: 13px;">Modules</h4>
                               <div id="filter-form-container">
                               </div>
                               </div>

@@ -10,7 +10,7 @@
                   <div class="card-header d-flex align-items-center">
                      <div class="card-title d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
-                           <h4>Add User Permissions</h4>
+                           <h4>Add Permission</h4>
                         </div>
                      </div>
 
@@ -29,7 +29,7 @@
                                <div class="col-lg-3">
                                    <div class="form-group">
                                         <label id="lblHidenPermissionId" style="display:none"></label>
-                                       <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Modules <span
+                                       <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Module <span
                                           class="text-danger">*</span></label>
                                        <div class="support-form__input-id">
                                            <div class="dm-select ">
@@ -117,7 +117,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Permission List</h4>
+                                  <h4 style="margin-top: 13px;">Permissions</h4>
                               <div id="filter-form-container">
 
                             
@@ -206,15 +206,19 @@
             });
         }
         function BindTableData(data) {
-    if ($('.adv-table').data('footable')) {
-        $('.adv-table').data('footable').destroy();
-    }
+            if ($('.adv-table').data('footable')) {
+                $('.adv-table').data('footable').destroy();
+            }
 
-    $('.adv-table').html('');
-    $('#filter-form-container').empty();
+            $('.adv-table').html('');
+            $('#filter-form-container').empty();
 
-    data.forEach(row => {
-        row.permissionName = `
+            let serialNumber = 1; // Initialize serial number
+
+            data.forEach(row => {
+                row.serialNumber = serialNumber++; // Auto-increment serial number
+
+                row.permissionName = `
             <div class="permission-name-container">
                 ${row.permissionName}
                 <div class="actions-container">
@@ -227,64 +231,64 @@
             </div>
         `;
 
-        row.isActive = `
+                row.isActive = `
             <div class="form-check form-switch form-switch-primary form-switch-sm">
                 <input type="checkbox" class="form-check-input" id="switch-${row.permissionId}" ${row.isActive ? 'checked' : ''}>
                 <label class="form-check-label" for="switch-${row.permissionId}"></label>
             </div>
         `;
-    });
+            });
 
-    const columns = [
-        { "name": "permissionId", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-        { "name": "permissionName", "title": "Name", "className": "userDatatable-content custom-td-width" },
-        { "name": "moduleName", "title": "ModuleName", "className": "userDatatable-content" },
-        { "name": "url", "title": "URL", "className": "userDatatable-content" },
-        { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
-        { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },     
-        { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" }
-    ];
+            const columns = [
+                { "name": "serialNumber", "title": "SL", "type": "number", "className": "userDatatable-content" }, // New serial number column
+                { "name": "permissionId", "title": "ID", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "permissionName", "title": "Name", "className": "userDatatable-content custom-td-width" },
+                { "name": "moduleName", "title": "ModuleName", "className": "userDatatable-content" },
+                { "name": "url", "title": "URL", "className": "userDatatable-content" },
+                { "name": "physicalLocation", "title": "Physical Location", "className": "userDatatable-content" },
+                { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
+                { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" }
+            ];
 
-    try {
-        $('.adv-table').footable({
-            "columns": columns,
-            "rows": data,
-            "filtering": {
-                "enabled": true,
-                "placeholder": "Search...",
-                "dropdownTitle": "Search in:",
-                "position": "left",
-                "containers": "#filter-form-container",
-                "space": true
+            try {
+                $('.adv-table').footable({
+                    "columns": columns,
+                    "rows": data,
+                    "filtering": {
+                        "enabled": true,
+                        "placeholder": "Search...",
+                        "dropdownTitle": "Search in:",
+                        "position": "left",
+                        "containers": "#filter-form-container",
+                        "space": true
+                    }
+                }).on('postinit.ft.table', function (e) {
+                    $('.footable-loader').hide();
+                });
+            } catch (error) {
+                console.error("Error initializing Footable:", error);
             }
-        }).on('postinit.ft.table', function (e) {
-            $('.footable-loader').hide();
-        });
-    } catch (error) {
-        console.error("Error initializing Footable:", error);
-    }
 
-    // Clear and re-attach event listeners
-    $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
-        const id = $(this).data('id');
-        FetchDataForEdit(id);
-        console.log('Edit button clicked for ID:', id);
-    });
+            // Clear and re-attach event listeners
+            $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                const id = $(this).data('id');
+                FetchDataForEdit(id);
+                console.log('Edit button clicked for ID:', id);
+            });
 
-    $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-        const id = $(this).data('id');
-        Delete(id);
-        console.log('Delete button clicked for ID:', id);
-    });
+            $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                const id = $(this).data('id');
+                Delete(id);
+                console.log('Delete button clicked for ID:', id);
+            });
 
-    $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-        const id = $(this).data('id');
-        // Handle the view action
-        console.log('View button clicked for ID:', id);
-    });
+            $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+                const id = $(this).data('id');
+                // Handle the view action
+                console.log('View button clicked for ID:', id);
+            });
+        }
 
-    // Populate the dropdown with data
-}
 
         function ValidateAndPostModule() {
             var isValid = true;
