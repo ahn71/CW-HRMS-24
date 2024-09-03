@@ -12,7 +12,7 @@
                         <div class="card-header d-flex align-items-center">
                             <div class="card-title d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-3">
-                                    <h4>Add Packages</h4>
+                                    <h4>Add Package</h4>
                                 </div>
                             </div>
                             <div class="btn-wrapper">
@@ -31,9 +31,9 @@
                                             <label id="lblHidenPackagesId" style="display:none"></label>
 
                                             <label for="txtPackagesName" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                Packages Name <span class="text-danger">*</span>
+                                                Package Name <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtPackagesName" placeholder="Type Module Name">
+                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtPackagesName" placeholder="Type Package Name">
                                             <span class="text-danger" id="PackagesNameError"></span>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Packages List</h4>
+                                  <h4 style="margin-top: 13px;">Packages</h4>
                               <div id="filter-form-container">
 
                               </div>
@@ -375,7 +375,11 @@
             $('.adv-table').html('');
             $('#filter-form-container').empty();
 
-            data.forEach(row => {
+            // Loop through the data and add serial numbers
+            data.forEach((row, index) => {
+                // Assign serial number based on the index (starting from 1)
+                row.serialNo = index + 1;
+
                 row.packageName = `
         <div class="permission-name-container">
             ${row.packageName}
@@ -403,8 +407,9 @@
         `;
             });
 
+            // Define the table columns, including the serial number (SL)
             const columns = [
-                { "name": "id", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                 { "name": "packageName", "title": "Package Name", "className": "userDatatable-content" },
                 { "name": "features", "title": "Features", "className": "userDatatable-content" },
                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -445,7 +450,6 @@
 
             $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
                 const id = $(this).data('id');
-                // Handle the view action
                 console.log('View button clicked for ID:', id);
             });
 
@@ -455,6 +459,7 @@
                 FetchDataForEdit(id);
             });
         }
+
 
 
         var selectedPermissionIDsUpdate = []

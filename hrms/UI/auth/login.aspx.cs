@@ -51,7 +51,7 @@ namespace SigmaERP.hrms.UI.auth
                     checkForActivePromotion_SalaryIncrement();
 
                 }
-                getUserpermission();
+                //getUserpermission();
                 Response.Redirect("~/default.aspx");
             }
         }
@@ -270,9 +270,11 @@ namespace SigmaERP.hrms.UI.auth
                     
                     var userData = jsonResponse.data;
                     var accessToken = jsonResponse.accessToken;
+                    var permission = jsonResponse.permission;
                     Session["__GetCompanyId__"] = companyId;  
                     Session["__GetUID__"] = userData.userId.ToString();
                     Session["__UserToken__"] = accessToken.ToString();
+                    Session["__ActualPermission__"] = permission.ToString();
                     Session["__isLvAuthority__"] = "0";
                     Session["__LvOnlyDpt__"] = "0";
                     Session["__LvEmpType__"] = "0";
@@ -281,7 +283,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__UserEmailText__"] = userData.email;
                     Session["__RootUrl__"] = ApiConnector.RootUrl;
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
-
+                    //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
 
@@ -293,16 +295,22 @@ namespace SigmaERP.hrms.UI.auth
                         ["__getFirstName__"] = userData.firstName.ToString(),
                         ["__getLastName__"] = userData.lastName.ToString(),
                         ["__getUserType__"] = userData.isGuestUser.ToString(),
-                        ["__CompanyId__"] = companyId,  // Changed to use the provided companyId
+                        ["__CompanyId__"] = companyId, 
                         ["__CompanyName__"] = ddlCompany.SelectedItem.Text,
+                        ["__CShortName__"] = "",
+                        ["__DptId__"] = userData.dptId.ToString(),
                         ["__isLvAuthority__"] = "0",
                         ["__LvOnlyDpt__"] = "0",
                         ["__LvEmpType__"] = "0",
                         ["__IsCompliance__"] = "0",
                         ["__UserNameText__"] = username,
-                        ["__getEmpId__"] = userData.empId.ToString() // Changed to empId from referenceID
-                    };
+                        ["__getEmpId__"] = userData.empId.ToString()
+                       
+                };
                     Response.Cookies.Add(setCookies);
+                    ViewState["__IsCompliance__"] = "0";
+                    ViewState["__CShortName__"] = "";
+                    ViewState["__CompanyId__"] = companyId.ToString();
 
                     return true;
                 }

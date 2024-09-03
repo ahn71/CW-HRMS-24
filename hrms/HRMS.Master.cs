@@ -110,7 +110,19 @@ namespace SigmaERP.hrms
             }
         }
 
-
+        //        public bool IsRouteExists(string url)
+        //        {
+        ///*            url = url.().ToLower(); */ // Normalize the input URL
+        //            foreach (Route route in RouteTable.Routes)
+        //            {
+        //                var routeUrl = route.Url?.Trim().ToLower();  // Normalize each route URL
+        //                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Equals(url))  // Use Equals instead of Contains
+        //                {
+        //                    return true;
+        //                }
+        //            }
+        //            return false;
+        //        }
         public bool IsRouteExists(string url)
         {
             foreach (Route route in RouteTable.Routes)

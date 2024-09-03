@@ -400,8 +400,9 @@ namespace SigmaERP.classes
                                            
 
                                             if (dtPunch != null && dtPunch.Rows.Count > 0)
-                                            {
-                                                _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()),rosterInfo , TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), bool.Parse(dtEmpInfo.Rows[i]["IsDelivery"].ToString()), dtEmpInfo.Rows[i]["EmpDutyType"].ToString());
+                                            { bool OnePunchPresent = Glory.getDBName()== "cw_hrms_tmc_hospital"?true:false;
+                                                
+                                                _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()),rosterInfo , TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString());
 
                                                 if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
                                                     _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], true, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()));

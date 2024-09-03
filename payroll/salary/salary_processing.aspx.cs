@@ -21,21 +21,21 @@ namespace SigmaERP.payroll.salary
         DataTable dt;
         string query = "";
         //View=334 Process/Add=335 Delete=336
+        int[] pagePermission = { 334, 335, 336 };
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
-
-            int[] pagePermission = { 331, 332, 333 };
-
+           
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    Response.Redirect(Routing.defualtUrl);
+                    //Response.Redirect(Routing.defualtUrl);
 
                     txtGenerateMonth.Visible = true;
                 ddlMonthID.Visible = false;
@@ -78,9 +78,11 @@ namespace SigmaERP.payroll.salary
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_generation.aspx", ddlCompanyList, btnGenerate, btnBDTNoteGenerate, gvSalaryList);
+                if(permissions.Contains(334))
+                    ViewState["__ReadAction__"] = "1";
                 if (permissions.Contains(335))
                     ViewState["__WriteAction__"] = "1";
-                if(permissions.Contains(336))
+                if (permissions.Contains(336))
                     ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
                 SalaryProcessingCommonTask.loadSeparationMonth(ddlMonthID, ViewState["__CompanyId__"].ToString());
@@ -1534,7 +1536,7 @@ namespace SigmaERP.payroll.salary
             }
             else
             {
-                btnGenerate.Enabled = false;
+                btnGenerate.Enabled = true;
                 btnGenerate.CssClass = "Pbutton";
             }
         }

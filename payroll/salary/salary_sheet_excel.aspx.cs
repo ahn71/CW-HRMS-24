@@ -29,13 +29,16 @@ namespace SigmaERP.payroll.salary
 
         protected void btnExport_Click(object sender, EventArgs e)
         {
+            string _for = Request.QueryString["for"].ToString();
+            string company = Request.QueryString["company"].ToString();
+            string month = Request.QueryString["month"].ToString();
 
             Response.Clear();
             Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment;filename=salarySheet.xls");
+            Response.AddHeader("content-disposition", "attachment;filename="+ _for+"_"+ DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString() + ".xls");
             Response.Charset = "";
             Response.ContentType = "application/vnd.ms-excel";
-
+                     
             using (StringWriter sw = new StringWriter())
             {
                 HtmlTextWriter hw = new HtmlTextWriter(sw);
@@ -52,8 +55,8 @@ namespace SigmaERP.payroll.salary
 
                 // Write custom header lines in the middle without borders
                 hw.Write("<table>");
-                hw.Write("<tr><td colspan='" + columnCount + "' style='text-align:center; border:none;'><b>Tairunnessa Memorial Medical College & Hospital</b></td></tr>");
-                hw.Write("<tr><td colspan='" + columnCount + "' style='text-align:center; border:none;'><b>Salary Sheet for the Month of January - 2024</b></td></tr>");
+                hw.Write("<tr><td colspan='" + columnCount + "' style='text-align:center; border:none;'><b>"+company+ "</b></td></tr>");
+                hw.Write("<tr><td colspan='" + columnCount + "' style='text-align:center; border:none;'><b>Salary Sheet for the Month of "+ month + "</b></td></tr>");
                 hw.Write("<tr><td colspan='" + columnCount + "' style='border:none;'>&nbsp;</td></tr>"); // Empty row for spacing
 
                 hw.Write("<tr>");
@@ -64,13 +67,26 @@ namespace SigmaERP.payroll.salary
                 }
                 hw.Write("</tr>");
                 var groupedData = dt.AsEnumerable()
-                    .GroupBy(row => row.Field<string>("DptName"))
-                    .Select(g => new
-                    {
-                        Department = g.Key,
-                        Rows = g.CopyToDataTable(),
-                        Sum = g.Sum(row => Convert.ToDecimal(row["NetPayble"]))
-                    });
+              .GroupBy(row => row.Field<string>("Department"))
+              .Select(g => new
+              {
+                  Department = g.Key,
+                  Rows = g.CopyToDataTable(),
+                  Sum = g.Sum(row => Convert.ToDecimal(row["Net Payable"]))
+              });
+                //if (_for == "SalarySheet")
+                //{
+                //     groupedData = dt.AsEnumerable()
+                // .GroupBy(row => row.Field<string>("Department"))
+                // .Select(g => new
+                // {
+                //     Department = g.Key,
+                //     Rows = g.CopyToDataTable(),
+                //     Sum = g.Sum(row => Convert.ToDecimal(row["Net Payable"]))
+                // });
+
+
+                //}
 
                 foreach (var group in groupedData)
                 {

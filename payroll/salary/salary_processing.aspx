@@ -144,10 +144,7 @@
                                 </table>
 
                                <div style="display:flex; justify-content:flex-end; margin-top:10px;width:89%">
-                                   <asp:Button ID="btnGenerate" CssClass="Pbutton" ClientIDMode="Static" runat="server" Text="Process Salary" OnClientClick="return processing();"  OnClick="btnGenerate_Click" />
-                               </div>
-
-                                
+                                   <asp:Button ID="btnGenerate" CssClass="Pbutton" ClientIDMode="Static" runat="server" Text="Process Salary" OnClientClick="return processing();"  OnClick="btnGenerate_Click" />                               </div>                                
   
                             </div>                  
                             <div  style="width: 61%; margin: 0px auto; overflow: hidden;display:none">

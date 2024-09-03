@@ -501,7 +501,7 @@ namespace SigmaERP.classes
             //}
             return _attRecord;
         }
-        public AttendanceRecord GetAttStatus(AttendanceRecord _attRecord, DateTime LogInTime, DateTime LogOutTime,string [] rosterInfo, TimeSpan MinWorkingTime, TimeSpan MinOverTime, bool IsDelivery, string DutyType)
+        public AttendanceRecord GetAttStatus(AttendanceRecord _attRecord, DateTime LogInTime, DateTime LogOutTime,string [] rosterInfo, TimeSpan MinWorkingTime, TimeSpan MinOverTime, bool OnePunchPresent, string DutyType)
             {
             DateTime RosterStartTime = DateTime.Parse(rosterInfo[1]); 
             DateTime RosterEndTime = DateTime.Parse(rosterInfo[2]);
@@ -513,19 +513,22 @@ namespace SigmaERP.classes
                 _attRecord.InSec = LogInTime.ToString("ss");
                 if (_attRecord.AttStatus == "A")
                 {
-                    if (IsDelivery)
+                if (OnePunchPresent)
+                {
+                    _attRecord.AttStatus = "P";
+                    _attRecord.PaybleDays = "1";
+                }                        
+                else
+                {
+                    if (LogInTime <= RosterStartTime.AddMinutes(AcceptableLate))
                         _attRecord.AttStatus = "P";
                     else
                     {
-                        if (LogInTime <= RosterStartTime.AddMinutes(AcceptableLate))
-                            _attRecord.AttStatus = "P";
-                        else
-                        {
-                            _attRecord.AttStatus = "L";
-                            _attRecord.LateTime = (LogInTime - RosterStartTime).ToString(); // to get late time                   
-                        }
+                        _attRecord.AttStatus = "L";
+                        _attRecord.LateTime = (LogInTime - RosterStartTime).ToString(); // to get late time                   
                     }
-                    _attRecord.StateStatus = "Present";
+                }
+                _attRecord.StateStatus = "Present";
                 }
                 if (LogOutTime > LogInTime)
                 {
@@ -566,7 +569,7 @@ namespace SigmaERP.classes
                 }
                     else// P or L 
                     {
-                        if (IsDelivery)
+                        if (OnePunchPresent)
                         {
                         
                         
@@ -612,7 +615,7 @@ namespace SigmaERP.classes
                         }
 
                     }
-                        if (stayTime >= MinWorkingTime)
+                        if (OnePunchPresent || stayTime >= MinWorkingTime)
                             _attRecord.PaybleDays = "1";//Payble Day                    
 
                     }

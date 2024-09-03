@@ -23,7 +23,7 @@
     }
     </style>
    <div class="container my-5" runat="server" id="DevloperContent">
-       <asp:Button ID="logout" runat="server" Text="logout" OnClick="logout_Click" CssClass="btn btn-success" />
+       <asp:Button ID="logout" runat="server" Text="logout" OnClick="logout_Click" CssClass="btn btn-danger" />
     <div class="row g-4">
       <!-- Module Card -->
       <div class="col-lg-3 col-md-6">
@@ -101,14 +101,12 @@
                 }
             },
             willClose: () => {
-                // Redirect to dashboard URL if cancel button is clicked
-                window.location.href = 'dashboard'; // Replace '/dashboard' with your actual dashboard URL
+                document.getElementById('<%= devhiddenPassword.ClientID %>').value = '';
             },
             allowOutsideClick: false 
         });
     });
 </script>
-
 
 
 
