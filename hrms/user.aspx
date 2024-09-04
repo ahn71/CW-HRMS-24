@@ -1106,8 +1106,8 @@
                      $('#txtUserPassword').val(data.userPassword);
                      $('#txtUserEmail').val(data.email);
                      $('select[name="ddlUserRole"]').val(data.userRoleID).change();
-                     $('#chkIsActive').prop('checked', data.isGuestUser);
-                     $('#chkIsGetUser').prop('checked', data.isActive);
+                     $('#chkIsActive').prop('checked', data.isActive);
+                     $('#chkIsGetUser').prop('checked', data.isGuestUser);
                      $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
                      $('#ddlCompany').val(data.companyId).change();
                      var GuestUser = data.isGuestUser;
@@ -1254,7 +1254,7 @@
              $('#txtPermissionsUrl').val("");
              $('#txtPerPhysicalLocation').val("");
              $('#txtPerOrdaring').val("");
-             $('#chkIsActive').prop('checked', false);
+             //$('#chkIsActive').prop('checked', false);
              $('#chkIsGetUser').prop('checked', false);
              $('#btnSave').text("Save");
          }

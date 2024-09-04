@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Data;
 using ComplexScriptingSystem;
 
+
 namespace SigmaERP.classes
 {
     public class commonTask
@@ -98,8 +99,8 @@ namespace SigmaERP.classes
         }
         public static void LoadEmpTypeWithAll(RadioButtonList rbl)
         {
-            da = new SqlDataAdapter("SELECT EmpType, EmpTypeId FROM HRD_EmployeeType", sqlDB.connection);
-            da.Fill(dt = new DataTable());
+           
+            dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT EmpType, EmpTypeId FROM HRD_EmployeeType");
             if (dt.Rows.Count > 1)
                 rbl.Items.Add(new ListItem("All", "All"));
             for (byte i = 0; i < dt.Rows.Count; i++)

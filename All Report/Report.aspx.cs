@@ -52,6 +52,15 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("JobApplicationWorkerCopy")) showjob_application();
                 else if (query[0].Equals("nominee_report")) showNomineeReport();
                 else if (query[0].Equals("wages_statment")) showWagesStatment();
+                else if (query[0].Equals("DismissLetter")) showDismissLetter();
+                else if (query[0].Equals("ShowCauseLetter")) showCauseLetter();
+                else if (query[0].Equals("PromotionLetter")) showPromotionLetter();
+                else if (query[0].Equals("IncrementLetter")) showIncrementletter();
+                else if (query[0].Equals("ConfirmationLetter")) showConfirmationletter();
+                else if (query[0].Equals("IncrementWithPromotion")) showIncrementWithPromotionletter();
+                else if (query[0].Equals("1stAbsentLetter")) show1stAbsentLetter();
+                else if (query[0].Equals("2ndAbsentLetter")) show2ndAbsentLetter();
+                else if (query[0].Equals("3rddAbsentLetter")) show3rdAbsentLetter();
 
 
                 else if (query[0].Equals("PromotionLetterWorker")) PromotionLetterWorker(query[1], query[2] + "-" + query[3]);
@@ -591,8 +600,160 @@ namespace SigmaERP.All_Report
             }
             catch { }
         }
+        private void showDismissLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
 
+                rpd.Load(Server.MapPath("//All Report//Personnel//DismissLetterBanglaFormate.rpt"));
 
+                dt = new DataTable();
+                dt = (DataTable)Session["__Dismiss_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showCauseLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//ShowCauseLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__ShowCauseLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showPromotionLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//PromotionLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Promotion_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showIncrementletter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//IncrementLetter.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__IncrementLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showConfirmationletter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//ConfirmationLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Confirmation_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showIncrementWithPromotionletter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//IncrementWithPromotionLetter.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Increment_With_Promotion__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
+        private void show1stAbsentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//1stAbsentLetterBangla.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__1stAbsentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void show2ndAbsentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//2ndAbsentLetterBangla.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__2ndAbsentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void show3rdAbsentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//3rdAbsentLetterBangla.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__3rdAbsentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
         private void showjob_application()
         {
             try

@@ -12,7 +12,7 @@
    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
-  
+<%--      <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />--%>
 
    <!-- inject:css -->
 
@@ -709,7 +709,7 @@
 
                    <li class="mega-item has-subMenu">
                        <a href="#" class="">Payroll</a>
-                       <div class="outbox">
+                       <div class="outbox" >
                            <ul class="megaMenu-wrapper megaMenu-wide">
                                <%if (IsRouteExists("salary"))
                                    { %>
@@ -1132,7 +1132,7 @@
                         <ul class="subMenu">
                             <li class="bordered">
                                 <ul>
-                                    <% if (IsRouteExists("access-control/user-roles")) { %>
+                                    <% if (IsRouteExists("access-control/user/roles")) { %>
                                         <li>
                                             <a href="userRoles.aspx">
                                                 <span class="menu-text">User Roles</span>
@@ -1140,12 +1140,28 @@
                                         </li>
                                     <% } %>
 
-                                    <% if (IsRouteExists("access-control/user")) { %>
+                                    <% if (IsRouteExists("access-control/users")) { %>
                                         <li>
                                             <a href="user.aspx">
                                                 <span class="menu-text">User</span>
                                             </a>
                                         </li>
+                                    <% } %>
+                                    <% if (IsRouteExists("access-control/leave-authority"))
+                                        { %>
+                                    <li>
+                                        <a href="access-control/leave-authority">
+                                            <span class="menu-text">Lv Authotiry</span>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                    <% if (IsRouteExists("access-control/out-duty-authority"))
+                                        { %>
+                                    <li>
+                                        <a href="access-control/out-duty-authority">
+                                            <span class="menu-text">Out duty Authotiry</span>
+                                        </a>
+                                    </li>
                                     <% } %>
                                 </ul>
                             </li>
@@ -1492,7 +1508,12 @@
     <script src="assets/vendor_assets/js/footable.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
 
     <script src="assets/vendor_assets/js/fullcalendar@5.2.0.js"></script>
     <script src="assets/vendor_assets/js/google-chart.js"></script>
