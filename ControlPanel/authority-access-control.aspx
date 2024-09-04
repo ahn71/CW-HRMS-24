@@ -48,8 +48,8 @@
                 <div style="margin-top: 5px">
                     <ul>
                         <li><a href="/default.aspx">Dashboard</a></li>
-                        <li>/</li>
-                        <li><a href="/tools_default.aspx">Tools</a></li>
+                    <%--    <li>/</li>--%>
+        <%--                <li><a href="/tools_default.aspx">Tools</a></li>--%>
                         <li>/</li>
                         <li><a href="#" class="ds_negevation_inactive Tactive">Authority Access Control</a></li>
                     </ul>
