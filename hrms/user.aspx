@@ -325,7 +325,6 @@
              } else if ($('#txtUserName').val().trim().length < 6) {
                  $('#userNameError').html("User Name must be at least 6 characters.");
                  $("#txtUserName").focus();
-                 isValid = false;
              } else {
                  $('#userNameError').html("");
              }

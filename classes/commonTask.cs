@@ -99,7 +99,7 @@ namespace SigmaERP.classes
         }
         public static void LoadEmpTypeWithAll(RadioButtonList rbl)
         {
-           
+            dt = new DataTable();
             dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT EmpType, EmpTypeId FROM HRD_EmployeeType");
             if (dt.Rows.Count > 1)
                 rbl.Items.Add(new ListItem("All", "All"));
@@ -159,11 +159,16 @@ namespace SigmaERP.classes
         }
         public static bool HasBranch()
         {
-            DataTable dt = new DataTable();
-            sqlDB.fillDataTable("select * from HRD_BranchType", dt);
+             dt = new DataTable();
+            //sqlDB.fillDataTable("select * from HRD_BranchType", dt);
+            dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("select * from HRD_BranchType");
             if (dt.Rows[0]["HasBranch"].ToString().Equals("False"))
                 return false;
             else return true;
+
+          
+
+
         }
         public static void addAllTextInShift(DropDownList dl)
         {
@@ -175,8 +180,8 @@ namespace SigmaERP.classes
             try
             {
                 dt = new DataTable();
-                sqlDB.fillDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId=" + CompnayId + "", dt);
-
+                //sqlDB.fillDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId=" + CompnayId + "", dt);
+                dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId=" + CompnayId + "");
                 lst.DataValueField = "DptId";
                 lst.DataTextField = "DptName";
                 lst.DataSource = dt;
@@ -247,9 +252,11 @@ namespace SigmaERP.classes
         {
             try {
 
-                da = new SqlDataAdapter("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                //da = new SqlDataAdapter("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                dt = new DataTable();
+                dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo where CompanyId='" + CompanyId + "'");
 
-                da.Fill(dt = new DataTable());
+                //da.Fill(dt = new DataTable());
                 dl.DataValueField = "CompanyId";
                 dl.DataTextField = "CompanyName";
                 dl.DataSource = dt;
