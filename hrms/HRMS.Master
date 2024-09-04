@@ -709,7 +709,7 @@
 
                    <li class="mega-item has-subMenu">
                        <a href="#" class="">Payroll</a>
-                       <div class="outbox">
+                       <div class="outbox" >
                            <ul class="megaMenu-wrapper megaMenu-wide">
                                <%if (IsRouteExists("salary"))
                                    { %>
@@ -1132,7 +1132,7 @@
                         <ul class="subMenu">
                             <li class="bordered">
                                 <ul>
-                                    <% if (IsRouteExists("access-control/user-roles")) { %>
+                                    <% if (IsRouteExists("access-control/user/roles")) { %>
                                         <li>
                                             <a href="userRoles.aspx">
                                                 <span class="menu-text">User Roles</span>
@@ -1140,12 +1140,28 @@
                                         </li>
                                     <% } %>
 
-                                    <% if (IsRouteExists("access-control/user")) { %>
+                                    <% if (IsRouteExists("access-control/users")) { %>
                                         <li>
                                             <a href="user.aspx">
                                                 <span class="menu-text">User</span>
                                             </a>
                                         </li>
+                                    <% } %>
+                                    <% if (IsRouteExists("access-control/leave-authority"))
+                                        { %>
+                                    <li>
+                                        <a href="access-control/leave-authority">
+                                            <span class="menu-text">Lv Authotiry</span>
+                                        </a>
+                                    </li>
+                                    <% } %>
+                                    <% if (IsRouteExists("access-control/out-duty-authority"))
+                                        { %>
+                                    <li>
+                                        <a href="access-control/out-duty-authority">
+                                            <span class="menu-text">Out duty Authotiry</span>
+                                        </a>
+                                    </li>
                                     <% } %>
                                 </ul>
                             </li>

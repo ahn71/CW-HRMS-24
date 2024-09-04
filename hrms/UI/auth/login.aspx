@@ -222,6 +222,7 @@
                                 <asp:TextBox ID="txtUsername" runat="server" ClientIDMode="Static" CssClass="input" placeholder="Username"></asp:TextBox>
                                 <%--<input type="text" id="username" name="username" class="input" placeholder="Username">--%>
                             </div>
+                            <span class="text-danger" id="txtUserNameError"></span>
                         </div>
                         <div class="form-group">
 
@@ -235,6 +236,7 @@
                               <%--  <input class="border-0 input" type="password" id="password" name="password"
                                     placeholder="Password">--%>
                             </div>
+                            <span class="text-danger" id="txtUserPasswordError"></span>
 
                         </div>
                         <div class="btn-wrapper">
@@ -267,4 +269,40 @@
     </div>
 </body>
   
+    <script>
+        function validateLogIn() {
+            var isValid = true;  // Assume the form is valid by default
+
+            // Validate Username
+            var username = $('#txtUsername').val().trim();
+            if (username === "") {
+                $('#txtUserNameError').html("User Name is required.");
+                $("#txtUsername").focus();
+                isValid = false;
+            } else if (username.length < 6) {
+                $('#txtUserNameError').html("User Name must be at least 6 characters.");
+                $("#txtUsername").focus();
+                isValid = false;
+            } else {
+                $('#txtUserNameError').html(""); // Clear any previous errors
+            }
+
+
+            var password = $('#txtPassword').val().trim();
+            if (password === "") {
+                $('#txtUserPasswordError').html("Password is required.");
+                $("#txtPassword").focus();
+                isValid = false;
+            } else if (password.length < 6) {
+                $('#txtUserPasswordError').html("Password must be at least 6 characters.");
+                $("#txtPassword").focus();
+                isValid = false;
+            } else {
+                $('#txtUserPasswordError').html(""); // Clear any previous errors
+            }
+
+            return isValid; // Return whether the form is valid or not
+        }
+
+    </script>
 </html>
