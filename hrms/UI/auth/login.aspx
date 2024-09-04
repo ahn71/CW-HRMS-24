@@ -112,11 +112,19 @@
             line-height: 20px;
             background: #f6921e;
             color: white;
+            text-align:center;
+            text-decoration:none;
 
+        }
+        .button:hover{
+            color:#fff;
+            text-decoration:none;
+            background-color:coral;
         }
 
         .button:focus {
             outline: none;
+            text-decoration:none;
         }
 
         .forgot-password {
@@ -240,8 +248,8 @@
 
                         </div>
                         <div class="btn-wrapper">
-                            <asp:Button ID="btnLogin" runat="server" CssClass="button" OnClick="btnLogin_Click" OnClientClick="return validateLogIn();" Text="Sign In" />
-                            <%--<button type="submit" class="button">Sign In</button>--%>
+                            <asp:LinkButton ID="btnLogin" runat="server" CssClass="button" OnClick="btnLogin_Click" OnClientClick="return validateLogIn();">Sign In</asp:LinkButton>
+
                         </div>
 
                         <div class="copyright mt-3">
