@@ -183,6 +183,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void LoadDepartmentDDL(DropDownList downList,string CompnayId)
+        {
+            try
+            {
+                DataTable dt = CRUD.ExecuteReturnDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId = " + CompnayId + "");
+                downList.DataValueField = "DptId";
+                downList.DataTextField = "DptName";
+                downList.DataSource = dt;
+                downList.DataBind();
+                downList.Items.Insert(0, new ListItem("---Select One---", "0"));
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoByEmpType(DropDownList dl, string CompanyId, string EmpTypeID)
         {
             try
