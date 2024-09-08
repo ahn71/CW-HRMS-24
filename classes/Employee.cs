@@ -169,7 +169,7 @@ namespace SigmaERP.classes
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "SN";
                 dl.DataBind();
-                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+                dl.Items.Insert(0, new ListItem("---Select One---", "0"));
             }
             catch { }
         }
