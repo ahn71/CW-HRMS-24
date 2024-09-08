@@ -17,13 +17,14 @@ namespace SigmaERP.payroll.salary
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            lblMessage.InnerText = "";
             if (!IsPostBack)
             {
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 commonTask.LoadDepartmentDDL(ddlDepartment, ViewState["__CompanyId__"].ToString());
-              
+               
             }
            
         }
