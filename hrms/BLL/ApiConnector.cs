@@ -58,5 +58,34 @@ namespace SigmaERP.hrms.BLL
                 }
             }
         }
+        //for get response
+        public static string getapiData(string url)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            WebRequest webrequest = WebRequest.Create(url);
+            webrequest.Method = "GET";
+
+            HttpWebResponse httpWebResponse = null;
+            try
+            {
+                httpWebResponse = (HttpWebResponse)webrequest.GetResponse();
+
+                using (Stream stream = httpWebResponse.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    string response = sr.ReadToEnd();
+                    sr.Close();
+                    return response;
+                }
+
+            }
+            catch (WebException ex)
+            {
+
+                Console.WriteLine("Error: " + ex.Message);
+                return "Api Error";
+            }
+        }
     }
 }

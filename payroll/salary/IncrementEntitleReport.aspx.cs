@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,7 +31,7 @@ namespace SigmaERP.payroll.salary
         private void getResponse(string empcard,string deptId,string date)
         {
             string formatDate = txtDate.Text;
-            string baseUrl = "https://localhost:7220/api/Salary/employeInfos/salaryIncrement/"+ date + "";
+            string baseUrl = ApiConnector.RootUrl+ "/api/Salary/employeInfos/salaryIncrement/" + date ;
             string queryParams = "";
 
             if (empcard != "0" && !string.IsNullOrEmpty(empcard))
@@ -51,7 +52,7 @@ namespace SigmaERP.payroll.salary
             }
 
             string url = baseUrl + queryParams;
-            string jsonData = getapiData(url);
+            string jsonData = ApiConnector.getapiData(url);
             var json = JObject.Parse(jsonData);
             var data = json["data"];
 
@@ -121,35 +122,6 @@ namespace SigmaERP.payroll.salary
             gvEmplye.DataBind();
          
            
-        }
-
-        private string getapiData(string url)
-        {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            WebRequest webrequest = WebRequest.Create(url);
-            webrequest.Method = "GET";
-
-            HttpWebResponse httpWebResponse = null;
-            try
-            {
-                httpWebResponse = (HttpWebResponse)webrequest.GetResponse();
-
-                using (Stream stream = httpWebResponse.GetResponseStream())
-                {
-                    StreamReader sr = new StreamReader(stream);
-                    string response = sr.ReadToEnd();
-                    sr.Close();
-                    return response;
-                }
-
-            }
-            catch (WebException ex)
-            {
-
-                Console.WriteLine("Error: " + ex.Message);
-                return "Api Error";
-            }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
