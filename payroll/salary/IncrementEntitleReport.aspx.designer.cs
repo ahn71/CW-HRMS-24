@@ -40,6 +40,24 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.ScriptManager ScriptManger1;
         
         /// <summary>
+        /// uplMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel uplMessage;
+        
+        /// <summary>
+        /// P1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl P1;
+        
+        /// <summary>
         /// lbldepartmetn control.
         /// </summary>
         /// <remarks>
@@ -92,6 +110,15 @@ namespace SigmaERP.payroll.salary {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCard;
+        
+        /// <summary>
+        /// lblHIdden control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHIdden;
         
         /// <summary>
         /// btnSearch control.

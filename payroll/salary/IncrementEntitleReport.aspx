@@ -27,10 +27,15 @@
         </div>
     </div>
     <asp:ScriptManager ID="ScriptManger1" runat="Server" EnablePageMethods="false"></asp:ScriptManager>
+    <asp:UpdatePanel ID="uplMessage" runat="server">
+        <ContentTemplate>
+            <p class="message" id="P1" clientidmode="Static" runat="server"></p>
+        </ContentTemplate>
+    </asp:UpdatePanel>
     <div class="row justify-content-center mt-2">
         <div class="col-lg-6">
             <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                  <asp:Label runat="server" ID="lbldepartmetn">Department</asp:Label>
                <div class="card">
                
@@ -38,14 +43,15 @@
                 </div>
           </div>
 
-                 <div class="col-md-4">
+                 <div class="col-md-3">
               <asp:Label runat="server" ID="lblDate">Date</asp:Label>
                <div class="card">
                    
                     <asp:TextBox ID="txtDate" runat="server" type="Date"></asp:TextBox>
                 </div>
           </div>
-                 <div class="col-md-4">
+
+                 <div class="col-md-3">
                        <asp:Label runat="server" ID="lblCard">Card No</asp:Label>
             <div class="card">
               
@@ -54,12 +60,16 @@
            
         </div>
        
-       
+          <div class="col-md-3">
+                     <asp:Label runat="server" ID="lblHIdden" CssClass="opacity-0 d-block">SUMON</asp:Label>
+                      <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary p-3" Text="Search" OnClick="btnSearch_Click" />        
+                    <asp:Button runat="server" ID="btnExport" CssClass="btn btn-success p-3" Text="Export" OnClick="btnExport_Click" />    
+           
+        </div>
         
          
       </div>
-          <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />        
-          <asp:Button runat="server" ID="btnExport" CssClass="btn btn-success" Text="Export" OnClick="btnExport_Click" />        
+             
    </div>
  </div>
       <asp:GridView ID="gvEmplye" runat="server"  CssClass="table mt-3" AutoGenerateColumns="false">
@@ -69,12 +79,12 @@
                 <%# Container.DataItemIndex + 1 %>
             </ItemTemplate>
         </asp:TemplateField>
-            <asp:BoundField DataField="empCardNo" HeaderText="EmpCard No" SortExpression="ID" />
-            <asp:BoundField DataField="empName" HeaderText="Employee Name" SortExpression="EmployeeName" />
-            <asp:BoundField DataField="departmentName" HeaderText="Department Name" SortExpression="DepartmentName" />
-            <asp:BoundField DataField="designationName" HeaderText="Designation Name" SortExpression="DesignationName" />
+            <asp:BoundField DataField="empCardNo" HeaderText="Card No" SortExpression="ID" />
+            <asp:BoundField DataField="empName" HeaderText="Name" SortExpression="Name" />
+            <asp:BoundField DataField="departmentName" HeaderText="Department" SortExpression="Department" />
+            <asp:BoundField DataField="designationName" HeaderText="Designation " SortExpression="Designation" />
             <asp:BoundField DataField="empJoiningDate" HeaderText="Joining Date" SortExpression="JoiningDate" />
-            <asp:BoundField DataField="lastIncrementMonth" HeaderText="LastIncrement Date" SortExpression="LastIncrementDate" />
+            <asp:BoundField DataField="lastIncrementMonth" HeaderText="LastIncrement Month" SortExpression="LastIncrement" />
             <asp:BoundField DataField="preIncrementAmount" HeaderText="LastIcrement Amount" SortExpression="LastIcrementAmount" />
             <asp:BoundField DataField="empPresentSalary" HeaderText="Current Salary" SortExpression="CurrentSalary" />
     </Columns>
