@@ -2056,6 +2056,7 @@
     <Content Include="payroll\pay_base_shift.aspx" />
     <Content Include="payroll\pay_slip.aspx" />
     <Content Include="payroll\pay_slip2.aspx" />
+    <Content Include="payroll\salary\IncrementEntitleReport.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
@@ -2520,6 +2521,8 @@
     <Content Include="hrms\HRMS.Master" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
     <None Include="Properties\PublishProfiles\GloryGroup.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
@@ -4979,6 +4982,13 @@
     </Compile>
     <Compile Include="payroll\pay_slip2.aspx.designer.cs">
       <DependentUpon>pay_slip2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\salary\IncrementEntitleReport.aspx.cs">
+      <DependentUpon>IncrementEntitleReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\IncrementEntitleReport.aspx.designer.cs">
+      <DependentUpon>IncrementEntitleReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>

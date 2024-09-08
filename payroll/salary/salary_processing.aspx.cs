@@ -35,7 +35,7 @@ namespace SigmaERP.payroll.salary
                 ViewState["__DeletAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
-                    //Response.Redirect(Routing.defualtUrl);
+                    Response.Redirect(Routing.defualtUrl);
 
                     txtGenerateMonth.Visible = true;
                 ddlMonthID.Visible = false;

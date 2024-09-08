@@ -189,6 +189,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void LoadDepartmentDDL(DropDownList downList,string CompnayId)
+        {
+            try
+            {
+                DataTable dt = CRUD.ExecuteReturnDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId = " + CompnayId + "");
+                downList.DataValueField = "DptId";
+                downList.DataTextField = "DptName";
+                downList.DataSource = dt;
+                downList.DataBind();
+                downList.Items.Insert(0, new ListItem("---Select One---", "0"));
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoByEmpType(DropDownList dl, string CompanyId, string EmpTypeID)
         {
             try
@@ -2381,6 +2395,21 @@ namespace SigmaERP.classes
             }
             catch (Exception ex) { return false; }
 
+        }
+
+        public static void loadReportName(DropDownList dl, int [] permissionID)
+        {
+            string rpermissionId = string.Join(",", permissionID);
+            try
+            {
+                sqlDB.fillDataTable("select userPermId,PermissionName from userpermission where userPermId in("+ rpermissionId + ")", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "userPermId";
+                dl.DataTextField = "PermissionName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("---Select---", "0"));
+            }
+            catch { }
         }
 
     }

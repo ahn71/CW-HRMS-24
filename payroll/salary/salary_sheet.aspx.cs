@@ -344,10 +344,7 @@ namespace SigmaERP.payroll.salary
         protected void btnRemoveAllItem_Click(object sender, EventArgs e)
         {
             classes.commonTask.AddRemoveAll(lstSelected, lstAll);
-        }
-       
-
-        
+        }       
        
     }
 }
