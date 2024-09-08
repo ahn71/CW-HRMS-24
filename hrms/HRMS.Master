@@ -743,6 +743,12 @@
                                            <a class="" href="salary/salary-report" runat="server">Salary Sheet</a>
                                        </li>
                                        <% } %>
+                                    
+                                     
+                                       <li>
+                                           <a class="" href="../payroll/salary/IncrementEntitleReport.aspx" runat="server">Increment Entitled Report</a>
+                                       </li>
+                                     
 
                                        <% if (IsRouteExists("salary/monthly-ot-report"))
                                            { %>
