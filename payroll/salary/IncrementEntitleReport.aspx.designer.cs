@@ -22,13 +22,31 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.ScriptManager ScriptManger1;
         
         /// <summary>
-        /// ddlEmpCard control.
+        /// lblCard control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEmpCard;
+        protected global::System.Web.UI.WebControls.Label lblCard;
+        
+        /// <summary>
+        /// txtCard control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCard;
+        
+        /// <summary>
+        /// lbldepartmetn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbldepartmetn;
         
         /// <summary>
         /// ddlDepartment control.
@@ -38,6 +56,15 @@ namespace SigmaERP.payroll.salary {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDepartment;
+        
+        /// <summary>
+        /// lblDate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDate;
         
         /// <summary>
         /// txtDate control.
