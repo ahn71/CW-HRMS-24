@@ -27,10 +27,10 @@ namespace SigmaERP.payroll.salary
             }
            
         }
-        private void getResponse(string empcard,string deptId)
+        private void getResponse(string empcard,string deptId,string date)
         {
             string formatDate = txtDate.Text;
-            string baseUrl = "https://localhost:7220/api/Salary/employeInfos/salaryIncrement/2024-01-01";
+            string baseUrl = "https://localhost:7220/api/Salary/employeInfos/salaryIncrement/"+ date + "";
             string queryParams = "";
 
             if (empcard != "0" && !string.IsNullOrEmpty(empcard))
@@ -119,15 +119,8 @@ namespace SigmaERP.payroll.salary
             ViewState["__IncrementEntittleData__"] = dataTable;
             gvEmplye.DataSource = dataTable;
             gvEmplye.DataBind();
-            // Output the DataTable (for demonstration purposes)
-            foreach (DataRow row in dataTable.Rows)
-            {
-                foreach (DataColumn col in dataTable.Columns)
-                {
-                    Console.Write($"{row[col]} ");
-                }
-                Console.WriteLine();
-            }
+         
+           
         }
 
         private string getapiData(string url)
@@ -161,18 +154,21 @@ namespace SigmaERP.payroll.salary
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            getResponse(ddlEmpCard.SelectedValue, ddlDepartment.SelectedValue);
+            getResponse(ddlEmpCard.SelectedValue, ddlDepartment.SelectedValue,txtDate.Text);
         }
 
         private void ExportToExcel()
         {
+            //DateTime reportName = DateTime.ParseExact(txtDate.Text, "MMMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            string reportName = DateTime.ParseExact(txtDate.Text.Trim(), new[] { "yyyy-MM-dd", "dd-MM-yyyy" }, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None).ToString("MMMM-yyyy");
+
             DataTable dt = (DataTable)ViewState["__IncrementEntittleData__"];
             GridView gv = new GridView();
             gv.DataSource = dt;
             gv.DataBind();
             Response.Clear();
             Response.Buffer = true;
-            Response.AddHeader("content-disposition", $"attachment;filename=EntitleReport.xls");
+            Response.AddHeader("content-disposition", $"attachment;filename=IncrementEntitle("+ reportName + ").xls");
             Response.Charset = "";
             Response.ContentType = "application/vnd.ms-excel";
             Response.ContentEncoding = System.Text.Encoding.UTF8;
@@ -182,7 +178,7 @@ namespace SigmaERP.payroll.salary
                 using (HtmlTextWriter hw = new HtmlTextWriter(sw))
                 {
                     sw.WriteLine("<table>");
-                    sw.WriteLine("<tr><td colspan='3'><b>Employee report of January</b></td></tr>");
+                    sw.WriteLine("<tr><td colspan='3'><b>IncrementEntitle Report of "+ reportName + " </b></td></tr>");
                     sw.WriteLine("</table>");
                     sw.WriteLine("<br />");
 

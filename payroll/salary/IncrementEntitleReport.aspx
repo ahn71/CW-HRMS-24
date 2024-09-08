@@ -38,7 +38,7 @@
           <asp:Button runat="server" ID="btnExport" CssClass="btn btn-success" Text="Export" OnClick="btnExport_Click" />        
    </div>
  </div>
-      <asp:GridView ID="gvEmplye" runat="server"  CssClass="table" AutoGenerateColumns="false">
+      <asp:GridView ID="gvEmplye" runat="server"  CssClass="table mt-3" AutoGenerateColumns="false">
           <Columns>
         <asp:TemplateField HeaderText="SL">
             <ItemTemplate>
