@@ -52,6 +52,10 @@ namespace SigmaERP.payroll.salary
 
             string url = baseUrl + queryParams;
             string jsonData = ApiConnector.getapiData(url);
+            if(jsonData== "Api Error")
+            {
+                lblMessage.InnerText = "warning->Data not found."; return;
+            }
             var json = JObject.Parse(jsonData);
             var data = json["data"];
 
@@ -125,6 +129,10 @@ namespace SigmaERP.payroll.salary
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
+            if (txtDate.Text == "")
+            {
+               lblMessage.InnerText = "warning->Please select any Daterange."; return;
+            }
             getResponse(txtCard.Text, ddlDepartment.SelectedValue,txtDate.Text);
         }
 

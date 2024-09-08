@@ -13,13 +13,15 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+      <p class="message" id="lblMessage"  runat="server"></p>
+      <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
      <div class="row">
         <div class="col-md-12">
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="#" class="ds_negevation_inactive Pactive">Salary Sheet Report</a></li>
+                    <li><a href="#" class="ds_negevation_inactive Pactive">Increment Entitled Report</a></li>
                 </ul>
             </div>
         </div>
@@ -28,6 +30,21 @@
     <div class="row justify-content-center mt-2">
         <div class="col-lg-6">
             <div class="row">
+                  <div class="col-md-4">
+                 <asp:Label runat="server" ID="lbldepartmetn">Department</asp:Label>
+               <div class="card">
+               
+                     <asp:DropDownList CssClass="form-control" runat="server" ID="ddlDepartment"></asp:DropDownList>
+                </div>
+          </div>
+
+                 <div class="col-md-4">
+              <asp:Label runat="server" ID="lblDate">Date</asp:Label>
+               <div class="card">
+                   
+                    <asp:TextBox ID="txtDate" runat="server" type="Date"></asp:TextBox>
+                </div>
+          </div>
                  <div class="col-md-4">
                        <asp:Label runat="server" ID="lblCard">Card No</asp:Label>
             <div class="card">
@@ -37,21 +54,9 @@
            
         </div>
        
-         <div class="col-md-4">
-                 <asp:Label runat="server" ID="lbldepartmetn">Department</asp:Label>
-               <div class="card">
-               
-                     <asp:DropDownList CssClass="form-control" runat="server" ID="ddlDepartment"></asp:DropDownList>
-                </div>
-          </div>
+       
         
-          <div class="col-md-4">
-              <asp:Label runat="server" ID="lblDate">Date</asp:Label>
-               <div class="card">
-                   
-                    <asp:TextBox ID="txtDate" runat="server" type="Date"></asp:TextBox>
-                </div>
-          </div>
+         
       </div>
           <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />        
           <asp:Button runat="server" ID="btnExport" CssClass="btn btn-success" Text="Export" OnClick="btnExport_Click" />        
@@ -74,4 +79,51 @@
             <asp:BoundField DataField="empPresentSalary" HeaderText="Current Salary" SortExpression="CurrentSalary" />
     </Columns>
       </asp:GridView>
+
+    <script type="text/javascript">
+         $(document).keyup(function (e) {
+            if (e.keyCode == 80) {
+                goToNewTabandWindow('/payroll/salary_sheet_Report.aspx');
+            }
+        });
+        function InputValidationBasket() {
+            try {
+
+                if ($('#txtEmpCardNo').val().trim().length < 4) {
+                    showMessage('Please select To Date', 'error');
+                    $('#txtToDate').focus(); return true;
+                }
+                return true;
+            }
+            catch (exception) {
+                showMessage(exception, error)
+            }
+        }
+
+        function CloseWindowt() {
+            window.close();
+        }
+
+        function goToNewTabandWindow(url) {
+            window.open(url);
+
+        }
+
+        function getSalaryMonth() {
+
+            var val = document.getElementById('ddlMonthID').value;
+            document.getElementById('txtMonthId').value = val;
+
+        }
+
+        function CloseWindowt() {
+            window.close();
+        }
+
+        function goToNewTabandWindow(url) {
+            window.open(url);
+
+        }
+
+    </script>
 </asp:Content>

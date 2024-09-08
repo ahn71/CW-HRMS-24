@@ -66,26 +66,41 @@ namespace SigmaERP.hrms.BLL
             WebRequest webrequest = WebRequest.Create(url);
             webrequest.Method = "GET";
 
-            HttpWebResponse httpWebResponse = null;
             try
             {
-                httpWebResponse = (HttpWebResponse)webrequest.GetResponse();
-
-                using (Stream stream = httpWebResponse.GetResponseStream())
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)webrequest.GetResponse())
                 {
-                    StreamReader sr = new StreamReader(stream);
-                    string response = sr.ReadToEnd();
-                    sr.Close();
-                    return response;
+                    using (Stream stream = httpWebResponse.GetResponseStream())
+                    {
+                        using (StreamReader sr = new StreamReader(stream))
+                        {
+                            string response = sr.ReadToEnd();
+                            return response;
+                        }
+                    }
                 }
-
             }
             catch (WebException ex)
             {
-
-                Console.WriteLine("Error: " + ex.Message);
+                // Log detailed error information
+                if (ex.Response != null)
+                {
+                    using (var errorResponse = (HttpWebResponse)ex.Response)
+                    {
+                        using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                        {
+                            string errorText = reader.ReadToEnd();
+                            Console.WriteLine($"Error: {errorText}");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
                 return "Api Error";
             }
         }
+
     }
 }
