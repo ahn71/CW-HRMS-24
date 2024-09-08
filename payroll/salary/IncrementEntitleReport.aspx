@@ -13,30 +13,42 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+     <div class="row">
+        <div class="col-md-12">
+            <div class="ds_nagevation_bar">
+                <ul>
+                    <li><a href="/default.aspx">Dashboard</a></li>
+                    <li><a class="seperator" href="#">/</a></li>
+                    <li><a href="#" class="ds_negevation_inactive Pactive">Salary Sheet Report</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <asp:ScriptManager ID="ScriptManger1" runat="Server" EnablePageMethods="false"></asp:ScriptManager>
     <div class="row justify-content-center mt-2">
         <div class="col-lg-6">
             <div class="row">
                  <div class="col-md-4">
+                       <asp:Label runat="server" ID="lblCard">Card No</asp:Label>
             <div class="card">
-                 <asp:DropDownList runat="server" ID="ddlEmpCard" CssClass="form-control">
-                <asp:ListItem>Select One</asp:ListItem>
-                <asp:ListItem>hhhhhhdfjhs</asp:ListItem>
-                <asp:ListItem>rtyuihghajk</asp:ListItem>
-                <asp:ListItem>Sncadshar</asp:ListItem>
-              </asp:DropDownList>
+              
+                <asp:TextBox runat="server" ID="txtCard" CssClass="form-control"></asp:TextBox>
             </div>
            
         </div>
        
          <div class="col-md-4">
+                 <asp:Label runat="server" ID="lbldepartmetn">Department</asp:Label>
                <div class="card">
+               
                      <asp:DropDownList CssClass="form-control" runat="server" ID="ddlDepartment"></asp:DropDownList>
                 </div>
           </div>
         
           <div class="col-md-4">
+              <asp:Label runat="server" ID="lblDate">Date</asp:Label>
                <div class="card">
+                   
                     <asp:TextBox ID="txtDate" runat="server" type="Date"></asp:TextBox>
                 </div>
           </div>

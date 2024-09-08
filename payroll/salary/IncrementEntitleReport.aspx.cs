@@ -23,7 +23,6 @@ namespace SigmaERP.payroll.salary
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 commonTask.LoadDepartmentDDL(ddlDepartment, ViewState["__CompanyId__"].ToString());
-                classes.Employee.LoadEmpCardNoForPayroll(ddlEmpCard, ViewState["__CompanyId__"].ToString());
               
             }
            
@@ -126,7 +125,7 @@ namespace SigmaERP.payroll.salary
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            getResponse(ddlEmpCard.SelectedValue, ddlDepartment.SelectedValue,txtDate.Text);
+            getResponse(txtCard.Text, ddlDepartment.SelectedValue,txtDate.Text);
         }
 
         private void ExportToExcel()
