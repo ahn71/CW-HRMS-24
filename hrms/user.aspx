@@ -480,18 +480,23 @@
              data.forEach(row => {
                  row.serial = serialNumber++; // Assign serial number to each row
 
-                 row.name = `
-        <div class="permission-name-container">
-            ${row.name}
-            <div class="actions-container">
-                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
-                    <li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
-                    <li><a href="javascript:void(0)" data-id="${row.userId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-                </ul>
-            </div>
-        </div>
-        `;
+                 var readAction = '<%= Session["__ReadAction__"] %>';   
+                 var updateAction = '<%= Session["__UpdateAction__"] %>';   
+                 var deleteAction = '<%= Session["__DeletAction__"] %>';
+                 
+
+            row.name = `
+                <div class="permission-name-container">
+                    ${row.name}
+                    <div class="actions-container">
+                        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                            ${readAction == "1" ? `<li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>` : ''}
+                            ${updateAction == "1" ? `<li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>` : ''}
+                            ${deleteAction == "1" ? `<li><a href="javascript:void(0)" data-id="${row.userId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>` : ''}
+                        </ul>
+                    </div>
+                </div>`;
+
 
                  row.isActive = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
@@ -538,6 +543,7 @@
 
              // Clear and re-attach event listeners
              $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                        
                  const userId = $(this).data('id');
                  FetchDataForEdit(userId);
                  console.log('Edit button clicked for ID:', userId);
@@ -1240,6 +1246,13 @@
                  addnewElement.html("Add New");
                    $("#IsGuest").hide();
              }
+              var writeAction = '<%= Session["__WriteAction__"] %>';
+
+                if (writeAction == "0") {
+                    $("#btnSave").hide(); 
+                } else {
+                    $("#btnSave").show(); 
+                }
          }
 
          function ClearTextBox() {
