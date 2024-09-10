@@ -8,6 +8,9 @@
             background-color:#198754 !important;
             color:white;
         }
+     #date{
+            border: 1px solid #d2d2d2 !important;
+     }
     </style>
 
 </asp:Content>
@@ -36,7 +39,7 @@
         <div class="col-lg-6">
             <div class="row">
                   <div class="col-md-3">
-                 <asp:Label runat="server" ID="lbldepartmetn">Department</asp:Label>
+                 <asp:Label runat="server" CssClass="fw-bold" ID="lbldepartmetn">Department</asp:Label>
                <div class="card">
                
                      <asp:DropDownList CssClass="form-control" runat="server" ID="ddlDepartment"></asp:DropDownList>
@@ -44,15 +47,18 @@
           </div>
 
                  <div class="col-md-3">
-              <asp:Label runat="server" ID="lblDate">Date</asp:Label>
+              <asp:Label runat="server" CssClass="fw-bold" ID="lblDate">Date<span class="text-danger fw-bold">*</span></asp:Label>
                <div class="card">
                    
-                    <asp:TextBox ID="txtDate" runat="server" type="Date"></asp:TextBox>
+                    <asp:TextBox ID="txtDate" CssClass="date" style="border: 1px solid #d2d2d2"  runat="server" type="Date"></asp:TextBox>
+             
+                  
+
                 </div>
           </div>
 
                  <div class="col-md-3">
-                       <asp:Label runat="server" ID="lblCard">Card No</asp:Label>
+                       <asp:Label runat="server" CssClass="fw-bold" ID="lblCard">Card No</asp:Label>
             <div class="card">
               
                 <asp:TextBox runat="server" ID="txtCard" CssClass="form-control"></asp:TextBox>
@@ -85,8 +91,11 @@
             <asp:BoundField DataField="designationName" HeaderText="Designation " SortExpression="Designation" />
             <asp:BoundField DataField="empJoiningDate" HeaderText="Joining Date" SortExpression="JoiningDate" />
             <asp:BoundField DataField="lastIncrementMonth" HeaderText="LastIncrement Month" SortExpression="LastIncrement" />
-            <asp:BoundField DataField="preIncrementAmount" HeaderText="LastIcrement Amount" SortExpression="LastIcrementAmount" />
             <asp:BoundField DataField="empPresentSalary" HeaderText="Current Salary" SortExpression="CurrentSalary" />
+            <asp:BoundField DataField="increment" HeaderText="Incremented Amount" SortExpression="IncrementedAmount" />
+             <asp:BoundField DataField="incrementSalary" HeaderText="Incremented Salary" SortExpression="IncrementedSalary" />
+
+
     </Columns>
       </asp:GridView>
 

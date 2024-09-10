@@ -86,7 +86,8 @@ namespace SigmaERP.payroll.salary
             dataTable.Columns.Add("designationName", typeof(string));
             dataTable.Columns.Add("lastIncrementMonth", typeof(string));
             dataTable.Columns.Add("empJoiningDate", typeof(string));
-            dataTable.Columns.Add("isActive", typeof(int));
+            dataTable.Columns.Add("increment", typeof(double));
+            dataTable.Columns.Add("incrementSalary", typeof(double));
 
             foreach (var item in data)
             {
@@ -116,8 +117,8 @@ namespace SigmaERP.payroll.salary
                 row["designationName"] = item["designationName"];
                 row["empJoiningDate"] = item["empJoiningDate"];
                 row["lastIncrementMonth"] = item["lastIncrementMonth"];
-
-                row["isActive"] = item["isActive"];
+                row["increment"] = item["increment"];
+                row["incrementSalary"] = item["incrementSalary"];
                 dataTable.Rows.Add(row);
             }
 
