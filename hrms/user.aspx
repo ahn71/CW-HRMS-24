@@ -134,34 +134,69 @@
                                  </div>
                               </div>
 
-                                       <div class="col-lg-4 " style="display:flex; justify-content:space-between">
+                                       <div class="col-lg-4 " style="display: flex; justify-content: space-between">
                                            <div class="LeftSite">
-                                           <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
-                                           <div class="form-group d-flex">
-                                               <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
-                                                   Status <span class="text-danger"></span>
-                                               </label>
-                                               <div class="radio-horizontal-list d-flex">
-                                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                                       <input type="checkbox" checked class="form-check-input" id="chkIsActive">
-                                                       <label class="form-check-label" for="chkIsActive"></label>
+                                               <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                               <div class="form-group d-flex">
+                                                   <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                                       Status <span class="text-danger"></span>
+                                                   </label>
+                                                   <div class="radio-horizontal-list d-flex">
+                                                       <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                                           <input type="checkbox" checked class="form-check-input" id="chkIsActive">
+                                                           <label class="form-check-label" for="chkIsActive"></label>
+                                                       </div>
                                                    </div>
                                                </div>
                                            </div>
-                                           </div>
                                            <div class="rightSite">
+                                               <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                               <div class="form-group d-flex">
+                                                   <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                                       Authority <span class="text-danger"></span>
+                                                   </label>
+                                                   <div class="radio-horizontal-list d-flex">
+                                                       <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                                           <input type="checkbox" checked class="form-check-input" id="chkIsAuthPerm">
+                                                           <label class="form-check-label" for="chkIsAuthPerm"></label>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+
+                                       </div>
+                                       <div class="col-lg-4">
+                                           <div class="form-group">
+                                               <div class="card card-default card-md mb-4">
+                                                   <div class="card-body">
+                                                       <div class="dm-tag-wrap">
+
+                                                           <div class="dm-upload">
+                                                               <div class="dm-upload-avatar">
+                                                                   <img class="avatrSrc" src="img/upload.png" alt="Avatar Upload">
+                                                               </div>
+                                                               <div class="avatar-up">
+                                                                   <input type="file" name="userImage" class="upload-avatar-input">
+                                                               </div>
+                                                           </div>
+
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-lg-4">
+                                           <div class="form-group">
                                                <label style="opacity: 0;" for="formGroupExampleInput"
                                                    class="color-dark fs-14 fw-500 align-center mb-10">
                                                    Name <span
                                                        class="text-danger"></span>
                                                </label>
                                                <button type="button" id="btnSave" onclick="validateUser()"
-                                                   class="btn btn-primary btn-default btn-squared px-30">Save</button>
+                                                   class="btn btn-primary btn-default btn-squared px-30">
+                                                   Save</button>
                                            </div>
-
                                        </div>
-                       
-
 
 
                                    </div>
@@ -497,16 +532,23 @@
                 </div>`;
 
 
-                 row.isActive = `
+         row.isActive = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
         </div>
         `;
 
-                 row.isGuestUser = `
+         row.isGuestUser = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
+            <label class="form-check-label" for="switch-${row.userId}"></label>
+        </div>
+        `;
+
+         row.isApprovingAuthority = `
+        <div class="form-check form-switch form-switch-primary form-switch-sm">
+            <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isApprovingAuthority ? 'checked' : ''}>
             <label class="form-check-label" for="switch-${row.userId}"></label>
         </div>
         `;
@@ -518,6 +560,7 @@
                  { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                 { "name": "isApprovingAuthority", "title": "Is Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
              ];
 
@@ -959,6 +1002,7 @@
              var userRole = parseInt($('#ddlUserRole').val());
              var isActive = $('#chkIsActive').is(':checked');
              var isGuest = $('#chkIsGetUser').is(':checked');
+             var isAuthPerm = $('#chkIsAuthPerm').is(':checked');
              var treeInstance = $('#treeContainer').jstree(true);
 
              var jsonRolesData = JSON.stringify(PreviusPermissionsID);
@@ -988,6 +1032,7 @@
                  Email: userEmail,
                  UserRoleID: userRole,
                  IsGuestUser: isGuest,
+                 IsApprovingAuthority: isAuthPerm,
                  ReferenceID: refaranceEmp,
                  AdditionalPermissions:additionalPermissions,
                  RemovedPermissions: removedPermissions,
@@ -1032,6 +1077,7 @@
                  var userRole = parseInt($('#ddlUserRole').val());
                  var isActive = $('#chkIsActive').is(':checked');
                  var isGuest = $('#chkIsGetUser').is(':checked');
+                 var isAuthPerm = $('#chkIsAuthPerm').is(':checked');
 
 
              var jsonRolesData = JSON.stringify(PreviusPermissionsID);
@@ -1060,6 +1106,7 @@
                     Email: userEmail,
                     UserRoleID: userRole,
                     IsGuestUser: isGuest,
+                    isApprovingAuthority: isAuthPerm,
                     ReferenceID: refaranceEmp,
                     AdditionalPermissions: additionalPermissions,
                     RemovedPermissions: removedPermissions,
@@ -1113,6 +1160,7 @@
                      $('select[name="ddlUserRole"]').val(data.userRoleID).change();
                      $('#chkIsActive').prop('checked', data.isActive);
                      $('#chkIsGetUser').prop('checked', data.isGuestUser);
+                     $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
                      $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
                      $('#ddlCompany').val(data.companyId).change();
                      var GuestUser = data.isGuestUser;
@@ -1268,6 +1316,7 @@
              $('#txtPerOrdaring').val("");
              //$('#chkIsActive').prop('checked', false);
              $('#chkIsGetUser').prop('checked', false);
+             //$('#chkIsAuthPerm').prop('checked', false);
              $('#btnSave').text("Save");
          }
 
