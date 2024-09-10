@@ -195,7 +195,7 @@
                         </Triggers>
                         <ContentTemplate>
                             
-                                <table style="width:100%">
+                                <table  >
                                     <tr>
                                          <td visible="false" id="tdCompany" runat="server">Company
                                     </td>
