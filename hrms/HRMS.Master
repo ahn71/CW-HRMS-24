@@ -73,7 +73,7 @@
         <nav class="navbar navbar-light">
       <div class="navbar-left">
          <div class="logo-area">
-            <a class="navbar-brand" href="hrms/dashboard" runat="server">
+            <a class="navbar-brand" href="dashboard" runat="server">
                <!-- <img class="dark" src="img/logo-dark.png" alt="logo"> -->
 <!--                <img class="light" src="img/logo-white.png" alt="logo">
    
@@ -1410,14 +1410,14 @@
           <%} %>
             <li class="nav-author">
                <div class="dropdown-custom">
-                  <a href="javascript:;" class="nav-item-toggle"><img src="user_img_default.jpg" alt="" class="rounded-circle">
+                  <a href="javascript:;" class="nav-item-toggle"><img src="user_img_default.jpg" id="UserProfileImageMenu" alt="" class="rounded-circle">
                      <span class="nav-item__title"> <i class="las la-angle-down nav-item__arrow"></i></span>
                   </a>
                   <div class="dropdown-parent-wrapper">
                      <div class="dropdown-wrapper">
                         <div class="nav-author__info">
                            <div class="author-img">
-                              <img src="user_img_default.jpg" alt="" class="rounded-circle">
+                              <img src="user_img_default.jpg" id="userProfileImage" alt="" class="rounded-circle">
                            </div>
                            <div>
                               <h6 runat="server" id="UserName"></h6>
@@ -1428,7 +1428,7 @@
                         <div class="nav-author__options">
                            <ul>
                               <li>
-                                 <a href="">
+                                 <a href="userProfile.aspx">
                                     <i class="uil uil-user"></i> Profile</a>
                               </li>
      
@@ -1499,7 +1499,7 @@
     <!-- Sweet Alert ----->
 
     
-    <script src="treeview.js"></script>
+ <%--   <script src="treeview.js"></script>--%>
     <script src="assets/vendor_assets/js/jquery/jquery-ui.js"></script>
     <script src="assets/vendor_assets/js/bootstrap/popper.js"></script>
     <script src="assets/vendor_assets/js/bootstrap/bootstrap.min.js"></script>
@@ -1556,7 +1556,22 @@
     <script src="assets/theme_assets/js/leaflet-init.js"></script>
 
 
+    <script>
+         
+        $(document).ready(function () {
+            var userImage = '<%= Session["__UserImageLink__"] %>';
+        
+            if (userImage) {
+                $('#UserProfileImageMenu').attr('src', userImage); // Set the src of the image to display it
+                $('#userProfileImage').attr('src', userImage); // Set the src of the image to display it
+            } else {
+                // If there's no user image, you can set a default or empty image
+                $('#UserProfileImageMenu').attr('src', 'user_img_default.jpg');
+                $('#userProfileImage').attr('src', 'user_img_default.jpg');
+            }
 
+        });
+    </script>
 
 </body>
 </html>

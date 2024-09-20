@@ -42,6 +42,32 @@ function ApiCallById(url, token, id) {
 }
 
 
+function ApiCallImageUpdate(url, token, formData, id) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url + '/' + id,
+            type: 'POST',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: formData,
+            contentType: false, // Let the browser set the correct content type
+            processData: false, // Prevent jQuery from processing data
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while updating data:', status, error);
+                reject(error);
+            }
+        });
+    });
+}
+
+
+
+
 function ApiCallUpdate(url, token, updateData, id) {
     return new Promise(function (resolve, reject) {
         $.ajax({

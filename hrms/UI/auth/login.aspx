@@ -19,7 +19,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <!-- Latest compiled JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon.png" />
@@ -185,16 +185,24 @@
             width: 50%;
         }
         .select-input {
-    width: 100%;
-    padding: 10px 3px;
-    border: 0;
-    box-shadow: 0 0 10px white;
-    background-color: transparent;
-    line-height: 20px;
-}
-.copyright p{
-    font-size: 12px;
-}
+        width: 100%;
+        padding: 10px 3px;
+        border: 0;
+        box-shadow: 0 0 10px white;
+        background-color: transparent;
+        line-height: 20px;
+    }
+    .copyright p{
+        font-size: 12px;
+    }
+
+    .text-lighten {
+        color: #A0A0A0 !important;
+    }
+     .fs-15 {
+
+        margin-top:5px;
+    }
     </style>
 </head>
 <body>
@@ -241,6 +249,7 @@
                                     <i class="fas fa-lock" aria-hidden="true"></i>
                                 </div>
                                 <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="border-0 input" placeholder="Password" TextMode="Password"></asp:TextBox>
+                                <span class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2"></span>
                               <%--  <input class="border-0 input" type="password" id="password" name="password"
                                     placeholder="Password">--%>
                             </div>
@@ -276,6 +285,7 @@
 
     </div>
 </body>
+<script src="../../assets/theme_assets/js/main.js"></script>
   
     <script>
         function validateLogIn() {

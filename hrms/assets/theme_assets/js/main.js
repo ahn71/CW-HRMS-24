@@ -1127,7 +1127,45 @@
       ["formatting", "strong", "em", "superscript", "subscript", "link"],
       ["unorderedList", "orderedList"],
     ],
-  });
+    });
+    function eye_Newpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtNewPass");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Newpass();
+    function eye_Confirmpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtConfirmPass");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Confirmpass();
+
+    function eye_Loginpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtPassword");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Loginpass();
+
 
   /* Input password toggle */
   function eye_pass() {
