@@ -22,57 +22,95 @@
                         </div>
                         <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                             <div class="Vertical-form">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label id="lblHidenRolesId" style="display:none"></label>
+                                    
+                                    <div class="row">
+                                     <div class="col-lg-8">
+                                            <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label id="lblHidenRolesId" style="display: none"></label>
 
-                                            <label for="txtRole" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                Role Name <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtRole" placeholder="Type Role Name">
-                                            <span class="text-danger" id="errortxtRole"></span>
+                                                <label for="txtRole" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    Role Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtRole" placeholder="Type Role Name">
+                                                <span class="text-danger" id="errortxtRole"></span>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-lg-2">
-                                        <div class="form-group">
-                                            <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                Ordering <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtOrdaring" placeholder="Type Ordering">
-                                            <span class="text-danger" id="orderingError"></span>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    Ordering <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtOrdaring" placeholder="Type Ordering">
+                                                <span class="text-danger" id="orderingError"></span>
+                                            </div>
                                         </div>
-                                    </div>
-                                      <div class="col-lg-3 " style="display:flex; justify-content:space-between">
-                                           <div class="LeftSite">
-                                           <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
-                                           <div class="form-group d-flex">
-                                               <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
-                                                   Status <span class="text-danger"></span>
-                                               </label>
-                                               <div class="radio-horizontal-list d-flex">
-                                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                                       <input type="checkbox" checked class="form-check-input" id="chkIsActive">
-                                                       <label class="form-check-label" for="chkIsActive"></label>
-                                                   </div>
-                                               </div>
-                                           </div>
-                                           </div>
-                                           <div class="rightSite">
-                                               <label style="opacity: 0;" for="formGroupExampleInput"
-                                                   class="color-dark fs-14 fw-500 align-center mb-10">
-                                                   Name <span
-                                                       class="text-danger"></span>
-                                               </label>
-                                               <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
-                                                   class="btn btn-primary btn-default btn-squared px-30">Save</button>
-                                           </div>
+                                        <div class="col-lg-3 " style="display: flex; justify-content: space-between">
+                                            <div class="LeftSite">
+                                                <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                                <div class="form-group d-flex">
+                                                    <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                                        Status <span class="text-danger"></span>
+                                                    </label>
+                                                    <div class="radio-horizontal-list d-flex">
+                                                        <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                                            <input type="checkbox" checked class="form-check-input" id="chkIsActive">
+                                                            <label class="form-check-label" for="chkIsActive"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="rightSite">
+                                                <label style="opacity: 0;" for="formGroupExampleInput"
+                                                    class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    Name <span
+                                                        class="text-danger"></span>
+                                                </label>
+                                                <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
+                                                    class="btn btn-primary btn-default btn-squared px-30">
+                                                    Save</button>
+                                            </div>
 
+                                        </div>
+                                        <div class="col-lg-4" id="">
+                                            <div class="form-group">
+                                                <label for="ddlDataAccessLevel" class="color-dark fs-14 fw-500 align-center mb-10">Data Access Level</label>
+                                                <div class="support-form__input-id">
+                                                    <div class="dm-select ">
+                                                        <select name="ddlDataAccessLevel" id="ddlDataAccessLevel" class="select-search form-control">
+                                                            <option value="0">---Select---</option>
+                                                            <option value="1">All</option>
+                                                            <option value="2">Won Department</option>
+                                                            <option value="3">Department wise</option>
+                                                            <option value="4">Employee Wise</option>
+                                                            <option value="5">Only Me</option>
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger" id="errorDataAccessLevel"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    Data Access Level <span class="text-danger">*</span>
+                                                </label>
+                                                <div id="departmentCheckboxes"></div>
+
+                                            </div>
+                                        </div>
                                        </div>
-                                    <div class="col-lg-4 " id="treeSection">
+                                    </div>
+
+
+
+
+                                       <div class="col-lg-4 " id="treeSection">
                                         <p>Select permission</p>
-                                        <div class="loader-size loaderPackages " style="display:none">
+                                        <div class="loader-size loaderPackages " style="display: none">
                                             <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
                                                 <span class="spin-dot badge-dot dot-primary"></span>
                                                 <span class="spin-dot badge-dot dot-primary"></span>
@@ -82,7 +120,14 @@
                                         </div>
                                         <div id="treeContainer"></div>
                                     </div>
-                                </div>
+                                    </div>
+
+
+
+
+                         
+
+
 
 
 
@@ -128,6 +173,7 @@
         var postRolesUrl = rootUrl + '/api/UserRoles/create';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
+         var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
          var updateRolesUrl = rootUrl + '/api/UserRoles/update';
          var DeleteRoleUrl = rootUrl + '/api/UserRoles/delete';
         var getStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
@@ -140,6 +186,7 @@
             //GetModule();
             GetStpPkgFeatures();
             GetRoles();
+            GetUserDepartment();
         });
 
         function Cardbox() {
@@ -308,6 +355,50 @@
                         });
                 }
             });
+        }
+
+        function GetUserDepartment() {
+            ApiCall(getUserDepartmentUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        $('#departmentCheckboxes').empty();
+
+                        var selectAllHtml = `
+                    <label>
+                        <input type="checkbox" id="selectAllDepartments">
+                        Select All
+                    </label><br>
+                `;
+                        $('#departmentCheckboxes').append(selectAllHtml);
+                        responseData.forEach(function (department) {
+                            var checkboxHtml = `
+                        <label>
+                            <input type="checkbox" name="departments" value="${department.dptId}" class="departmentCheckbox">
+                            ${department.dptName}
+                        </label><br>
+                    `;
+                            $('#departmentCheckboxes').append(checkboxHtml);
+                        });
+
+                        $('#selectAllDepartments').on('change', function () {
+                            var isChecked = $(this).is(':checked');
+                            $('.departmentCheckbox').prop('checked', isChecked); 
+                        });
+                        $('.departmentCheckbox').on('change', function () {
+                            var allChecked = $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length;
+                            $('#selectAllDepartments').prop('checked', allChecked);
+                        });
+
+                        $('.footable-loader').show();
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
         }
 
 

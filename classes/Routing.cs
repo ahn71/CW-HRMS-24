@@ -21,10 +21,10 @@ namespace SigmaERP.classes
         private static string LoginRoutePhysicalFile = "~/hrms/UI/auth/login.aspx";
 
 
-       // public static string userName = "AccessControlUser";
-       //// public static string userUrl = rootURL + "access-control/users";
-       // public static string userUrl = rootURL + "users";
-       // private static string userPhyLocation = "~/hrms/user.aspx";
+        // public static string userName = "AccessControlUser";
+        //// public static string userUrl = rootURL + "access-control/users";
+        // public static string userUrl = rootURL + "users";
+        // private static string userPhyLocation = "~/hrms/user.aspx";
 
         public static string dashboardRoutName = "Dashboard";
         public static string dashboardUrl = rootURL + "dashboard";
@@ -64,7 +64,15 @@ namespace SigmaERP.classes
         private static string UserWithModuleUrl = ApiRootUrl + "/api/User/userWithModule";
         private static string UserWithPermissionUrl = ApiRootUrl + "/api/User/userWithPermission";
 
-        private static string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKV1RTZXJ2aWNlQWNjZXNzVG9rZW4iLCJpYXQiOiIxNzI0MjU4NjcwIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Ikh1c0xTdEszcUdTRWFlTU9DVnNHMkE9PSIsImV4cCI6MTcyNjg1MDY3MH0.uk0BVPbbe7SdRQ08VoLarZY0L2EFMndoeXzs5MPQZLw";
+       // private static string token = System.Web.HttpContext.Current.Session["__UserToken__"].ToString();
+       //private static string token ="sdghjjhsdffjklsdfgfhksddh";
+       
+
+
+
+
+
+
 
         public class ParentDTO
         {
@@ -107,7 +115,7 @@ namespace SigmaERP.classes
             string fullUrl = $"{url}?userId={userId}";
             WebRequest webRequest = WebRequest.Create(fullUrl);
             webRequest.Method = "GET";
-            webRequest.Headers["Authorization"] = $"Bearer {token}";
+            webRequest.Headers["Authorization"] = $"Bearer {HttpContext.Current.Session["__UserToken__"].ToString()}";
             try
             {
                 using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
@@ -166,7 +174,7 @@ namespace SigmaERP.classes
 
             WebRequest webRequest = WebRequest.Create(fullUrl);
             webRequest.Method = "GET";
-            webRequest.Headers["Authorization"] = $"Bearer {token}";
+            webRequest.Headers["Authorization"] = $"Bearer {HttpContext.Current.Session["__UserToken__"].ToString()}";
             try
             {
                 using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
