@@ -81,11 +81,10 @@
                                                     <div class="dm-select ">
                                                         <select name="ddlDataAccessLevel" id="ddlDataAccessLevel" class="select-search form-control">
                                                             <option value="0">---Select---</option>
-                                                            <option value="1">All</option>
-                                                            <option value="2">Won Department</option>
-                                                            <option value="3">Department wise</option>
-                                                            <option value="4">Employee Wise</option>
-                                                            <option value="5">Only Me</option>
+                                                            <option value="3">All</option>
+                                                            <option value="2">Own Department</option>
+                                                            <option value="1">Only Me</option>
+                                                            <option value="4">Custom</option>
                                                         </select>
                                                     </div>
                                                     <span class="text-danger" id="errorDataAccessLevel"></span>
@@ -93,7 +92,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-3">
+<%--                                        <div class="col-lg-3 " id="departmentcheck">
                                             <div class="form-group">
                                                 <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center mb-10">
                                                     Data Access Level <span class="text-danger">*</span>
@@ -101,7 +100,7 @@
                                                 <div id="departmentCheckboxes"></div>
 
                                             </div>
-                                        </div>
+                                        </div>--%>
                                        </div>
                                     </div>
 
@@ -186,7 +185,15 @@
             //GetModule();
             GetStpPkgFeatures();
             GetRoles();
-            GetUserDepartment();
+            //$('#ddlDataAccessLevel').change(function () {
+            //    var selectedValue = $(this).val();
+
+            //    // If "Department wise" option is selected (value = 3)
+            //    if (selectedValue == '3') {
+            //        GetUserDepartment();
+            //    }
+            //});
+            
         });
 
         function Cardbox() {
@@ -225,19 +232,18 @@
                 isValid = false;
             } else {
                 $('#orderingError').html("");
-            }
-            if (isValid) {
-                var addnewElement = $("#btnSave");
-                if (addnewElement.html() === "Save") {
-                    PostStpPkgFeatures();
-                    //ClearTextBox();
-                }
-                else {
-                    //updatePackages();
-                    updateRoles();
-                    //ClearTextBox();
-                }
-            }
+             }
+
+             if (isValid) {
+                 var addnewElement = $("#btnSave").text().trim();
+                 if (addnewElement === "Save") {
+                     PostStpPkgFeatures();
+                 }
+                 else {
+                     updateRoles(); 
+
+                 }
+             }
         }
 
 
@@ -357,49 +363,49 @@
             });
         }
 
-        function GetUserDepartment() {
-            ApiCall(getUserDepartmentUrl, token)
-                .then(function (response) {
-                    if (response.statusCode === 200) {
-                        var responseData = response.data;
-                        $('#departmentCheckboxes').empty();
+        //function GetUserDepartment() {
+        //    ApiCall(getUserDepartmentUrl, token)
+        //        .then(function (response) {
+        //            if (response.statusCode === 200) {
+        //                var responseData = response.data;
+        //                $('#departmentCheckboxes').empty();
 
-                        var selectAllHtml = `
-                    <label>
-                        <input type="checkbox" id="selectAllDepartments">
-                        Select All
-                    </label><br>
-                `;
-                        $('#departmentCheckboxes').append(selectAllHtml);
-                        responseData.forEach(function (department) {
-                            var checkboxHtml = `
-                        <label>
-                            <input type="checkbox" name="departments" value="${department.dptId}" class="departmentCheckbox">
-                            ${department.dptName}
-                        </label><br>
-                    `;
-                            $('#departmentCheckboxes').append(checkboxHtml);
-                        });
+        //                var selectAllHtml = `
+        //            <label>
+        //                <input type="checkbox" id="selectAllDepartments">
+        //                Select All
+        //            </label><br>
+        //        `;
+        //                $('#departmentCheckboxes').append(selectAllHtml);
+        //                responseData.forEach(function (department) {
+        //                    var checkboxHtml = `
+        //                <label>
+        //                    <input type="checkbox" name="departments" value="${department.dptId}" class="departmentCheckbox">
+        //                    ${department.dptName}
+        //                </label><br>
+        //            `;
+        //                    $('#departmentCheckboxes').append(checkboxHtml);
+        //                });
 
-                        $('#selectAllDepartments').on('change', function () {
-                            var isChecked = $(this).is(':checked');
-                            $('.departmentCheckbox').prop('checked', isChecked); 
-                        });
-                        $('.departmentCheckbox').on('change', function () {
-                            var allChecked = $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length;
-                            $('#selectAllDepartments').prop('checked', allChecked);
-                        });
+        //                $('#selectAllDepartments').on('change', function () {
+        //                    var isChecked = $(this).is(':checked');
+        //                    $('.departmentCheckbox').prop('checked', isChecked); 
+        //                });
+        //                $('.departmentCheckbox').on('change', function () {
+        //                    var allChecked = $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length;
+        //                    $('#selectAllDepartments').prop('checked', allChecked);
+        //                });
 
-                        $('.footable-loader').show();
-                    } else {
-                        console.error('Error occurred while fetching data:', response.message);
-                    }
-                })
-                .catch(function (error) {
-                    $('.loaderCosting').hide();
-                    console.error('Error occurred while fetching data:', error);
-                });
-        }
+        //                $('.footable-loader').show();
+        //            } else {
+        //                console.error('Error occurred while fetching data:', response.message);
+        //            }
+        //        })
+        //        .catch(function (error) {
+        //            $('.loaderCosting').hide();
+        //            console.error('Error occurred while fetching data:', error);
+        //        });
+        //}
 
 
 

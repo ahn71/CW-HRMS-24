@@ -127,12 +127,12 @@
 
                                                    <div class="form-group mb-20">
                                                       <label for="name">old passowrd</label>
-                                                      <input type="text" id="txtOldPasswoed" class="form-control">
+                                                      <input type="text" id="txtOldPasswoed" class="form-control"/>
                                                    </div>
                                                    <div class="form-group mb-1">
                                                       <label for="password-field">new password</label>
                                                       <div class="position-relative">
-                                                         <input id="txtNewPass" type="password" class="form-control" name="password" placeholder="Password">
+                                                         <input id="txtNewPass" type="password" class="form-control" name="password" placeholder="Password"/>
                                                          <span class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2"></span>
                                                       </div>
                                                       <small id="passwordHelpdvInline" class="text-light fs-13">Minimum

@@ -193,8 +193,7 @@
                                                        class="text-danger"></span>
                                                </label>
                                                <button type="button" id="btnSave" onclick="validateUser()"
-                                                   class="btn btn-primary btn-default btn-squared px-30">
-                                                   Save</button>
+                                                   class="btn btn-primary btn-default btn-squared px-30">Save</button>
                                            </div>
                                        </div>
 
@@ -397,16 +396,20 @@
                  $('#roleError').html("");
              }
              if (isValid) {
-                 var addnewElement = $("#btnSave");
-                 if (addnewElement.html() === "Save") {
-                     PostUsers();
-                     ClearTextBox();
+                 // Get the trimmed text of the button
+                 var addnewElement = $("#btnSave").text().trim();
+
+                 // Compare the text, since addnewElement is a string now
+                 if (addnewElement === "Save") {
+                     PostUsers();   // Call the function to save the user
+                     ClearTextBox(); // Clear the input fields after saving
                  }
                  else {
-                     updateUsers();
-                     ClearTextBox();
+                     updateUsers();  // Call the function to update the user
+                     ClearTextBox(); // Clear the input fields after updating
                  }
              }
+
          }
 
 

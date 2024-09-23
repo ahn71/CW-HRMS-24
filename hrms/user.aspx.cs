@@ -17,9 +17,9 @@ namespace SigmaERP.hrms
             {
                 Session["__ReadAction__"] = "0";
                 Session["__WriteAction__"] = "0";
-                Session["__UpdateAction__"] = "1";
-                Session["__DeletAction__"] = "1";
-                int[] pagePermission = { 443, 444, 445,446 };
+                Session["__UpdateAction__"] = "0";
+                Session["__DeletAction__"] = "0";
+                int[] pagePermission = { 443, 444, 447, 448 };
 
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())

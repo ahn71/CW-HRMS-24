@@ -36290,3 +36290,11 @@ body:after {
 .bordered{
     height: 100% !important;
 }
+
+
+
+#departmentcheck {
+    height: 35vh;
+    overflow: auto;
+
+}

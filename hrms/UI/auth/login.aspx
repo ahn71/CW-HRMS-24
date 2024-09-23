@@ -3,7 +3,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head runat="server">
       <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -203,6 +203,9 @@
 
         margin-top:5px;
     }
+.toggle-password2 {
+    cursor: pointer;
+}
     </style>
 </head>
 <body>
@@ -248,10 +251,11 @@
                                 <div class="icon">
                                     <i class="fas fa-lock" aria-hidden="true"></i>
                                 </div>
-                                <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="border-0 input" placeholder="Password" TextMode="Password"></asp:TextBox>
+                                <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="border-0 input" placeholder="Password" type="Password"></asp:TextBox>
+
+
+                                <%--<span class="uil uil-eye text-lighten fs-15 field-icon toggle-password2"></span>--%>
                                 <span class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2"></span>
-                              <%--  <input class="border-0 input" type="password" id="password" name="password"
-                                    placeholder="Password">--%>
                             </div>
                             <span class="text-danger" id="txtUserPasswordError"></span>
 
@@ -285,7 +289,6 @@
 
     </div>
 </body>
-<script src="../../assets/theme_assets/js/main.js"></script>
   
     <script>
         function validateLogIn() {
@@ -321,6 +324,28 @@
 
             return isValid; // Return whether the form is valid or not
         }
+
+
+        function eye_Loginpass() {
+            $(".toggle-password2").click(function () {
+                let input = $(this).parent().find("#txtPassword");
+                let icon = $(this);
+
+                if (input.attr("type") === "password") {
+                    input.attr("type", "text");
+                    icon.removeClass("uil-eye-slash").addClass("uil-eye"); // Show eye-slash icon when password is visible
+                } else {
+                    input.attr("type", "password");
+
+                    icon.removeClass("uil-eye").addClass("uil-eye-slash");  // Show eye-slash icon when password is visible
+
+                    // Show normal eye icon when password is hidden
+                }
+            });
+        }
+
+
+        eye_Loginpass();
 
     </script>
 </html>
