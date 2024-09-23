@@ -470,6 +470,8 @@ namespace SigmaERP.hrms.UI.auth
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+            Session["__topMenu__"] = "/hrms/attendance";
+            Session["__cardUrl__"] = "";
             if (LogingInfo())
             {
                 if (ViewState["__IsCompliance__"].ToString().Equals("True"))

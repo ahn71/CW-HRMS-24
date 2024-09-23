@@ -31,7 +31,7 @@ namespace SigmaERP
 
             if (!IsPostBack)
             {
-
+               
                 string a = ComplexLetters.getEntangledLetters("QH2QAT1vnumKHEPEz6MowQ==");
                        imglogo.ImageUrl = "~/EmployeeImages/CompanyLogo/logo0001.PNG";
 
@@ -50,6 +50,7 @@ namespace SigmaERP
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+            Session["__AttendanceUrl__"] = "/hrms/attendance";
             if (LogingInfo())
             {
                 if (ViewState["__CShortName__"].ToString() == "MRC")// Only for Marico
@@ -149,7 +150,6 @@ namespace SigmaERP
                     setCookies["__getEmpId__"] = dt.Rows[0]["EmpId"].ToString();
                     //setCookies.Expires = DateTime.Now.AddMinutes(30);
                     Response.Cookies.Add(setCookies);
-
                     return true;
                 }
                 else
