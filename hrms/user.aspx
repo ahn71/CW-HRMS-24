@@ -41,7 +41,7 @@
                   <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                      <div class="Vertical-form">
                            <div class="row">
-                               <div class="col-lg-8">
+                               <div class="col-lg-7">
                                    <div class="row">
                                        <div class="col-lg-4" ">
                                            <div class="form-group">
@@ -134,6 +134,18 @@
                                  </div>
                               </div>
 
+<%--                                       <div class="col-lg-4 " id="departmentcheck">
+                                           <div class="form-group">
+                                               <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   Data Access Level <span class="text-danger">*</span>
+                                               </label>
+                                               <label id="DataAccessStatus"></label>
+                                               <div id="departmentCheckboxes"></div>
+
+                                           </div>
+                                       </div>--%>
+
+
                                        <div class="col-lg-4 " style="display: flex; justify-content: space-between">
                                            <div class="LeftSite">
                                                <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
@@ -165,7 +177,7 @@
                                            </div>
 
                                        </div>
-                                       <div class="col-lg-4">
+<%--                                       <div class="col-lg-4">
                                            <div class="form-group">
                                                <div class="card card-default card-md mb-4">
                                                    <div class="card-body">
@@ -184,7 +196,10 @@
                                                    </div>
                                                </div>
                                            </div>
-                                       </div>
+                                       </div>--%>
+
+
+
                                        <div class="col-lg-4">
                                            <div class="form-group">
                                                <label style="opacity: 0;" for="formGroupExampleInput"
@@ -204,7 +219,7 @@
 
                             
 
-                               <div class="col-lg-4" id="treeSection">
+                               <div class="col-lg-3" id="treeSection">
                                    <p>Select User Permissions</p>
                                    <div class="loader-size loaderPackages " style="display: none">
                                        <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
@@ -217,6 +232,17 @@
                                    <div id="treeContainer"></div>
                                </div>
 
+
+                               <div class="col-lg-2 " id="departmentcheck">
+                                   <div class="form-group">
+                                       <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center mb-10">
+                                            Access Department <span class="text-danger">*</span>
+                                       </label>
+                                       <label id="DataAccessStatus"></label>
+                                       <div id="departmentCheckboxes"></div>
+
+                                   </div>
+                               </div>
 
 
 
@@ -284,6 +310,8 @@
          var updateUserUrl = rootUrl + '/api/User/users/update';
          var DeleteUserUrl = rootUrl + '/api/User/users/delete';
          var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
+         var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
+
 
 
          //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
@@ -429,10 +457,41 @@
              $('#ddlUserRole').change(function () {
                  var selectedValue = $(this).val();
                  console.log("Selected value: " + selectedValue);
+
+                 
                  FetchDataRolesWise(selectedValue);
+                 //GetDataAccessLevel(selectedValue);
+
 
              });
          }
+
+
+
+         //         function GetDataAccessLevel(roleID) {
+         //    ApiCallById(getRolesByIdUrl, token, roleID)
+         //        .then(function (response) {
+         //            console.log('Data from Data Access:', response);
+         //            var data = response.data;
+         //            $('#lblHidenRolesId').val(data.userRoleId);
+         //            console.log(data.dataAccessLevel)
+
+
+         //        })
+         //        .catch(function (error) {
+         //            console.error('Error:', error);
+         //        });
+         //}
+
+
+
+
+        
+
+
+
+
+
 
          function GetRoles() {
              ApiCall(getRolesUrl, token)
@@ -549,6 +608,8 @@
         </div>
         `;
 
+         row.dataAccessLevel = row.dataAccessLevel === 1 ? 'Only Me' : row.dataAccessLevel === 2 ? 'Own Department' : row.dataAccessLevel === 3 ? 'All' : row.dataAccessLevel === 4 ? 'Custom' : 'NA';
+
          row.isApprovingAuthority = `
         <div class="form-check form-switch form-switch-primary form-switch-sm">
             <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isApprovingAuthority ? 'checked' : ''}>
@@ -561,6 +622,7 @@
                  { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                  { "name": "name", "title": "Name", "className": "userDatatable-content" },
                  { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
+                 { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isApprovingAuthority", "title": "Is Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -613,95 +675,7 @@
              });
          }
 
-        // function bindTableData(data) {
-        //     if ($('.adv-table').data('footable')) {
-        //         $('.adv-table').data('footable').destroy();
-        //     }
-        //     $('.adv-table').html('');
-        //     $('#filter-form-container').empty();
-
-        //     data.forEach(row => {
-        //         row.name = `
-        //<div class="permission-name-container">
-        //    ${row.name}
-        //    <div class="actions-container">
-        //        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-        //            <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
-        //            <li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
-        //            <li><a href="javascript:void(0)" data-id="${row.userId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-        //        </ul>
-        //    </div>
-        //</div>
-        //`;
-
-        // row.isActive = `
-        //<div class="form-check form-switch form-switch-primary form-switch-sm">
-        //    <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
-        //    <label class="form-check-label" for="switch-${row.userId}"></label>
-        //</div>
-        //`;
-                 
-        // row.isGuestUser = `
-        //<div class="form-check form-switch form-switch-primary form-switch-sm">
-        //    <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
-        //    <label class="form-check-label" for="switch-${row.userId}"></label>
-        //</div>
-        //`;
-        //     });
-
-        //     const columns = [
-        //         { "name": "userId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-        //         { "name": "name", "title": "Name", "className": "userDatatable-content" },
-        //         { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
-        //         { "name": "email", "title": "Email", "className": "userDatatable-content" },
-        //         { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-        //         { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-        //     ];
-
-        //     try {
-        //         $('.adv-table').footable({
-        //             "columns": columns,
-        //             "rows": data,
-        //             "filtering": {
-        //                 "enabled": true,
-        //                 "placeholder": "Search...",
-        //                 "dropdownTitle": "Search in:",
-        //                 "position": "left",
-        //                 "containers": "#filter-form-container",
-        //                 "space": true
-        //             }
-        //         }).on('postinit.ft.table', function (e) {
-        //             $('.footable-loader').hide();
-        //         });
-        //     } catch (error) {
-        //         console.error("Error initializing Footable:", error);
-        //     }
-
-        //     // Clear and re-attach event listeners
-        //     $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
-        //         const userId = $(this).data('id');
-        //         FetchDataForEdit(userId);
-        //         console.log('Edit button clicked for ID:', userId);
-        //     });
-
-        //     $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-        //         const id = $(this).data('id');
-        //         Delete(id);
-        //         console.log('Delete button clicked for ID:', id);
-        //     });
-
-        //     $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-        //         const id = $(this).data('id');
-        //          FetchDataForView(id);
-        //         console.log('View button clicked for ID:', id);
-        //     });
-
-        //     $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
-        //         const id = $(this).data('id');
-        //         console.log('Feature button clicked for ID:', id);
-        //         //FetchDataForEdit(id);
-        //     });
-        // }
+       
          var selectedPermissionIDs = [];
          var responseData = null;
          function GetStpPkgFeatures() {
@@ -771,47 +745,195 @@
                     "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
                 };
             });
-        }
-         //function transformToJSTreeFormat(data) {
-         //    return data.map(function (item) {
-         //        let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
+         }
+         var selectedIds = []; // This will hold the selected department IDs (for update)
+         var isUpdateMode = false; // This will determine if it's update mode or add mode
 
-         //        return {
-         //            "id": item.isPermission,
-         //            "text": item.name,
-         //            "state": {
-         //                "opened": true,
-         //                "selected": hasSelectedChild
-         //            },
-         //            "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
-         //            "li_attr": {
-         //                "id": item.isPermission
-         //            },
-         //            "original": {
-         //                "isPermission": item.isPermission
-         //            },
-         //            "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
-         //        };
-         //    });
+         // Call this function with the appropriate mode and selected department IDs
+         function GetUserDepartment(selectedDepartmentIds = [], mode = 'add') {
+             isUpdateMode = (mode === 'update'); // Set mode
+
+             ApiCall(getUserDepartmentUrl, token)
+                 .then(function (response) {
+                     if (response.statusCode === 200) {
+                         var responseData = response.data;
+
+                         $('#departmentCheckboxes').empty();
+
+                         var selectAllHtml = `
+                    <label>
+                        <input type="checkbox" id="selectAllDepartments">
+                        Select All
+                    </label><br>
+                `;
+                         $('#departmentCheckboxes').append(selectAllHtml);
+
+                         // Ensure that selectedDepartmentIds are converted to strings (if needed)
+                         selectedDepartmentIds = selectedDepartmentIds.map(id => id.toString());
+
+                         // Check if selectedDepartmentIds has values, and only apply checked logic if true
+                         var hasSelectedDepartments = selectedDepartmentIds.length > 0;
+                         console.log(selectedDepartmentIds);
+
+                         responseData.forEach(function (department) {
+                             var isChecked = hasSelectedDepartments && selectedDepartmentIds.includes(department.dptId.toString());
+
+                             var checkboxHtml = `
+                        <label>
+                            <input type="checkbox" name="departments" value="${department.dptId}" class="departmentCheckbox" ${isChecked ? 'checked' : ''}>
+                            ${department.dptName}
+                        </label><br>
+                    `;
+
+                             $('#departmentCheckboxes').append(checkboxHtml);
+                         });
+
+                         // Handle the select all functionality
+                         $('#selectAllDepartments').on('change', function () {
+                             var isChecked = $(this).is(':checked');
+                             $('.departmentCheckbox').prop('checked', isChecked);
+                             logSelectedDepartmentIds();
+                         });
+                         $('.departmentCheckbox').on('change', function () {
+                             var allChecked = $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length;
+                             $('#selectAllDepartments').prop('checked', allChecked);
+                             logSelectedDepartmentIds();
+                         });
+
+                         function logSelectedDepartmentIds() {
+                             selectedIds = [];
+                             $('.departmentCheckbox:checked').each(function () {
+                                 selectedIds.push($(this).val());
+                             });
+                             console.log('Selected Department IDs:', selectedIds);
+                         }
+
+                     } else {
+                         console.error('Error occurred while fetching data:', response.message);
+                     }
+                 })
+                 .catch(function (error) {
+                     $('.loaderCosting').hide();
+                     console.error('Error occurred while fetching data:', error);
+                 });
+         }
+
+
+
+
+
+
+
+
+
+         //var selectedIds = [];
+         //function GetUserDepartment() {
+         //    ApiCall(getUserDepartmentUrl, token)
+         //        .then(function (response) {
+         //            if (response.statusCode === 200) {
+         //                var responseData = response.data;
+
+         //                console.log('department :', responseData);
+
+         //                $('#departmentCheckboxes').empty();
+
+         //                var selectAllHtml = `
+         //           <label>
+         //               <input type="checkbox" id="selectAllDepartments">
+         //               Select All
+         //           </label><br>
+         //       `;
+         //                $('#departmentCheckboxes').append(selectAllHtml);
+
+         //                responseData.forEach(function (department) {
+         //                    var checkboxHtml = `
+         //               <label>
+         //                   <input type="checkbox" name="departments" value="${department.dptId}" class="departmentCheckbox">
+         //                   ${department.dptName}
+         //               </label><br>
+         //           `;
+         //                    $('#departmentCheckboxes').append(checkboxHtml);
+         //                });
+
+         //                $('#selectAllDepartments').on('change', function () {
+         //                    var isChecked = $(this).is(':checked');
+         //                    $('.departmentCheckbox').prop('checked', isChecked);
+         //                    logSelectedDepartmentIds(); 
+         //                });
+
+         //                $('.departmentCheckbox').on('change', function () {
+         //                    var allChecked = $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length;
+         //                    $('#selectAllDepartments').prop('checked', allChecked);
+         //                    logSelectedDepartmentIds();
+         //                });
+
+         //                function logSelectedDepartmentIds() {
+         //                     selectedIds = [];
+         //                    $('.departmentCheckbox:checked').each(function () {
+         //                        selectedIds.push($(this).val()); 
+         //                    });
+         //                    console.log('Selected Department IDs:', selectedIds); // Log selected IDs to console
+         //                }
+
+         //                $('.footable-loader').show();
+         //            } else {
+         //                console.error('Error occurred while fetching data:', response.message);
+         //            }
+         //        })
+         //        .catch(function (error) {
+         //            $('.loaderCosting').hide();
+         //            console.error('Error occurred while fetching data:', error);
+         //        });
          //}
+
+
 
          var selectedPermissionIDsUpdate = [];
          var selectedPermissionIDsRolesWise = [];
          var PreviusPermissionsID = [];
-
+         var isEdit;
          function FetchDataRolesWise(moduleID) {
              ApiCallById(getRolesByIdUrl, token, moduleID)
                  .then(function (response) {
-                     console.log('Data:', response);
                      var data = response.data;
                      $('#lblHidenRolesId').val(data.userRoleId);
+                     if (data.dataAccessLevel == 4) {
+                         //var isEdit = true;
+                         if (IsEditData == true) {
+
+                             GetUserDepartment(selectedIds, 'update');
+
+                         }
+                         else {
+                             GetUserDepartment([], 'add');
+
+                         }
+
+                         $('#DataAccessStatus').text('');
+                         $('#DataAccessStatus').append('Custom');
+                         $('#departmentCheckboxes').show();
+                     }
+                     else if (data.dataAccessLevel == 1) {
+                         $('#DataAccessStatus').text('');
+                         $('#DataAccessStatus').append('Only ME');
+                         $('#departmentCheckboxes').hide();
+                     }
+                     else if (data.dataAccessLevel == 2) {
+                         $('#DataAccessStatus').text('');
+                         $('#DataAccessStatus').append('Own Department');
+                         $('#departmentCheckboxes').hide();
+                     }
+                     else {
+                         $('#DataAccessStatus').text('');
+                         $('#DataAccessStatus').append('All');
+                         $('#departmentCheckboxes').hide();
+                     }
                      // BoxExpland();
                      selectedPermissionIDsRolesWise = [];
                      selectedPermissionIDsRolesWise = JSON.parse(data.permissions);
                      PreviusPermissionsID = [];
                      PreviusPermissionsID = JSON.parse(data.permissions);
-                     console.log('additionalPermissions:', additionalPermissions);
-                     console.log('removedPermissions:', removedPermissions);
+
 
                      if (IsEditData) {
                          if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
@@ -825,10 +947,8 @@
                                  }
                              });
 
-                             console.log('After update - selectedPermissionIDsRolesWise:', selectedPermissionIDsRolesWise);
                          } else {
                              // If no removed or additional permissions, update selectedPermissionIDsRolesWise with existing permissions
-                             console.log('Only roles data:', selectedPermissionIDsRolesWise);
                              selectedPermissionIDsRolesWise = JSON.parse(data.permissions);
                          }
 
@@ -836,7 +956,6 @@
                          IsEditData = false;
                      }
 
-                     console.log('Roles data:', selectedPermissionIDsRolesWise);
                      if (Array.isArray(selectedPermissionIDsRolesWise)) {
                          var treeData = transformToJSTreeFormats(responseData);
                          $('#treeContainer').jstree("destroy").empty();
@@ -858,7 +977,7 @@
                          }).on('ready.jstree', function (e, data) {
 
                              selectedPermissionIDsRolesWise.forEach(function (id) {
-                                 console.log("id.toString()", id.toString());
+                                 //console.log("id.toString()", id.toString());
                                  data.instance.select_node(id.toString());
                              });
                          }).on('changed.jstree', function (e, data) {
@@ -870,10 +989,8 @@
                                      selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
                                  }
                              }
-                             console.log('roles Data and Additional Data:', selectedPermissionIDsUpdate);
                          });
                      } else {
-                         console.error('responseData.features is not an array:', responseData.features);
                      }
                  })
                  .catch(function (error) {
@@ -1008,9 +1125,31 @@
              var isAuthPerm = $('#chkIsAuthPerm').is(':checked');
              var treeInstance = $('#treeContainer').jstree(true);
 
+             var dataAccessPermission = JSON.stringify(selectedIds);
+
+
+             ////var stringArray = ["00010", "0009", "0011"];
+             //var dataAccessPermission = dataAccessPermissionid.map(function (item) {
+             //    return Number(item);
+             //});
+             //console.log(dataAccessPermission); 
+
+             //var numberArray = selectedIds.map(function (item) {
+             //    return Number(item); // Convert each string to a number
+             //});
+
+             //// If needed, convert to JSON string for further use
+             //var dataAccessPermission = JSON.stringify(numberArray);
+
+             //console.log(numberArray);            // Output: [10, 9, 11]
+             //console.log(dataAccessPermission); // Output: "[10,9,11]"
+
+
              var jsonRolesData = JSON.stringify(PreviusPermissionsID);
              var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
 
+             
+             //var dataAccessPermissionInt = JSON.parse(dataAccessPermission);
              var rolesDataArray = JSON.parse(jsonRolesData);
              var updateDataArray = JSON.parse(jsonUpdateData);
              var removedItems = findDifferences(rolesDataArray, updateDataArray);
@@ -1039,6 +1178,7 @@
                  ReferenceID: refaranceEmp,
                  AdditionalPermissions:additionalPermissions,
                  RemovedPermissions: removedPermissions,
+                 dataAccessPermission:dataAccessPermission,
                  IsActive: isActive,
              };
 
@@ -1081,6 +1221,7 @@
                  var isActive = $('#chkIsActive').is(':checked');
                  var isGuest = $('#chkIsGetUser').is(':checked');
                  var isAuthPerm = $('#chkIsAuthPerm').is(':checked');
+                 var dataAccessPermission = JSON.stringify(selectedIds);
 
 
              var jsonRolesData = JSON.stringify(PreviusPermissionsID);
@@ -1113,6 +1254,8 @@
                     ReferenceID: refaranceEmp,
                     AdditionalPermissions: additionalPermissions,
                     RemovedPermissions: removedPermissions,
+                    dataAccessPermission:dataAccessPermission,
+
                     IsActive: isActive,
                 };
 
@@ -1170,6 +1313,13 @@
 
                      additionalPermissions = [];
                      removedPermissions = [];
+                     selectedIds = JSON.parse(data.dataAccessPermission);
+
+                     // console.log("selectedIds calling function", selectedIds);
+                     // Convert all IDs to strings to match the checkbox value types
+                     //  selectedIds = selectedIds.map(id => id.toString());
+
+                     //GetUserDepartment(selectedIds, 'update');
 
                      if (data.additionalPermissions.length > 0) {
                          additionalPermissions = JSON.parse(data.additionalPermissions);
@@ -1196,7 +1346,6 @@
                          $('#FirstName, #LastName').hide();
                          $('#ddlReference').show();
                      }
-
 
 
                      console.log(GuestUser);

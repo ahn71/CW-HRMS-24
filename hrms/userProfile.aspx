@@ -67,6 +67,20 @@
                      <!-- Profile Acoount End -->
                   </div>
                   <div class="col-xxl-9 col-lg-8 col-sm-7">
+                      <div class="as-cover">
+                          <div class="as-cover__imgWrapper">
+                              <input id="file-upload1" type="file" name="fileUpload" class="d-none">
+                              <label for="file-upload">
+                                  <img src="img/wellcome-photo.jpg" alt="image" class="w-100">
+                                  <span class="ap-cover__changeImgBtn">
+<%--                                      <span class="btn btn-outline-primary cover-btn">
+                                          <img src="img/svg/camera.svg" alt="camera" class="svg">Change
+                                    Cover</span>--%>
+                                  </span>
+                              </label>
+                          </div>
+                      </div>
+
                      <div class="mb-50">
                         <div class="tab-content" id="v-pills-tabContent">
                            <div class="tab-pane fade  show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
