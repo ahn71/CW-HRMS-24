@@ -22,126 +22,189 @@
 
     <%--  <img alt="" class="main_/images" src="/images/hrd.png">--%>
     <div>
+    <%if (IsRouteExists("salary"))
+        { %>
         <div class="container">
             <div class="row">
-
+             <% if (IsRouteExists("salary/salary-entry"))
+                { %>
                 <div runat="server" id="divSalaryEntry" class="col-md-3">
-                    <a class="ds_Settings_Basic_Text" href="/payroll/payroll_entry_panel.aspx">
+                    <a class="ds_Settings_Basic_Text" href="/hrms/salary/salary-entry">
                         <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br />
                         <span>Salary Entry Panel</span></a>
 
                 </div>
+              <% } %>
+              <% if (IsRouteExists("salary/salary-entry"))
+                  { %>
                 <div runat="server" id="divSalaryEntryc" class="col-md-3">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/payroll_entry_panelc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-entry">
                         <i class="fa-solid fa-money-check-dollar FsiconStyle"></i>
                        <span>Salary Entry Panel</span></a>
 
                 </div>
+             <% } %>
+            <% if (IsRouteExists("salary/salary-allowance"))
+               { %>
                 <div runat="server" id="divAllowanceCalculation" class="col-md-3">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/allowance_calculation_settings.aspx">
+                    <a class="ds_Settings_Basic_Text" href="/hrms/salary/salary-allowance">
                        <i class="fa fa-hand-holding-usd FsiconStyle"></i><br />
                         Allowance Calculation </a>
 
-                </div>            
-                 <div runat="server" class="col-md-3" title="Punishment">
+                </div>   
+                <% } %>
+
+<%--                 <div runat="server" class="col-md-3" title="Punishment">
                     <a class="ds_Settings_Basic_Text " href="/payroll/salary/other_pay_deduction.aspx">
                         <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
                        Punishment</a>
-                </div>   
+                </div>   --%>
+
+                 <% if (IsRouteExists("salary/salary-process"))
+                 { %>
                 <div runat="server" class="col-md-3" title="Salary Processing">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_processing.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-process">
                         <i class="fas fa-money-bill-alt FsiconStyle"></i><br />
                         Salary Processing (New)</a>
                 </div>              
-               
+                   <% } %>
+                
+              <% if (IsRouteExists("salary/salary-report"))
+                    { %>
                 <div class=" col-md-3" title="Monthly Salary Sheet">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/salary_sheet.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-report">
                         <i class="fas fa-hand-holding-usd FsiconStyle"></i><br />
                         Salary Sheet (New)</a>
                 </div>            
-                
+                  <% } %>
+
+                <% if (IsRouteExists("salary/monthly-ot-report"))
+                   { %>
                    <div runat="server"  class=" col-md-3" title="Overtime Payment Sheet">
 
-                    <a class="ds_Settings_Basic_Text " href="/payroll/salary/ot_payment.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/monthly-ot-report">
                        <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br />
                         Only OT Payment (New)</a>
                 </div>
-             
-
+                 <% } %>
+               <% if (IsRouteExists("salary/salary-promotion"))
+                  { %>
                 <div runat="server" id="divPromotionEntry" class=" col-md-3" title="Employee Promotion">
-                    <a class="ds_Settings_Basic_Text " href="/personnel/promotion.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-promotion">
                         <i class="fas fa-chart-line FsiconStyle"></i><br />
                         Promotion Entry Panel</a>
 
                 </div>
+                <% } %>
+                   <% if (IsRouteExists("salary/salary-promotion"))
+                  { %>
                 <div runat="server" id="divPromotionEntryComp" class=" col-md-3" title="Employee Promotion">
-                    <a class="ds_Settings_Basic_Text " href="/personnel/promotionc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hmrs/salary/salary-promotion">
                         <i class="fas fa-chart-line iconStyle FsiconStyle"></i><br />
                         Promotion Entry Panel</a>
                 </div>
+                 <% } %>
+                <% if (IsRouteExists("salary-promotion/promotion-report"))
+                    { %>
                 <div runat="server" id="divPromotionReport" class=" col-md-3" title="Employees Promotion Report">
-                    <a class="ds_Settings_Basic_Text " href="/personnel/promotion_sheet.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-promotion">
                         <i class="fas fa-chart-line iconStyle FsiconStyle"></i><br />
                         Promotion List Report</a>
 
                 </div>
+                  <% } %>
+
+                
+              <% if (IsRouteExists("salary-promotion/promotion-report"))
+               { %>
                 <div runat="server" id="divPromotionReportComp" class=" col-md-3" title="Employees Promotion Report">
-                    <a class="ds_Settings_Basic_Text " href="/personnel/promotion_sheetc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-promotion">
                         <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
                         Promotion List Report</a>
 
                 </div>
+                <% } %>
+              <% if (IsRouteExists("salary/salary-increment"))
+                { %>
                 <div runat="server" id="divIncrement" class=" col-md-3" title="Salary Increment">
 
-                    <a class="ds_Settings_Basic_Text " href="/personnel/salary_increment.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-increment">
                         <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment Entry Panel</a>
                 </div>
+              <% } %>
+
+              <% if (IsRouteExists("salary/salary-increment"))
+                { %>
                 <div runat="server" id="divIncrementComp" class=" col-md-3" title="Salary Increment">
 
-                    <a class="ds_Settings_Basic_Text " href="/personnel/salary_incrementc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-increment">
                          <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment Entry Panel</a>
                 </div>
+               <% } %>
+               <% if (IsRouteExists("salary/salary-increment"))
+                 { %>
                 <div runat="server" id="divAutoIncrementComp" class=" col-md-3" title="Salary Increment">
 
-                    <a class="ds_Settings_Basic_Text " href="/payroll/AutoIncrementPanel.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-increment">
                         <i class="uil uil-chart-growth iconStyle"></i><br />
                         Auto Increment Panel</a>
                 </div>
+               <% } %>
+                <% if (IsRouteExists("salary-increment/increment-report"))
+                  { %>
                 <div runat="server" id="divIncrementReport" class=" col-md-3" title="Salary Increment Report">
 
-                    <a class="ds_Settings_Basic_Text " href="/personnel/increment_sheet.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary-increment/increment-report">
                          <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment List Report</a>
                 </div>
+                  <% } %>
+                  <% if (IsRouteExists("salary-increment/increment-report"))
+                                           { %>
                 <div runat="server" id="divIncrementReportComp" class=" col-md-3" title="Salary Increment Report">
 
-                    <a class="ds_Settings_Basic_Text " href="/personnel/increment_sheetc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary-increment/increment-report">
                        <i class="uil uil-chart-growth iconStyle"></i><br />
                         Increment List Report</a>
                 </div>
-               
+                 <% } %>
+
+
+              <% if (IsRouteExists("salary/earn-leave-payment-processing"))
+                                           { %>
                 <div runat="server" id="divEarnLeavePaymentGeneration" class=" col-md-3" title="Earn Leave Payment Generation">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_generation.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/earn-leave-payment-processing">
                         <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
-                        Earn Leave Generation</a>
+                        Earn Leave Processing</a>
                 </div>
+                  <% } %>
+
+               <% if (IsRouteExists("salary/earn-leave-payment-sheet"))
+                                           { %>
                 <div runat="server" id="divEarnLeavePaymentGenerationComp" class=" col-md-3" title="Earn Leave Payment Generation">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_generationc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/earn-leave-payment-processing">
                         <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
-                        Earn Leave Generation</a>
+                        Earn Leave Processing</a>
                 </div>
+               <% } %>
+
+                   <% if (IsRouteExists("salary/earn-leave-payment-sheet"))   { %>
                 <div runat="server" id="divEarnLeavePaymentSheet" class="col-md-3" title="Earn Leave Payment Sheet">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_sheet.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/earn-leave-payment-sheet">
                         <i class="fas fa-sign-out-alt FsiconStyle"></i><br />
                         Earn Leave Payment Sheet</a>
                 </div>
+                   <% } %>
+                   <% if (IsRouteExists("salary/earn-leave-payment-sheet"))   { %>
                 <div runat="server" id="divEarnLeavePaymentSheetComp" class="col-md-3" title="Earn Leave Payment Sheet">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/earnleave_payment_sheetc.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/earn-leave-payment-sheet">
                        <i class="fas fa-sign-out-alt FsiconStyle"></i>
                         Earn Leave Payment Sheet</a>
                 </div>
+                  <% } %>
+
                 <%--<div class=" col-md-2" title="Final Bill Payment Sheet">
                       <a class="ds_Settings_Basic_Text Pbox" href="/payroll/final_bill_payment_sheet.aspx"><img class="image_width_for_module" src="/images/common/qualification.ico" /><br />Seperation Final Bill Sheet</a> 
                     
@@ -169,6 +232,7 @@
                  <div class=" col-md-2"></div>
              </div>--%>
         </div>
+       <% } %>
     </div>
     <script type="text/javascript">
 

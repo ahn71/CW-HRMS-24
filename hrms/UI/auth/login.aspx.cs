@@ -471,6 +471,9 @@ namespace SigmaERP.hrms.UI.auth
         protected void btnLogin_Click(object sender, EventArgs e)
         {
             Session["__topMenu__"] = "/hrms/attendance";
+            Session["__topMenuForLeave__"] = "/hrms/leave-root";
+            Session["__topMenuForPersonnel__"] = "/hrms/personnel/employees";
+            Session["__topMenuforSalary__"] = "/hrms/salary";
             Session["__cardUrl__"] = "";
             if (LogingInfo())
             {
