@@ -470,11 +470,7 @@ namespace SigmaERP.hrms.UI.auth
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            Session["__topMenu__"] = "/hrms/attendance";
-            Session["__topMenuForLeave__"] = "/hrms/leave-root";
-            Session["__topMenuForPersonnel__"] = "/hrms/personnel/employees";
-            Session["__topMenuforSalary__"] = "/hrms/salary";
-            Session["__cardUrl__"] = "";
+             cardMenuUrl();
             if (LogingInfo())
             {
                 if (ViewState["__IsCompliance__"].ToString().Equals("True"))
@@ -528,5 +524,19 @@ namespace SigmaERP.hrms.UI.auth
         //}
 
 
+
+        private void cardMenuUrl()
+        {
+            Session["__topMenu__"] = "/hrms/attendance";
+            Session["__topMenuForLeave__"] = "/hrms/leave-root";
+            Session["__topMenuForPersonnel__"] = "/hrms/personnel/employees";
+            Session["__topMenuforSalary__"] = "/hrms/salary";
+            Session["__topMenuAdvance__"] = "/hrms/advance";
+            Session["__topMenuPayroll__"] = "/hrms/payroll";
+            Session["__bonusURl__"] = "/hrms/bonus";
+            Session["__vattaxURl__"] = "/hrms/vat-tax-root";
+            Session["__topMenuPf__"] = "/hrms/provident-found/provident-found";
+            Session["__cardUrl__"] = "";
+        }
     }
 }

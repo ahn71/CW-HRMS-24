@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.Routing;
 
 namespace SigmaERP.hrms.BLL
 {
@@ -61,6 +62,21 @@ namespace SigmaERP.hrms.BLL
 
             string actualPermission = string.Join(",", permissionList);
             return actualPermission;
+        }
+
+
+
+        public static bool IsRouteExists(string url)
+         {
+            foreach (Route route in RouteTable.Routes)
+            {
+                var routeUrl = route.Url?.ToLower();
+                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
 
