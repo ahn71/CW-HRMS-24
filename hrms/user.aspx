@@ -235,8 +235,8 @@
 
                                <div class="col-lg-2 " id="departmentcheck">
                                    <div class="form-group">
-                                       <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Access Department <span class="text-danger">*</span>
+                                       <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center">
+                                            Data Access Level <span class="text-danger">*</span>
                                        </label>
                                        <label id="DataAccessStatus"></label>
                                        <div id="departmentCheckboxes"></div>
@@ -572,61 +572,82 @@
              $('#filter-form-container').empty();
 
              let serialNumber = 1; // Initialize serial number
+             const defaultImage = 'user_img_default.jpg'; // Set the path to your default image here
 
              data.forEach(row => {
                  row.serial = serialNumber++; // Assign serial number to each row
 
-                 var readAction = '<%= Session["__ReadAction__"] %>';   
-                 var updateAction = '<%= Session["__UpdateAction__"] %>';   
+                 var readAction = '<%= Session["__ReadAction__"] %>';
+                 var updateAction = '<%= Session["__UpdateAction__"] %>';
                  var deleteAction = '<%= Session["__DeletAction__"] %>';
-                 
 
-            row.name = `
-                <div class="permission-name-container">
-                    ${row.name}
-                    <div class="actions-container">
-                        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                            ${readAction == "1" ? `<li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>` : ''}
-                            ${updateAction == "1" ? `<li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>` : ''}
-                            ${deleteAction == "1" ? `<li><a href="javascript:void(0)" data-id="${row.userId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>` : ''}
-                        </ul>
-                    </div>
-                </div>`;
+                 // Use default image if userImage is not found or invalid
+                 const userImage = row.userImage ? row.userImage : defaultImage;
 
-
-         row.isActive = `
-        <div class="form-check form-switch form-switch-primary form-switch-sm">
-            <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
-            <label class="form-check-label" for="switch-${row.userId}"></label>
-        </div>
+                 // Combine user image, name, and role
+                 row.userImage = `
+            <div class="user-details-container d-flex align-items-center">
+                <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
+                <div>
+                    <div class="user-name">${row.name}</div>
+                    <div class="user-role">${row.userRoleName}</div>
+                </div>
+            </div>
         `;
 
-         row.isGuestUser = `
-        <div class="form-check form-switch form-switch-primary form-switch-sm">
-            <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
-            <label class="form-check-label" for="switch-${row.userId}"></label>
-        </div>
+                 row.isActive = `
+            <div class="form-check form-switch form-switch-primary form-switch-sm">
+                <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.userId}"></label>
+            </div>
         `;
 
-         row.dataAccessLevel = row.dataAccessLevel === 1 ? 'Only Me' : row.dataAccessLevel === 2 ? 'Own Department' : row.dataAccessLevel === 3 ? 'All' : row.dataAccessLevel === 4 ? 'Custom' : 'NA';
+                 row.isGuestUser = `
+            <div class="form-check form-switch form-switch-primary form-switch-sm">
+                <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isGuestUser ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.userId}"></label>
+            </div>
+        `;
 
-         row.isApprovingAuthority = `
-        <div class="form-check form-switch form-switch-primary form-switch-sm">
-            <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isApprovingAuthority ? 'checked' : ''}>
-            <label class="form-check-label" for="switch-${row.userId}"></label>
-        </div>
+                 row.dataAccessLevel = row.dataAccessLevel === 1
+                     ? '<span class="badge bg-onlyme">Only Me</span>'
+                     : row.dataAccessLevel === 2
+                         ? '<span class="badge bg-warning">Own Department</span>'
+                         : row.dataAccessLevel === 3
+                             ? '<span class="badge bg-success">All</span>'
+                             : row.dataAccessLevel === 4
+                                 ? '<span class="badge bg-info">Custom</span>'
+                                 : '<span class="badge bg-secondary">NA</span>';
+
+
+                 row.isApprovingAuthority = `
+            <div class="form-check form-switch form-switch-primary form-switch-sm">
+                <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isApprovingAuthority ? 'checked' : ''}>
+                <label class="form-check-label" for="switch-${row.userId}"></label>
+            </div>
+        `;
+
+                 // Define the action column HTML with icons for view, edit, and delete
+                 row.action = `
+            <div class="actions">
+                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.userId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li> 
+                </ul>
+            </div>
         `;
              });
 
              const columns = [
                  { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
-                 { "name": "name", "title": "Name", "className": "userDatatable-content" },
-                 { "name": "userRoleName", "title": "Role", "className": "userDatatable-content" },
-                 { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
+                 { "name": "userImage", "title": "User", "className": "userDatatable-content" }, // Combined user image, name, and role column
+                 { "name": "dataAccessLevel", "title": "Access Level", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
-                 { "name": "isGuestUser", "title": "Is Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-                 { "name": "isApprovingAuthority", "title": "Is Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                 { "name": "isGuestUser", "title": "Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                 { "name": "isApprovingAuthority", "title": "Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                 { "name": "isActive", "title": "Status", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                 { "name": "action", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" }, // Action column
              ];
 
              try {
@@ -650,12 +671,11 @@
 
              // Clear and re-attach event listeners
              $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
-                        
                  const userId = $(this).data('id');
                  FetchDataForEdit(userId);
                  console.log('Edit button clicked for ID:', userId);
              });
-              
+
              $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
                  const id = $(this).data('id');
                  Delete(id);
@@ -671,9 +691,10 @@
              $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
                  const id = $(this).data('id');
                  console.log('Feature button clicked for ID:', id);
-                 //FetchDataForEdit(id);
+                 // FetchDataForEdit(id);
              });
          }
+
 
        
          var selectedPermissionIDs = [];
@@ -910,7 +931,7 @@
                          }
 
                          $('#DataAccessStatus').text('');
-                         $('#DataAccessStatus').append('Custom');
+                         $('#DataAccessStatus').append('Custom (Department)');
                          $('#departmentCheckboxes').show();
                      }
                      else if (data.dataAccessLevel == 1) {

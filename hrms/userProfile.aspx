@@ -6,40 +6,26 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <section id="profileEdit">
-          <div class="contents">
+          <div class="mt-3">
          <div class="profile-setting ">
             <div class="container-fluid">
                <div class="row">
-                  <div class="col-lg-12">
-                  </div>
                   <div class="col-xxl-3 col-lg-4 col-sm-5">
                      <!-- Profile Acoount -->
                      <div class="card mb-25">
                         <div class="card-body text-center p-0">
 
                            <div class="account-profile border-bottom pt-25 px-25 pb-0 flex-column d-flex align-items-center ">
-<%--                              <div class="ap-img mb-20 pro_img_wrapper">
-                                 <input id="userProfileImage" type="file" name="fileUpload" class="d-none">
-                                 <label for="file-upload">
-                                    <!-- Profile picture image-->
-                                    <img class="ap-img__main rounded-circle wh-120" id="UserProfileImage" src="img/author/myProfile.jpg" alt="profile">
-                                    <span class="cross" id="remove_pro_pic">
-                                       <img src="img/svg/camera.svg" alt="camera" class="svg">
-                                    </span>
-                                 </label>
-                              </div>--%>
                                <div class="ap-img mb-20 pro_img_wrapper">
-                                   <input id="userProfileImage" type="file" name="fileUpload" class="d-none" accept="image/*" onchange="previewAndUploadImage(this)">
-                                   <label for="userProfileImage">
-                                       <!-- Profile picture image -->
-                                       <img class="ap-img__main rounded-circle wh-120" id="UserProfileImage" src="user_img_default.jpg" alt="profile">
+                                   <input id="file-upload" type="file" name="fileUpload" class="d-none" accept="image/*" onchange="previewAndUploadImage(this)">
+                                   <label for="file-upload">
+                                       <!-- Profile picture image-->
+                                       <img id="UserProfileImages" class="ap-img__main rounded-circle wh-120" src="user_img_default.jpg" alt="profile">
                                        <span class="cross" id="remove_pro_pic">
                                            <img src="img/svg/camera.svg" alt="camera" class="svg">
                                        </span>
                                    </label>
                                </div>
-
-
 
                                <div class="ap-nameAddress pb-3">
                                  <h5 id="txtUserName" class="ap-nameAddress__title">Default Text</h5>
@@ -67,49 +53,95 @@
                      <!-- Profile Acoount End -->
                   </div>
                   <div class="col-xxl-9 col-lg-8 col-sm-7">
-                      <div class="as-cover">
-                          <div class="as-cover__imgWrapper">
-                              <input id="file-upload1" type="file" name="fileUpload" class="d-none">
-                              <label for="file-upload">
-                                  <img src="img/wellcome-photo.jpg" alt="image" class="w-100">
-                                  <span class="ap-cover__changeImgBtn">
-<%--                                      <span class="btn btn-outline-primary cover-btn">
-                                          <img src="img/svg/camera.svg" alt="camera" class="svg">Change
-                                    Cover</span>--%>
-                                  </span>
-                              </label>
-                          </div>
-                      </div>
 
                      <div class="mb-50">
                         <div class="tab-content" id="v-pills-tabContent">
                            <div class="tab-pane fade  show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
                               <!-- Edit Profile -->
-                              <div class="edit-profile mt-25">
+                              <div class="edit-profile">
                                  <div class="card">
                                     <div class="card-header px-sm-25 px-3">
                                        <div class="edit-profile__title">
-                                          <h6>Profile</h6>
-                                          <span class="fs-13 color-light fw-400">Your personal
-                                             information</span>
+                                          <h6>Basic info</h6>
+                                          <span class="fs-13 color-light fw-400"></span>
                                        </div>
                                     </div>
                                     <div class="card-body">
                                        <div class="row justify-content-center">
                                           <div class="col-xxl-6">
-                                              <div class="edit-profile__body mx-xl-20">
-                                                  <div class="form-group mb-20">
-                                                      <label for="names" id="userRole">User Role: Admin</label>
-                                                  </div>
+                                             <div class="edit-profile__body mx-xl-20">
+                                                 <table class="table">
+                                                     <tbody>
+                                                         <tr>
+                                                             <td>Full Name</td>
+                                                             <td id="fullName">Johir Raihan</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Email</td>
+                                                             <td>
+                                                                 <label id="userEmail" for="names"></label>
+                                                             </td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Phone</td>
+                                                             <td>
+                                                                 <label id="userPhone">+008 01754785256</label>
+                                                             </td>
+                                                         </tr>
+                                                     </tbody>
+                                                 </table>
+                                             </div>
 
-                                                   <div class="form-group mb-20">
-                                                      <label for="names" id="userDepartment">Department: Manager</label>
-                                                  </div>
-                                                  <div class="form-group mb-20">
-                                                      <span> <img class="svg" src="img/svg/mail.svg" alt="mail"></span>
-                                                      <label id="userEmail" for="names"></label>
-                                                  </div>
-                                              </div>
+
+
+
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                   <div class="card mt-25" >
+                                    <div class="card-header px-sm-25 px-3">
+                                       <div class="edit-profile__title">
+                                            <h6>Official
+                                             info</h6>
+
+                                          <span class="fs-13 color-light fw-400"></span>
+                                       </div>
+                                    </div>
+                                    <div class="card-body">
+                                       <div class="row justify-content-center">
+                                          <div class="col-xxl-6">
+                                             <div class="edit-profile__body mx-xl-20">
+                                                 <table class="table">
+                                                     <tbody>
+                                                          <tr>
+                                                             <td>Department</td>
+                                                             <td id="userDepartment">Manager</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Group</td>
+                                                             <td id="userGroup">Oparetor</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Shift</td>
+                                                             <td id="userShift">A</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Designation</td>
+                                                             <td id="userDesg">CEO</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>User Role</td>
+                                                             <td id="userRole">Admin</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Data Access</td>
+                                                             <td id="userDataAccessLevel">Accounts,Admin,HR-Admin,Dry,Cliner</td>
+                                                         </tr>
+                                                     </tbody>
+                                                 </table>
+                                             </div>
+
 
 
 
@@ -123,7 +155,7 @@
          
                            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                               <!-- Edit Profile -->
-                              <div class="edit-profile mt-25">
+                              <div class="edit-profile">
                                  <div class="card">
                                     <div class="card-header  px-sm-25 px-3">
                                        <div class="edit-profile__title">
@@ -193,9 +225,9 @@
                </div>
             </div>
          </div>
-
-
-      </div>
+</div>
+       
+     
     </section>
 
    
@@ -214,20 +246,23 @@
             var userDepartment = '<%= Session["__UserDptNameText__"] %>';
             var userRoles = '<%= Session["__UserRolesText__"] %>';
 
-            $(document).ready(function () {
-                console.log('UserName:', userName);
-                console.log('UserEmail:', userEmail);
+        $(document).ready(function () {
+            // Trigger click on the file input to open the file dialog
+            $('#userProfileImage').trigger('click');
 
-                $('#txtUserName').text(userName);
-                $('#userEmail').text(userEmail);
-                $('#designation').text(userDesignation);
-                $('#userDepartment').text('Department: ' + userDepartment);
+            // Log user details to the console
+            console.log('UserName:', userName);
+            console.log('UserEmail:', userEmail);
 
-                $('#userRole').text('Role :' + userRoles);
+            // Update user information on the page
+            $('#txtUserName').text(userName);
+            $('#userEmail').text(userEmail);
+            $('#designation').text(userDesignation);
+            $('#userDepartment').text('Department: ' + userDepartment);
+            $('#userRole').text('Role: ' + userRoles);
 
-                GetUserData(userId);
-               
-             
+            // Call the function to get user data
+            GetUserData(userId);
         });
 
         function FetchDataForView() {
@@ -262,6 +297,12 @@
             }
         }
 
+        function test() {
+            console.log('hello test');
+
+        }
+
+
         function previewAndUploadImage(input) {
             const file = input.files[0]; // Get the selected file
 
@@ -269,7 +310,7 @@
                 // Preview the selected image
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#UserProfileImage').attr('src', e.target.result); // Set the preview image source
+                    $('#UserProfileImages').attr('src', e.target.result); // Set the preview image source
                 };
                 reader.readAsDataURL(file); // Read the image file as a Data URL
 
@@ -301,7 +342,7 @@
                                 text: successMessage
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    //GetUserData(userId);
+                                    GetUserData(userId);
                                 }
                             });
                         }
@@ -333,16 +374,19 @@
 
                     // Assuming data.userImage contains the relative URL to the user's image (e.g., '/userImage/123.jpg')
                     if (data.userImage) {
-                        $('#UserProfileImage').attr('src', data.userImage); // Set the src of the image to display it
+                        $('#UserProfileImages').attr('src', data.userImage); // Set the src of the image to display it
                     } else {
-                        // If there's no user image, you can set a default or empty image
-                        $('#UserProfileImage').attr('src', 'user_img_default.jpg');
+                        // Set a default image if user image is not available
+                        $('#UserProfileImages').attr('src', 'user_img_default.jpg');
                     }
                 })
                 .catch(function (error) {
                     console.error('Error:', error);
+                    // Optionally, display a default image in case of an error
+                    $('#UserProfileImages').attr('src', 'user_img_default.jpg');
                 });
         }
+
 
 
         function updateUsers(userId) {
