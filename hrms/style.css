@@ -36355,3 +36355,15 @@ body:after {
 .badge {
     border-radius: 10px !important;
 }
+.profileSection{
+    position:sticky;
+}
+.userInfo {
+    margin-top: -36px !important;
+
+}
+
+
+.profile-setting .card .card-header{
+    padding-bottom: 0px !important;
+}

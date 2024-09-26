@@ -12,7 +12,9 @@
                <div class="row">
                   <div class="col-xxl-3 col-lg-4 col-sm-5">
                      <!-- Profile Acoount -->
-                     <div class="card mb-25">
+                     <div class="card mb-25 
+                         
+                      ">
                         <div class="card-body text-center p-0">
 
                            <div class="account-profile border-bottom pt-25 px-25 pb-0 flex-column d-flex align-items-center ">
@@ -28,8 +30,8 @@
                                </div>
 
                                <div class="ap-nameAddress pb-3">
-                                 <h5 id="txtUserName" class="ap-nameAddress__title">Default Text</h5>
-                                 <p id="designation" class="ap-nameAddress__subTitle fs-14 m-0">UI/UX Designer</p>
+                                 <h5 id="txtName" class="ap-nameAddress__title">Defult Name</h5>
+                                 <p id="txtdesignation" class="ap-nameAddress__subTitle fs-14 m-0">UI/UX Designer</p>
                               </div>
 
 <%--                               <div class="ap-button button-group d-flex justify-content-center flex-wrap">
@@ -62,8 +64,8 @@
                                  <div class="card">
                                     <div class="card-header px-sm-25 px-3">
                                        <div class="edit-profile__title">
-                                          <h6>Basic info</h6>
-                                          <span class="fs-13 color-light fw-400"></span>
+                                          <h6>Profile</h6>
+                                          <span class="fs-13 color-light fw-400">Basic info</span>
                                        </div>
                                     </div>
                                     <div class="card-body">
@@ -73,20 +75,72 @@
                                                  <table class="table">
                                                      <tbody>
                                                          <tr>
-                                                             <td>Full Name</td>
-                                                             <td id="fullName">Johir Raihan</td>
+                                                             <td>Name</td>
+                                                             <td id="txtName">Johir Raihan</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Designation</td>
+                                                             <td id="txtUserDesg">CEO</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Department</td>
+                                                             <td id="txtUserDepartment">Manager</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Group</td>
+                                                             <td id="txtUserGroup">Oparetor</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Shift</td>
+                                                             <td id="txtUserShift">A</td>
                                                          </tr>
                                                          <tr>
                                                              <td>Email</td>
                                                              <td>
-                                                                 <label id="userEmail" for="names"></label>
+                                                                 <label id="txtUserEmail" for="names"></label>
                                                              </td>
                                                          </tr>
                                                          <tr>
                                                              <td>Phone</td>
                                                              <td>
-                                                                 <label id="userPhone">+008 01754785256</label>
+                                                                 <label id="txtUserPhone">+008 01754785256</label>
                                                              </td>
+                                                         </tr>
+                                                     </tbody>
+                                                 </table>
+                                             </div>
+
+
+
+
+                                          </div>
+                                       </div>
+                                    </div>
+                                     <div class="card-header px-sm-25 px-3 userInfo">
+                                         <div class="edit-profile__title">
+                                             <span class="fs-13 color-light fw-400 infoBorder">User info</span>
+                                          
+                                         </div>
+                                     </div>
+
+                                        <div class="card-body">
+                                       <div class="row justify-content-center">
+                                          <div class="col-xxl-6">
+                                             <div class="edit-profile__body mx-xl-20">
+                                                 <table class="table">
+                                                     <tbody>
+                                                         <tr>
+                                                             <td>User Name</td>
+                                                             <td id="txtUserName">CEO</td>
+
+                                                         </tr>
+                                                         <tr>
+                                                             <td>User Role</td>
+                                                             <td id="txtUserRole">Admin</td>
+                                                         </tr>
+                                                         <tr>
+                                                             <td>Data Access</td>
+                                                             <td id="txtuserDataAccessLevel">Accounts,Admin,HR-Admin,Dry,Cliner</td>
                                                          </tr>
                                                      </tbody>
                                                  </table>
@@ -99,55 +153,13 @@
                                        </div>
                                     </div>
                                  </div>
-                                   <div class="card mt-25" >
-                                    <div class="card-header px-sm-25 px-3">
+                                   <div class="card" >
                                        <div class="edit-profile__title">
-                                            <h6>Official
-                                             info</h6>
+                                        
 
-                                          <span class="fs-13 color-light fw-400"></span>
                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                       <div class="row justify-content-center">
-                                          <div class="col-xxl-6">
-                                             <div class="edit-profile__body mx-xl-20">
-                                                 <table class="table">
-                                                     <tbody>
-                                                          <tr>
-                                                             <td>Department</td>
-                                                             <td id="userDepartment">Manager</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Group</td>
-                                                             <td id="userGroup">Oparetor</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Shift</td>
-                                                             <td id="userShift">A</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Designation</td>
-                                                             <td id="userDesg">CEO</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>User Role</td>
-                                                             <td id="userRole">Admin</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Data Access</td>
-                                                             <td id="userDataAccessLevel">Accounts,Admin,HR-Admin,Dry,Cliner</td>
-                                                         </tr>
-                                                     </tbody>
-                                                 </table>
-                                             </div>
-
-
-
-
-                                          </div>
-                                       </div>
-                                    </div>
+                                    
+                                 
                                  </div>
                               </div>
                               <!-- Edit Profile End -->
@@ -256,10 +268,10 @@
 
             // Update user information on the page
             $('#txtUserName').text(userName);
-            $('#userEmail').text(userEmail);
-            $('#designation').text(userDesignation);
-            $('#userDepartment').text('Department: ' + userDepartment);
-            $('#userRole').text('Role: ' + userRoles);
+            $('#txtUserEmail').text(userEmail);
+            $('#txtDesignation').text(userDesignation);
+            $('#txtUserDepartment').text('Department: ' + userDepartment);
+            $('#txtUserRole').text('Role: ' + userRoles);
 
             // Call the function to get user data
             GetUserData(userId);

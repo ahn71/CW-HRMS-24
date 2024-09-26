@@ -1389,8 +1389,8 @@
                      Swal.fire({
                          title: 'User Information',
                          html: `
-                    <strong>User Name:</strong> ${data.userName}<br>
-                    <strong>User Password:</strong> ${data.userPassword}
+                    <strong>UserName:</strong> ${data.userName}<br>
+                    <strong>Password:</strong> ${data.userPassword}
                 `,
                          icon: 'info',
                          confirmButtonText: 'OK'
