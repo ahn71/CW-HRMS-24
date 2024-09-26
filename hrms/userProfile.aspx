@@ -130,17 +130,17 @@
                                                  <table class="table">
                                                      <tbody>
                                                          <tr>
-                                                             <td>User Name</td>
+                                                             <td>Username</td>
                                                              <td id="txtUserName">CEO</td>
 
                                                          </tr>
                                                          <tr>
-                                                             <td>User Role</td>
+                                                             <td>Role</td>
                                                              <td id="txtUserRole">Admin</td>
                                                          </tr>
                                                          <tr>
-                                                             <td>Data Access</td>
-                                                             <td id="txtuserDataAccessLevel">Accounts,Admin,HR-Admin,Dry,Cliner</td>
+                                                             <td>Data Access Level</td>
+                                                             <td id="txtuserDataAccessLevel">Custom (Accounts,Admin)</td>
                                                          </tr>
                                                      </tbody>
                                                  </table>
