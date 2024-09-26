@@ -1155,16 +1155,18 @@
 
     function eye_Loginpass() {
         $(".toggle-password2").click(function () {
-            $(this).toggleClass("uil-eye");
-            input = $(this).parent().find("#txtPassword");
-            if (input.attr("type") == "password") {
+            $(this).toggleClass("uil-eye");  // Toggle between eye and eye-slash icons
+            let input = $(this).parent().find("#txtPassword");
+            if (input.attr("type") === "password") {
                 input.attr("type", "text");
             } else {
                 input.attr("type", "password");
             }
         });
     }
+
     eye_Loginpass();
+
 
 
   /* Input password toggle */

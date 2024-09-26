@@ -1395,6 +1395,7 @@
     <Content Include="hrms\img\png%402x.png" />
     <Content Include="hrms\img\post-image.png" />
     <Content Include="hrms\img\premium-clock.png" />
+    <Content Include="hrms\img\profile-cover-photo.jpg" />
     <Content Include="hrms\img\profile_bg.png" />
     <Content Include="hrms\img\profile_bg_2.png" />
     <Content Include="hrms\img\psd%402x.png" />
@@ -1695,6 +1696,7 @@
     <Content Include="hrms\img\upload.png" />
     <Content Include="hrms\img\video-camera.png" />
     <Content Include="hrms\img\visa.png" />
+    <Content Include="hrms\img\wellcome-photo.jpg" />
     <Content Include="hrms\img\women-bag.png" />
     <Content Include="hrms\img\youtube.png" />
     <Content Include="hrms\img\zip%402x.png" />

@@ -76,30 +76,19 @@
                                         </div>
                                         <div class="col-lg-4" id="">
                                             <div class="form-group">
-                                                <label for="ddlDataAccessLevel" class="color-dark fs-14 fw-500 align-center mb-10">Data Access Level</label>
+                                                <label for="ddlDataAccessLevel" class="color-dark fs-14 fw-500 align-center mb-10">Data Access Level <span class="text-danger">*</span></label>
                                                 <div class="support-form__input-id">
                                                     <div class="dm-select ">
                                                         <select name="ddlDataAccessLevel" id="ddlDataAccessLevel" class="select-search form-control">
                                                             <option value="0">---Select---</option>
-                                                            <option value="1">All</option>
-                                                            <option value="2">Won Department</option>
-                                                            <option value="3">Department wise</option>
-                                                            <option value="4">Employee Wise</option>
-                                                            <option value="5">Only Me</option>
+                                                            <option value="3">All</option>
+                                                            <option value="2">Own Department</option>
+                                                            <option value="1">Only Me</option>
+                                                            <option value="4">Custom</option>
                                                         </select>
                                                     </div>
                                                     <span class="text-danger" id="errorDataAccessLevel"></span>
                                                 </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <label for="departmentCheckboxes" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                    Data Access Level <span class="text-danger">*</span>
-                                                </label>
-                                                <div id="departmentCheckboxes"></div>
-
                                             </div>
                                         </div>
                                        </div>
@@ -173,7 +162,6 @@
         var postRolesUrl = rootUrl + '/api/UserRoles/create';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
-         var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
          var updateRolesUrl = rootUrl + '/api/UserRoles/update';
          var DeleteRoleUrl = rootUrl + '/api/UserRoles/delete';
         var getStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
@@ -186,7 +174,15 @@
             //GetModule();
             GetStpPkgFeatures();
             GetRoles();
-            GetUserDepartment();
+            //$('#ddlDataAccessLevel').change(function () {
+            //    var selectedValue = $(this).val();
+
+            //    // If "Department wise" option is selected (value = 3)
+            //    if (selectedValue == '3') {
+            //        GetUserDepartment();
+            //    }
+            //});
+            
         });
 
         function Cardbox() {
@@ -225,25 +221,34 @@
                 isValid = false;
             } else {
                 $('#orderingError').html("");
-            }
-            if (isValid) {
-                var addnewElement = $("#btnSave");
-                if (addnewElement.html() === "Save") {
-                    PostStpPkgFeatures();
-                    //ClearTextBox();
-                }
-                else {
-                    //updatePackages();
-                    updateRoles();
-                    //ClearTextBox();
-                }
-            }
+             }
+
+             let selectedRole = $('#ddlDataAccessLevel').val();
+             if (selectedRole == "0") {
+                 $('#errorDataAccessLevel').html("Please select Data Access Level.");
+                 $("#ddlDataAccessLevel").focus();
+                 isValid = false;
+             } else {
+                 $('#errorDataAccessLevel').html("");
+             }
+
+             if (isValid) {
+                 var addnewElement = $("#btnSave").text().trim();
+                 if (addnewElement === "Save") {
+                     PostStpPkgFeatures();
+                 }
+                 else {
+                     updateRoles(); 
+
+                 }
+             }
         }
 
 
          function PostStpPkgFeatures() {
             var roleName = $('#txtRole').val();
-            var ordering = parseInt($('#txtOrdaring').val());
+             var ordering = parseInt($('#txtOrdaring').val());
+            var dataAccessLevel = parseInt($('#ddlDataAccessLevel').val());
             var isActive = $('#chkIsActive').is(':checked');
             var treeInstance = $('#treeContainer').jstree(true);
 
@@ -252,6 +257,7 @@
 
             var postData = {
                 UserRole: roleName,
+                dataAccessLevel: dataAccessLevel,
                 Permissions: jsonString,
                 Ordering: ordering,
                 IsActive: isActive
@@ -286,6 +292,8 @@
          function updateRoles() {
                 var roleId = $('#lblHidenRolesId').val();
                 var txtRole = $('#txtRole').val();
+                var dataAccessLevel = parseInt($('#ddlDataAccessLevel').val());
+
                 var ordering = parseInt($('#txtOrdaring').val());
                 var isActive = $('#chkIsActive').is(':checked');
                 var treeInstance = $('#treeContainer').jstree(true);
@@ -295,6 +303,7 @@
 
                 var updateData = {
                     UserRole: txtRole,
+                    dataAccessLevel: dataAccessLevel,
                     Permissions: jsonString,
                     Ordering: ordering,
                     IsActive: isActive
@@ -357,49 +366,7 @@
             });
         }
 
-        function GetUserDepartment() {
-            ApiCall(getUserDepartmentUrl, token)
-                .then(function (response) {
-                    if (response.statusCode === 200) {
-                        var responseData = response.data;
-                        $('#departmentCheckboxes').empty();
 
-                        var selectAllHtml = `
-                    <label>
-                        <input type="checkbox" id="selectAllDepartments">
-                        Select All
-                    </label><br>
-                `;
-                        $('#departmentCheckboxes').append(selectAllHtml);
-                        responseData.forEach(function (department) {
-                            var checkboxHtml = `
-                        <label>
-                            <input type="checkbox" name="departments" value="${department.dptId}" class="departmentCheckbox">
-                            ${department.dptName}
-                        </label><br>
-                    `;
-                            $('#departmentCheckboxes').append(checkboxHtml);
-                        });
-
-                        $('#selectAllDepartments').on('change', function () {
-                            var isChecked = $(this).is(':checked');
-                            $('.departmentCheckbox').prop('checked', isChecked); 
-                        });
-                        $('.departmentCheckbox').on('change', function () {
-                            var allChecked = $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length;
-                            $('#selectAllDepartments').prop('checked', allChecked);
-                        });
-
-                        $('.footable-loader').show();
-                    } else {
-                        console.error('Error occurred while fetching data:', response.message);
-                    }
-                })
-                .catch(function (error) {
-                    $('.loaderCosting').hide();
-                    console.error('Error occurred while fetching data:', error);
-                });
-        }
 
 
 
@@ -420,19 +387,24 @@
                     console.error('Error occurred while fetching data:', error);
                 });
         }
+       // This function binds data to the table with serial numbers and user role-specific actions
         function bindTableData(data) {
+
+            // Step 1: Destroy any existing Footable instance to avoid conflicts when reinitializing
             if ($('.adv-table').data('footable')) {
                 $('.adv-table').data('footable').destroy();
             }
+
+            // Step 2: Clear the HTML content of the table and filter container
             $('.adv-table').html('');
             $('#filter-form-container').empty();
 
-            // Loop through the data and bind it to the table with serial numbers for display
+            // Step 3: Loop through the data array and modify the rows for display
             data.forEach((row, index) => {
-                // Generate serial number based on the loop index (starting from 1) for display
+                // Assign a serial number based on the loop index
                 row.serialNo = index + 1;
 
-                // Use the actual userRoleId for the actions
+                // Create the HTML for userRoleName column including actions (View, Edit, Delete)
                 row.userRoleName = `
             <div class="permission-name-container">
                 ${row.userRoleName}
@@ -446,6 +418,7 @@
             </div>
         `;
 
+                // Create the HTML for isActive column with a toggle switch
                 row.isActive = `
             <div class="form-check form-switch form-switch-primary form-switch-sm">
                 <input type="checkbox" class="form-check-input" id="switch-${row.userRoleId}" ${row.isActive ? 'checked' : ''}>
@@ -453,21 +426,28 @@
             </div>
         `;
 
+                // Create the HTML for permissions column with a feature icon
                 row.permissions = `
             <div class="features-icon-container">
                 <a href="javascript:void(0)" class="feature-btn" data-id="${row.userRoleId}"><i class="uil uil-star"></i></a>
             </div>
         `;
+
+                // Step 4: Conditionally modify the Data Access Level column (1: All, 2: Only Me)
+                row.dataAccessLevel = row.dataAccessLevel === 1 ? 'Only Me' : row.dataAccessLevel === 2 ? 'Own Department' : row.dataAccessLevel === 3 ? 'All' : row.dataAccessLevel === 4 ? 'Custom' : 'NA';
             });
 
+            // Step 5: Define the columns for the table, including custom rendering logic for some columns
             const columns = [
                 { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                 { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
                 { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
+                { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                 { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
             ];
 
+            // Step 6: Initialize Footable with the columns and data, enable filtering
             try {
                 $('.adv-table').footable({
                     "columns": columns,
@@ -481,35 +461,44 @@
                         "space": true
                     }
                 }).on('postinit.ft.table', function (e) {
+                    // Hide loader after table initialization
                     $('.footable-loader').hide();
                 });
             } catch (error) {
                 console.error("Error initializing Footable:", error);
             }
 
-            // Clear and re-attach event listeners
+            // Step 7: Attach event listeners for actions (Edit, Delete, View, Feature)
+
+            // Clear and re-attach the edit button click event
             $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
                 const userRoleId = $(this).data('id');
-                FetchDataForEdit(userRoleId);
+                FetchDataForEdit(userRoleId); // Custom function to handle edit logic
                 console.log('Edit button clicked for userRoleId:', userRoleId);
             });
 
+            // Clear and re-attach the delete button click event
             $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
                 const userRoleId = $(this).data('id');
-                Delete(userRoleId);
+                Delete(userRoleId); // Custom function to handle delete logic
                 console.log('Delete button clicked for userRoleId:', userRoleId);
             });
 
+            // Clear and re-attach the view button click event
             $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
                 const userRoleId = $(this).data('id');
                 console.log('View button clicked for userRoleId:', userRoleId);
+                // You can add your view logic here
             });
 
+            // Clear and re-attach the feature button click event
             $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
                 const userRoleId = $(this).data('id');
                 console.log('Feature button clicked for userRoleId:', userRoleId);
+                // Add logic for feature handling
             });
         }
+
 
 
         //function bindTableData(data) {
@@ -712,6 +701,8 @@
                     var data = response.data;
                     $('#lblHidenRolesId').val(data.userRoleId);
                     $('#txtRole').val(data.userRoleName);
+                    $('select[name="ddlDataAccessLevel"]').val(data.dataAccessLevel).change();
+
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');
