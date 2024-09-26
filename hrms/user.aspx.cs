@@ -40,9 +40,9 @@ namespace SigmaERP.hrms
                 Session["__ReadAction__"] = "1";
             if(permission.Contains(444))
                 Session["__WriteAction__"] = "1";
-            if (permission.Contains(445))
+            if (permission.Contains(447))
                 Session["__UpdateAction__"] = "1";
-            if(permission.Contains(446))
+            if(permission.Contains(448))
                 Session["__DeletAction__"] = "1";
 
 
