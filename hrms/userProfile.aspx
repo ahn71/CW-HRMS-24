@@ -1,7 +1,12 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userProfile.aspx.cs" Inherits="SigmaERP.hrms.userProfile" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
-
+            .table td:first-child {
+        width: 30%; /* Adjust this percentage as needed */
+    }
+    .table td:last-child {
+        width: 70%; /* Adjust this percentage as needed */
+    }
    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -12,9 +17,7 @@
                <div class="row">
                   <div class="col-xxl-3 col-lg-4 col-sm-5">
                      <!-- Profile Acoount -->
-                     <div class="card mb-25 
-                         
-                      ">
+                      <div class="card mb-25 accounts">
                         <div class="card-body text-center p-0">
 
                            <div class="account-profile border-bottom pt-25 px-25 pb-0 flex-column d-flex align-items-center ">
@@ -30,7 +33,7 @@
                                </div>
 
                                <div class="ap-nameAddress pb-3">
-                                 <h5 id="txtName" class="ap-nameAddress__title">Defult Name</h5>
+                                 <h5 id="txtNameprofile" class="ap-nameAddress__title">Defult Name</h5>
                                  <p id="txtdesignation" class="ap-nameAddress__subTitle fs-14 m-0">UI/UX Designer</p>
                               </div>
 
@@ -61,98 +64,87 @@
                            <div class="tab-pane fade  show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
                               <!-- Edit Profile -->
                               <div class="edit-profile">
-                                 <div class="card">
-                                    <div class="card-header px-sm-25 px-3">
-                                       <div class="edit-profile__title">
-                                          <h6>Profile</h6>
-                                          <span class="fs-13 color-light fw-400">Basic info</span>
-                                       </div>
-                                    </div>
-                                    <div class="card-body">
-                                       <div class="row justify-content-center">
-                                          <div class="col-xxl-6">
-                                             <div class="edit-profile__body mx-xl-20">
-                                                 <table class="table">
-                                                     <tbody>
-                                                         <tr>
-                                                             <td>Name</td>
-                                                             <td id="txtName">Johir Raihan</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Designation</td>
-                                                             <td id="txtUserDesg">CEO</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Department</td>
-                                                             <td id="txtUserDepartment">Manager</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Group</td>
-                                                             <td id="txtUserGroup">Oparetor</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Shift</td>
-                                                             <td id="txtUserShift">A</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Email</td>
-                                                             <td>
-                                                                 <label id="txtUserEmail" for="names"></label>
-                                                             </td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Phone</td>
-                                                             <td>
-                                                                 <label id="txtUserPhone">+008 01754785256</label>
-                                                             </td>
-                                                         </tr>
-                                                     </tbody>
-                                                 </table>
-                                             </div>
-
-
-
-
+                                  <div class="card">
+                                      <div class="card-header px-sm-25 px-3">
+                                          <div class="edit-profile__title">
+                                              <h6>Profile</h6>
+                                              <span class="fs-13 color-light fw-400">Basic info</span>
                                           </div>
-                                       </div>
-                                    </div>
-                                     <div class="card-header px-sm-25 px-3 userInfo">
-                                         <div class="edit-profile__title">
-                                             <span class="fs-13 color-light fw-400 infoBorder">User info</span>
-                                          
-                                         </div>
-                                     </div>
-
-                                        <div class="card-body">
-                                       <div class="row justify-content-center">
-                                          <div class="col-xxl-6">
-                                             <div class="edit-profile__body mx-xl-20">
-                                                 <table class="table">
-                                                     <tbody>
-                                                         <tr>
-                                                             <td>Username</td>
-                                                             <td id="txtUserName">CEO</td>
-
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Role</td>
-                                                             <td id="txtUserRole">Admin</td>
-                                                         </tr>
-                                                         <tr>
-                                                             <td>Data Access Level</td>
-                                                             <td id="txtuserDataAccessLevel">Custom (Accounts,Admin)</td>
-                                                         </tr>
-                                                     </tbody>
-                                                 </table>
-                                             </div>
-
-
-
-
+                                      </div>
+                                      <div class="card-body">
+                                          <div class="row justify-content-center">
+                                              <div class="col-xxl-6">
+                                                  <div class="edit-profile__body mx-xl-20">
+                                                      <table class="table">
+                                                          <tbody>
+                                                              <tr>
+                                                                  <td>Name</td>
+                                                                  <td id="txtName">Johir Raihan</td>
+                                                              </tr>
+                                                              <tr id="trDesignation">
+                                                                  <td>Designation</td>
+                                                                  <td id="txtUserDesg">CEO</td>
+                                                              </tr>
+                                                              <tr id="trDepartment">
+                                                                  <td>Department</td>
+                                                                  <td id="txtUserDepartment">Manager</td>
+                                                              </tr>
+                                                              <tr id="trGroup">
+                                                                  <td>Group</td>
+                                                                  <td id="txtUserGroup">Operator</td>
+                                                              </tr>
+                                                              <tr id="trShift">
+                                                                  <td>Shift</td>
+                                                                  <td id="txtUserShift">A</td>
+                                                              </tr>
+                                                              <tr>
+                                                                  <td>Email</td>
+                                                                  <td>
+                                                                      <label id="txtUserEmail" for="names"></label>
+                                                                  </td>
+                                                              </tr>
+                                                              <tr>
+                                                                  <td>Phone</td>
+                                                                  <td>
+                                                                      <label id="txtUserPhone">+008 01754785256</label>
+                                                                  </td>
+                                                              </tr>
+                                                          </tbody>
+                                                      </table>
+                                                  </div>
+                                              </div>
                                           </div>
-                                       </div>
-                                    </div>
-                                 </div>
+                                      </div>
+                                      <div class="card-header px-sm-25 px-3 userInfo">
+                                          <div class="edit-profile__title">
+                                              <span class="fs-13 color-light fw-400 infoBorder">User info</span>
+                                          </div>
+                                      </div>
+                                      <div class="card-body">
+                                          <div class="row justify-content-center">
+                                              <div class="col-xxl-6">
+                                                  <div class="edit-profile__body mx-xl-20">
+                                                      <table class="table">
+                                                          <tbody>
+                                                              <tr>
+                                                                  <td>Username</td>
+                                                                  <td id="txtUserName">CEO</td>
+                                                              </tr>
+                                                              <tr>
+                                                                  <td>Role</td>
+                                                                  <td id="txtUserRole">Admin</td>
+                                                              </tr>
+                                                              <tr>
+                                                                  <td>Data Access Level</td>
+                                                                  <td id="txtuserDataAccessLevel">Custom (Accounts,Admin)</td>
+                                                              </tr>
+                                                          </tbody>
+                                                      </table>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
                                    <div class="card" >
                                        <div class="edit-profile__title">
                                         
@@ -183,9 +175,12 @@
                                                  <label id="txtUserPasswordhiden" style="display: none">
                                                  </label>
 
-                                                   <div class="form-group mb-20">
-                                                      <label for="name">old passowrd</label>
-                                                      <input type="text" id="txtOldPasswoed" class="form-control"/>
+                                                   <div class="form-group mb-1">
+                                                      <label for="password-field">Old Password</label>
+                                                      <div class="position-relative">
+                                                         <input id="txtOldPasswoed" type="password" class="form-control" name="password" placeholder="Password"/>
+                                                         <span class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2"></span>
+                                                      </div>
                                                    </div>
                                                    <div class="form-group mb-1">
                                                       <label for="password-field">new password</label>
@@ -248,10 +243,12 @@
             var token = '<%= Session["__UserToken__"] %>';
             var rootUrl = '<%= Session["__RootUrl__"]%>';
             var userId = '<%= Session["__GetUserId__"]%>';
+            var companyId = '<%= Session["__GetCompanyId__"]%>';
             var getUsersUrl = rootUrl + '/api/User/users';
             var updateUserUrl = rootUrl + '/api/User/users/password/update';
             var updateUserImageUrl = rootUrl + '/api/User/users/ImageUpdate'; 
             var getUserByIDUrl = rootUrl + '/api/User/users';
+            var getUserProfileByIDUrl = rootUrl + '/api/User/userProfile';
             var userName = '<%= Session["__UserNameText__"] %>';
             var userEmail = '<%= Session["__UserEmailText__"] %>';
             var userDesignation = '<%= Session["__UserDsgText__"] %>';
@@ -274,7 +271,9 @@
             $('#txtUserRole').text('Role: ' + userRoles);
 
             // Call the function to get user data
-            GetUserData(userId);
+            //GetUserData(userId);
+
+            GetUserProfileData(userId,companyId);
         });
 
         function FetchDataForView() {
@@ -344,7 +343,10 @@
                                 text: successMessage
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    GetUserData(userId); // Reload user data if error occurred
+                                    //GetUserData(userId); // Reload user data if error occurred
+
+                                   
+                                     GetUserProfileData(userId,companyId);
                                 }
                             });
                         } else {
@@ -354,7 +356,8 @@
                                 text: successMessage
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    GetUserData(userId);
+                                 GetUserProfileData(userId,companyId);
+
                                 }
                             });
                         }
@@ -379,11 +382,72 @@
 
 
 
-        function GetUserData(userId) {
-            ApiCallById(getUserByIDUrl, token, userId)
-                .then(function (responseData) {
-                    var data = responseData.data;
+        //function GetUserData(userId) {
+        //    ApiCallById(getUserByIDUrl, token, userId)
+        //        .then(function (responseData) {
+        //            var data = responseData.data;
 
+        //            // Assuming data.userImage contains the relative URL to the user's image (e.g., '/userImage/123.jpg')
+        //            if (data.userImage) {
+        //                $('#UserProfileImages').attr('src', data.userImage); // Set the src of the image to display it
+        //            } else {
+        //                // Set a default image if user image is not available
+        //                $('#UserProfileImages').attr('src', 'user_img_default.jpg');
+        //            }
+        //        })
+        //        .catch(function (error) {
+        //            console.error('Error:', error);
+        //            // Optionally, display a default image in case of an error
+        //            $('#UserProfileImages').attr('src', 'user_img_default.jpg');
+        //        });
+        //}
+
+        function GetUserProfileData(userId, CompanyID) {
+            ApiCallWithPeram(getUserProfileByIDUrl, token, userId,CompanyID)
+                .then(function (responseData) {
+                 var data = responseData.data[0]; // Assuming data is an array, access the first element
+                console.log('This data from profile:', data);
+                console.log('User name from profile:', data.name);
+                $('#txtName').text(data.name);
+                    $('#txtNameprofile').text(data.name);
+
+                    if (data.designation == null || data.designation == "") {
+                        $('#trDesignation').hide();
+                    } else {
+                        $('#txtUserDesg').text(data.designation);
+                        $('#txtdesignation').text(data.designation);
+                    }
+                    if (data.department == null || data.department == "") {
+                        $('#trDepartment').hide();
+                    } else {
+                        $('#txtUserDepartment').text(data.department);
+                    }
+
+                    if (data.group == null || data.group == "") {
+                        $('#trGroup').hide();
+                    } else {
+                        $('#txtUserGroup').text(data.group);
+                    }
+
+                    if (data.shift == null || data.shift == "") {
+                        $('#trShift').hide();
+                    } else {
+                        $('#txtUserShift').text(data.group);
+                    }
+
+                
+
+         
+
+                $('#txtUserShift').text(data.shift);
+                $('#txtUserEmail').text(data.email);
+                $('#txtUserPhone').text(data.phone);
+
+                $('#txtUserName').text(data.userName);
+                $('#txtUserRole').text(data.userRoleName);
+                $('#txtuserDataAccessLevel').text(data.dataAccessPermission);
+    
+                
                     // Assuming data.userImage contains the relative URL to the user's image (e.g., '/userImage/123.jpg')
                     if (data.userImage) {
                         $('#UserProfileImages').attr('src', data.userImage); // Set the src of the image to display it
@@ -398,6 +462,8 @@
                     $('#UserProfileImages').attr('src', 'user_img_default.jpg');
                 });
         }
+
+
 
 
 
