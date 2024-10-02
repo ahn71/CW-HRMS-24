@@ -613,21 +613,21 @@
 
                  // Combine user image, name, and role
                  row.userImage = `
-            <div class="user-details-container d-flex align-items-center">
-                <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
-                <div>
-                    <div class="user-name">${row.name}</div>
-                    <div class="user-role">${row.userRoleName}</div>
-                </div>
-            </div>
-        `;
+                    <div class="user-details-container d-flex align-items-center">
+                        <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
+                        <div>
+                            <a href="javascript:void(0)" class="user-name" data-id="${row.userId}">${row.name}</a>
+                            <div class="user-role">${row.userRoleName}</div>
+                        </div>
+                    </div>
+                `;
 
                  row.isActive = `
-            <div class="form-check form-switch form-switch-primary form-switch-sm">
-                <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
-                <label class="form-check-label" for="switch-${row.userId}"></label>
-            </div>
-        `;
+                <div class="form-check form-switch form-switch-primary form-switch-sm">
+                    <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
+                    <label class="form-check-label" for="switch-${row.userId}"></label>
+                </div>
+                `;
 
                  row.isGuestUser = `
             <div class="form-check form-switch form-switch-primary form-switch-sm">
@@ -720,6 +720,15 @@
                  console.log('Feature button clicked for ID:', id);
                  // FetchDataForEdit(id);
              });
+
+            $('.adv-table').off('click', '.user-name').on('click', '.user-name', function () {
+                const userId = $(this).data('id');
+                console.log('User name clicked for ID:', userId);
+
+                // Redirect to userProfile.aspx with userId as a query parameter
+                window.location.href = `userProfile.aspx?userId=${userId}`;
+            });
+
          }
 
 
@@ -959,21 +968,25 @@
 
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('Custom (Department)');
+
                          $('#departmentCheckboxes').show();
                      }
                      else if (data.dataAccessLevel == 1) {
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('Only ME');
+                        selectedIds = null;
                          $('#departmentCheckboxes').hide();
                      }
                      else if (data.dataAccessLevel == 2) {
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('Own Department');
+                         selectedIds = null;
                          $('#departmentCheckboxes').hide();
                      }
                      else {
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('All');
+                         selectedIds = null;
                          $('#departmentCheckboxes').hide();
                      }
                      // BoxExpland();

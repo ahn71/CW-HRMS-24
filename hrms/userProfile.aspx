@@ -33,8 +33,8 @@
                                </div>
 
                                <div class="ap-nameAddress pb-3">
-                                 <h5 id="txtNameprofile" class="ap-nameAddress__title">Defult Name</h5>
-                                 <p id="txtdesignation" class="ap-nameAddress__subTitle fs-14 m-0">UI/UX Designer</p>
+                                 <h5 id="txtNameprofile" class="ap-nameAddress__title"></h5>
+                                 <p id="txtdesignation" class="ap-nameAddress__subTitle fs-14 m-0"></p>
                               </div>
 
 <%--                               <div class="ap-button button-group d-flex justify-content-center flex-wrap">
@@ -79,23 +79,23 @@
                                                           <tbody>
                                                               <tr>
                                                                   <td>Name</td>
-                                                                  <td id="txtName">Johir Raihan</td>
+                                                                  <td id="txtName"></td>
                                                               </tr>
                                                               <tr id="trDesignation">
                                                                   <td>Designation</td>
-                                                                  <td id="txtUserDesg">CEO</td>
+                                                                  <td id="txtUserDesg"></td>
                                                               </tr>
                                                               <tr id="trDepartment">
                                                                   <td>Department</td>
-                                                                  <td id="txtUserDepartment">Manager</td>
+                                                                  <td id="txtUserDepartment"></td>
                                                               </tr>
                                                               <tr id="trGroup">
                                                                   <td>Group</td>
-                                                                  <td id="txtUserGroup">Operator</td>
+                                                                  <td id="txtUserGroup"></td>
                                                               </tr>
                                                               <tr id="trShift">
                                                                   <td>Shift</td>
-                                                                  <td id="txtUserShift">A</td>
+                                                                  <td id="txtUserShift"></td>
                                                               </tr>
                                                               <tr>
                                                                   <td>Email</td>
@@ -103,10 +103,10 @@
                                                                       <label id="txtUserEmail" for="names"></label>
                                                                   </td>
                                                               </tr>
-                                                              <tr>
+                                                              <tr id="trPhone">
                                                                   <td>Phone</td>
                                                                   <td>
-                                                                      <label id="txtUserPhone">+008 01754785256</label>
+                                                                      <label id="txtUserPhone"></label>
                                                                   </td>
                                                               </tr>
                                                           </tbody>
@@ -128,16 +128,23 @@
                                                           <tbody>
                                                               <tr>
                                                                   <td>Username</td>
-                                                                  <td id="txtUserName">CEO</td>
+                                                                  <td id="txtUserName"></td>
                                                               </tr>
                                                               <tr>
                                                                   <td>Role</td>
-                                                                  <td id="txtUserRole">Admin</td>
+                                                                  <td id="txtUserRole"></td>
                                                               </tr>
                                                               <tr>
-                                                                  <td>Data Access Level</td>
-                                                                  <td id="txtuserDataAccessLevel">Custom (Accounts,Admin)</td>
+                                                                  <td>
+                                                                      <label for="txtAccessType">Data Access Level</label></td>
+                                                                  <td>
+                                                                      <label id="txtAccess"></label>
+                                                                      <label id="txtuserDataAccessLevel"></label>
+                                                                  </td>
+                                                                
+                                                                  
                                                               </tr>
+
                                                           </tbody>
                                                       </table>
                                                   </div>
@@ -254,7 +261,7 @@
             var userDesignation = '<%= Session["__UserDsgText__"] %>';
             var userDepartment = '<%= Session["__UserDptNameText__"] %>';
             var userRoles = '<%= Session["__UserRolesText__"] %>';
-
+            var userIdUrl=null;
         $(document).ready(function () {
             // Trigger click on the file input to open the file dialog
             $('#userProfileImage').trigger('click');
@@ -264,16 +271,28 @@
             console.log('UserEmail:', userEmail);
 
             // Update user information on the page
-            $('#txtUserName').text(userName);
-            $('#txtUserEmail').text(userEmail);
-            $('#txtDesignation').text(userDesignation);
-            $('#txtUserDepartment').text('Department: ' + userDepartment);
-            $('#txtUserRole').text('Role: ' + userRoles);
+            //$('#txtUserName').text(userName);
+            //$('#txtUserEmail').text(userEmail);
+            //$('#txtDesignation').text(userDesignation);
+            //$('#txtUserDepartment').text('Department: ' + userDepartment);
+            //$('#txtUserRole').text('Role: ' + userRoles);
 
             // Call the function to get user data
             //GetUserData(userId);
+             userIdUrl = new URLSearchParams(window.location.search).get('userId');
+            console.log('This ID from URL User ID:', userIdUrl);
 
-            GetUserProfileData(userId,companyId);
+            if (userIdUrl == null || userIdUrl === "") {
+                // If userId is not found in the URL, use another source (like userId variable)
+                GetUserProfileData(userId, companyId);
+            } else {
+                // If userId is found in the URL, use it
+                GetUserProfileData(userIdUrl, companyId);
+            }
+
+
+
+           
         });
 
         function FetchDataForView() {
@@ -328,6 +347,15 @@
                 // Prepare form data for the API call
                 const formData = new FormData();
                 formData.append('file', file); // Append the selected file to the form data
+
+                if (userIdUrl == null || userIdUrl === "") {
+
+                    userId = userId;
+                }
+                else {
+
+                    userId = new URLSearchParams(window.location.search).get('userId');
+                }
 
                 // Make an API call to upload and update the image
                 ApiCallImageUpdate(updateUserImageUrl, token, formData, userId)
@@ -412,7 +440,8 @@
                     $('#txtNameprofile').text(data.name);
 
                     if (data.designation == null || data.designation == "") {
-                        $('#trDesignation').hide();
+                        $('#txtUserDesg').text('Guest User');
+                        $('#txtdesignation').text('Guest User');
                     } else {
                         $('#txtUserDesg').text(data.designation);
                         $('#txtdesignation').text(data.designation);
@@ -434,25 +463,33 @@
                     } else {
                         $('#txtUserShift').text(data.group);
                     }
-
+                    if (data.phone == null || data.phone == "") {
+                        $('#trPhone').hide();
+                    } else {
+                        $('#txtUserPhone').text(data.phone);
+                    }
                 
-
-         
-
-                $('#txtUserShift').text(data.shift);
                 $('#txtUserEmail').text(data.email);
-                $('#txtUserPhone').text(data.phone);
-
                 $('#txtUserName').text(data.userName);
                 $('#txtUserRole').text(data.userRoleName);
-                $('#txtuserDataAccessLevel').text(data.dataAccessPermission);
-    
-                
-                    // Assuming data.userImage contains the relative URL to the user's image (e.g., '/userImage/123.jpg')
+
+                    const accessLevels = {
+                        4: 'Custom',
+                        3: 'ALL',
+                        2: 'Own Department',
+                        1: 'Only Me' // Assuming 1 corresponds to "Only Me"
+                    };
+
+                    const accessTypeText = accessLevels[data.dataAccessLevel] || 'Only Me'; 
+                    $('#txtAccess').text(accessTypeText);
+
+
+                    $('#txtuserDataAccessLevel').text(data.dataAccessPermission);
+
                     if (data.userImage) {
-                        $('#UserProfileImages').attr('src', data.userImage); // Set the src of the image to display it
+                        $('#UserProfileImages').attr('src', data.userImage);
                     } else {
-                        // Set a default image if user image is not available
+                       
                         $('#UserProfileImages').attr('src', 'user_img_default.jpg');
                     }
                 })
