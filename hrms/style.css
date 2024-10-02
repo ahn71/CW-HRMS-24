@@ -36367,3 +36367,16 @@ body:after {
 .profile-setting .card .card-header{
     padding-bottom: 0px !important;
 }
+
+.accounts {
+    position: sticky;
+    top: 89px;
+}
+.user-name
+{
+    color :#1b1e2b !important;
+}
+
+.user-name:hover{
+    color:#00AAFF !important;
+}

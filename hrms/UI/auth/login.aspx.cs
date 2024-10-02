@@ -303,6 +303,7 @@ namespace SigmaERP.hrms.UI.auth
                     var permission = jsonResponse.permission;
                     Session["__GetCompanyId__"] = companyId;  
                     Session["__GetUserId__"] = userData.userId;  
+                    Session["__GetUserFullName__"] = userData.name;  
                     Session["__GetUID__"] = userData.userId.ToString();
                     Session["__UserToken__"] = accessToken.ToString();
                     Session["__ActualPermission__"] = permission.ToString();

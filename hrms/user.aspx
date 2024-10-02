@@ -300,9 +300,11 @@
 
          //var rootUrl = 'https://localhost:7220';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
+         var CompanyID = '<%= Session["__GetCompanyId__"]%>';
 
          var getUsersUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
+         var getRolesWithGuestUrl = rootUrl + '/api/UserRoles/userRolesWithGuestUser';
          var getEmployeeUrl = rootUrl + '/api/Employee/EmployeeName';
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
@@ -318,7 +320,7 @@
 
          $(document).ready(function () {
              IsGuestUser();
-             GetRoles();
+             GetRoles(false);
              GetEmployee();
              GetUsers();
              GetStpPkgFeatures();
@@ -447,8 +449,10 @@
                 $('#chkIsGetUser').change(function() {
                 if ($(this).is(':checked')) {
                     $('#FirstName, #LastName').show();
+                    GetRoles(true);
                 } else {
                     $('#FirstName, #LastName').hide();
+                    GetRoles(false);
                 }
             });
          }
@@ -493,29 +497,52 @@
 
 
 
-         function GetRoles() {
-             ApiCall(getRolesUrl, token)
-                 .then(function (response) {
-                     if (response.statusCode === 200) {
-                         var responseData = response.data;
-                         RolesPopulateDropdown(responseData)
-                     } else {
-                         console.error('Error occurred while fetching data:', response.message);
-                     }
-                 })
-                 .catch(function (error) {
-                     $('.loaderCosting').hide();
-                     console.error('Error occurred while fetching data:', error);
-                 });
+         //function GetRoles() {
+         //    ApiCall(getRolesUrl, token)
+         //        .then(function (response) {
+         //            if (response.statusCode === 200) {
+         //                var responseData = response.data;
+         //                RolesPopulateDropdown(responseData)
+         //            } else {
+         //                console.error('Error occurred while fetching data:', response.message);
+         //            }
+         //        })
+         //        .catch(function (error) {
+         //            $('.loaderCosting').hide();
+         //            console.error('Error occurred while fetching data:', error);
+         //        });
+         //}
+
+         function GetRoles(IsGuestUser) {
+             return new Promise((resolve, reject) => {  // Ensure GetRoles returns a promise
+                 ApiCallByGuestUser(getRolesWithGuestUrl, token, IsGuestUser)
+                     .then(function (response) {
+                         if (response.statusCode === 200) {
+                             var responseData = response.data;
+                             console.log('this from dropdown:', responseData);
+                             RolesPopulateDropdown(responseData);
+                             resolve();  // Resolve the promise once roles are populated
+                         } else {
+                             console.error('Error occurred while fetching data:', response.message);
+                             reject(response.message);  // Reject the promise on error
+                         }
+                     })
+                     .catch(function (error) {
+                         $('.loaderCosting').hide();
+                         console.error('Error occurred while fetching data:', error);
+                         reject(error);  // Reject the promise if API call fails
+                     });
+             });
          }
+
          function RolesPopulateDropdown(data) {
              const dropdown = document.getElementById('ddlUserRole');
              dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
 
              data.forEach(item => {
                  const option = document.createElement('option');
-                 option.value = item.userRoleId;
-                 option.textContent = item.userRoleName;
+                 option.value = item.rolesID; // Use rolesID from the response
+                 option.textContent = item.roleName; // Use roleName from the response
                  dropdown.appendChild(option);
              });
          }
@@ -586,21 +613,21 @@
 
                  // Combine user image, name, and role
                  row.userImage = `
-            <div class="user-details-container d-flex align-items-center">
-                <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
-                <div>
-                    <div class="user-name">${row.name}</div>
-                    <div class="user-role">${row.userRoleName}</div>
-                </div>
-            </div>
-        `;
+                    <div class="user-details-container d-flex align-items-center">
+                        <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
+                        <div>
+                            <a href="javascript:void(0)" class="user-name" data-id="${row.userId}">${row.name}</a>
+                            <div class="user-role">${row.userRoleName}</div>
+                        </div>
+                    </div>
+                `;
 
                  row.isActive = `
-            <div class="form-check form-switch form-switch-primary form-switch-sm">
-                <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
-                <label class="form-check-label" for="switch-${row.userId}"></label>
-            </div>
-        `;
+                <div class="form-check form-switch form-switch-primary form-switch-sm">
+                    <input type="checkbox" class="form-check-input" id="switch-${row.userId}" ${row.isActive ? 'checked' : ''}>
+                    <label class="form-check-label" for="switch-${row.userId}"></label>
+                </div>
+                `;
 
                  row.isGuestUser = `
             <div class="form-check form-switch form-switch-primary form-switch-sm">
@@ -693,6 +720,15 @@
                  console.log('Feature button clicked for ID:', id);
                  // FetchDataForEdit(id);
              });
+
+            $('.adv-table').off('click', '.user-name').on('click', '.user-name', function () {
+                const userId = $(this).data('id');
+                console.log('User name clicked for ID:', userId);
+
+                // Redirect to userProfile.aspx with userId as a query parameter
+                window.location.href = `userProfile.aspx?userId=${userId}`;
+            });
+
          }
 
 
@@ -774,7 +810,7 @@
          function GetUserDepartment(selectedDepartmentIds = [], mode = 'add') {
              isUpdateMode = (mode === 'update'); // Set mode
 
-             ApiCall(getUserDepartmentUrl, token)
+             ApiCallById(getUserDepartmentUrl, token ,CompanyID)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;
@@ -932,21 +968,25 @@
 
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('Custom (Department)');
+
                          $('#departmentCheckboxes').show();
                      }
                      else if (data.dataAccessLevel == 1) {
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('Only ME');
+                        selectedIds = null;
                          $('#departmentCheckboxes').hide();
                      }
                      else if (data.dataAccessLevel == 2) {
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('Own Department');
+                         selectedIds = null;
                          $('#departmentCheckboxes').hide();
                      }
                      else {
                          $('#DataAccessStatus').text('');
                          $('#DataAccessStatus').append('All');
+                         selectedIds = null;
                          $('#departmentCheckboxes').hide();
                      }
                      // BoxExpland();
@@ -1313,34 +1353,29 @@
          var IsEditData =false;
 
          function FetchDataForEdit(moduleId) {
+             // Make API call to fetch user data based on moduleId
              ApiCallById(getUsersUrl, token, moduleId)
                  .then(function (responseData) {
                      var data = responseData.data;
-                     IsEditData = true;
-                     //console.log(data.moduleId);
+                     IsEditData = true; // Set edit mode
+
+                     // Populate form fields with fetched data
                      $('#lblHidenUserId').val(data.userId);
                      $('#txtFirstName').val(data.firstName);
                      $('#txtLastName').val(data.lastName);
                      $('#txtUserName').val(data.userName);
                      $('#txtUserPassword').val(data.userPassword);
                      $('#txtUserEmail').val(data.email);
-                     $('select[name="ddlUserRole"]').val(data.userRoleID).change();
                      $('#chkIsActive').prop('checked', data.isActive);
                      $('#chkIsGetUser').prop('checked', data.isGuestUser);
                      $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
                      $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
                      $('#ddlCompany').val(data.companyId).change();
-                     var GuestUser = data.isGuestUser;
 
+                     // Handle permissions and roles
                      additionalPermissions = [];
                      removedPermissions = [];
                      selectedIds = JSON.parse(data.dataAccessPermission);
-
-                     // console.log("selectedIds calling function", selectedIds);
-                     // Convert all IDs to strings to match the checkbox value types
-                     //  selectedIds = selectedIds.map(id => id.toString());
-
-                     //GetUserDepartment(selectedIds, 'update');
 
                      if (data.additionalPermissions.length > 0) {
                          additionalPermissions = JSON.parse(data.additionalPermissions);
@@ -1350,37 +1385,52 @@
                          removedPermissions = JSON.parse(data.removedPermissions);
                      }
 
-
-
+                     const GuestUser = data.isGuestUser;
                      const isChecked = $('#chkIsGetUser').is(':checked');
 
+                     // Handle GuestUser specific logic
                      if (GuestUser) {
                          if (!isChecked) {
                              $('#chkIsGetUser').prop('checked', true);
                          }
-                         $('#FirstName, #LastName').show();
-                         $('#ddlReference').hide();
+                         $('#FirstName, #LastName').show(); // Show first name and last name fields
+
+                         // Fetch roles and set the user role after fetching
+                         GetRoles(true).then(() => {
+                             $('select[name="ddlUserRole"]').val(data.userRoleID).change(); // Set the user's role
+                         }).catch(error => {
+                             console.error('Failed to fetch roles:', error); // Handle role fetching errors
+                         });
+
+                         $('#ddlReference').hide(); // Hide reference field
                      } else {
                          if (isChecked) {
                              $('#chkIsGetUser').prop('checked', false);
                          }
-                         $('#FirstName, #LastName').hide();
-                         $('#ddlReference').show();
+                         $('#FirstName, #LastName').hide(); // Hide first name and last name fields
+
+                         // Fetch roles and set the user role after fetching
+                         GetRoles(false).then(() => {
+                             $('select[name="ddlUserRole"]').val(data.userRoleID).change(); // Set the user's role
+                         }).catch(error => {
+                             console.error('Failed to fetch roles:', error); // Handle role fetching errors
+                         });
+
+                         $('#ddlReference').show(); // Show reference field
                      }
 
-
                      console.log(GuestUser);
-                     
+
+                     // Change the button label to 'Update'
                      $('#btnSave').html('Update');
 
-                     BoxExpland()
-                     //Cardbox()
+                     BoxExpland(); // Additional UI logic if needed
                  })
                  .catch(function (error) {
-                     console.error('Error:', error);
+                     console.error('Error:', error); // Handle API errors
                  });
-
          }
+
 
          function FetchDataForView(moduleId) {
              ApiCallById(getUsersUrl, token, moduleId)
