@@ -40,7 +40,7 @@ namespace SigmaERP.personnel
                 setPrivilege();
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
-                //SearchLeaveApplication();
+                SearchLeaveApplication();
                 
                 //ddlEmpType.Items.Insert(0, new ListItem(string.Empty, "0"));
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -412,59 +412,111 @@ namespace SigmaERP.personnel
                 {
                     ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 }
+                string forAllDepartment = AccessControl.getDataAccessCondition(ddlCompanyList.SelectedValue, "0");
                 //0. Search by Company,Year
-                if (ddlCompanyList.SelectedValue != "0000" &&  ddlDepartmentList.SelectedValue=="0" && (ddlGrouping.SelectedIndex==-1||ddlGrouping.SelectedValue=="0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "' and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "')  and  IsApproved =" + rblStatus.SelectedValue + condition+ " order by FromDate desc, EmpCardNo";
+                if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
+                    {
+                      query += " where " + forAllDepartment + " and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "')  and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    }
                 //1. Search by Company,Forom Date & To Date
-               else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length == 0)
-                 query += " where CompanyId='" + ddlCompanyList.SelectedValue + "' and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "'))  and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length == 0)
+                     {
+
+                        query += " where " + forAllDepartment + " and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "'))  and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    }
+                   
                 //2. Search by Company,Year,Department
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and DptId='" + ddlDepartmentList.SelectedValue + "'   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                   {
+                     
+                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "' and DptId='" + ddlDepartmentList.SelectedValue + "'   and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "')   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                  }
+                    
                 //3. Search by Company,Forom Date & To Date,Department
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length == 0)
+                    {
+
                     query += " where CompanyId='" + ddlCompanyList.SelectedValue + "' and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and DptId='" + ddlDepartmentList.SelectedValue + "' and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
-                
-                
+                  }
+                   
+
+
                 //4. Search by Company,Year,Line/Group
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    {
+                        query += " where " + forAllDepartment + "  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    }
+                    
                 //5. Search by Company,From Date & To Date,Line/Group
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length == 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
-               //6. Search by Company,Year,Department, Line/Group
+                    {
+                        query += " where " + forAllDepartment + "  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    }
+                    
+                //6. Search by Company,Year,Department, Line/Group
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
-              //7. Search by Company,From Date & To Date,Department, Line/Group
+                    {
+                        query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    }
+                    
+                //7. Search by Company,From Date & To Date,Department, Line/Group
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length == 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and DptId='" + ddlDepartmentList.SelectedValue+"' and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+
+                    {
+                        query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + "   and  IsApproved =" + rblStatus.SelectedValue + condition + " order by FromDate desc, EmpCardNo";
+                    }
+    
 
 
                 //8. Search by Company,Year,CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length != 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and EmpCardNo Like'%"+txtCardNo.Text.Trim()+"'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                    {
+                        query += " where " + forAllDepartment + "  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                    }
+                 
                 //9. Search by Company,From Date & To Date,CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length != 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'  and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                    {
+                        query += " where " + forAllDepartment + "  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'  and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                    }
+                   
                 //10. Search by Company,Year,Department, CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length != 0)
+                {
                     query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                }
+                    
                 //11. Search by Company,From Date & To Date,Department, CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length != 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                    {
+                        query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                    }
+                    
 
                 //12. Search by Company,Year,Line/Group, CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length != 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and GId='" +ddlGrouping.SelectedValue+ "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                {
+                    query += " where " + forAllDepartment + "  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and GId='" + ddlGrouping.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                }
+                   
                 //13. Search by Company,From Date & To Date,Line/Group, CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue == "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length != 0)
-                    query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and GId='" + ddlGrouping.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                {
+                    query += " where " + forAllDepartment + "  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and GId='" + ddlGrouping.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                }
+                   
                 //14. Search by Company,Year,Department,Line/Group, CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length != 0)
+                {
                     query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and (FromYear='" + ddlChoseYear.SelectedValue + "' OR ToYear='" + ddlChoseYear.SelectedValue + "') and DptId='" + ddlDepartmentList.SelectedValue + "' and GId='" + ddlGrouping.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                }
+                  
                 //15. Search by Company,From Date & To Date,Department,Line/Group, CardNo
                 else if (ddlCompanyList.SelectedValue != "0000" && ddlDepartmentList.SelectedValue != "0" && !(ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedValue == "0") && txtFromDate.Text.Trim().Length != 0 && txtToDate.Text.Trim().Length != 0 && txtCardNo.Text.Trim().Length != 0)
+                {
                     query += " where CompanyId='" + ddlCompanyList.SelectedValue + "'  and( (FromDate<='" + ViewState["__FDate__"].ToString() + "' and ToDate>='" + ViewState["__TDate__"].ToString() + "') or (FromDate>='" + ViewState["__FDate__"].ToString() + "' and FromDate<='" + ViewState["__TDate__"].ToString() + "') or (ToDate>='" + ViewState["__FDate__"].ToString() + "' and ToDate<='" + ViewState["__TDate__"].ToString() + "')) and DptId='" + ddlDepartmentList.SelectedValue + "' and GId='" + ddlGrouping.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'   and  IsApproved =" + rblStatus.SelectedValue + " order by FromDate desc, EmpCardNo";
+                }
+                   
 
 
 

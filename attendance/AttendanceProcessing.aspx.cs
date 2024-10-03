@@ -17,7 +17,7 @@ namespace SigmaERP.attendance
     public partial class AttendanceProcessing : System.Web.UI.Page
     {
         string sqlCmd = "";
-       
+        //Dataacees Level= OnlyMe=1 All=3 Own=2 custom=4
         protected void Page_Load(object sender, EventArgs e)
         {
             int[] pagePermission = { 260 };
@@ -51,15 +51,28 @@ namespace SigmaERP.attendance
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+                ViewState["__dptID__"]= getCookies["__DptId__"].ToString();
 
 
-              //  string[] AccessPermission = new string[0];
+                //  string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "import_data.aspx", ddlCompanyList, btnImport);
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
-                classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                if (Session["__dataAceesLevel__"].ToString() == "4")
+                {
+                    classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                }
+                else if(Session["__dataAceesLevel__"].ToString() == "3")
+                {
+                    classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                }
+                 else if(Session["__dataAceesLevel__"].ToString() == "2")
+                {
+                    classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                }
+
                 ViewState["__AttMachineName__"] = classes.commonTask.loadAttMachineName(ddlCompanyList.SelectedValue);
                 if (ViewState["__AttMachineName__"].ToString().Equals("RMS"))
                 {                    
@@ -107,7 +120,7 @@ namespace SigmaERP.attendance
                         generateAbsentNotification(AttendanceDate);
                     }
                     
-                    DtEmpAttList =attendanceProcessing.LoadProcessedAttendanceData(ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue, AttendanceDate.ToString("yyyy-MM-dd"), forAllEmployee, txtCardNo.Text.Trim(),rblEmpType.SelectedValue);
+                    DtEmpAttList =attendanceProcessing.LoadProcessedAttendanceData(ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue, AttendanceDate.ToString("yyyy-MM-dd"), forAllEmployee, txtCardNo.Text.Trim(),rblEmpType.SelectedValue, Session["__dataAceesLevel__"].ToString());
                     gvAttendance.DataSource = DtEmpAttList;
                     gvAttendance.DataBind();
                     ulAttMissingLog.Visible = true;
@@ -151,6 +164,11 @@ namespace SigmaERP.attendance
                 }
                 else
                 {
+                    bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), ddlCompanyList.SelectedValue);
+                    if (!hasEmpCard)
+                    {
+                        return;
+                    }
                     conditionDel = condition = " and EmpID in(select EmpId from Personnel_EmpCurrentStatus where IsActive=1 and EmpStatus in(1,8) and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' and CompanyId='" + ddlCompanyList.SelectedValue + "')";
                 }
                 deleteAbsentNotification(selectdDate, conditionDel);

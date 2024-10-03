@@ -66,11 +66,13 @@ namespace SigmaERP.personnel
                     classes.Employee.LoadEmpStatus(ddlEmpStatus);
                    classes.commonTask.LoadShiftOnlyIndependent(ddlShift, ddlBranch.SelectedValue);
                     if (ViewState["__CardNoType__"].ToString().Equals("True"))
-                        classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
-                    else 
-                    { 
-                        AutoGenerateEmpId(); 
-                        classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
+                        loadDepartMentWithCode();
+                    //classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+                    else
+                    {
+                        AutoGenerateEmpId();
+                        loadDepartMents();
+                        //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
                     }
                     classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
                     FlatCustomOrdering();        
@@ -164,7 +166,9 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                ViewState["__dptID__"] = getCookies["__DptId__"].ToString();
                 classes.commonTask.LoadBranch(ddlBranch, ViewState["__CompanyId__"].ToString());
+
                 string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
                 ViewState["__ReadAction__"] = AccessPermission[0];
@@ -1898,13 +1902,14 @@ namespace SigmaERP.personnel
             {
                CompanyId=(ddlBranch.SelectedValue.Equals("0000"))?ViewState["__CompanyId__"].ToString():ddlBranch.SelectedValue;
                 LoadCompanyInfo();
-                
+
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
-                    classes.commonTask.SearchDepartmentWithCode(CompanyId, ddlDepartment);
+                    loadDepartMentWithCode();
+                //classes.commonTask.SearchDepartmentWithCode(CompanyId, ddlDepartment);
                 else
                 {
-
-                    classes.commonTask.SearchDepartment(CompanyId, ddlDepartment);
+                    loadDepartMents();
+                    //classes.commonTask.SearchDepartment(CompanyId, ddlDepartment);
                     AutoGenerateEmpId();
                 }
                 FlatCustomOrdering();
@@ -2509,8 +2514,46 @@ namespace SigmaERP.personnel
             }
             return dt.Rows[0]["GID"].ToString();
         }
-        //---- End Data Import----
 
 
+        private void loadDepartMents()
+        {
+            if (Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+               
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+               
+            }
+
+        }
+
+        private void  loadDepartMentWithCode()
+        {
+            if (Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "3")
+            {
+
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+
+            }
+        }
+        //---- End Data Import----)
     }
 }

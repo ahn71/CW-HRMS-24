@@ -347,6 +347,11 @@ namespace SigmaERP.hrms.UI.auth
                     ViewState["__CShortName__"] = "";
                     ViewState["__CompanyId__"] = companyId.ToString();
 
+                    Session["__dptId__"] = userData.dptId.ToString();
+                    Session["__empId__"] = userData.empId.ToString();
+                    string jjj = userData.isGuestUser.ToString();
+                    Session["__isGuestUser__"] = userData.isGuestUser.ToString();
+
                     return true;
                 }
                 else

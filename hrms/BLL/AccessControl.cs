@@ -10,6 +10,7 @@ namespace SigmaERP.hrms.BLL
 {
     public static class AccessControl
     {
+        
         public static int[] hasPermission(int[] PagePermissions)
         {
             if (HttpContext.Current.Session["__ActualPermission__"] == null)
@@ -66,19 +67,145 @@ namespace SigmaERP.hrms.BLL
 
 
 
-        public static bool IsRouteExists(string url)
-         {
-            foreach (Route route in RouteTable.Routes)
+    
+
+        public static void  getDataAccessPermission(string userID)
+        {
+            string query = "select DataAccessPermission,ur.DataAccessLevel  from userroles ur left join users u on ur.UserRoleID=u.UserRoleID where u.userId='"+ userID + "'";
+            DataTable dt=CRUD.ExecuteReturnDataTable(query);
+            string dataAcceslevel = dt.Rows[0]["DataAccessLevel"].ToString();
+            string permissions = dt.Rows[0]["DataAccessPermission"].ToString();
+
+            permissions = permissions.Trim('[', ']');
+            string[] permissionsArray = permissions
+                .Split(',')
+                .Select(p => p.Trim().Trim('"')) 
+                .ToArray();
+            HttpContext.Current.Session["__dataAccesPemission__"] = string.Join(",", permissionsArray.Select(p => $"'{p}'"));
+            HttpContext.Current.Session["__dataAceesLevel__"]=dataAcceslevel;
+
+
+        }
+
+        public static string getDataAccessCondition(string companyId,string ddlDepartment)
+        {
+            string condition = "CompanyId='" + companyId + "'";
+            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
             {
-                var routeUrl = route.Url?.ToLower();
-                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
+                if (ddlDepartment == "0")
                 {
-                    return true;
+                    condition += "";
                 }
+                else
+                {
+                    condition += "and DptId in(" + ddlDepartment + ") ";
+                }
+
+                   
             }
-            return false;
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                if (ddlDepartment == "0")
+                {
+                    if (HttpContext.Current.Session["__isGuestUser__"].ToString() == "True")
+                    {
+                        condition += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ")";
+                    }
+                    else
+                    {
+                        condition += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or  EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "' ";
+                    }
+                }
+                else
+                {
+                    condition += "and DptId in(" + ddlDepartment + ") ";
+                }
+
+               
+            }
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                condition += "and DptId='" + HttpContext.Current.Session["__dptId__"] + "'";
+            }
+            else
+            {
+                condition += "and EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "'";
+            }
+
+            return condition;
+        }
+
+        public static string  loadEmpCardNumber(string CompanyId)
+        {
+            string conditon = " CompanyId = '" + CompanyId + "'";
+            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                conditon += "";  //for all department 
+            }
+           else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                conditon += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "'";  //for custom and own department
+            }
+
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                conditon += " and DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") ";
+            }
+            return conditon;
         }
 
 
+        public static string  loadDepartmetCondition(string CompanyId)
+        {
+            string conditon = " CompanyId = '" + CompanyId + "'";
+            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                conditon += "";  //for all department 
+            }
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                conditon += " and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") ";  //for custom 
+            }
+            else if(HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2") // own department
+            {
+                conditon += " and DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") ";
+            }
+            return conditon;
+        }
+
+        public static string hasOwnEmpIdWithOtherDepartment()
+        {
+            // Fetch the session value dynamically when this method is called
+            string hasOtherDeptAccessButNotOwn =" or  EmpId='" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + "'";
+            return hasOtherDeptAccessButNotOwn;
+
     }
+
+
+        public static bool hasEmpcardPermission(string empCard,string companyList)
+        {
+            string conditon = " CompanyId in( '" + companyList + "')";
+            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                conditon += "";  //for all department 
+            }
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                conditon += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "'";  //for custom
+            }
+
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2")   //for own department
+            {
+                conditon += " and DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") ";
+            }
+            string query = "select DptId,EmpcardNO from  v_Personnel_EmpCurrentStatus where EmpcardNO like '%"+ empCard + "' and "+ conditon + "";
+            DataTable dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt.Rows.Count > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+}
 }

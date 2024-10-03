@@ -65,9 +65,10 @@ namespace SigmaERP.personnel
             try
             {
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
+                string condition = AccessControl.loadEmpCardNumber(CompanyID);
                 dt = new DataTable();
                 sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo  From v_EmployeeDetails where CompanyId='" + CompanyID + "' and EmpTypeId="+rblEmpType.SelectedValue+" and EmpStatus in ('1','8')" +
-                                    " and  ActiveSalary='True' Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode,CustomOrdering", dt);
+                                    " and  ActiveSalary='True' and "+ condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode,CustomOrdering", dt);
                 lstAll.DataSource = dt;
                 lstAll.DataTextField = "EmpCardNo";
                 lstAll.DataValueField = "SN";
@@ -103,7 +104,8 @@ namespace SigmaERP.personnel
                 lstAll.Items.Clear();
                 lstSelected.Items.Clear();
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
-                classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);
+                 classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);
+                
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
             }
             catch { }
@@ -409,7 +411,7 @@ namespace SigmaERP.personnel
                 lstAll.Items.Clear();
                 lstSelected.Items.Clear();
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
-                classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);  
+                 classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);  
             }                                      
             else if (rdbIndividual.Checked == true)
                 LoadStaffCardNo(ddlEmpCardNo);

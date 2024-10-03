@@ -184,6 +184,7 @@ namespace SigmaERP.pf
         {
             DataTable dtpf_setting = new DataTable();
             sqlDB.fillDataTable("Select EmpContribution,EmprContribution,PFStartYear from PF_CalculationSetting where CompanyId='" + ddlCompanyList.SelectedValue + "'", dtpf_setting);
+            string condition = AccessControl.getDataAccessCondition(ddlCompanyList.SelectedValue,"0");
             if (dtpf_setting.Rows.Count == 0)
             {
                 gvpfpendinglist.DataSource = null;
@@ -193,11 +194,11 @@ namespace SigmaERP.pf
             string emp_type = " and EmpTypeID=" + rblEmployeeType.SelectedValue;
            DataTable dtpf_pendinglist = new DataTable();
             if (rblEmpMaturity.SelectedIndex == 0)
-                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  CompanyId='" + ddlCompanyList.SelectedValue + "' " + emp_type;
+                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  " + condition + " " + emp_type;
             else if (rblEmpMaturity.SelectedIndex == 1)
-                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 >=" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  CompanyId='" + ddlCompanyList.SelectedValue + "' " + emp_type;
+                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 >=" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  " + condition + " " + emp_type;
             else
-                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 <" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  CompanyId='" + ddlCompanyList.SelectedValue + "' " + emp_type;
+                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 <" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  " + condition + " " + emp_type;
 
            sqlDB.fillDataTable(query, dtpf_pendinglist);
            gvpfpendinglist.DataSource = dtpf_pendinglist;
@@ -296,9 +297,11 @@ namespace SigmaERP.pf
         }
         private void pflist()
         {
+            string condition = AccessControl.getDataAccessCondition(ddlCompanyList2.SelectedValue,"0");
             DataTable dtpf_list = new DataTable();
-            sqlDB.fillDataTable("SELECT ROW_NUMBER() Over (partition by DptId Order by EmpId ) As SLDpt, DptId, EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance,PfEmpContribution,BasicSalary,PFAmount,convert(varchar(11),PfDate,105) as PfDate,DptName  from v_Personnel_EmpCurrentStatus where EmpTypeId=" + rblEmployeeType2.SelectedValue+" and CompanyId='" + ddlCompanyList2.SelectedValue + "' and PfMember='1' and IsActive=1 ", dtpf_list);
+            sqlDB.fillDataTable("SELECT ROW_NUMBER() Over (partition by DptId Order by EmpId ) As SLDpt, DptId, EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance,PfEmpContribution,BasicSalary,PFAmount,convert(varchar(11),PfDate,105) as PfDate,DptName  from v_Personnel_EmpCurrentStatus where EmpTypeId=" + rblEmployeeType2.SelectedValue+" and " + condition + " and PfMember='1' and IsActive=1 ", dtpf_list);
             gvpflist.DataSource = dtpf_list;
+            string query = "SELECT ROW_NUMBER() Over (partition by DptId Order by EmpId ) As SLDpt, DptId, EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance,PfEmpContribution,BasicSalary,PFAmount,convert(varchar(11),PfDate,105) as PfDate,DptName  from v_Personnel_EmpCurrentStatus where EmpTypeId=" + rblEmployeeType2.SelectedValue + " and " + condition + " and PfMember='1' and IsActive=1";
             gvpflist.DataBind();
         }
 

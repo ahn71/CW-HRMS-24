@@ -65,3 +65,4 @@ Parameter name: virtualPath
 [2024-09-24 16:10:35] Object reference not set to an instance of an object.
 [2024-09-24 16:10:37] Object reference not set to an instance of an object.
 [2024-09-24 16:10:37] Object reference not set to an instance of an object.
+[2024-09-29 09:50:21] Unexpected character encountered while parsing value: T. Path '', line 0, position 0.

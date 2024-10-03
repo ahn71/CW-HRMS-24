@@ -25,6 +25,9 @@ namespace SigmaERP.attendance
 
         //View=255,Add=256, Delete=257,Edit=258
 
+        //Dataacees Level= OnlyMe=1 All=3 Own=2 custom=4
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();

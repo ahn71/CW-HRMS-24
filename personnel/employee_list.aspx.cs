@@ -42,7 +42,7 @@ namespace SigmaERP.personnel
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
-
+                classes.commonTask.LoadBranch(ddlCompanyList);
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
                 loadYear();
                 setPrivilege(userPagePermition);
@@ -51,7 +51,12 @@ namespace SigmaERP.personnel
                // SearchingInEmployeeList();
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
-                LoadAllEmployeeList("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by DptCode, CustomOrdering");
+
+                string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"0");
+                string query = "Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and " + condition + " order by DptCode, CustomOrdering";
+
+
+                 LoadAllEmployeeList(query);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -90,7 +95,10 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                ViewState["__dptID__"] = getCookies["__DptId__"].ToString();
+                ViewState["__empId__"] = getCookies["__getEmpId__"].ToString();
+
+
                 //string[] AccessPermission = new string[0];
                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyList, gvForApprovedList, btnSearch);
 
@@ -103,8 +111,11 @@ namespace SigmaERP.personnel
                 if (permissions.Contains(273))
                     ViewState["__DeletAction__"] = "1";
 
-
+                //loadDepartMents();
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString());
+
+
+
 
 
             }
@@ -155,108 +166,196 @@ namespace SigmaERP.personnel
                     lblMessage.InnerText = "warning-> Please, Select a Department.";
                     return;
                 }
-              
-                
+
+                string query = "Select EmpDutyType,CompanyId, EmpId,EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where ";
+                string queryCondition = "";
                 DataTable dt = new DataTable();
                 // 0.Search by Compnay
                 if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId, EmpId,EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition="EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                   
                
                 //1. Search by Company, CardNo.
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId,EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering";
+                }
+                    
                 //2. Search by Company,Department,Card No
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering";
+                }
+                   
                 // 3. Search by Company,Department,Shift  
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length == 0 && ddlChoseYear.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                   
                 // 4. Search by Company,Department,Shift,CardNo 
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering";
+                }
+                   
                 //5. Search by Company,Department,Shift,CardNo,From Date,To Date
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "')and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "')and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering";
+                }
+             
                 //6. Search by Company,Department,Shift,CardNo,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = "EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                 
                 //7. Search by Company,Department,Shift,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                 
                 //8. Search by Company,Department,Shift,From date,To Date
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering";
+                }
+                 
                 //9. Search by Company, Department
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                 
                 //10. Search by Company, CardNo,From date,To date
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering";
+                }
+                  
                 //11. Search by Company,Department,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && ddlChoseYear.SelectedItem.Text.Trim() != "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and  FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and  FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                
                 //12.  Search by Company, Shift
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlDepartmentList.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                   
                 //13.  Search by Company, Shift,Card No
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlDepartmentList.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering";
+                }
+                  
                 //14. Search by Company, Department, FromDate,ToDate
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering";
+                }
+                  
                 //15. Search by Company, Department, FromDate,ToDate,Card no.
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "'and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "'and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode, CustomOrdering";
+                }
+                  
                 //16. Seardh by Company,FromDate,ToDate
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() == "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == ""))
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "' and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ddlCompanyList.SelectedValue + "' and EmpJoiningDate >='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode, CustomOrdering";
 
-                    //------------------------------------------            
+                }
+
+                //------------------------------------------            
                 // 4. Search by Company,Department,Shift,Grouping 
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by DptCode,CustomOrdering";
+                }
+                
 
                           // 4. Search by Company,Department,Shift,Grouping ,CardNo
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode,CustomOrdering";
+                }
+                   
 
 
                  //5. Search by Company,Department,Shift,CardNo,From Date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "')and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "')and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering";
+                }
+                 
                 //6. Search by Company,Department,Shift,CardNo,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode,CustomOrdering";
+                }
+             
                 //7. Search by Company,Department,Shift,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+                   
                 //8. Search by Company,Department,Shift,From date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering";
+                }
+                  
 
 
                    // 4. Search by Company,Department,Grouping 
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by DptCode,CustomOrdering";
+                }
+                   
 
                           // 4. Search by Company,Department,Grouping ,CardNo
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') order by DptCode,CustomOrdering";
+                }
+                   
 
 
                  //5. Search by Company,Department,CardNo,From Date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "')and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "')and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering";
+                }
+                 
                 //6. Search by Company,Department,CardNo,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode,CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and (EmpCardNo like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='" + txtCardNo.Text.Trim() + "') and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode,CustomOrdering";
+                }
+                    
                 //7. Search by Company,Department,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering", dt = new DataTable());
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and FORMAT(EmpJoiningDate,'yyyy')='" + ddlChoseYear.SelectedValue + "' order by DptCode, CustomOrdering";
+                }
+               
                 //8. Search by Company,Department,From date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering", dt = new DataTable());
-
+                {
+                    queryCondition = " EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True'  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentList.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpJoiningDate>='" + ViewState["__FDate__"].ToString() + "' and EmpJoiningDate<='" + ViewState["__TDate__"].ToString() + "' order by DptCode,CustomOrdering";
+                }
+                query += queryCondition;
+                sqlDB.fillDataTable(query,dt=new DataTable());
 
                 //-----------------------------------------
                 if (dt.Rows.Count == 0)
@@ -455,5 +554,25 @@ namespace SigmaERP.personnel
             //emplst.SearchingInEmployeeList();
             return 1;
         }
+
+        //private void loadDepartMents()
+        //{
+        //    if (Session["__dataAceesLevel__"].ToString() == "4")
+        //    {
+        //        classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString(), Session["__dataAccesPemission__"].ToString());
+
+        //    }
+        //    else if (Session["__dataAceesLevel__"].ToString() == "3")
+        //    {
+
+        //        classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString(), "");
+        //    }
+        //    else if (Session["__dataAceesLevel__"].ToString() == "2")
+        //    {
+        //        classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString(), ViewState["__dptID__"].ToString());
+
+        //    }
+        //    //classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ViewState["__CompanyId__"].ToString());
+        //}
     }
 }

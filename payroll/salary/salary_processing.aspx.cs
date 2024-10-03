@@ -1460,6 +1460,7 @@ namespace SigmaERP.payroll.salary
         {
             try
             {
+                
                 DataTable dtExSalary = new DataTable();
                 sqlDB.fillDataTable("select distinct top(4) IsSeperationGeneration,convert(varchar(10), FromDate,120) as FromDate,convert(varchar(10), ToDate,120) as ToDate,format(FromDate,'MMM-yyyy')+' ['+case when IsSeperationGeneration=1 then 'Separation' else 'Regular' end+']' as MonthYear  , count(EmpId) as Total,sum( case when EmpTypeId=1 then 1 else 0 end) as Worker,sum( case when EmpTypeId=2 then 1 else 0 end) as Staff  from Payroll_MonthlySalarySheet where  FromDate is not null and CompanyId='" + ddlCompanyList.SelectedValue + "' group by  convert(varchar(10), FromDate,120),convert(varchar(10), ToDate,120),format(FromDate,'MMM-yyyy'),IsSeperationGeneration order by ToDate desc", dtExSalary);// this line add for RSS ,Date: 05-02-2018
                 gvSalaryList.DataSource = dtExSalary;

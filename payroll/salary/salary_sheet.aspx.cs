@@ -149,6 +149,7 @@ namespace SigmaERP.payroll.salary
                 Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
                 string getSQLCMD;
                 DataTable dt = new DataTable();
+
                 if (chkBankForwardingLetter.Checked)
                 {
                     getSQLCMD = "SELECT  EmpProximityNo as Sl,EmpId, EmpName, Substring(EmpCardNo,10,6) as EmpCardNo, DptName, DptId, CompanyId, TotalSalary, MobileNo,Format(YearMonth,'MMMM-yyyy') as YearMonth ,CompanyName ,EmpAccountNo  FROM   v_MonthlySalarySheet where " +
