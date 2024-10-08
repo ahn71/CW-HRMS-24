@@ -36079,10 +36079,10 @@ body:after {
 .sticky-top {
     z-index: 11 !important;
 }
-.ui-datepicker {
+/*.ui-datepicker {
     position: fixed !important;
     top: 108px !important;
-}
+}*/
 
 .date-parent {
     position: fixed;
