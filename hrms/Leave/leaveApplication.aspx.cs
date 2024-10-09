@@ -11,6 +11,8 @@ namespace SigmaERP.hrms.Leave
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            classes.commonTask.LoadBranch(ddlCompany);
+            ddlCompany.SelectedIndex = 1;
 
         }
     }
