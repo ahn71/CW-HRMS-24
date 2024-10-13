@@ -1499,6 +1499,9 @@
 
 
     <%--   <script src="treeview.js"></script>--%>
+    <!-- Include html2pdf.js and its dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
     <script src="/hrms/assets/vendor_assets/js/jquery/jquery-ui.js"></script>
     <script src="/hrms/assets/vendor_assets/js/bootstrap/popper.js"></script>
     <script src="/hrms/assets/vendor_assets/js/bootstrap/bootstrap.min.js"></script>

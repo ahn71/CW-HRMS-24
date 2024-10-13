@@ -87,6 +87,31 @@ function ApiCallById(url, token, id) {
     });
 }
 
+function ApiCallByCompId(url, token, id, companyID) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: `${url}/${id}`, // Constructs the URL dynamically with the id
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token // Adds Bearer token for authentication
+            },
+            data: {
+                moduleID: id, // Sends id in the data object
+                companyID: companyID // Adds companyID as a parameter in the request
+            },
+            success: function (data) {
+                resolve(data); // Resolves the Promise with the response data
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while fetching data:', status, error); // Logs error details
+                reject(error); // Rejects the Promise with the error
+            }
+        });
+    });
+}
+
+
 function ApiCallByGuestUser(url, token, isGuestUser) {
     return new Promise(function (resolve, reject) {
         $.ajax({
