@@ -12,11 +12,14 @@
             height:20px;
         }
         .PurposeOfLv{
-            height:50px !important;
-           
-           
+            height:50px !important; 
         }
-
+        .removeFile{
+            background-color:none;
+            border:none;
+            color:red;
+            padding:3px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -85,6 +88,17 @@
                                                </div>
                                            </div>
                                        </div>
+                                       <div class="col-lg-3  col-md-6 col-sm-12 col-sm-6" id="divapplyDate" style="display:none">
+                                           <div class="form-group position-relative">
+                                               <label for="datepicker5" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   Apply Date<span class="text-danger">*</span>
+                                               </label>
+                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker5" placeholder="Apply Date">
+                                               <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
+                                               <span class="text-danger" id="applydateError"></span>
+
+                                           </div>
+                                       </div>
                                        <div class="col-lg-3  col-md-6 col-sm-12 col-sm-6">
                                            <div class="form-group position-relative">
                                                <label for="datepicker" class="color-dark fs-14 fw-500 align-center mb-10">
@@ -92,7 +106,7 @@
                                                </label>
                                                <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker" placeholder="Start Date" onchange="calculateTotalDays()">
                                                <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
-                                             <span class="text-danger" id="datepickerError"></span>
+                                             <span class="text-danger" id="lvstartdateError"></span>
 
                                            </div>
                                        </div>
@@ -185,29 +199,26 @@
                                        </div>
                                        <div class="col-lg-3 col-md-6 col-sm-12">
                                            <div class="form-group form-element-textarea mb-20">
-                                               <label for="txtdocemnt" class="color-dark fs-14 fw-500 align-center mb-10">Attach Document(if any)</label>
-                                                  <div class="dm-tag-wrap">
-                                                       <div class="dm-upload">
-                                                           <div class="dm-upload__button">
-                                                               <a href="javascript:void(0)" class="btn btn-lg btn-outline-lighten btn-upload" onclick="$('#upload-1').click()">
-                                                                   <img class="svg" src="/hrms/img/svg/upload.svg" alt="upload">
-                                                                   Click to Upload</a>
-                                                               <input type="file" name="upload-1" class="upload-one" id="upload-1">
-                                                           </div>
-                                                           <div class="dm-upload__file">
-                                                               <ul>
-                                                               </ul>
-                                                           </div>
+                                               <label for="txtdocemnt" class="color-dark fs-14 fw-500 align-center mb-10">Attach Document (if any)</label>
+                                               <div class="dm-tag-wrap">
+                                                   <div class="dm-upload">
+                                                       <div class="dm-upload__button">
+                                                           <a href="javascript:void(0)" class="btn btn-lg btn-outline-lighten btn-upload" onclick="$('#upload-1').click()">
+                                                               <img class="svg" src="/hrms/img/svg/upload.svg" alt="upload">
+                                                               Click to Upload
+                    </a>
+                                                           <input type="file" name="upload-1" class="upload-one" id="upload-1" multiple>
                                                        </div>
-
+                                                       <div class="dm-upload__file">
+                                                           <ul id="fileList">
+                                                               <!-- Uploaded file names will appear here -->
+                                                           </ul>
+                                                       </div>
                                                    </div>
+                                               </div>
                                            </div>
-                                           
-                                               
-                                                
-                                              
-                                       
                                        </div>
+
 
                                        <div class="col-lg-3  col-md-6 col-sm-12">
                                            <div class="form-group">
@@ -303,6 +314,7 @@
          var sftId = '<%=  Session["__SftId__"]%>';
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
+         var DataAccessLevel = 1;
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
 
@@ -338,11 +350,11 @@
 
             // Validate Start Date
             if ($('#datepicker').val() === "") {
-                $('#datepickerError').html("Start Date is required.");
+                $('#lvstartdateError').html("Start Date is required.");
                 $("#datepicker").focus();
                 isValid = false;
             } else {
-                $('#datepickerError').html("");
+                $('#lvstartdateError').html("");
             }
 
             // Validate End Date
@@ -353,18 +365,31 @@
             } else {
                 $('#datepicker2Error').html("");
             }
+            if ($('#pregnantDate').is(':visible')) {  // Check if #pregnantDate is visible
+                if ($('#datepicker3').val().trim() === "") {
+                    $('#datepicker3Error').html("Pregnant Date is required.");
+                    $("#datepicker3").focus();
+                    isValid = false;
+                } else {
+                    $('#datepicker3Error').html("");  // Clear error if valid
+                }
 
-            // If validation passes, proceed with save or update
+                if ($('#datepicker4').val().trim() === "") {
+                    $('#datepicker4Error').html("Delivery Date is required.");
+                    $("#datepicker4").focus();
+                    isValid = false;
+                } else {
+                    $('#datepicker4Error').html("");  // Clear error if valid
+                }
+            }
+
             if (isValid) {
-                var addnewElement = $("#btnSave").text().trim();  // Get the button text (Save or Update)
-
-                // If adding new user (Save operation)
+                var addnewElement = $("#btnSave").text().trim();  
                 if (addnewElement === "Save") {
                     try {
-                        var result = await PostLeave(true);  // Await the PostLeave function since it's async
+                        var result = await PostLeave(true);  
                         if (result === true) {
-                            // Optionally clear the form after saving
-                            // ClearTextBox(); // Uncomment if you want to clear fields after save
+                            
                         }
                     } catch (error) {
                         console.error("An error occurred:", error);  // Handle any errors
@@ -425,6 +450,15 @@
             GetLeaves();
             GetEmployee();
             GetLeaveType();
+
+            if (DataAccessLevel == 1) {
+                $('#divapplyDate').hide();
+            } else {
+                $('#divapplyDate').show();
+
+            }
+
+
 
           
         });
@@ -568,12 +602,14 @@
              $('.adv-table').html('');
              $('#filter-form-container').empty();
 
-             let serialNumber = 1; // Initialize serial number
-             const defaultImage = '../user_img_default.jpg'; // Set the path to your default image here
+             let serialNumber = 1; 
+             const defaultImage = '../user_img_default.jpg'; 
 
              data.forEach(row => {
                  row.serial = serialNumber++; 
-                 const empPicture = row.empPicture ? row.empPicture : defaultImage;
+                 const imgUrl = '../../EmployeeImages/Images/';
+                 const empPicture = row.empPicture ? imgUrl + row.empPicture : defaultImage;
+
                  row.empPicture = `
                     <div class="user-details-container d-flex align-items-center">
                         <img src="${empPicture}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
@@ -603,15 +639,15 @@
              });
 
              const columns = [
-                 { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
+                 { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, 
                     { "name": "empPicture", "title": "User", "className": "userDatatable-content" }, 
-                 { "name": "leaveName", "title": "Leave Type", "className": "userDatatable-content" }, // Combined user image, name, and role column
+                 { "name": "leaveName", "title": "Leave Type", "className": "userDatatable-content" },
                  { "name": "leaveStartDate", "title": "Start Date", "className": "userDatatable-content" },
                  { "name": "leaveEndDate", "title": "End Date", "className": "userDatatable-content" },
                  { "name": "totalLeaveDays", "title": "Total Day", "className": "userDatatable-content" },
                  { "name": "applyDate", "title": "Apply Date", "className": "userDatatable-content" },
                  { "name": "approvalStatus", "title": "Status", "className": "userDatatable-content" },
-                 { "name": "action", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" }, // Action column
+                 { "name": "action", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" },
              ];
 
              try {
@@ -646,72 +682,61 @@
                  console.log('View button clicked for ID:', id);
               });
 
-         }
+        }
 
         async function PostLeave(IsSave) {
-            // Get selected values from the dropdowns
             var referenceEmp = $('#ddlReferenceEmp').val();
             var company = $('#ddlCompany').val();
             var empId = $('#ddlEmpName').val();
-            var leaveTypeId = parseInt($('#ddlLeaveType').val().trim()) || 0; // Ensure valid integer
+            var leaveTypeId = parseInt($('#ddlLeaveType').val().trim()) || 0;
+         
+            var startDate = $('#datepicker').val();
+            var startDate = $('#datepicker').val();
+            var endDate = $('#datepicker2').val();
 
-            // Get the input dates
-            var startDate = $('#datepicker').val();  // Example: "1 October 2024"
-            var endDate = $('#datepicker2').val();   // Example: "12 October 2024"
-
-            // Convert to Date objects and check for validity
             var startDateObj = new Date(startDate);
             var endDateObj = new Date(endDate);
-            if (isNaN(startDateObj.getTime()) || isNaN(endDateObj.getTime())) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Date',
-                    text: 'Please enter valid start and end dates.'
-                });
-                return false;
-            }
 
             var formattedStartDate = startDateObj.toISOString().split('T')[0];
             var formattedEndDate = endDateObj.toISOString().split('T')[0];
 
-            // Get pregnancy and delivery dates
-            var pregnantDate = $('#datepicker3').val();  // Example: "1 October 2024"
-            var deliveryDate = $('#datepicker4').val();   // Example: "12 October 2024"
+            var pregnantDate = $('#datepicker3').val();
+            var deliveryDate = $('#datepicker4').val();
+      
+            var formattedDeliveryDate = null;
+            var formattedPregnantDate = null;
 
-            // Convert to Date objects
-            var pregnantDateObj = new Date(pregnantDate);
-            var deliveryDateObj = new Date(deliveryDate);
 
-            // Check for empty input values or invalid dates
-            var formattedDeliveryDate = '';
-            var formattedPregnantDate = '';
+            var applyDate = $('#datepicker5').val();
+            var formattedApplyDate = null;
 
-            if (pregnantDate.trim() === '') {
-                // If both dates are empty or invalid
-                formattedDeliveryDate = '';
-                formattedPregnantDate = '';
-            } else if (isNaN(pregnantDateObj.getTime()) || isNaN(deliveryDateObj.getTime())) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Date',
-                    text: 'Please enter valid pregnancy and delivery dates.'
-                });
-                return false;
+            if ($('#divapplyDate').is(':visible')) {
+                var applyDateObj = new Date(applyDate);
+                formattedApplyDate = applyDateObj.toISOString().split('T')[0];
             } else {
-                // Format dates to "YYYY-MM-DD"
+                var now = new Date();
+                formattedApplyDate = now.toISOString().split('T')[0]; 
+            }
+
+
+            if (pregnantDate.trim() !== '' && deliveryDate.trim() !== '') {
+                var pregnantDateObj = new Date(pregnantDate);
+                var deliveryDateObj = new Date(deliveryDate);
+
                 formattedDeliveryDate = deliveryDateObj.toISOString().split('T')[0];
                 formattedPregnantDate = pregnantDateObj.toISOString().split('T')[0];
             }
 
-            // Get other input values
             var chargeHandoverTo = $('#ddlChargeHandOverTo').val();
             var contact = $('#txtContact').val().trim();
             var lvAddress = $('#txtLeaveAddress').val().trim();
             var lvRemarks = $('#txtPurposeOfLv').val().trim();
 
-            // Prepare the post data matching your API structure
+            var base64Files = await handleFileUpload();
+
             var postData = {
                 leaveTypeId: leaveTypeId,
+                applyDate:formattedApplyDate,
                 leaveStartDate: formattedStartDate,
                 leaveEndDate: formattedEndDate,
                 pregnantDate: formattedPregnantDate,
@@ -722,19 +747,16 @@
                 lvContact: contact,
                 companyId: company,
                 empTypeId: 0,
-                // Assuming sftId, dptId, dsgId, gId are defined elsewhere
                 sftId: sftId,
                 dptId: dptId,
                 dsgId: dsgId,
                 gId: gId,
-                empId: empId
+                empId: empId,
+                documentsBase64: base64Files 
             };
 
             try {
-                // Await the API call
                 let response = await ApiCallPost(createLvUrl, token, postData);
-
-                // Handle response based on the status code
                 if (response && response.statusCode === 200) {
                     Swal.fire({
                         icon: 'success',
@@ -742,24 +764,24 @@
                         text: 'Leave application saved successfully!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            GetUsers();  // Update user list or perform necessary actions
+                            GetUsers();  
                         }
                     });
-                    return true; // Indicate success
+                    return true; 
                 } else if (response && response.statusCode === 400) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Validation Error',
                         text: 'Please check your input and try again.'
                     });
-                    return false; // Validation or other error
+                    return false; 
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred. Please try again.'
                     });
-                    return false; // General error handling
+                    return false; 
                 }
             } catch (error) {
                 Swal.fire({
@@ -767,24 +789,87 @@
                     title: 'Error',
                     text: 'Failed to save the leave application. Please try again.'
                 });
-                console.error("API Error:", error); // Log the error
-                return false; // Return false on error
+                console.error("API Error:", error); 
+                return false; 
             }
+        }
+
+        let allFiles = [];
+        const allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'gif'];
+        const maxFileSize = 2 * 1024 * 1024; 
+        document.getElementById('upload-1').addEventListener('change', function (event) {
+            const newFiles = Array.from(event.target.files);
+            const validFiles = [];
+
+            newFiles.forEach(file => {
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                if (file.size <= maxFileSize && allowedExtensions.includes(fileExtension)) {
+                    validFiles.push(file); 
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid File',
+                        text: `File "${file.name}" is not allowed. Please ensure it is under 2MB and has a valid file type. Allowed types: ${allowedExtensions.join(', ')}`,
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+
+            allFiles = allFiles.concat(validFiles); 
+            event.target.value = ''; 
+            renderFileList(); 
+        });
+
+        function renderFileList() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = ''; 
+
+            allFiles.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-link"></i> ${file.name} 
+                        <button type="button" onclick="removeFile(${index})" class="removeFile">
+                        <i class="fas fa-trash-alt"></i></button>`;
+                fileList.appendChild(li); 
+            });
+        }
+
+        function removeFile(index) {
+            allFiles.splice(index, 1); 
+            renderFileList(); 
+        }
+
+
+
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        }
+
+        async function handleFileUpload() {
+            const base64Files = [];
+            for (const file of allFiles) { 
+                const base64File = await getBase64(file);
+                base64Files.push(base64File);  
+            }
+
+            return base64Files; 
         }
 
 
         function printPDF() {
             var element = document.getElementById('leaveApplicationContent');
-
-            // Generate PDF using html2pdf
             html2pdf()
                 .from(element)
                 .set({
                     margin: 1,
                     filename: 'leave-application.pdf',
                     html2canvas: {
-                        scale: 2, // Increase scale for better quality
-                        letterRendering: true // Enable letter rendering
+                        scale: 2, 
+                        letterRendering: true 
                     },
                     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
                 })
@@ -792,14 +877,10 @@
         }
 
 
-
-
         function FetchDataForView(Id) {
             ApiCallByCompId(getLeaveByIdUrl, token, Id, CompanyID)
                 .then(function (responseData) {
-                    var data = responseData.data[0]; // Get the first element in the data array
-
-                    // Construct the HTML content for leave application form view
+                    var data = responseData.data[0]; 
                     var leaveApplicationContent = `
             <div class="row">
               <div class="col-md-6">
@@ -812,7 +893,7 @@
               </div>
               <div class="col-md-6">
                 <p><strong>Remarks:</strong> ${data.remarks}</p>
-                <p><strong>Handed Over Employee ID:</strong> ${data.handedOverEmpId}</p>
+                <p><strong>Handed Over Employee ID:</strong> ${data.handedOverEmpName}</p>
                 <p><strong>Leave Address:</strong> ${data.lvAddress}</p>
                 <p><strong>Leave Contact:</strong> ${data.lvContact}</p>
                 <p><strong>Approval Status:</strong> ${data.approvalStatus ?? 'Pending'}</p>
