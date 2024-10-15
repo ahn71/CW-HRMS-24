@@ -94,6 +94,19 @@
                                
                            </td>
                        </tr>
+                         <tr runat="server" id="chkbanksheet" visible="false">
+                             <td>
+                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet" CssClass="chkboxsalary" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
+                             </td>
+                         </tr>
+                         <tr runat="server" id="bankshhet" visible="false">
+                              <td>Select Bank Report &nbsp;</td>
+                             <td>
+                             <asp:DropDownList runat="server" ID="ddlBankSheet" CssClass="form-control select_width">
+                               
+                             </asp:DropDownList>
+                                 </td>
+                         </tr>
                          <tr runat="server" id="trHideForIndividual">
                                 <td>Employee Type</td>                                
                                 <td>                                   

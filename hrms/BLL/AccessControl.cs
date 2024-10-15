@@ -89,7 +89,10 @@ namespace SigmaERP.hrms.BLL
 
         public static string getDataAccessCondition(string companyId,string ddlDepartment)
         {
+
+
             string condition = "CompanyId='" + companyId + "'";
+            //for all
             if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
             {
                 if (ddlDepartment == "0")
@@ -102,7 +105,9 @@ namespace SigmaERP.hrms.BLL
                 }
 
                    
-            }
+            }  
+
+            //custom
             else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
             {
                 if (ddlDepartment == "0")
@@ -123,10 +128,12 @@ namespace SigmaERP.hrms.BLL
 
                
             }
-            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2")
+            //for own department 
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2") 
             {
                 condition += "and DptId='" + HttpContext.Current.Session["__dptId__"] + "'";
             }
+            //only me
             else
             {
                 condition += "and EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "'";
@@ -135,6 +142,24 @@ namespace SigmaERP.hrms.BLL
             return condition;
         }
 
+        //private static string HandleCustomAccess(string ddlDepartment)
+        //{
+        //    if (ddlDepartment == "0")
+        //    {
+        //        if (HttpContext.Current.Session["__isGuestUser__"].ToString() == "True")
+        //        {
+        //            return " and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ")";
+        //        }
+        //        else
+        //        {
+        //            return  " and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or  EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "' ";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return "and DptId in(" + ddlDepartment + ") ";
+        //    }
+        //}
         public static string  loadEmpCardNumber(string CompanyId)
         {
             string conditon = " CompanyId = '" + CompanyId + "'";

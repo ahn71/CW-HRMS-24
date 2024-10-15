@@ -1568,6 +1568,19 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void loadBankNameCompanyWise(string companyId,DropDownList ddlbankList)
+        {
+            HttpContext.Current.Session["__bankShortname__"] = "";
+            DataTable dt = new DataTable();
+            sqlDB.fillDataTable("select BankId,BankName,BankShortName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and CompanyId='0001'", dt);
+            ddlbankList.DataSource = dt;
+            ddlbankList.DataValueField = "BankId";
+            ddlbankList.DataTextField = "BankName";
+            ddlbankList.DataBind();
+            ddlbankList.Items.Insert(0, new ListItem("ALL", "0"));
+            HttpContext.Current.Session["__bankShortname__"] = dt.Rows[0]["BankShortName"].ToString();
+        }
         public static void AddRemoveItem(ListBox aSource, ListBox aTarget)
         {
 
