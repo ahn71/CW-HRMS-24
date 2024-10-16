@@ -314,6 +314,7 @@
          var sftId = '<%=  Session["__SftId__"]%>';
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
+         var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
          var DataAccessLevel = 1;
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
@@ -672,7 +673,7 @@
 
              $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
                  const id = $(this).data('id');
-                 //Delete(id);
+                 Delete(id);
                  console.log('Delete button clicked for ID:', id);
              });
 
@@ -875,7 +876,39 @@
                 })
                 .save();
         }
-
+        function Delete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Packages?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ApiDeleteById(getLvDeleteUrl, token, id)
+                        .then(function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Packages deleted successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                 GetLeaves();
+                            });
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while deleting the module.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
 
         function FetchDataForView(Id) {
             ApiCallByCompId(getLeaveByIdUrl, token, Id, CompanyID)
