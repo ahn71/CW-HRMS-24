@@ -49,7 +49,7 @@
                            <div class="row">
                                <div class="col-lg-12">
                                    <div class="row">
-                                       <div class="col-lg-3 col-md-6 col-sm-12" ">
+                                       <div class="col-lg-3 col-md-6 col-sm-12" id="ddlCompanySection" style="display:none">
                                            <div class="form-group">
                                                <label id="lblHidenUserId" style="display: none"></label>
                                                <label for="ddlCompany" class="color-dark fs-14 fw-500 align-center mb-10">Company</label>
@@ -62,7 +62,7 @@
                                                </div>
                                            </div>
                                        </div>
-                                       <div class="col-lg-3 col-md-6 col-sm-12">
+                                       <div class="col-lg-3 col-md-6 col-sm-12" id="ddlEmpNameSection" style="display:none">
                                            <div class="form-group">
                                                <label for="ddlEmpName" class="color-dark fs-14 fw-500 align-center mb-10">Employee<span class="text-danger">*</span></label>
                                                <div class="support-form__input-id">
@@ -170,15 +170,7 @@
                                                </div>
                                            </div>
                                        </div>
-                                       <div class="col-lg-3 col-md-6 col-sm-12">
-                                           <div class="form-group">
 
-                                               <label for="txtContact" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                   Phone Number
-                                               </label>
-                                               <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtContact" placeholder="Phone Number">
-                                           </div>
-                                       </div>
                                        <div class="col-lg-3 col-md-6 col-sm-12">
                                            <div class="form-group">
 
@@ -195,6 +187,15 @@
                                                    Purpose Of Leave
                                                 </label>
                                                <textarea class="form-control PurposeOfLv" placeholder="Type Purpose Of Leave" id="txtPurposeOfLv" rows="1"></textarea>
+                                           </div>
+                                       </div>
+                                       <div class="col-lg-3 col-md-6 col-sm-12">
+                                           <div class="form-group">
+
+                                               <label for="txtContact" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                   Emergency Contact
+                                               </label>
+                                               <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtContact" placeholder="Phone Number">
                                            </div>
                                        </div>
                                        <div class="col-lg-3 col-md-6 col-sm-12">
@@ -295,7 +296,7 @@
                       </div>
                       <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary" onclick="printPDF()">Print PDF</button>
+                          <button type="button" class="btn btn-primary" onclick="printPDF()">Print</button>
                       </div>
                   </div>
               </div>
@@ -308,6 +309,7 @@
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
+         var loginempId = '<%= Session["__GetEmpId__"]%>';
          var dptId = '<%=  Session["__DptId__"]%>';
          var dsgId = '<%=  Session["__DsgId__"]%>';
          var gId = '<%=  Session["__Gid__"]%>';
@@ -315,7 +317,7 @@
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
-         var DataAccessLevel = 1;
+         var DataAccessLevel = 2;
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
 
@@ -329,15 +331,18 @@
             let alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
             let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-            // Validate Employee Name (Dropdown)
-            let selectedEmp = $('#ddlEmpName').val();
-            if (selectedEmp == "0") {
-                $('#ddlEmpNameError').html("Please select an Employee Name.");
-                $("#ddlEmpName").focus();
-                isValid = false;
-            } else {
-                $('#ddlEmpNameError').html("");
+            if (DataAccessLevel != 1) {
+                let selectedEmp = $('#ddlEmpName').val();
+                if (selectedEmp == "0") {
+                    $('#ddlEmpNameError').html("Please select an Employee Name.");
+                    $("#ddlEmpName").focus();
+                    isValid = false;
+                } else {
+                    $('#ddlEmpNameError').html("");
+                }
             }
+
+
 
             // Validate Leave Type (Dropdown)
             let selectedLeaveName = $('#ddlLeaveType').val();
@@ -390,7 +395,7 @@
                     try {
                         var result = await PostLeave(true);  
                         if (result === true) {
-                            
+                            ClearTextBox();
                         }
                     } catch (error) {
                         console.error("An error occurred:", error);  // Handle any errors
@@ -413,7 +418,20 @@
                 */
             }
         }
-
+        function ClearTextBox() {
+            $('select[name="ddlLeaveType"]').val('0').change();
+            $('select[name="ddlEmpName"]').val('0').change();
+            $('select[name="ddlChargeHandOverTo"]').val('0').change();
+            $('#datepicker5').val("");
+            $('#datepicker').val("");
+            $('#datepicker2').val("");
+            $('#totalDay').val("");
+            $('#datepicker3').val("");
+            $('#datepicker4').val("");
+            $('#txtLeaveAddress').val("");
+            $('#txtPurposeOfLv').val("");
+            $('#txtContact').val("");
+        }
 
         //function BoxExpland() {
         //    var scrollTop = $(window).scrollTop();
@@ -454,8 +472,12 @@
 
             if (DataAccessLevel == 1) {
                 $('#divapplyDate').hide();
+                $('#ddlCompanySection').hide();
+                $('#ddlEmpNameSection').hide();
             } else {
                 $('#divapplyDate').show();
+                $('#ddlCompanySection').show();
+                $('#ddlEmpNameSection').show();
 
             }
 
@@ -469,7 +491,16 @@
                     if (response.statusCode === 200) {  // Make sure 'statusCode' matches your API response structure
                         var responseData = response.data;  // Access the correct 'data' field
                         console.log(responseData);
-                        EmployeePopulateDropdown(responseData);
+
+                        if (DataAccessLevel == 1) {
+                            ChargeHandeOverEmp(responseData);
+                        }
+                        else
+                        {
+                            EmployeePopulateDropdown(responseData);
+
+                        }
+
                     } else {
                         console.error('Error occurred while fetching data:', response.message);
                     }
@@ -531,6 +562,18 @@
                 empOption.textContent = item.fullName;
                 empDropdown.appendChild(empOption);
 
+                const chargeOption = document.createElement('option');
+                chargeOption.value = item.empId;
+                chargeOption.textContent = item.fullName;
+                chargeDropdown.appendChild(chargeOption);
+            });
+        }
+        function ChargeHandeOverEmp(data) {
+            const chargeDropdown = document.getElementById('ddlChargeHandOverTo');
+            chargeDropdown.innerHTML = '<option value="0">---Select---</option>';
+
+            // Populate both dropdowns with the same data
+            data.forEach(item => {
                 const chargeOption = document.createElement('option');
                 chargeOption.value = item.empId;
                 chargeOption.textContent = item.fullName;
@@ -687,8 +730,18 @@
 
         async function PostLeave(IsSave) {
             var referenceEmp = $('#ddlReferenceEmp').val();
-            var company = $('#ddlCompany').val();
-            var empId = $('#ddlEmpName').val();
+
+            var company = null;
+            var empId = null;
+            if (DataAccessLevel == 1) {
+                empId = loginempId;
+                company = CompanyID;
+            } else {
+                empId = $('#ddlEmpName').val();
+                company = $('#ddlCompany').val();
+            }
+
+   
             var leaveTypeId = parseInt($('#ddlLeaveType').val().trim()) || 0;
          
             var startDate = $('#datepicker').val();

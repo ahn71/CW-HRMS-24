@@ -301,7 +301,8 @@ namespace SigmaERP.hrms.UI.auth
                     var userData = jsonResponse.data;
                     var accessToken = jsonResponse.accessToken;
                     var permission = jsonResponse.permission;
-                    Session["__GetCompanyId__"] = companyId;  
+                    Session["__GetCompanyId__"] = companyId;
+                    Session["__GetEmpId__"] = userData.empId;
                     Session["__GetUserId__"] = userData.userId;  
                     Session["__GetUserFullName__"] = userData.name;  
                     Session["__GetUID__"] = userData.userId.ToString();
