@@ -1950,7 +1950,7 @@ namespace SigmaERP.personnel
                     "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
                     " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
                     " Personnel_EmpPersonnal.Nationality, Personnel_EmpPersonnal.NationIDCardNo,Personnel_EmpPersonnal.NumberofChild," +
-                    "Personnel_EmpPersonnal.LastEdQualification,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
+                    "Personnel_EmpPersonnal.LastEdQualification,ersonnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
                     "Left JOIN HRD_Qualification ON Personnel_EmpPersonnal.LastEdQualification=HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON " +
                     "Personnel_EmpPersonnal.RId = HRD_Religion.RId  where Personnel_EmpPersonnal.EmpId='" + EmpId + "'", dt = new DataTable());
                 if (dt.Rows.Count == 0)
@@ -1972,7 +1972,7 @@ namespace SigmaERP.personnel
                 dsNationIDCardNo.Text = dt.Rows[0]["NationIDCardNo"].ToString();
                 dsNoOfExperience.Text = dt.Rows[0]["NoOfExperience"].ToString();
                 dsPlaceOfBirth.Text = dt.Rows[0]["PlaceOfBirth"].ToString();
-
+                txtEmpVisaNo.Text = dt.Rows[0]["EmpVisaNo"].ToString();
                 dsSex.Text = dt.Rows[0]["Sex"].ToString();
                 dsWeight.Text = dt.Rows[0]["Weight"].ToString();
                 // btnSavePersonal.Text = "Update";
@@ -2025,7 +2025,7 @@ namespace SigmaERP.personnel
                 //DataTable dtEmp;
                 //sqlDB.fillDataTable("SELECT EmpId FROM v_HRD_Shift", dtEmp = new DataTable());
                 string EmpId = ViewState["__EmpId__"].ToString();
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo) ", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__EmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
@@ -2060,6 +2060,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@NoOfExperience", dsNoOfExperience.Text.Trim());
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text);
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2249,7 +2250,7 @@ namespace SigmaERP.personnel
                 {
                     EmpId = ddlEmpCardNo.SelectedValue;
                 }
-                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo where EmpId=@EmpId ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo where EmpId=@EmpId ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", EmpId);
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
                 cmd.Parameters.AddWithValue("@MotherName", dsMotherName.Text.Trim());
@@ -2291,6 +2292,7 @@ namespace SigmaERP.personnel
                 else cmd.Parameters.AddWithValue("@NoOfExperience", dsNoOfExperience.Text.Trim());
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text.Trim());
 
                 int result = (int)cmd.ExecuteNonQuery();

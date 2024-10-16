@@ -53,7 +53,7 @@ namespace SigmaERP.payroll.salary
     
             Response.Write("EMPLOYER EID:,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Total Salaries,Total records:\n");
 
-            Response.Write($"{ViewState["__registrationID__"]},{DateTime.Today:yyyy-MM-dd},{DateTime.Now:hh:mm:ss tt},{ViewState["__establishmentID__"]},{Qid},{Session["__bankShortname__"]}," + ViewState["__totalSalary__"] + "," + ViewState["__totalRows__"] + "\n");
+            Response.Write($"{ViewState["__registrationID__"]},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{ViewState["__establishmentID__"]},{Qid},{Session["__bankShortname__"]}," + ViewState["__totalSalary__"] + "," + ViewState["__totalRows__"] + "\n");
 
        
             var headerValues = new List<string>();

@@ -545,6 +545,17 @@
                                             <asp:TextBox ID="txtMobileNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
                                         </td>
                                     </tr>
+                                    <tr>
+                                          <td>
+                                        EmployeeVisa No
+                                        </td>
+                                        <td>:</td>
+                                        <td>
+                                           <asp:TextBox runat="server" ID="txtEmpVisaNo" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                        </td>
+                                       
+                                    </tr>
+                                  
                                    
                                     <tr id="trel" runat="server" visible="false">
                                         <td>Earned Leave

@@ -541,6 +541,7 @@ namespace SigmaERP.hrms.UI.auth
             Session["__bonusURl__"] = "/hrms/bonus";
             Session["__vattaxURl__"] = "/hrms/vat-tax-root";
             Session["__topMenuPf__"] = "/hrms/provident-found/provident-found";
+            Session["__topMenuforSettings__"] = "/hrms/settings";
             Session["__cardUrl__"] = "";
         }
     }

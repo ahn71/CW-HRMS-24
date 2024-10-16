@@ -3,7 +3,9 @@
         #ContentPlaceHolder1_ContentPlaceHolder1_tblGenerateType {
             width:100%;
         }
-       
+     td.chkbank {
+         white-space:nowrap;
+     }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -95,8 +97,8 @@
                            </td>
                        </tr>
                          <tr runat="server" id="chkbanksheet" visible="false">
-                             <td>
-                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet" CssClass="chkboxsalary" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
+                             <td class="chkbank">
+                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet" CssClass="chkbankSheet" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
                              </td>
                          </tr>
                          <tr runat="server" id="bankshhet" visible="false">
@@ -135,7 +137,7 @@
                              <td></td>
                              <td></td>
                              <td></td>
-                             <td>  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
+                             <td class="chkbank">  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
                          </tr>
                    </table>
                 </div>
