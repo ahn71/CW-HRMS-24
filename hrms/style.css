@@ -36328,12 +36328,17 @@ body:after {
 }*/
 
 .bg-onlyme {
-    background-color: #8C90A4; /* Blue */
+    background-color: #8231D3;
     color: white;
 }
 
 .bg-warning {
     background-color: #ffc107; /* Yellow */
+    color: white;
+}
+
+.bg-rejected {
+    background-color: #FF0F0F; /* Yellow */
     color: white;
 }
 
@@ -36354,6 +36359,7 @@ body:after {
 
 .badge {
     border-radius: 10px !important;
+    width:70px;
 }
 .profileSection{
     position:sticky;

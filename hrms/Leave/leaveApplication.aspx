@@ -678,7 +678,7 @@
                          : row.approvalStatus === 1
                              ? '<span class="badge bg-success">Approve</span>'
                              : row.approvalStatus === 2
-                                 ? '<span class="badge bg-info">Reject</span>'
+                                 ? '<span class="badge bg-rejected">Reject</span>'
                                  : '<span class="badge bg-secondary">NA</span>';
              });
 
@@ -818,7 +818,7 @@
                         text: 'Leave application saved successfully!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            GetUsers();  
+                            GetLeaves();  
                         }
                     });
                     return true; 
@@ -929,10 +929,44 @@
                 })
                 .save();
         }
+        //function Delete(id) {
+        //    Swal.fire({
+        //        title: 'Are you sure?',
+        //        text: "Do you really want to delete this Packages?",
+        //        icon: 'warning',
+        //        showCancelButton: true,
+        //        confirmButtonColor: '#3085d6',
+        //        cancelButtonColor: '#d33',
+        //        confirmButtonText: 'Yes, delete it!'
+        //    }).then((result) => {
+        //        if (result.isConfirmed) {
+        //            ApiDeleteById(getLvDeleteUrl, token, id)
+        //                .then(function (response) {
+        //                    Swal.fire({
+        //                        title: 'Success!',
+        //                        text: 'Packages deleted successfully.',
+        //                        icon: 'success',
+        //                        confirmButtonText: 'OK'
+        //                    }).then(() => {
+        //                         GetLeaves();
+        //                    });
+        //                })
+        //                .catch(function (error) {
+        //                    Swal.fire({
+        //                        title: 'Error!',
+        //                        text: 'An error occurred while deleting the module.',
+        //                        icon: 'error',
+        //                        confirmButtonText: 'OK'
+        //                    });
+        //                });
+        //        }
+        //    });
+        //}
+
         function Delete(id) {
             Swal.fire({
                 title: 'Are you sure?',
-                text: "Do you really want to delete this Packages?",
+                text: "Do you really want to delete this Leave?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -942,26 +976,72 @@
                 if (result.isConfirmed) {
                     ApiDeleteById(getLvDeleteUrl, token, id)
                         .then(function (response) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Packages deleted successfully.',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            }).then(() => {
-                                 GetLeaves();
-                            });
+                            // Check if the status code is 200
+                            if (response.statusCode === 200) {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text:'Leave deleted successfully.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    GetLeaves();
+                                });
+                            }
+                            else if (response.statusCode === 401) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'The leave is already being processed, so it cannot be deleted.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    GetLeaves();
+                                });
+                            }
+                            else if (response.statusCode === 402) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'The leave is already being Approved, so it cannot be deleted.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    GetLeaves();
+                                });
+                            }
+                            else if (response.statusCode === 403) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'The leave is already being Rejected, so it cannot be deleted.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    GetLeaves();
+                                });
+                            }
                         })
                         .catch(function (error) {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'An error occurred while deleting the module.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
+                            // Handle different status codes
+                            if (error.response && error.response.statusCode === 400) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: error.response.data.message || 'Bad request while deleting the package.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: 'An unexpected error occurred while deleting the package.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
                         });
                 }
             });
         }
+
+
+
 
         function FetchDataForView(Id) {
             ApiCallByCompId(getLeaveByIdUrl, token, Id, CompanyID)
