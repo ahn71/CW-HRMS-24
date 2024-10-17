@@ -195,7 +195,7 @@
                         </Triggers>
                         <ContentTemplate>
                             
-                                <table style="width:100%">
+                                <table  >
                                     <tr>
                                          <td visible="false" id="tdCompany" runat="server">Company
                                     </td>
@@ -326,6 +326,27 @@
                                     <td>                                    
                                       <asp:TextBox runat="server" ID="txtEmpCardNo" CssClass="form-control">
                                       </asp:TextBox>
+                                        
+                                    </td>
+                                    <td> From
+                                    </td>
+                                    <td>:
+                                    </td>
+                                    <td>                                    
+                                      <asp:TextBox runat="server" ID="txtFromDate" CssClass="form-control" autocomplete="off">
+                                      </asp:TextBox>
+                                        <asp:CalendarExtender ID="txtFromDate_CalendarExtender" runat="server" Format="dd-MM-yyyy"  TargetControlID="txtFromDate" >
+                                   </asp:CalendarExtender>
+                                    </td>
+                                    <td> To
+                                    </td>
+                                    <td>:
+                                    </td>
+                                    <td>                                    
+                                      <asp:TextBox runat="server" ID="txtToDate" CssClass="form-control" autocomplete="off">
+                                      </asp:TextBox>
+                                        <asp:CalendarExtender ID="CalendarExtender1" runat="server" Format="dd-MM-yyyy"  TargetControlID="txtToDate" >
+                                   </asp:CalendarExtender>
                                     </td>
                                     <td>
                                          <asp:Button runat="server" ID="btnSearch" ClientIDMode="Static" Text="Search" CssClass="css_btn Ptbut" OnClick="btnSearch_Click" />

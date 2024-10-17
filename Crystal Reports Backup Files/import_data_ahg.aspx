@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/attendance_nested.master" AutoEventWireup="true" CodeBehind="import_data_ahg.aspx.cs" Inherits="SigmaERP.attendance.import_data_ahg" %>
+﻿<%@ Page Title="Processing Daily Attendance" Language="C#" MasterPageFile="~/attendance_nested.master" AutoEventWireup="true" CodeBehind="import_data_ahg.aspx.cs" Inherits="SigmaERP.attendance.import_data_ahg" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
      <script type="text/javascript">
@@ -72,7 +72,7 @@
                     <li>/</li>
                     <li><a href="/attendance_default.aspx">Attendance</a></li>
                     <li>/</li>
-                    <li><a href="#" class="ds_negevation_inactive Mactive">Daily In-Out Report</a></li>
+                    <li><a href="#" class="ds_negevation_inactive Mactive">Processing Daily Attendance</a></li>
                 </ul>
             </div>
         </div>
@@ -178,7 +178,7 @@
                                     <tr>
                                         <td id="spnFullFromDate" runat="server">Date<span class="requerd1">*</span></td>
                                         <td>:</td>
-                                        <td><asp:TextBox ID="txtFullAttDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" PlaceHolder="Click For Calendar" Width="174px" Style="margin-left: 10px"></asp:TextBox>
+                                        <td><asp:TextBox ID="txtFullAttDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off" PlaceHolder="Click For Calendar" Width="174px" Style="margin-left: 10px"></asp:TextBox>
                                              <asp:CalendarExtender ID="CExtApplicationDate" runat="server" Enabled="True" Format="dd-MM-yyyy" PopupButtonID="imgAttendanceDate" TargetControlID="txtFullAttDate">
                                 </asp:CalendarExtender>
                                         </td>
@@ -188,7 +188,7 @@
                                
                                 <p style="margin-left: 150px;">
                                     <span id="spnFullToDate" runat="server" visible="false">To Date </span>
-                                    <asp:TextBox ID="txtFullToDate" Visible="false" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" PlaceHolder="Click For Calendar" Width="174px" Style="margin-left: 26px"></asp:TextBox>
+                                    <asp:TextBox ID="txtFullToDate" Visible="false" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off" PlaceHolder="Click For Calendar" Width="174px" Style="margin-left: 26px"></asp:TextBox>
                                 </p>
                                 <asp:CalendarExtender ID="CalendarExtender1" runat="server" Enabled="True" Format="dd-MM-yyyy" PopupButtonID="imgAttendanceDate" TargetControlID="txtFullToDate">
                                 </asp:CalendarExtender>
@@ -202,13 +202,13 @@
                                     <tr>
                                         <td>Card :&nbsp; <span class="requerd1">*</span></td>
                                         <td>
-                                            <asp:TextBox ID="txtCardNo" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Type Card No"></asp:TextBox>
+                                            <asp:TextBox ID="txtCardNo" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" autocomplete="off" PLaceHolder="Type Card No"></asp:TextBox>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td id="tdPartialFromDate" runat="server">Date : &nbsp;<span class="requerd1">*</span></td>
                                         <td>
-                                            <asp:TextBox ID="txtPartialAttDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar"></asp:TextBox>
+                                            <asp:TextBox ID="txtPartialAttDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" autocomplete="off" PLaceHolder="Click For Calendar"></asp:TextBox>
                                             <asp:CalendarExtender ID="txtPartialAttDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtPartialAttDate">
                                             </asp:CalendarExtender>
                                         </td>
@@ -217,7 +217,7 @@
                                     <tr id="trPartialToDate" runat="server" visible="false">
                                         <td>To Date : </td>
                                         <td>
-                                            <asp:TextBox ID="txtPartialToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar"></asp:TextBox>
+                                            <asp:TextBox ID="txtPartialToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" autocomplete="off" PLaceHolder="Click For Calendar"></asp:TextBox>
                                             <asp:CalendarExtender ID="CalendarExtender2" runat="server" Format="dd-MM-yyyy" TargetControlID="txtPartialToDate">
                                             </asp:CalendarExtender>
                                         </td>

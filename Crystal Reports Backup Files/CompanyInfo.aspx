@@ -63,8 +63,10 @@
                         <asp:AsyncPostBackTrigger ControlID="rblCardNoType"/>
                     </Triggers>
                     <ContentTemplate>
-                <div style="margin: 0px auto; width: 868px; overflow: hidden;">
-                <div style=float:left;>
+                <div style="margin: 0px auto; width: 1000px; overflow: hidden;">
+                    <div class="row">
+                        <div class="col-lg-6" style="padding:15px">
+                              <div style=float:left;>
                 
                         <div class="input_division_info_2" style="float:left; width:450px;">                           
                             <table class="division_table company_radio_btn">
@@ -164,7 +166,10 @@
                              
                                        
                 </div>
-                       <div style="float: right;">                     
+                        </div>
+
+                         <div class="col-lg-6" style="padding:15px">
+   <div style="float: right;">                     
                    <div style="text-align:center;">
                         <asp:Image ID="imgProfile" class="BImg" ClientIDMode="Static"  runat="server" ImageUrl="~/images/profileImages/Logo.png" />  
                         <asp:FileUpload ID="FileUpload1" style="margin-left:108px" runat="server"  onchange="previewFile()" ClientIDMode="Static" />
@@ -238,6 +243,7 @@
                                     <td>:</td>
                                     <td>
                                          <asp:DropDownList ID="ddlMachine" ClientIDMode="Static" CssClass="form-control select_width"  runat="server">
+                                             <asp:ListItem Value="zkbiotime">ZK Biotime</asp:ListItem>
                                              <asp:ListItem Value="ZK">ZK</asp:ListItem>
                                              <asp:ListItem Value="RMS">RMS</asp:ListItem>                                            
                                          </asp:DropDownList>
@@ -252,6 +258,10 @@
                                 </tr>
                     </table>                  
                         </div>
+                        </div>
+                    </div>
+                     
+                    
                     </div>
             </ContentTemplate>
                 </asp:UpdatePanel>

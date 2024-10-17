@@ -17,7 +17,7 @@
     </asp:ScriptManager>  
      <asp:UpdatePanel runat="server" ID="up1">
         <ContentTemplate>
-    
+    <div runat="server" id="divError"></div>
     <div>
         <CR:CrystalReportViewer ID="CrystalReportViewer1" runat="server"  AutoDataBind="true" ToolPanelView="None" PrintMode="ActiveX"   />
     </div>

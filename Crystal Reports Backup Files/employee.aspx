@@ -13,6 +13,7 @@
 <asp:UpdatePanel ID="uplMessage" runat="server" >
     <ContentTemplate><p class="message"  id="lblMessage" clientidmode="Static" runat="server"></p></ContentTemplate>
 </asp:UpdatePanel>   
+
     
     <asp:HiddenField ID="HiddenField1" runat="server" ClientIDMode="Static" />
     <asp:HiddenField ID="hdfSalaryType" Value="Gross" runat="server" ClientIDMode="Static" />
@@ -100,8 +101,7 @@
                                         <td>:
                                         </td>
                                         <td>
-                                            <asp:RadioButtonList ID="rblEmpType" runat="server" RepeatDirection="Horizontal" AutoPostBack="True" OnSelectedIndexChanged="rbLanguage_SelectedIndexChanged">
-                                               
+                                            <asp:RadioButtonList ID="rblEmpType" runat="server" RepeatDirection="Horizontal" AutoPostBack="True" OnSelectedIndexChanged="rbLanguage_SelectedIndexChanged">                                               
                                             </asp:RadioButtonList>
 
                                         </td>
@@ -190,6 +190,16 @@
                                             <asp:DropDownList ID="ddlGrouping" runat="server" ClientIDMode="Static" CssClass="form-control select_width" ></asp:DropDownList>
                                         </td>
                                     </tr>
+                                     <tr>
+                                        <td>Emp Shift <span class="requerd1">*</span>
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+
+                                            <asp:DropDownList ID="ddlShift" runat="server" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td>EmpCard No<span class="requerd1">*</span>
                                         </td>
@@ -266,16 +276,7 @@
                                         </td>
                                     </tr>
 
-                                    <tr>
-                                        <td>Emp Shift
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:DropDownList ID="ddlShift" runat="server" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
-                                        </td>
-                                    </tr>
+                                   
                                     <tr>
                                         <td>Type
                                         </td>
@@ -296,6 +297,17 @@
                                         </td>
                                         <td>
                                             <asp:RadioButtonList ID="rblDutyType" runat="server" RepeatDirection="Horizontal">
+                                                <asp:ListItem Value="Regular" Text="Regular" Selected="True"></asp:ListItem>
+                                                <asp:ListItem Value="Roster" Text="Roster"></asp:ListItem>                                               
+                                            </asp:RadioButtonList>
+                                        </td>
+                                    </tr><tr>
+                                        <td>Weekend Type
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:RadioButtonList ID="rblWeekendType" runat="server" RepeatDirection="Horizontal">
                                                 <asp:ListItem Value="Regular" Text="Regular" Selected="True"></asp:ListItem>
                                                 <asp:ListItem Value="Roster" Text="Roster"></asp:ListItem>                                               
                                             </asp:RadioButtonList>
@@ -526,6 +538,15 @@
                                             <asp:TextBox ID="dsNationIDCardNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Mobile No
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtMobileNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                        </td>
+                                    </tr>
                                    
                                     <tr id="trel" runat="server" visible="false">
                                         <td>Earned Leave
@@ -558,6 +579,7 @@
                     </div>
                     <div class="col-lg-2">
                     <div class="employee_box_right">
+                     
                         <asp:UpdatePanel ID="UpdatePanel2" runat="server" UpdateMode="Conditional">
                             <Triggers>
                                 <%--<asp:AsyncPostBackTrigger ControlID="btnSave" />--%>
@@ -574,6 +596,7 @@
 
                             </ContentTemplate>
                         </asp:UpdatePanel>
+
                         <asp:UpdatePanel ID="UpdatePanel5" runat="server" UpdateMode="Conditional">
                             <Triggers>
                                 <%--<asp:AsyncPostBackTrigger ControlID="btnSave" />--%>
@@ -584,6 +607,10 @@
                                 <div style="width: 100%;">
                                     <asp:Image ID="imgSignature" class="profileImage_2" ClientIDMode="Static" runat="server" ImageUrl="~/images/profileImages/Signature.jpg" />
                                     <asp:FileUpload ID="FileUpload2" Style="margin-top: 20px;" runat="server" onchange="previewFilesignature()" ClientIDMode="Static" />
+                                </div>
+                                <div style="width: 100%;">                                    
+                                    <asp:FileUpload ID="fileUploadDoc" Style="margin-top: 20px;" runat="server" ClientIDMode="Static" />
+                                    <label>Attach file</label>
                                 </div>
                                  <asp:UpdatePanel ID="UpdatePanel6" runat="server" UpdateMode="Conditional">
                             <Triggers>
@@ -658,8 +685,23 @@
                             <asp:TextBox Visible="false" ID="txtCardNo" PLaceHolder="Type Card No" runat="server" style="color: Green; font-weight: bold; text-align: center; width: 181px; border-radius: 0px;" ClientIDMode="Static" CssClass="form-control text_box_width_import"></asp:TextBox>
 
                         </div>
+                                
                                  </ContentTemplate>
-                        </asp:UpdatePanel>                           
+                        </asp:UpdatePanel>  
+                            <div>   
+                         <asp:UpdatePanel ID="UpdatePanel7" runat="server" UpdateMode="Always">
+                    <Triggers>    
+                        <asp:PostBackTrigger ControlID="btnImport" />
+                    </Triggers>
+                    <ContentTemplate>
+                        <asp:FileUpload ID="fuEmployeesData" runat="server" CssClass="fileUpload" />
+                                    <asp:Button ID="btnImport" CssClass="css_btn Ptbut" ClientIDMode="Static" runat="server" OnClientClick="return InputValidationImport();" Text="Import" OnClick="btnImport_Click"  />                        
+                                
+                        </ContentTemplate>
+                             </asp:UpdatePanel>
+                        </div>
+                        
+
                        
                     </div>
                     </div>
@@ -785,6 +827,12 @@
                     $('#ddlGrouping').focus();
                     return false;
                 }
+                 if ($('#ddlShift option:selected').text().length == 0) {
+
+                    showMessage("warning->Please Select Shift ");
+                    $('#ddlShift').focus();
+                    return false;
+                } 
                 if ($('#chkAlternativeEmpCard').attr('checked')) {
                     var value = $('#hdfCardnoDigitsSet').val();
                   
@@ -827,12 +875,7 @@
                     $('#ddlEmpStatus').focus();
                     return false;
                 }
-                if ($('#ddlShift option:selected').text().length == 0) {
-
-                    showMessage("warning->Please Select Shift ");
-                    $('#ddlShift').focus();
-                    return false;
-                }      
+                    
                
                 if ($('#txtJoiningDate').val().trim().length <8) {
                     showMessage("warning->Please Select Joining Date");

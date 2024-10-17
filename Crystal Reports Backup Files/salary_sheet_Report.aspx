@@ -45,12 +45,15 @@
                     <ContentTemplate>
                   <div class="bonus_generation" style="width: 61%; margin: 0px auto;">           
                     <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
-                     <table runat="server" visible="true" id="tblGenerateType" class="bonus_generation_table super_admin_option">                                                                      
-                                <tr>                                    
+                     <table runat="server" visible="true" id="tblGenerateType" class="bonus_generation_table super_admin_option">    
+                        
+                                <tr>      
+                                    <td></td>
                                     <td>
                                         <asp:CheckBox ID="chkForAllCompany" runat="server" Text="For All Companies" AutoPostBack="True" Visible="False" />
+                                         <asp:CheckBox ID="chkBankForwardingLetter" runat="server" Text="Bank Forwarding Letter" />
                                     </td>                         
-                                   <td></td>
+                                   
                                     <td></td>
                                     <td>
                                         <asp:RadioButtonList ID="rblSheet" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged"   >
@@ -103,13 +106,19 @@
                                 </td>
                              <%--<td>Payment Type</td>   --%>                             
                                 <td>                                   
-                                    <asp:RadioButtonList Visible="false" ID="rblPaymentType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
+                                    <asp:RadioButtonList Visible="False" ID="rblPaymentType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
                                                         <asp:ListItem Value="Cash" Selected="True">Cash</asp:ListItem>
                                                         <asp:ListItem Value="Bank">Bank</asp:ListItem>
                                                         <asp:ListItem Value="Check">Check</asp:ListItem>
                                     </asp:RadioButtonList>
+
+                             
+
                                 </td>
+
+                  
                             </tr>
+                         
                    </table>
                 </div>
                         <asp:Panel id="pnl1" runat="server" >

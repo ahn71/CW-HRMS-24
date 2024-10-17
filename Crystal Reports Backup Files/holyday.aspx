@@ -42,7 +42,7 @@
 
     <div class="main_box Lbox">
     <div class="main_box_header_leave LBoxheader">
-    <h2>Holiday Setting</h2>
+    <h2>Holiday Setting (Actual)</h2>
     </div>
     <div class="main_box_body_leave Lbody">
         <div class="main_box_content_leave" id="divElementContainer" runat="server">
@@ -64,7 +64,7 @@
                     <td>:
                     </td>
                     <td>
-                        <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" Width="96%" CssClass="form-control text_box_width"></asp:TextBox>
+                        <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" Width="96%" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                         <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                             PopupButtonID="imgDate" Enabled="True"
                             TargetControlID="txtDate" ID="CExtApplicationDate">
@@ -83,7 +83,7 @@
                     <td>:
                     </td>
                     <td>
-                        <asp:TextBox ID="txtDescription" ClientIDMode="Static" runat="server" Width="96%" CssClass="form-control text_box_width"></asp:TextBox>
+                        <asp:TextBox ID="txtDescription" ClientIDMode="Static" runat="server" Width="96%" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                         <asp:RequiredFieldValidator ForeColor="Red" ValidationGroup="save" ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDescription" ErrorMessage="*"></asp:RequiredFieldValidator>
                     </td>
                 </tr>

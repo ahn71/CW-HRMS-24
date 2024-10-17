@@ -1,123 +1,117 @@
 ﻿<%@ Page Title="Earn Leave Report" Language="C#" MasterPageFile="~/leave_nested.master" AutoEventWireup="true" CodeBehind="Earn_leave_Report.aspx.cs" Inherits="SigmaERP.leave.Earn_leave_Report" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        #ContentPlaceHolder1_MainContent_trForCompanyList {
+            height:50px;
+        }
+        #ContentPlaceHolder1_MainContent_tblGenerateType td:nth-child(2), td:nth-child(4) {
+            width:40%;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
      <div class="row">
-                  <div class="col-md-12 ds_nagevation_bar">
-               <div style="margin-top: 5px">
-                   <ul>
-                       <li><a href="/default.aspx">Dashboard</a></li>
-                       <li>/</li>
-                       <li> <a href="/leave_default.aspx">Leave</a></li>
-                       <li>/</li>
-                       <li> <a href="#" class="ds_negevation_inactive">Earn Leave Report</a></li>
-                   </ul>               
-             </div>
-          
-             </div>
-       </div>
+        <div class="col-md-12 ds_nagevation_bar">
+            <div style="margin-top: 5px">
+                <ul>
+                    <li><a href="/default.aspx">Dashboard</a></li>
+                    <li>/</li>
+                    <li><a href="/leave_default.aspx">Leave</a></li>
+                    <li>/</li>
+                    <li><a href="#" class="ds_negevation_inactive Lactive">Earn Leave Summary</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
      <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>   
      <asp:UpdatePanel ID="uplMessage" runat="server">
         <ContentTemplate>
             <p class="message" id="lblMessage" clientidmode="Static" runat="server"></p>
         </ContentTemplate>
     </asp:UpdatePanel>
-    <div class="main_box1">
-    	<div class="main_box_header">
+    <div class="main_box Lbox">
+        <div class="main_box_header_leave LBoxheader">
             <h2>Earn Leave Report</h2>
         </div>
-    	<div class="main_box_body">
-        	<div class="main_box_content">
-
+    	<div class="main_box_body_leave Lbody">
+            <div class="main_box_content_leave">
                 <asp:UpdatePanel ID="up1" runat="server" UpdateMode="Conditional">
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="ddlCompanyName" />
                         <asp:AsyncPostBackTrigger ControlID="chkForAllCompany" />
-                        <asp:AsyncPostBackTrigger ControlID="ddlShiftName" />
-                        <asp:AsyncPostBackTrigger ControlID="rblGenerateType" />
-                        <asp:AsyncPostBackTrigger ControlID="ddlSelectMonth" />
+                        <asp:AsyncPostBackTrigger ControlID="lnkNew" />
                     </Triggers>
                     <ContentTemplate>
-                <div class="bonus_generation">
-                 <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center">You Have Not Any Access Permission!</h1>
-                     <table runat="server" visible="true" id="tblGenerateType" class="bonus_generation_table super_admin_option">                                                                      
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <asp:CheckBox ID="chkForAllCompany" runat="server" Text="For All Companies" AutoPostBack="True" Visible="False" />
-                                    </td>
-                                    <td></td>
-                                    <td>
-                                        <asp:RadioButtonList ID="rblGenerateType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged"    >
-                                        <asp:ListItem Selected="True" Text="All" Value="0"></asp:ListItem>
-                                        <asp:ListItem Selected="False" Text="Individual" Value="1"></asp:ListItem>
-                                    </asp:RadioButtonList>
-                                    </td>
-                            </tr>
+                <div class="bonus_generation" style="width: 61%; margin: 0px auto;">
+                <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
+                     <table runat="server" visible="true" id="tblGenerateType" class="division_table_leave1" style="margin:0px auto">                                                                      
                                 <tr id="trForCompanyList" runat="server">
                                 <td>Company</td>
                                 <td>
-                                    <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="185px" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged"    >
+                                    <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="96%" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
                                     </asp:DropDownList>
                                 </td>
-                             <td>Shift</td>
-                           <td>
-                               <asp:DropDownList ID="ddlShiftName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="185px" AutoPostBack="True" OnSelectedIndexChanged="ddlShiftName_SelectedIndexChanged"  >
-                               </asp:DropDownList>
-                           </td>
+                              <td>Employee Type</td>
+                                    <td>
+                                        <asp:CheckBox ID="chkForAllCompany" Visible="false" runat="server" Text="For All Companies" AutoPostBack="True" />
+                                        <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal">
+                                </asp:RadioButtonList>
+                                    </td>
+                                    <td></td>
+                                    <td>                                        
+                                    </td>
                            </tr>
-                     </table>                    
-                </div>
-                <div class="payroll_generation_box3">
-                   <table>
-                       <tr><td></td><td><asp:CheckBox runat="server" ID="ckAllMonth" Text="With All Month" ForeColor="Green" Font-Bold="true" Visible="false" /></td><td></td></tr>
+               
                        <tr>
-                          <td>Select Month &nbsp;</td>                      
+                          <td>Year     &nbsp;</td>                      
                            <td>
-                                <asp:DropDownList ID="ddlSelectMonth" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="185px" AutoPostBack="True" OnSelectedIndexChanged="ddlSelectMonth_SelectedIndexChanged">
-                               </asp:DropDownList>
+                             <asp:DropDownList runat="server" ID="ddlYear" ClientIDMode="Static" CssClass="form-control select_width" Width="96%" ></asp:DropDownList>
                            </td>                  
-                           <td>&nbsp;Card No &nbsp;</td>                           
+                           <td> &nbsp;   Card No.  &nbsp;</td>                           
                            <td>
-                               <asp:TextBox ID="txtEmpCardNo" runat="server" Width="174" ClientIDMode="Static" PlaceHolder="For Certain" CssClass="form-control text_box_width_import" Enabled="False" ></asp:TextBox>                               
+                               <asp:TextBox ID="txtCardNo" runat="server" PlaceHolder="For Individual" ClientIDMode="Static" CssClass="form-control text_box_width_import" Width="96%" ></asp:TextBox>
+                              
+                           </td>
+                           <td>
+                              <asp:LinkButton runat="server" Text="New" ID="lnkNew"  ClientIDMode="Static" OnClientClick="return ClearCardNo();"></asp:LinkButton>
                            </td>
                        </tr>
                    </table>
+                    
+                   
                 </div>
-                        <asp:Panel id="pnl1" runat="server" >
-                  <div class="job_card_box3" id="divDepartmentList" runat="server" >
-                    <div class="job_card_left">
-                        <asp:ListBox ID="lstAll" Width="270" SelectionMode="Multiple"  Height="146" runat="server"></asp:ListBox>
-                    </div>
-                                <div class="id_card_center">
-                        <table class="arowBnt_table">                     
+                  <div id="workerlist" runat="server" class="id_card" style="background-color: white; width: 61%;">
+                            <div class="id_card_left EilistL">
+                                <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" SelectionMode="Multiple"></asp:ListBox>
+                            </div>
+                            <div class="id_card_center EilistC">
+                                <table style="margin-top: 0px;" class="employee_table">                    
                               <tr>
-                                    <td>
-                                        <asp:Button ID="btnAddItem" Class="arrow_button" runat="server" Text=">" OnClick="btnAddItem_Click"    />
+                                    <td >
+                                        <asp:Button ID="btnAddItem" Class="arrow_button" runat="server" Text=">" OnClick="btnAddItem_Click"  />
                                     </td>
                                </tr>
                             <tr>
                                     <td>
-                                        <asp:Button ID="btnAddAllItem" Class="arrow_button" runat="server" Text=">>" OnClick="btnAddAllItem_Click"   />
+                                        <asp:Button ID="btnAddAllItem" Class="arrow_button" runat="server" Text=">>" OnClick="btnAddAllItem_Click"  />
                                     </td>
                                </tr>
                             <tr>
                                     <td>
-                                        <asp:Button ID="btnRemoveItem" Class="arrow_button" runat="server" Text="<" OnClick="btnRemoveItem_Click"    />
+                                        <asp:Button ID="btnRemoveItem" Class="arrow_button" runat="server" Text="<" OnClick="btnRemoveItem_Click"   />
                                     </td>
                                </tr>
                             <tr>
                                     <td>
-                                        <asp:Button ID="btnRemoveAllItem" Class="arrow_button" runat="server" Text="<<" OnClick="btnRemoveAllItem_Click"    />
+                                        <asp:Button ID="btnRemoveAllItem" Class="arrow_button" runat="server" Text="<<" OnClick="btnRemoveAllItem_Click"   />
                                     </td>
                                </tr>
                         </table>
                     </div>
-                    <div class="job_card_right">
-                        <asp:ListBox ID="lstSelected" Width="270" SelectionMode="Multiple" Height="146" runat="server"></asp:ListBox>
-                    </div>
+                      <div class="id_card_right EilistR">
+                          <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec" ClientIDMode="Static" runat="server"></asp:ListBox>
+                      </div>
                 </div>
-                            </asp:Panel>
                 <div class="payroll_generation_button">
                     <asp:UpdateProgress ID="UpdateProgress1" runat="server">
                                     <ProgressTemplate>
@@ -128,24 +122,34 @@
                                     </ProgressTemplate>
                                 </asp:UpdateProgress>
 
-                    <asp:Button ID="btnPreview" runat="server" CssClass="css_btn" Text="Preview" OnClick="btnPreview_Click"  />
-                    <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/payroll_default.aspx" CssClass="css_btn" />
-                </div>
-                
+                    <asp:Button ID="btnPreview" runat="server" CssClass="Lbutton" Text="Preview" OnClientClick="return InputValidationBasket();" OnClick="btnPreview_Click"  />
+                    <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/leave_default.aspx" CssClass="Lbutton" />
+                </div>                
             </div>
                         </ContentTemplate>
                 </asp:UpdatePanel>
         </div>
     </div>
      </div>
-
     <script type="text/javascript">
         function InputValidationBasket() {
             try {
-
-                if ($('#txtEmpCardNo').val().trim().length < 4) {
-                    showMessage('Please select To Date', 'error');
-                    $('#txtToDate').focus(); return true;
+                //if ($('#').val().trim().length == 0) {
+                //    showMessage('Please select To Date!', 'warning');
+                //    $('#txtToDate').focus(); return false;
+                //}
+                //if ($('#txtFromDate').val().trim().length == 0) {
+                //    showMessage('Please select From Date!', 'warning');
+                //    $('#txtFromDate').focus(); return false;
+                //}
+                //if ($('#txtToDate').val().trim().length == 0) {
+                //    showMessage('Please select To Date!', 'warning');
+                //    $('#txtToDate').focus(); return false;
+                //}
+                //if (validatecombo('ddlShiftName', '0', 'Please Select Shift Name!') == false) return false;
+                if ($('#txtCardNo').val().trim().length == 0)
+                {
+                    if (validatecombo('ddlShiftName', '0', 'Please Select Shift Name!') == false) return false;
                 }
                 return true;
             }
@@ -153,33 +157,34 @@
                 showMessage(exception, error)
             }
         }
-
         function CloseWindowt() {
             window.close();
         }
-
-        function goToNewTabandWindow(url) {
-            window.open(url);
-
+        function ClearCardNo()
+        {
+            $("#txtCardNo").val("");
+            $("#txtCardNo").focus();          
+            
         }
+            function goToNewTabandWindow(url) {
+                window.open(url);
 
-        function getSalaryMonth() {
+            }
 
-            var val = document.getElementById('ddlMonthID').value;
-            document.getElementById('txtMonthId').value = val;
+            function getSalaryMonth() {
 
-        }
+                var val = document.getElementById('ddlMonthID').value;
+                document.getElementById('txtMonthId').value = val;
 
-        function CloseWindowt() {
-            window.close();
-        }
+            }
 
-        function goToNewTabandWindow(url) {
-            window.open(url);
+            function CloseWindowt() {
+                window.close();
+            }
 
-        }
-
-
-
+            function goToNewTabandWindow(url) {
+                window.open(url);
+            
+            }
     </script>
 </asp:Content>

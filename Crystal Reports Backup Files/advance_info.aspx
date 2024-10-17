@@ -13,9 +13,9 @@
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="/payroll_default.aspx">Payroll</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll/advance_index.aspx">Advance</a></li>
+                    <li><a href="/payroll/advance/advance_index.aspx">Advance</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="#" class="ds_negevation_inactive Pactive">Advance Info Report</a></li>
+                    <li><a href="#" class="ds_negevation_inactive Pactive">Advance Reports</a></li>
                 </ul>
             </div>
         </div>
@@ -35,9 +35,7 @@
 
                 <asp:UpdatePanel ID="up1" runat="server" UpdateMode="Conditional">
                     <Triggers>
-                        <asp:AsyncPostBackTrigger ControlID="ddlCompanyName" />
-                        <asp:AsyncPostBackTrigger ControlID="chkForAllCompany" />
-                        <asp:AsyncPostBackTrigger ControlID="ddlShiftName" />
+                        <asp:AsyncPostBackTrigger ControlID="ddlCompanyName" />                   
                         <asp:AsyncPostBackTrigger ControlID="rblGenerateType" />
                         <asp:AsyncPostBackTrigger ControlID="ddlSelectMonth" />
                     </Triggers>
@@ -49,9 +47,10 @@
                                     <td></td>
                                     <td>
                                         <asp:RadioButtonList ID="rblReportType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow">
-
-                                            <asp:ListItem Selected="True">Summary</asp:ListItem>
-                                            <asp:ListItem>Details</asp:ListItem>
+                                            <asp:ListItem Selected="True" Value="allInfo">All Advance Info</asp:ListItem> 
+                                            <asp:ListItem Value="allDetails">All Advance Details</asp:ListItem>
+                                            <%--<asp:ListItem  Value="summary">Summary</asp:ListItem>--%>
+                                            
 
                                         </asp:RadioButtonList>
                                     </td>
@@ -59,30 +58,25 @@
                                     <td>
                                        
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <asp:CheckBox Visible="false" ID="chkForAllCompany" runat="server" Text="For All Companies" AutoPostBack="True" />
-                                    </td>
-
-                                </tr>
+                                </tr>                                
                                 <tr id="trForCompanyList" runat="server">
                                     <td>Company</td>
                                     <td>
                                         <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" CssClass="form-control select_width"  AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
-                                    <td></td>
-                                    <td>
-                                         <asp:RadioButtonList ID="rbAllAdvanceLastAdvance" RepeatDirection="Horizontal" runat="server" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged" RepeatLayout="Flow">
-                                            <asp:ListItem Value="All Advance Info" Selected="false">All Advance</asp:ListItem>
-                                            <asp:ListItem Value="Last Advance Info" Selected="True">Last Advance </asp:ListItem>
-                                        </asp:RadioButtonList>
-                                        <asp:DropDownList Visible="false" ID="ddlSelectMonth" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True">
+                                    <td style="display:none" >
+                                         
+                                        <asp:DropDownList ID="ddlSelectMonth" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True">
                                         </asp:DropDownList>
                                     </td>
-
+                                    <td>Gererate Type</td>
+                                    <td>
+                                        <asp:RadioButtonList ID="rblGenerateType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged">
+                                            <asp:ListItem Selected="True" Text="All" Value="0"></asp:ListItem>
+                                            <asp:ListItem Selected="False" Text="Individual" Value="1"></asp:ListItem>
+                                        </asp:RadioButtonList>
+                                    </td>
                                 </tr>
                                 <tr style="display: none">
                                     <td>Shift</td>
@@ -91,14 +85,12 @@
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
-
                                 <tr>
-                                    <td>Gererate Type</td>
-
+                                    
+                                    <td>Emp.Type</td>
                                     <td>
-                                        <asp:RadioButtonList ID="rblGenerateType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged">
-                                            <asp:ListItem Selected="True" Text="All" Value="0"></asp:ListItem>
-                                            <asp:ListItem Selected="False" Text="Individual" Value="1"></asp:ListItem>
+                                        <asp:RadioButtonList ID="rblEmpType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow">
+                                            
                                         </asp:RadioButtonList>
                                     </td>
                                     <td>Card No</td>

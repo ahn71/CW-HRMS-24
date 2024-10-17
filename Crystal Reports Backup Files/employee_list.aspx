@@ -193,7 +193,8 @@
                                  <asp:BoundField DataField="DsgName" HeaderText="Designation" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="SftName" HeaderText="Shift" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="EmpType" HeaderText="Type" ItemStyle-HorizontalAlign="Center" />
-                                 <asp:BoundField DataField="EmpStatusName" HeaderText="Status" ItemStyle-HorizontalAlign="Center" />                                
+                                 <asp:BoundField DataField="EmpDutyType" HeaderText="Duty Type" ItemStyle-HorizontalAlign="Center" />   
+                              <asp:BoundField DataField="WeekendType" HeaderText="Weekend Type" ItemStyle-HorizontalAlign="Center" />
                                 <asp:TemplateField HeaderText="Change"  HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
                                   <ItemTemplate >
                                       <asp:Button ID="btnEdit" runat="server" CommandName="Edit" Width="55px" Height="30px" Font-Bold="true" ForeColor="green" Text="Edit" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />

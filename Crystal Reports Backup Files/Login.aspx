@@ -1,552 +1,351 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" EnableEventValidation="false" CodeBehind="Login.aspx.cs" Inherits="SigmaERP.Login" %>
+﻿
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="login.aspx.cs" Inherits="SigmaERP.hrms.UI.auth.login" %>
+
 <!DOCTYPE html>
+
 <html>
-    <head id="Head1" runat="server">
-    <title>Login</title>
-    <link href="../style/login.css" rel="stylesheet" />
-    <link href="../style/personnel.css" rel="stylesheet" />
-        <link href="../AssetsNew/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="../AssetsNew/font-awesome/css/font-awesome.css" rel="stylesheet" />
-        <style type="text/css">
-            
-            /* DEFAULTS
-----------------------------------------------------------*/
-            body {
-                color: #424242;
-                font-family: Arial,Helvetica,sans-serif;
-                font-size: 12px;
-                line-height: 20px;
-                margin: 0;
-                min-height: 100%;
-                padding: 0;
-                position: relative;
-                top: 0px;
-                left: 0px;
-                height: 467px;
-            }
+<head runat="server">
+      <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-/* PRIMARY LAYOUT ELEMENTS   
-----------------------------------------------------------*/
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-.page
-{
-    width: 90%;
+    <!-- Popper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
-    margin: 70px auto 0px auto;
-    border: 0px solid #496077;
-    color: #424242;
-    height: 393px;
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- Latest compiled JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon.png" />
+    <title>Sign In | CW-HRMS</title>
+    <style>
+        .login-logo {
+            width: 70%;
+            display: block;
+            margin: 0 auto;
+        }
 
-}
+        body {
+            font-family: sans-serif;
+        }
 
-.fixed
-{
-    position: fixed;
-    background:#286090;
-    width: 100%; 
-    color: #eeeeee;
-    border-bottom: 1px solid #fff;
-    z-index: 999;
-    top: 0px;
-    left: 0px;
-    bottom: 456px;
-    height:33px;
-}
+        .sign-in-form {
+            background-color: #fff;
+            padding: 40px;
+            margin-top:40px;
+        }
 
-.main
-{
-   background: url("/Images/logoLogin.png") no-repeat scroll left rgba(0, 0, 0, 0);
-    float: right;
-    height: 381px !important;
-    margin: 0 8px 8px;
-    min-height: 420px;
-    padding: 0 12px;
-    width: 97%;
-}
+        .h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-family: monospace;
+        }
 
-.loginBox
-{  
-    /*border: 1px solid #D5D5D5;
-    
-    width:420px;
-    position:fixed;
-    top:39%;
-    left:57%;
-    margin-left:-210px;*/
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-    border: 1px solid #D5D5D5;
-    margin: 80px auto 0;
-    width: 420px;
-}
+        .label {
+            display: block;
+            margin-bottom: 5px;
+        }
 
-.logo-login {
-    margin:0 auto;
-    width:100%;
-    text-align:center;
-
-}
-
-
-.logImg
-{
-    float:left;
-    width:39px;
-}
-.titleLogin-box
-{
-    /*margin-top:08px;*/
-    /*float:right;
-    width:372px;*/
-     padding-top: 6px;
-    text-align:center;
-    background-color:#27235c;
-    color:white;
-    font-size:large;
-    
-}
-.txtLoging
-{
-    float:right;
-    width:265px;
-    height: 21px;
-    padding:07px;
-    font-family: 'Cuprum',sans-serif;
-}
-
-.hedTitle
-{
-    height:38px;
-    /*position:relative;*/
-    text-align:center;
-    background-color:#27235c;
-    color:white;
-    font-size:large;
-    /*background:url("../Images/leftNavBg.png");*/
-}
-
-.title {
-   background: url("../Images/darkBg.jpg") repeat-x scroll 0 0 rgba(0, 0, 0, 0);
-    box-shadow: 0 1px 0 #FFFFFF;
-    height: auto;
-    margin-top:0px;
-    padding-top:0px;
-    color:White;
-    padding:09px;
-}
-
-
-.header ul li.iMes a span {
-    border:1px solid gray;
-    width:81px;
-    display:inline-block;
-    height:44px;
-    margin-top: 9px;
-    text-align:center;
-}
-.header ul li a span {
-    display:block;
-    padding: 34px 10px 0;  
-    margin-left:30px;
-
-}
-
-.header li 
-{
-    display: inline;
-}
-.logo
-{
-    height:104px;
-    width:104px;
-}
-
-.headerLogo
-{
-    float:left;
-    width:20%;
-    height: 99px;
-    text-align: left;
-    padding:1px;
-}
-.headerRightside
-{
-    float:right;
-    width:60%;
-}
-
-
-    
-
-.headerItem:hover
-{
-    cursor:pointer;
-    color:Green;
-}
-
-#footer {
-    background:#286090;
-    bottom: 0;
-    clear: both;
-    color: #EEEEEE;
-    margin-top: 42px;
+.input {
     width: 100%;
-    height:35px;
-    position: fixed;
-    z-index: 100000;
-    
+    padding: 10px 8px;
+    border: 0;
+    box-shadow: 0 0 10px white;
+    background-color: transparent;
+    line-height: 20px;
 }
 
-.logStyle
-{
-    width:90%;
-    height: 167px;
-    padding:05px;  
+        .input:focus {
+            outline: none;
+            /* Remove default focus outline */
+        }
+
+        .input2 {
+    border: double 1em transparent;
+    border-radius: 30px;
+    border: double 1px transparent;
+    border-radius: 6px;
+    background-image: linear-gradient(white, white), linear-gradient(to right, #ffec52, #ff9b15);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    height: 40px;
+}
+        input:active,
+        input:focus {
+            border: 0;
+            outline: 0;
+            background-color: transparent;
+        }
+
+        .input2:focus {
+            outline: none;
+            background-color: transparent;
+        }
+        .login-bg {
+            background-color: #ffe2c1;
+            height: 100vh;
+        }
+
+        .button {
+            display: block;
+            width: 100% !important;
+            margin: 0 auto;
+            color: #312f2f;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+            height: 40px;
+            line-height: 20px;
+            background: #f6921e;
+            color: white;
+            text-align:center;
+            text-decoration:none;
+
+        }
+        .button:hover{
+            color:#fff;
+            text-decoration:none;
+            background-color:coral;
+        }
+
+        .button:focus {
+            outline: none;
+            text-decoration:none;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .login-as {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .icon {
+    /* background: hsla(33, 100%, 53%, 1);
+    background: linear-gradient(180deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    background: -moz-linear-gradient(180deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    background: -webkit-linear-gradient(180deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#FF930F", endColorstr="#FFF95B", GradientType=1); */
+    color: #212529;
+    height: 45px;
+    line-height: 45px;
+    width: 45px;
+    text-align: center;
+    border-radius: 20px 0px 20px 20px;
+    display: block;
+    line-height: 38px;
 }
 
-.bottomUnderline
-{
-    border-bottom:1px solid gray;
-}
-
-.userNameDiv
-{
-    border-bottom: 1px solid #E7E7E7;
-    padding: 19px 0;
-    position: relative;
-    height:27px;
-}
-.userIdDiv
-{
-    border-bottom: 1px solid #E7E7E7;
-    padding: 19px 0;
-    position: relative;
-    height:27px;
-}
-.PasswordDiv
-{
-    border-bottom: 1px solid #E7E7E7;
-    padding: 15px 0;
-    position: relative;
-    height:27px;
-}
-.textName
-{
-    float: left;
-    height: 25px;
-    padding-left: 59px;
-    width: 10%;
-}
-.textBox
-{
-    float: right;
-    text-align: left;
-    width: 68%;
-}
-.btnBox
-{
-    width:137px;
-    text-align:right;
-    float:right;
-    padding-right:57px;
-}
-.textBtn
-{
-    width:123px;
-    float:left;
-    text-align: left;
-    height: 38px;
-    padding-left:55px;
-}
-
-.chckboxStyle
-{
-    color:black;
-    padding-bottom:03px;
-    font-size:12px;
-}
-
-.txtBoxStyle
-{
-   -moz-box-sizing: border-box;
-    background: none repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #D5D5D5;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 11px;
-    padding: 5px;
-    width: 100%;
-}
-.btnLogin
-{
-    /*background: url("../Images/greyishBtn.png") repeat-x scroll 0 0 rgba(0, 0, 0, 0);*/
-    border: 1px solid #4F5A68;
-    background-color:gray;
-    color: #FFFFFF;
-    padding:02px;
-    font-size:12px;
-}
-
-.btnLogin:hover
-{
-    background-position:0 -25px;  
-}
-
-.fleft
-{
-    float:left;
-    width:30%;
-    padding:05px;
-    color:White;
-
-}
-.fright
-{
-    float:right;
-    text-align:right;
-    width:40%;
-    padding-top:07px;
-    padding-right:100px;
-    color:White;
-}
-
-.invalidInput
-{
-    border:1px solid #980000;
-}
-
-.validInput
-{
-    border: 1px solid #D5D5D5;
-}
-
-.panel-heading {
-    padding: 5px 15px;
-    
- 
-    
-}
-            #imglogo img {
-                height:50px;
-                width:150px;
-            }
-
-
-/*.panel-footer {
-	padding: 1px 15px;
-	color: #A0A0A0;
-    height: 30px;
-    background-color: #27235C;
-}*/
-
-.profile-img {
-	width: 96px;
-	height: 96px;
-	margin: 0 auto 10px;
-	display: block;
-	-moz-border-radius: 50%;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
+.icon1 {
+    /* background: hsla(33, 100%, 53%, 1);
+    background: linear-gradient(180deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    background: -moz-linear-gradient(180deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    background: -webkit-linear-gradient(180deg, hsla(33, 100%, 53%, 1) 0%, hsla(58, 100%, 68%, 1) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#FF930F", endColorstr="#FFF95B", GradientType=1);
+    color: ; */
+    height: 45px;
+    line-height: 45px;
+    width: 45px;
+    text-align: center;
+    border-radius: 20px 0px 20px 20px;
+    display: block;
+    line-height: 40px;
 }
 
 
+        img {
+            object-fit: contain;
+        }
 
+        input {
+            background-color: transparent;
+            width: 100%;
+        }
+        .welcome-text{
+            font-weight: bold;
+        }
+        .login-image{
+            width: 50%;
+        }
+        .select-input {
+        width: 100%;
+        padding: 10px 3px;
+        border: 0;
+        box-shadow: 0 0 10px white;
+        background-color: transparent;
+        line-height: 20px;
+    }
+    .copyright p{
+        font-size: 12px;
+    }
 
+    .text-lighten {
+        color: #A0A0A0 !important;
+    }
+     .fs-15 {
 
-        </style>
-    </head>
-
+        margin-top:5px;
+    }
+.toggle-password2 {
+    cursor: pointer;
+}
+    </style>
+</head>
 <body>
-    <form id="form1" runat="server">
-        <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
-        <div class="fixed">
-        </div>
-        <%-----------------------------------------------------%>
-        <div class="page">
-            <asp:UpdatePanel ID="uplMessage" runat="server">
-                <ContentTemplate>
-                    <p class="message" id="lblMessage" clientidmode="Static" runat="server"></p>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-            <div class="main">
-                <%--   <div class="logo-login"><a class="logos"><img src="/images/logo.png" style="opacity:0.1; filter:alpha(opacity=100)" /></a>   </div>--%>
-               
-                    <asp:UpdatePanel runat="server" ID="up1" UpdateMode="Conditional">
-                        <ContentTemplate>
-                           <div class="row">
-			                    <div class="col-sm-6 col-md-4 col-md-offset-4">			                   
-					                    
-					                    <div class="panel-body">
-						                    <fieldset>
-                                                <div class="row">
-                                                    <div class="col-xs-12 col-sm-6 col-sm-offset-3">
-                                                        <asp:Image ID="imglogo" runat="server" ImageUrl="~/images/optimal_logo100.png" style="margin-bottom: 20px" width="163px" Height="60px" />
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-sm-12 col-md-10  col-md-offset-1 ">
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <span class="input-group-addon"><i aria-hidden="true" class="fa fa-home"></i></span>
-                                                                <asp:DropDownList ID="ddlCompany" runat="server" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
+    <div class="container-fluid">
+
+        <div class="row gx-0">
+            <div class="col-lg-4 p-0">
+                <div class="sign-in-form">
+                    <img class="login-logo" src="/hrms/UI/auth/logo.png" alt="logo">
+                    <p class="text-center fw-bold mt-2 mb-4 welcome-text">Welcome to CW-HRMS</p>
+
+                    <form class="mt-3" id="form1" runat="server">
+                        <div class="form-group">
+
+
+                            <div class="password-wrapper input2 mb-3 d-flex">
+                                <div class="icon1">
+                                    <i class="fa fa-home" aria-hidden="true"></i>
+                                </div>
+                              <%--  <select type="" id="companyList" name="username" class="select-input">
+                                    <option>Company 1</option>
+                                    <option>Company 2</option>
+                                    <option>Company 3</option>
+                                </select>--%>
+                                <asp:DropDownList ID="ddlCompany" runat="server" CssClass="select-input">
                                                                 </asp:DropDownList>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <span class="input-group-addon"><i aria-hidden="true" class="fa fa-user"></i></span>
-                                                                <asp:TextBox ID="txtUsername" runat="server" ClientIDMode="Static" CssClass="txtBoxStyle form-control" placeholder="User Name"></asp:TextBox>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <span class="input-group-addon"><i aria-hidden="true" class="fa fa-unlock-alt"></i></span>
-                                                                <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="txtBoxStyle form-control" placeholder="Password" TextMode="Password"></asp:TextBox>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="input-group">
-                                                                <asp:CheckBox ID="chkRememberMe" runat="server" CssClass="chckboxStyle" Style="float: left;" Text="Keep me logged in" Visible="false" Width="141px" />
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <asp:Button ID="btnLogin" runat="server" CssClass="btn btn-lg btn-primary btn-block" OnClick="btnLogin_Click" OnClientClick="return validateLogIn();" Text="Login" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-					                    </div>
-					                    
-                                    
-			                    </div>
-		                    </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-              
-                <%--<div id="messageDiv">sf</div>--%>
+                            </div>
+                            <!-- <label for="username" class="label">Username</label> -->
+                            <div class="password-wrapper input2 d-flex">
+                                <div class="icon1">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                </div>
+                                <asp:TextBox ID="txtUsername" runat="server" ClientIDMode="Static" CssClass="input" placeholder="Username"></asp:TextBox>
+                                <%--<input type="text" id="username" name="username" class="input" placeholder="Username">--%>
+                            </div>
+                            <span class="text-danger" id="txtUserNameError"></span>
+                        </div>
+                        <div class="form-group">
+
+                            <!-- <label for="password" class="label">Password</label> -->
+
+                            <div class="password-wrapper input2 d-flex">
+                                <div class="icon">
+                                    <i class="fas fa-lock" aria-hidden="true"></i>
+                                </div>
+                                <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="border-0 input" placeholder="Password" type="Password"></asp:TextBox>
+
+
+                                <%--<span class="uil uil-eye text-lighten fs-15 field-icon toggle-password2"></span>--%>
+                                <span class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2"></span>
+                            </div>
+                            <span class="text-danger" id="txtUserPasswordError"></span>
+
+                        </div>
+                        <div class="btn-wrapper">
+                            <asp:LinkButton ID="btnLogin" runat="server" CssClass="button" OnClick="btnLogin_Click" OnClientClick="return validateLogIn();">Sign In</asp:LinkButton>
+
+                        </div>
+
+                        <div class="copyright mt-3">
+                            <p class="text-center">2024 &copy; <a href="https://www.codewareltd.com">Codeware LTD</a></p>
+                        </div>
+
+                        <!--         
+                        <div class="forgot-password">
+                            <a href="#">Forgot Password?</a>
+                        </div>
+         -->
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="col-lg-8 d-lg-flex justify-content-center align-items-center login-bg d-none  p-0">
+                <img class="login-image" src="/hrms/UI/auth/cw-hrms.png" alt="image">
             </div>
         </div>
-        <%-----------------------------------------------------%>
-        <div id="footer">
-            <div class="fleft"></div>
-            <div class="fright"><a href="http://www.optimalbd.com" target="_blank">
-                <img src="/images/optimal_logo.png" width="84" alt="Optimal IT Limited" /></a></div>
-        </div>
-        <%--- MESSAGE BOX ---%>
-        <div id="lblErrorMessage" style="display: none; min-width: 100px; position: fixed; top: 45px; z-index: 1; background-color: #5EA8DE; color: white; padding: 0px 30px 0px 15px; border-radius: 5px; text-align: center;">
-            <p style="float: left; width: auto; padding-right: 30px;"></p>
-            <div style="position: absolute; right: 10px; top: 13px; vertical-align: middle;">
-                <img src="/images/master/close2.png" style="color: black; height: 8px; width: 8px; cursor: pointer;" 
-                    onclick="$('#lblErrorMessage').fadeOut('slow');" />
-            </div>
-        </div>
-    </form>
-
-    <script src="../AssetsNew/js/jquery.js"></script>
-    <script src="/Scripts/adviitJS.js" type="text/javascript"></script>
-    <script src="/Scripts/custom.js" type="text/javascript"></script>
-    <script src="/Scripts/master.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            if ($('#lblMessage').text().length > 1) {
-                showMessage($('#lblMessage').text(), '');
-            }
-        });
-        function validateLogIn() {
-            if (validateText('txtUsername', 1, 20, 'Enter a valid username') == false) return false;
-            if (validateText('txtPassword', 3, 20, 'Password must be 3-20 characters long') == false) return false;
-            return true;
-        }
-    </script>
-    <script type="text/javascript">
-        var prm = Sys.WebForms.PageRequestManager.getInstance();
-        prm.add_initializeRequest(InitializeRequest);
-        prm.add_endRequest(EndRequest);
-        function InitializeRequest(sender, args) {
-
-        }
-
-        function EndRequest(sender, args) {
-
-            if ($('#lblMessage').text().length > 1) {
-                showMessage($('#lblMessage').text(), '');
-            }
 
 
-            //setTimeout("setPopupInMiddle()",1000);
-        }
-        function showMessage(message, messageType) {
-
-            try {
-                $('#lblErrorMessage').hide();
-
-                
-
-                var backColor = '#141614';
-                var foreColor = '#FFF';
-                var timeOut = 15000;
 
 
-                if (message.indexOf('->') == -1) {
-                    if (messageType.length == 0) message = "info->" + message;
-                    else message = messageType + "->" + message;
-                }
-
-                var msg = message.split('->');
-                messageType = msg[0];
-                var msgBox = $('#lblErrorMessage');
-                msgBox.css('width', 'auto');
-
-
-                if (messageType == 'warning') {
-                    backColor = '#FFCD3C';
-                    foreColor = 'Black';
-                }
-                else if (messageType == 'success') {
-                    timeOut = 5000;
-                    backColor = '#5BD45B';
-                }
-                else if (messageType == 'error') backColor = '#EF494B';
-
-                msgBox.css('background-color', backColor);
-                msgBox.css('color', foreColor);
-
-                if (msg[1].length == 0) {
-                    hideErrorMessage();
-                    return;
-                }
-
-                $('#lblErrorMessage p').html(msg[1]);
-
-
-                msgBox.css('z-index', '999999999');
-                if (msgBox.width() > 600) msgBox.css('width', '600px');
-
-
-                if ($('.popBox:visible').length == 1) {
-                    var pos = $('.popBox:visible').offset();
-
-                    msgBox.css('position', 'absolute');
-                    msgBox.css('top', pos.top + 8);
-                    msgBox.css('right', '').css('left', pos.left + ($('.popBox:visible').width() / 2 - msgBox.width() / 2));
-                }
-                else {
-                    msgBox.css('position', 'fixed');
-                    msgBox.css('top', 37);
-                    msgBox.css('left', '50%');
-                    msgBox.css('margin-left', '-' + (msgBox.width() / 2) + "px");
-                }
-
-                msgBox.fadeIn(500);
-                timeOutId = setInterval("hideErrorMessage()", timeOut);
-
-                $('#lblMessage').text('');
-            }
-            catch (e) {
-                console.log(e.message);
-            }
-        }
-    </script>
+    </div>
 </body>
+  
+    <script>
+        function validateLogIn() {
+            var isValid = true;  // Assume the form is valid by default
+
+            // Validate Username
+            var username = $('#txtUsername').val().trim();
+            if (username === "") {
+                $('#txtUserNameError').html("User Name is required.");
+                $("#txtUsername").focus();
+                isValid = false;
+            } else if (username.length < 6) {
+                $('#txtUserNameError').html("User Name must be at least 6 characters.");
+                $("#txtUsername").focus();
+                isValid = false;
+            } else {
+                $('#txtUserNameError').html(""); // Clear any previous errors
+            }
+
+
+            var password = $('#txtPassword').val().trim();
+            if (password === "") {
+                $('#txtUserPasswordError').html("Password is required.");
+                $("#txtPassword").focus();
+                isValid = false;
+            } else if (password.length < 6) {
+                $('#txtUserPasswordError').html("Password must be at least 6 characters.");
+                $("#txtPassword").focus();
+                isValid = false;
+            } else {
+                $('#txtUserPasswordError').html(""); // Clear any previous errors
+            }
+
+            return isValid; // Return whether the form is valid or not
+        }
+
+
+        function eye_Loginpass() {
+            $(".toggle-password2").click(function () {
+                let input = $(this).parent().find("#txtPassword");
+                let icon = $(this);
+
+                if (input.attr("type") === "password") {
+                    input.attr("type", "text");
+                    icon.removeClass("uil-eye-slash").addClass("uil-eye"); // Show eye-slash icon when password is visible
+                } else {
+                    input.attr("type", "password");
+
+                    icon.removeClass("uil-eye").addClass("uil-eye-slash");  // Show eye-slash icon when password is visible
+
+                    // Show normal eye icon when password is hidden
+                }
+            });
+        }
+
+
+        eye_Loginpass();
+
+    </script>
 </html>
-
-
-

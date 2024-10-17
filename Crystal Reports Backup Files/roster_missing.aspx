@@ -56,7 +56,7 @@
                             
                             <asp:AsyncPostBackTrigger ControlID="ddlDepartmentList" />      
                            
-                            <asp:AsyncPostBackTrigger ControlID="ddlAssignShift" />                  
+                            <%--<asp:AsyncPostBackTrigger ControlID="ddlAssignShift" />    --%>              
                         </Triggers>
                         <ContentTemplate>                      
                           
@@ -69,28 +69,29 @@
                                        <td >
                                      <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="200px" AutoPostBack="True" Enabled="False"   ></asp:DropDownList>
                                  </td>
+                                       <td >
+                                      Deparment 
+                                      </td>
+                                       <td >
+                                     <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="200px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged"  ></asp:DropDownList>
+                                 </td>
                                   <td>
                                        Group
                                       </td>
                                        <td >
                                      <asp:DropDownList runat="server" ID="ddlGroupList" CssClass="form-control text_box_width style" Width="200px" AutoPostBack="True" OnSelectedIndexChanged="ddlGroupList_SelectedIndexChanged"   ></asp:DropDownList>
                                  </td>
-                                  <td >
-                                      Deparment 
-                                      </td>
-                                       <td >
-                                     <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="200px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged"  ></asp:DropDownList>
-                                 </td>   
-                                  <td >
+                                
+                                 <%-- <td >
                                       Shift 
                                       </td>
                                        <td>
                                      <asp:DropDownList runat="server" ID="ddlAssignShift" CssClass="form-control text_box_width style" Width="200px"  AutoPostBack="True" ClientIDMode="Static"  ></asp:DropDownList>
-                                 </td>     
+                                 </td> --%>    
                                  
                                    <td>Date</td>
                                 <td>
-                                       <asp:TextBox ID="txtDate" runat="server"   Style=" text-align:center "  ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                       <asp:TextBox ID="txtDate" runat="server" Style="text-align:center"  ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                      
                                      <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                 PopupButtonID="imgEffectDateFrom" Enabled="True"

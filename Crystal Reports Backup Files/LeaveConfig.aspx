@@ -86,7 +86,7 @@
                                         </td>
                                         <td>
                                             <asp:DropDownList ID="ddlLeaveTypes" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                            <asp:ListItem Value="s">Select</asp:ListItem>
+                                           <%-- <asp:ListItem Value="s">Select</asp:ListItem>
                                             <asp:ListItem Value="c/l">Casual Leave</asp:ListItem>
                                             <asp:ListItem Value="s/l">Sick Leave</asp:ListItem>
                                             <asp:ListItem Value="a/l">Annual Leave</asp:ListItem>
@@ -94,6 +94,7 @@
                                             <asp:ListItem Value="op/l">Official Purpose Leave</asp:ListItem>
                                             <asp:ListItem Value="o/l">Others Leave</asp:ListItem>
                                             <asp:ListItem Value="sr/l">Short Leave</asp:ListItem>
+                                            <asp:ListItem Value="wp/l">Leave Without Pay</asp:ListItem>--%>
                                             </asp:DropDownList>
                                           
                                         </td>

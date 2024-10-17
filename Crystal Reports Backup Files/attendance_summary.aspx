@@ -156,62 +156,61 @@
                    </div>
                 </div>
                         --%>
-                <div class="id_card" style="background-color:white; width:61%;" id="divDepartmentList" visible="false" runat="server" >
-                     <%--<div id="id_card" runat="server" class="id_card" style="background-color:white; width:61%;"  >--%>
-                            <div class="id_card_left EilistL">
-                                <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" SelectionMode="Multiple"></asp:ListBox>
-                            </div>
-                            <div class="id_card_center EilistC">
-                                <table style="margin-top:0px;" class="employee_table">  
-                        <asp:Button ID="Button1" Class="arrow_button" runat="server" Text=">" OnClick="Button1_Click"  />
-                        <asp:Button ID="btnAddAllItem" Class="arrow_button" runat="server" Text=">>" OnClick="btnAddAllItem_Click"  />
-                        <asp:Button ID="Button2" Class="arrow_button" runat="server" Text="<" OnClick="Button2_Click"  />
-                        <asp:Button ID="btnRemoveAllItem" Class="arrow_button" runat="server" Text="<<" OnClick="btnRemoveAllItem_Click"  />
-                                   
-                    </div>
-                   <div class="id_card_right EilistR">
-                                <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  ClientIDMode="Static" runat="server"></asp:ListBox>
-                            </div>
-                </div>
-                        <div id="divDepartment" visible="false" runat="server" class="bonus_generation" style="width:61%; margin:0px auto;">
-                    <div class="daily_absence_report_left">
-                        <caption>
-                            <p>
-                                Available Departments</p>
-                            <asp:ListBox ID="lstEmployees" runat="server" AutoPostBack="True" Height="146" SelectionMode="Multiple" Width="260"></asp:ListBox>
-                        </caption>
-                    </div>
-                    <div class="daily_absence_report_middle">
-
-                        <asp:Button ID="btnadditem" CssClass="next_button" runat="server" Text=">" />
-                        <caption>
-                            <br />
-                            <asp:Button ID="btnaddall" runat="server" CssClass="next_button" Text="&gt;&gt;" />
-                            <br />
-                            <asp:Button ID="btnremoveitem" runat="server" CssClass="next_button" Text="&lt;" />
-                            <br />
-                            <asp:Button ID="btnremoveall" runat="server" CssClass="next_button" Text="&lt;&lt;" />
-                        </caption>
-                    </div>
-                    <div class="daily_absence_report_right">
-                        <caption>
-                            <p>
-                                Selected Department/s</p>
-                            <asp:ListBox ID="lstSelectedEmployees" runat="server" Height="146" SelectionMode="Multiple" Width="260"></asp:ListBox>
-                        </caption>
-
-                    </div>
-                </div>
+                
+                     
              
                    <div class="bonus_generation" style="width:61%; margin:0px auto;">
-                       <center>
-                           <asp:RadioButtonList runat="server" ID="rblDptORGrp"  RepeatDirection="Horizontal" CssClass="rb"  >
+                        <center>
+                           <asp:RadioButtonList runat="server" ID="rblDayNight"  RepeatDirection="Horizontal" CssClass="rb"  >
+                                    <asp:ListItem Text="All" Value="all" Selected="True" ></asp:ListItem>
+                                    <asp:ListItem Text="Day" Value="day"></asp:ListItem>
+                                     <asp:ListItem Text="Night" Value="night"></asp:ListItem>
+                                </asp:RadioButtonList>       
+                        
+                           <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal">
+                                </asp:RadioButtonList>
+                      
+                           <asp:RadioButtonList runat="server" ID="rblDptORGrp"  RepeatDirection="Horizontal" CssClass="rb"  visible="false"  >
+                                    
                                     <asp:ListItem Text="By Depertment" Value="Dpt" Selected="True" ></asp:ListItem>
                                      <asp:ListItem Text="By Section" Value="Grp"></asp:ListItem>
+                               <asp:ListItem Text="By Designation" Value="Dsg" ></asp:ListItem>
                                 </asp:RadioButtonList>       
-                           </center>                                      
+                           </center>  
+                      <div id="workerlist"  runat="server" class="id_card" style="background-color:white;">
+                            <div class="id_card_left EilistL">
+                                <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" style="height:270px !important" SelectionMode="Multiple"></asp:ListBox>
+                            </div>
+                            <div class="id_card_center EilistC" >
+                                <table style="margin-top:60px;" class="employee_table">                    
+                              <tr>
+                                    <td >
+                                        <asp:Button ID="btnAddItem" Class="arrow_button" runat="server" Text=">" OnClick="btnAddItem_Click"  />
+                                    </td>
+                               </tr>
+                            <tr>
+                                    <td>
+                                        <asp:Button ID="btnAddAllItem" Class="arrow_button" runat="server" Text=">>" OnClick="btnAddAllItem_Click"  />
+                                    </td>
+                               </tr>
+                            <tr>
+                                    <td>
+                                        <asp:Button ID="btnRemoveItem" Class="arrow_button" runat="server" Text="<" OnClick="btnRemoveItem_Click"  />
+                                    </td>
+                               </tr>
+                            <tr>
+                                    <td>
+                                        <asp:Button ID="btnRemoveAllItem" Class="arrow_button" runat="server" Text="<<" OnClick="btnRemoveAllItem_Click"  />
+                                    </td>
+                               </tr>
+                        </table>
+                    </div>
+                     <div class="id_card_right EilistR">
+                                <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  style="height:270px !important"  ClientIDMode="Static" runat="server"></asp:ListBox>
+                            </div>
+                </div>
+                       
                    <table>
-
                        <tr>
                          
                                 <td>

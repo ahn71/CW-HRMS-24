@@ -57,7 +57,7 @@
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr runat="server" visible="false">
                                     <td>Shift
                                     </td>
                                     <td>:</td>

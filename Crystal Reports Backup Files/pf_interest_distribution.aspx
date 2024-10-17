@@ -1,4 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/payroll_nested.master" AutoEventWireup="true" CodeBehind="pf_interest_distribution.aspx.cs" Inherits="SigmaERP.pf.pf_interest_distribution" %>
+﻿<%@ Page Title="PF Profit Distribution " Language="C#" MasterPageFile="~/payroll_nested.master" AutoEventWireup="true" CodeBehind="pf_interest_distribution.aspx.cs" Inherits="SigmaERP.pf.pf_interest_distribution" %>
+<%@ Register Assembly="AjaxControlToolkit"  Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
  <style>
         #ContentPlaceHolder1_ContentPlaceHolder1_gvPFSettings th,td {
@@ -66,26 +67,48 @@
                                 </div>
                               </div>
                             <div class="row tbl-controlPanel" runat="server" id="divFdrNo">
-                                <div class="col-sm-4">FDR No <span class="requerd1">*</span></p></div>
+                                <div class="col-sm-4">Investment No <span class="requerd1">*</span></p></div>
                                 <div class="col-sm-8">
-                                     <asp:DropDownList ID="ddlFDRList" runat="server" ClientIDMode="Static"  CssClass="form-control select_width" AutoPostBack="true"  >                                                                        
+                                     <asp:DropDownList ID="ddlFDRList" runat="server" ClientIDMode="Static"  CssClass="form-control select_width" >                                                                        
                                       </asp:DropDownList>                                                                   
                                 </div>
+
                               </div>  
+                             <div class="row tbl-controlPanel" runat="server" id="divDateRange">
+                                <div class="col-sm-4">Date <span class="requerd1">*</span></p></div>
+                                <div class="col-sm-8">
+                                     <asp:TextBox runat="server" ID="txtDate" placeholder="yyyy-MM-dd" ClientIDMode="Static" CssClass="form-control select_width" ></asp:TextBox>  
+                                     <asp:CalendarExtender ID="CalendarExtender4" runat="server" Format="yyyy-MM-dd" TargetControlID="txtDate">
+                                    </asp:CalendarExtender>  
+                                      <asp:TextBox runat="server" ID="txtToDate" placeholder="yyyy-MM-dd" ClientIDMode="Static" CssClass="form-control select_width" ></asp:TextBox>  
+                                     <asp:CalendarExtender ID="CalendarExtender1" runat="server" Format="yyyy-MM-dd" TargetControlID="txtToDate">
+                                    </asp:CalendarExtender>                                                               
+                                </div>
+
+                              </div>  
+                          
                             <div class="row tbl-controlPanel" runat="server" id="divYear" visible="false">
                                 <div class="col-sm-4">Year<span class="requerd1">*</span></p></div>
                                 <div class="col-sm-8">
-                                     <asp:DropDownList ID="ddlYear" runat="server" ClientIDMode="Static"  CssClass="form-control select_width" AutoPostBack="true"  >                                                                        
+                                     <asp:DropDownList ID="ddlYear" runat="server" ClientIDMode="Static"  CssClass="form-control select_width"  >                                                                        
                                       </asp:DropDownList>                                                                   
                                 </div>
-                              </div>                             
+                              </div>     
+                              <div class="row tbl-controlPanel">
+                                <center>
+                                  
+                                    <asp:Image ID="imgLoading" runat="server" ImageUrl="~/images/loading.gif" ClientIDMode="Static"  />
+                                </center>
+                               
+                            </div>                        
                         </div>
                     </div>                    
                 </div>      
                 <div class="button_area Rbutton_area">
                     <a href="#" onclick="window.history.back()" class="Pbutton">Back</a>
                     <asp:Button ID="btnNew" ClientIDMode="Static" CssClass="Pbutton"  runat="server" Text="New" />
-                    <asp:Button ID="btnSave" OnClientClick="return validateInputs();"  ClientIDMode="Static" class="Pbutton" runat="server" Text="Process" OnClick="btnSave_Click"   />
+                    <asp:Button ID="btnSave" Visible="false" OnClientClick="return validateInputs();"  ClientIDMode="Static" class="Pbutton" runat="server" Text="Process" OnClick="btnSave_Click"   />
+                    <asp:Button ID="Button1" OnClientClick="return processing();" ClientIDMode="Static" class="Pbutton" runat="server" Text="Process PerDay" OnClick="Button1_Click"   />
                     <asp:Button ID="btnClose" ClientIDMode="Static" CssClass="Pbutton" PostBackUrl="~/hrd_default.aspx"  runat="server" Text="Close" />
                 </div>
             </ContentTemplate>
@@ -95,7 +118,7 @@
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">    
         <ContentTemplate>
                      <%--<div id="ShiftConfig" class="datatables_wrapper" runat="server" style="width:100%; height:auto; max-height:500px;overflow:auto;overflow-x:hidden;"></div>--%>
-                    <asp:GridView ID="gvPFSettings" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="CompanyId,FdrID"   AllowPaging="True"   >
+                    <asp:GridView ID="gvPFSettings" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="CompanyId,FdrID" AllowPaging="True" >
 <HeaderStyle BackColor="#FFA500" Font-Bold="True" Font-Size="14px" ForeColor="White" Height="28px"></HeaderStyle>
                         <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                        <RowStyle HorizontalAlign="Center" />
@@ -141,6 +164,7 @@
          //$('#btnNew').click(function () {
          //    clear();
          //});
+         $('#imgLoading').hide();
          function validateInputs() {
              if (validateText('txtWithdrawDate', 1, 60, 'Enter Withdraw Date') == false) return false;
              if (validateText('txtInterestAmount', 1, 60, 'Enter Interest Amount') == false) return false;
@@ -179,5 +203,24 @@
              $('#hdnUpdate').val("");
              clear();
          }
+         function processing() {
+             if ($('#txtDate').val().trim().length == 0) {
+                 showMessage("warning->Please Select From Date ");
+                 $('#txtDate').focus();
+                 return false;
+             }
+             if ($('#txtToDate').val().trim().length == 0) {
+                 showMessage("warning->Please Select To Date ");
+                 $('#txtToDate').focus();
+                 return false;
+             }
+             $('#imgLoading').show();
+             return true;
+         }
+         function ProcessSuccess() {
+             showMessage('Distributed successfully', 'success');
+             $('#imgLoading').hide();
+         }
+       
     </script>
 </asp:Content>

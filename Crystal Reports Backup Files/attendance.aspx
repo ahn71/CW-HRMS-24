@@ -175,7 +175,7 @@
                                 <td>Status <span class="requerd1">*</span></td>
                                 <td>: </td>
                                 <td colspan="2">
-                                    <asp:DropDownList ID="ddlAttendanceTemplate" runat="server" ClientIDMode="Static" CssClass="form-control select_width">                                     
+                                    <asp:DropDownList ID="ddlAttendanceTemplate" runat="server" ClientIDMode="Static" CssClass="form-control select_width">                     
                                         <asp:ListItem Value="AC"> Activities</asp:ListItem>
                                         <asp:ListItem Value="WH">WHO</asp:ListItem>    
                                         <asp:ListItem Value="Lv">Leave</asp:ListItem>   
@@ -202,6 +202,9 @@
                                     </td>
                                 <td> 
                                      <asp:TextBox ID="txtInMin" runat="server" ClientIDMode="Static" CssClass="form-control attend_text_box_width" MaxLength="2" Text="00" style=" text-align: center; font-weight: bold;width:60px"></asp:TextBox>
+                                    </td>
+                                <td> 
+                                     <asp:TextBox ID="txtInSec" runat="server" ClientIDMode="Static" CssClass="form-control attend_text_box_width" MaxLength="2" Text="00" style=" text-align: center; font-weight: bold;width:60px"></asp:TextBox>
                                     </td>
                                 <td> 
                                      <asp:DropDownList ID="ddlInTimeAMPM" runat="server" CssClass="attend_select_min" Width="67px" style="float:left;">
@@ -245,6 +248,9 @@
                                     </td>
                                 <td> 
                                     <asp:TextBox ID="txtOutMin" runat="server" ClientIDMode="Static" CssClass="form-control attend_text_box_width" MaxLength="2" Text="00" style=" text-align: center; font-weight: bold; width:60px"></asp:TextBox>
+                                    </td>
+                                <td> 
+                                    <asp:TextBox ID="txtOutSec" runat="server" ClientIDMode="Static" CssClass="form-control attend_text_box_width" MaxLength="2" Text="00" style=" text-align: center; font-weight: bold; width:60px"></asp:TextBox>
                                     </td>
                                 <td> 
                                     <asp:DropDownList ID="ddlOutTimeAMPM" runat="server" CssClass="attend_select_min" Width="67px">

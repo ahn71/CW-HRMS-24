@@ -16,18 +16,18 @@
         </div>
     
       <%--  <img alt="" class="main_images" src="images/hrd.png">--%>
-    <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1000%;">
+    <div>
    <div class="col-lg-12" style="margin-top:10%">
              <div class="row">
 
                  <div class=" col-md-4"></div>
 
-                 <div class="col-md-2">
-                     <a class="ds_personnel_Basic_Text" href="/personnel/employee_index.aspx"> <img class="image_width_for_module" src="images/common/department.ico" /><br />Employee Information</a>
+                 <div runat="server" id="divEmployee" class="col-md-2">
+                     <a class="ds_Settings_Basic_Text" href="/personnel/employee_index.aspx"> <img class="image_width_for_module" src="images/common/department.ico" /><br />Employee Information</a>
                      
                  </div>
-                 <div class=" col-md-2">
-                        <a class="ds_personnel_Basic_Text" href="/personnel/roster_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Roster Configuration</a>
+                 <div runat="server" id="divRoster" class=" col-md-2">
+                        <a class="ds_Settings_Basic_Text" href="/personnel/roster_index.aspx"><img class="image_width_for_module" src="images/common/designation.ico" /><br />Roster Configuration</a>
                  </div>             
                  <div class=" col-md-4"></div>
              </div>

@@ -96,8 +96,7 @@
                     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
                         <Triggers>                     
                             <asp:AsyncPostBackTrigger ControlID="ddlCompanyList" />
-                            <asp:AsyncPostBackTrigger ControlID="ddlCurrentShift" />
-                            <asp:AsyncPostBackTrigger ControlID="ddlNewShift" />                                              
+                            <asp:AsyncPostBackTrigger ControlID="ddlNewShift" />                                             
                             <asp:PostBackTrigger ControlID="btnSubmit" />
                             <asp:AsyncPostBackTrigger ControlID="ddlDepartmentList" />   
                             <asp:AsyncPostBackTrigger ControlID="ddlGroupList" />                      
@@ -166,24 +165,25 @@
                                            <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged" ></asp:DropDownList>
                                      
                                  </td>
+                              <td class="shift_manage_headar_label_color">Deparment
+                              </td>
+                              <td>
+                                  <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="98%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged"></asp:DropDownList>
+                              </td>
                               <td class="shift_manage_headar_label_color">Group
                               </td>
                               <td>
                                   <asp:DropDownList runat="server" ID="ddlGroupList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlGroupList_SelectedIndexChanged"></asp:DropDownList>
                               </td>
 
-                              <td class="shift_manage_headar_label_color">Deparment
-                              </td>
-                              <td>
-                                  <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="98%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged"></asp:DropDownList>
-                              </td>
+                              
 
                               <td class="shift_manage_headar_label_color" style="display:none">Current Shift
                               </td>
 
-                              <td style="display:none">
+                             <%-- <td style="display:none">
                                   <asp:DropDownList runat="server" ID="ddlCurrentShift" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlCurrentShift_SelectedIndexChanged"></asp:DropDownList>
-                              </td>                  
+                              </td>  --%>                
 
                           </tr>
                             <tr>
@@ -211,8 +211,8 @@
                                 <td class="shift_manage_headar_label_color"> 
                                     <asp:Button runat="server" ID="btnSubmit" CssClass="css_btn Ptbut" Text="Submit"  Width="65px" Height="34px" OnClick="btnSubmit_Click" />                                   
                                      <asp:Button runat="server" ID="btnClose" CssClass="css_btn Ptbut" Text="Close" Width="65px" Height="34px"  />                                      
-                                    <asp:CheckBox runat="server" ID="chkUpdate" AutoPostBack="true" OnCheckedChanged="chkUpdate_CheckedChanged" />
-                                    <asp:Label ID="lblCheck" runat="server" for="chkUpdate" Text="Shift Modify"></asp:Label>
+                                    <asp:CheckBox runat="server" ID="chkUpdate" Visible="false" AutoPostBack="true" OnCheckedChanged="chkUpdate_CheckedChanged" />
+                                    <asp:Label Visible="false" ID="lblCheck" runat="server" for="chkUpdate" Text="Shift Modify"></asp:Label>
                                 </td>
                                 <td></td>                      
                               </tr>                          
@@ -290,6 +290,9 @@
                      </asp:GridView>
                          
                 </div>
+                        <div>
+                            <a runat="server" id="aRosterMissingLog" href="#" target="_blank">Roster Missing Log</a>
+                        </div>
                    </ContentTemplate>
                 </asp:UpdatePanel>
           <div id="divProgressPanel" runat="server">

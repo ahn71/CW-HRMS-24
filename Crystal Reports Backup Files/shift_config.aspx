@@ -94,7 +94,10 @@
                                
                                
                             </td>
+                            <asp:CheckBox ID="chkIsNightForReport" runat="server" Text="Night Shift for Report" style="float: right; position: relative; top: 80px; color: rgb(255, 0, 0); font-weight: bold; right: -22px;" />
+                            <asp:CheckBox ID="chkIsNight" runat="server" Text="Is Night" style="float: right; position: relative; top: 80px; color: rgb(255, 0, 0); font-weight: bold; right: -22px;" />
                              <asp:CheckBox ID="chkIsInitial" runat="server" Text="Is Initial" style="float: right; position: relative; top: 80px; color: rgb(255, 0, 0); font-weight: bold; right: -22px;" />
+                             
                         </tr>
 
                            <tr style="display:none">
@@ -293,6 +296,22 @@
                         </tr>
                         
                     </table>
+                    <div>
+                        <asp:GridView ID="gvBreakTimeList" runat="server"  Width="100%"  AutoGenerateColumns="false" DataKeyNames="SL">             
+                         <Columns>                  
+                            <asp:BoundField DataField="Title"  HeaderText="Title" />
+                            <asp:BoundField DataField="StartTime" HeaderText="Start Time" HeaderStyle-HorizontalAlign="center"/>                            
+                            <asp:BoundField DataField="EndTime" HeaderText="End Time"/>
+                            <asp:BoundField DataField="BreakTime" HeaderText="Break Time"/>                     
+                              <asp:TemplateField >
+                                  <HeaderTemplate>Set</HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:CheckBox ID="ckbSet" runat="server" CommandName="SetChk" CommandArgument="<%#((GridViewRow)Container).RowIndex%>"  Checked='<%#bool.Parse(Eval("Set").ToString())%>' />
+                                  </ItemTemplate>
+                              </asp:TemplateField>                           
+                         </Columns>
+                    </asp:GridView>
+                    </div>
                 </div>
 
                     
@@ -342,6 +361,18 @@
                                   <HeaderTemplate>Initital</HeaderTemplate>
                                   <ItemTemplate>
                                       <asp:CheckBox ID="chkInitialShift" runat="server" Checked='<%#bool.Parse(Eval("IsInitial").ToString())%>' Enabled="false" />
+                                  </ItemTemplate>
+                              </asp:TemplateField>
+                              <asp:TemplateField >
+                                  <HeaderTemplate>Night</HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:CheckBox ID="chkIsNightShift" runat="server" Checked='<%#bool.Parse(Eval("IsNight").ToString())%>' Enabled="false" />
+                                  </ItemTemplate>
+                              </asp:TemplateField>
+                             <asp:TemplateField >
+                                  <HeaderTemplate>NS for Report</HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:CheckBox ID="chkIsNightShiftForReport" runat="server" Checked='<%#bool.Parse(Eval("IsNightShiftForReport").ToString())%>' Enabled="false" />
                                   </ItemTemplate>
                               </asp:TemplateField>
 

@@ -53,6 +53,7 @@
             <asp:AsyncPostBackTrigger ControlID="ddlDepartment" />
             <asp:AsyncPostBackTrigger ControlID="ddlBranch" />
             <asp:AsyncPostBackTrigger ControlID="ddlEmpCardNo" />
+            <asp:AsyncPostBackTrigger ControlID="gvLeaveList" />
             <asp:PostBackTrigger ControlID="btnSaveLeave"  />
           
         </Triggers>
@@ -61,7 +62,6 @@
         <div class="main_box_header_leave LBoxheader">
                     <h2>Leave Application</h2>
                 </div>
-
                 <div class="main_box_body_leave Lbody">
             <div class="main_box_content_leave" >
 
@@ -125,7 +125,7 @@
                                         <td>:
                                         </td>
                                         <td class="tdWidth">
-                                            <asp:TextBox ID="txtApplyDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Width="96%"></asp:TextBox>
+                                            <asp:TextBox ID="txtApplyDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Width="96%" autocomplete="off"></asp:TextBox>
                                             
                                             <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                 PopupButtonID="imgEffectDateTo" Enabled="True"
@@ -140,14 +140,12 @@
                                         <td>:
                                         </td>
                                         <td class="tdWidth">
-
-                                            <asp:TextBox ID="txtFromDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Width="96%"></asp:TextBox>
+                                            <asp:TextBox ID="txtFromDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Width="96%" autocomplete="off"></asp:TextBox>
                                            
                                             <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                 PopupButtonID="imgEffectDateFrom" Enabled="True"
                                                 TargetControlID="txtFromDate" ID="CExtApplicationDate">
-                                            </asp:CalendarExtender>
-                                        
+                                            </asp:CalendarExtender>                                        
                                         </td>
                                     </tr>
                                     <tr>
@@ -156,7 +154,7 @@
                                         <td>:
                                         </td>
                                         <td class="tdWidth">
-                                            <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Width="96%"></asp:TextBox>
+                                            <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Width="96%" autocomplete="off"></asp:TextBox>
                                             
                                             <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                 PopupButtonID="imgEffectDateTo" Enabled="True"
@@ -418,7 +416,82 @@
                                 </tbody>
                             </table>
                         </div>
-                        <asp:TabContainer ID="TabContainer1" runat="server" CssClass="fancy fancy-green" AutoPostBack="true" OnActiveTabChanged="TabContainer1_ActiveTabChanged" Font-Bold="true" ActiveTabIndex="0"  >
+                <div>
+                  <%--  <asp:UpdatePanel runat="server" UpdateMode="Always">
+                        <Triggers>
+                            
+                        </Triggers>
+                        <ContentTemplate>--%>
+                            <div style="width: 100%; margin:0px auto ">
+                       <asp:GridView HeaderStyle-BackColor="#5EC1FF" ID="gvLeaveList" HeaderStyle-Height="28px" runat="server" AutoGenerateColumns="false" BackColor="White" HeaderStyle-ForeColor="White" HeaderStyle-Font-Bold="true" HeaderStyle-Font-Size="14px" Width="100%" DataKeyNames="LACode" OnRowCommand="gvLeaveList_RowCommand" OnRowDataBound="gvLeaveList_RowDataBound">
+                          <PagerStyle CssClass="gridview" />
+                          <Columns>
+                               <asp:TemplateField HeaderText="SL">
+                                <ItemTemplate>
+                                     <%# Container.DataItemIndex + 1 %>                                  
+                                </ItemTemplate>
+                                <ItemStyle HorizontalAlign="Center" />
+                            </asp:TemplateField>                             
+                              <asp:BoundField DataField="EmpCardNo" HeaderText="Card No (Reg.)" Visible="true"  ItemStyle-HorizontalAlign="Center" />
+                              <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true"  ItemStyle-HorizontalAlign="Center" />
+                              <asp:BoundField DataField="DptName" HeaderText="Department" Visible="true"  ItemStyle-HorizontalAlign="Center" />
+                              <asp:BoundField DataField="FromDate" HeaderText="From Date" Visible="true"  ItemStyle-HorizontalAlign="Center" />
+                              <asp:BoundField DataField="ToDate" HeaderText="To Date" Visible="true"   ItemStyle-HorizontalAlign="Center"/>                             
+                              <asp:BoundField DataField="ApplyDate" HeaderText="Apply Date" Visible="true" ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" />
+                              <asp:BoundField DataField="TotalDays" HeaderText="Total Days" Visible="true" ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="Red" />
+                              <asp:BoundField DataField="IsApproved" HeaderText="Approved" Visible="false" ItemStyle-HorizontalAlign="Center"  />
+                              <asp:BoundField DataField="LeaveProcessingOrder" HeaderText="Processing" Visible="true" ItemStyle-Font-Bold="true" ItemStyle-HorizontalAlign="Center"  />
+                              <asp:BoundField DataField="LeaveName" HeaderText="LeaveName" Visible="true"   ItemStyle-HorizontalAlign="Center" />
+                              <%--<asp:BoundField DataField="AuthorizedBy" HeaderText="Authorized By" Visible="true"/>--%>
+                                 <asp:TemplateField>
+                                            <HeaderTemplate>
+                                                Attachment                                       
+                                            </HeaderTemplate>
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="ckbAttachment" runat="server" Enabled="false"  />
+                                            </ItemTemplate>
+                                     <ItemStyle HorizontalAlign="Center" />
+                                        </asp:TemplateField>
+                              <asp:TemplateField Visible="false">
+                                  <HeaderTemplate>
+                                      Authorized By
+                                  </HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:Label runat="server" ClientIDMode="Static" ID="lblAuthorizedBy"></asp:Label>
+                                  </ItemTemplate>
+                                   <ItemStyle HorizontalAlign="Center" />
+                              </asp:TemplateField>
+                              <%--  <asp:ButtonField ButtonType="Button" HeaderText="Alter" Text="Alter" CommandName="Alter" />--%>
+                                 <asp:TemplateField Visible="false">
+                                  <HeaderTemplate>
+                                      View
+                                  </HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:Button runat="server" ID="btnReport" Text="View" Font-Bold="true" CommandName="View" ForeColor="Green" CommandArgument='<%# Eval("LACode") %>' />
+                                  </ItemTemplate>
+                                   <ItemStyle HorizontalAlign="Center" />
+                              </asp:TemplateField>
+
+                             
+                              <asp:TemplateField Visible="false">
+                                  <HeaderTemplate>
+                                      Delete
+                                  </HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:Button ID="btnView" runat="server" Text="Delete" Font-Bold="true" CommandName="Delete" ForeColor="Red"
+                                          OnClientClick="return confirm('Are you sure, you want to delete the record?')"
+                                         CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
+                                  </ItemTemplate>
+                                  <ItemStyle HorizontalAlign="Center" />
+                              </asp:TemplateField>
+                          </Columns>
+                      </asp:GridView>
+
+                </div>
+                        <%--</ContentTemplate>
+                    </asp:UpdatePanel>--%>
+                      
+                        <asp:TabContainer Visible="false" ID="TabContainer1" runat="server" CssClass="fancy fancy-green" AutoPostBack="true" OnActiveTabChanged="TabContainer1_ActiveTabChanged" Font-Bold="true" ActiveTabIndex="0"  >
 
                             <asp:TabPanel ID="tab1" TabIndex="0" runat="server" Font-Bold="false">
                                 <HeaderTemplate>Leave Going List</HeaderTemplate>

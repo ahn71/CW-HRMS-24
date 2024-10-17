@@ -20,51 +20,50 @@
         </div>
     
       <%--  <img alt="" class="main_/imagess" src="/imagess/hrd.png">--%>
-    <div style="background: transparent url('../../images/glossy-2.jpg') repeat scroll 0% 0%; position: absolute; width: 100%; left: 0px; height: 1200%;">
-         <div class="col-lg-12" style="margin-top:10%">
-             <div class="row">
-
-                 <div class=" col-md-2"></div>
-
+    <div>
+         <div class="col-lg-12 ">
+             <div class="row rowCenter">
+                 
                  <div class="col-md-2" title="Bonus Setup">
-                     <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_setup.aspx"> <img class="images_width_for_module" src="/images/common/qualification.ico" /><br /> Bonus Setup</a>
+                     <a runat="server" id="aBonusSetup" class="ds_Settings_Basic_Text " href="/payroll/bonus_setup.aspx"> <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br /> <span>Bonus Setup</span></a>
+                     <a runat="server" id="aBonusSetupc" class="ds_Settings_Basic_Text " href="/payroll/bonus_setupc.aspx"> <i class="fa-solid fa-money-check-dollar FsiconStyle"></i><br /> <span>Bonus Setup</span></a>
                      
                  </div>
                  <div class=" col-md-2" title="Bonus Month Setup">
-                        <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_monyh_setup.aspx"><img class="images_width_for_module" src="/images/common/qualification.ico" /><br />B. Month Setup</a>
+                        <a runat="server" id="aBonusMonthSetup" class="ds_Settings_Basic_Text " href="/payroll/bonus_monyh_setup.aspx"><i class="fa-regular fa-calendar-days FsiconStyle"></i><br /><span>B. Month Setup</span></a>
+                     <a runat="server" id="aBonusMonthSetupc" class="ds_Settings_Basic_Text " href="/payroll/bonus_month_setupc.aspx"><i class="fa-regular fa-calendar-days FsiconStyle"></i><br /><span>B. Month Setup</span></a>
                  </div>
                  <div class=" col-md-2" title="Bonus Generate">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_generation.aspx"><img class="images_width_for_module" src="/images/common/generate.ico" /><br />B. Generate</a>
+                      <a runat="server" id="aBonusGenerate" class="ds_Settings_Basic_Text " href="/payroll/bonus_generation.aspx"><i class="fa-solid fa-circle-dollar-to-slot FsiconStyle"></i><br /><span>B. Generate</span></a>
+                     <a runat="server" id="aBonusGeneratec" class="ds_Settings_Basic_Text " href="/payroll/bonus_generationc.aspx"><i class="fa-solid fa-circle-dollar-to-slot FsiconStyle"></i><br /><span>B. Generate</span></a>
                  </div>
                    <div class=" col-md-2" title="Bonus Rise & Fall">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_increase_decrease.aspx"><img class="images_width_for_module" src="/images/common/risefall.ico" /><br />B. Rise & Fall</a>
+                      <a runat="server" id="aBonusRiseFall" class="ds_Settings_Basic_Text " href="/payroll/bonus_increase_decrease.aspx"><i class="fa-solid fa-money-bill-trend-up FsiconStyle"></i><br /><span>B. Rise & Fall</span></a>
+                       
+                       
                  </div>
-                 <div class=" col-md-2"></div>
+     
              </div>
 
-               <div class="row">
+               <div class="row rowCenter">
 
-                 <div class=" col-md-2"></div>
+        
 
                  <div class=" col-md-2" title="Bonus Sheet">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_sheet_Report.aspx"><img class="images_width_for_module" src="/images/common/businesstype.ico" /><br />Bonus Sheet</a> 
-                    
+                      <a runat="server" id="aBonusSheet" class="ds_Settings_Basic_Text " href="/payroll/bonus_sheet_Report.aspx"><i class="fas fa-receipt FsiconStyle"></i><br /><span>Bonus Sheet</span></a>    
+                     <a runat="server" id="aBonusSheetc" class="ds_Settings_Basic_Text " href="/payroll/bonus_sheet_Reportc.aspx"><i class="fas fa-receipt FsiconStyle"></i><br /><span>Bonus Sheet</span></a>                    
                  </div>
-                 <div class=" col-md-2" title="Bonus Summary">
-                     <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_summary_report.aspx"><img class="images_width_for_module" src="/images/common/businesstype.ico" /><br />B. Summary</a> 
+                 <div runat="server" id="aBonusSummary" class=" col-md-2" title="Bonus Summary">
+                     <a class="ds_Settings_Basic_Text " href="/payroll/bonus_summary_report.aspx"><i class="fas fa-money-check FsiconStyle"></i><br /><span>B. Summary</span></a> 
                  
                  </div>
                  <div class=" col-md-2" title="Bonus Miss Sheet">
+                     <a runat="server" id="aBonusMissSheet" class="ds_Settings_Basic_Text " href="/payroll/bonus_miss_sheet_Report.aspx"><i class="uil uil-money-bill-slash FsiconStyle"></i><br />B. Miss Sheet</a>                     
+                 </div>     
+                   <div class="col-md-2">
 
-                     <a class="ds_Settings_Basic_Text Pbox" href="/payroll/bonus_miss_sheet_Report.aspx"><img class="images_width_for_module" src="/images/common/businesstype.ico" /><br />B. Miss Sheet</a>
-                 </div>
-                   <%--<div class=" col-md-2" title="Employee Profile">
-                       <img class="image_width_for_module" style="width: 86%" src="../images/common/blankImageForManu.png" /><br />
-                   </div>--%>
-                   <div class=" col-md-2" title="Employee Profile">
-                       <a class="ds_Settings_Basic_Text Pbox" style="height: 155px;" href="#"></a>
                    </div>
-                 <div class=" col-md-2"></div>
+ 
              </div>
 </div>
         </div>

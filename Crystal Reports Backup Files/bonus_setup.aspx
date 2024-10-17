@@ -31,8 +31,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
      <div class="row">
             <div class="col-md-12">
-                <div class="ds_nagevation_bar">
-                   
+                <div class="ds_nagevation_bar">                   
                            <ul>
                                <li><a href="/default.aspx">Dasboard</a></li>
                                <li> <a class="seperator" href="#">/</a></li>
@@ -41,8 +40,7 @@
                                <li> <a href="/payroll/bonus_index.aspx" >Bouns</a></li>
                                <li> <a class="seperator" href="#">/</a></li>
                                <li> <a href="#" class="ds_negevation_inactive Pactive">Bouns Setup</a></li>
-                           </ul>               
-                    
+                           </ul>                 
                 </div>
              </div>
         </div>
@@ -59,7 +57,7 @@
 
     <div class="main_box Mbox">
     	<div class="main_box_header PBoxheader">
-            <h2>Bonus Setup</h2>
+            <h2>Bonus Setup (Actual)</h2>
         </div>
     	<div class="main_box_body Pbody">
         	<div class="main_box_content">

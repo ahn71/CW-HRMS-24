@@ -71,7 +71,7 @@
                                         <td>Wages Generate Month
                                         </td>
                                         <td>
-                                            <asp:TextBox CssClass="form-control text_box_width"  ClientIDMode="Static" ID="txtGenerateMonth" runat="server"></asp:TextBox>
+                                            <asp:TextBox CssClass="form-control text_box_width"  ClientIDMode="Static" ID="txtGenerateMonth" autocomplete="off" runat="server"></asp:TextBox>
                                             <asp:CalendarExtender ID="txtGenerateMonth_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtGenerateMonth">
                                             </asp:CalendarExtender>
                                         </td>
@@ -84,7 +84,20 @@
                                             <asp:DropDownList ID="ddlEmpCardNo" runat="server" Enabled="false" ClientIDMode="Static" Width="310px"  CssClass="form-control select_width" onChange="getCardNo()"></asp:DropDownList>
                                         </td>
                                     </tr>
-
+                                      <tr>
+                                          <td> <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbSpecialGrossPer" Text="Special Gross (%)" Checked="false" /></td>
+                                        <td>
+                                           
+                                       <asp:TextBox runat="server" ID="txtSpecialGrossPer" placeholder="%" CssClass="form-control text_box_width" Text="65"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                      <tr>
+                                          <td> </td>
+                                        <td>
+                                           
+                                       <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbAttendanceBonus" Text="Attendance Bonus" Checked="true" />
+                                        </td>
+                                    </tr>
                                         <tr runat="server" visible="false">
                                         <td>
                                             Tiffin not count (Card no) 
@@ -121,6 +134,27 @@
                      <asp:Label ID="lblM" runat="server" ClientIDMode="Static" Text="" style=" font-weight:bold; position: absolute; margin-top: -23px; margin-left: 22%;"  ></asp:Label>
 
                          <cc1:ProgressBar runat="server" ID="ProgressBar1" />
+                            <div class="bonus_generation" style="width: 66%; margin: 0px auto;">   
+                            <asp:GridView runat="server" ID="gvSalaryList" CssClass="gvdisplay1" DataKeyNames="YearMonth" AutoGenerateColumns="false" HeaderStyle-BackColor="#ffa500" HeaderStyle-Height="28px" HeaderStyle-ForeColor="White" Width="100%" OnRowCommand="gvSalaryList_RowCommand">
+                                            <Columns>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                    <HeaderTemplate>SL</HeaderTemplate>
+                                                    <ItemTemplate >
+                                                        <%#Container.DataItemIndex+1 %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="Month" HeaderText="Month" />                                                                  
+                                                 <asp:BoundField DataField="Worker" HeaderText="Worker" />                                  
+                                                 <asp:BoundField DataField="Staff" HeaderText="Staff" />                                    
+                                                 <asp:BoundField DataField="Total" HeaderText="Total" />                                   
+                                                 <asp:TemplateField HeaderText="Delete"  HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
+                                  <ItemTemplate >
+                                      <asp:Button ID="btnRemove" runat="server" CommandName="Remove" Width="55px" Height="30px" Font-Bold="true" ForeColor="red" Text="Delete" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
+                                  </ItemTemplate>
+                              </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                </div>
                      </ContentTemplate>
                     </asp:UpdatePanel> 
             </div>
@@ -140,7 +174,7 @@
        });
        $(document).keyup(function (e) {
            if (e.keyCode == 80) {
-               goToNewTabandWindow('/payroll/payroll_generation_agt.aspx');
+               goToNewTabandWindow('/payroll/payroll_generation_rss.aspx');
            }
        });
        function load() {
@@ -199,7 +233,14 @@
            $('#imgLoading').show();
            return true;
        }
+       function MessageBox(msg) {
+           showMessage(msg);
+           $('#imgLoading').hide();
+           load();
+       }
        function ProcessingEnd(total) {
+           console.log("ProcessingEnd");
+           console.log("success->Successfully payroll generated of " + total + "");
            showMessage("success->Successfully payroll generated of " + total + "");
            $('#imgLoading').hide();
            load();

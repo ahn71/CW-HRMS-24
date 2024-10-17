@@ -78,7 +78,7 @@
 
     <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Bonus Month Setup</h2>
+            <h2>Bonus Month Setup (Actual)</h2>
         </div>
         <div class="punishment_bottom_header">
         </div>
