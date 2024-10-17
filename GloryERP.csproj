@@ -2062,6 +2062,7 @@
     <Content Include="payroll\pay_slip2.aspx" />
     <Content Include="payroll\salary\IncrementEntitleReport.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
+    <Content Include="payroll\salary\QatarBankfordReport.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
     <Content Include="payroll\salary\salary_sheet_excel.aspx" />
@@ -5007,6 +5008,13 @@
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.designer.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\salary\QatarBankfordReport.aspx.cs">
+      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\QatarBankfordReport.aspx.designer.cs">
+      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\salary_processing.aspx.cs">
       <DependentUpon>salary_processing.aspx</DependentUpon>

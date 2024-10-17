@@ -163,6 +163,11 @@ namespace SigmaERP.payroll
                 }
                 else
                 {
+                    bool hasEmpcard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), CompanyList);
+                    if (!hasEmpcard)
+                    {
+                        return;
+                    }
                     getSQLCMD = "SELECT   substring(v_Payroll_YearlyBonusSheet.EmpCardNo,8,15) as EmpCardNo, v_Payroll_YearlyBonusSheet.PresentSalary,v_Payroll_YearlyBonusSheet.BasicSalary,v_Payroll_YearlyBonusSheet.BonusAmount," +
                               "v_Payroll_YearlyBonusSheet.TotalDays, v_Payroll_YearlyBonusSheet.EmpName,v_Payroll_YearlyBonusSheet.DptId,v_Payroll_YearlyBonusSheet.DptName,v_Payroll_YearlyBonusSheet.DsgName, v_Payroll_YearlyBonusSheet.Address," +
                               " FORMAT(v_Payroll_YearlyBonusSheet.EmpJoiningDate ,'dd-MM-yyyy') as EmpJoiningDate, v_Payroll_YearlyBonusSheet.CompanyName, v_Payroll_YearlyBonusSheet.SftName,v_Payroll_YearlyBonusSheet.CompanyId,v_Payroll_YearlyBonusSheet.SftId,v_Payroll_YearlyBonusSheet.DptId " +

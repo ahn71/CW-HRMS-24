@@ -34,6 +34,7 @@ namespace SigmaERP.personnel
             lblErrorMessage.Text = "";
             if (!IsPostBack)
             {
+      
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);

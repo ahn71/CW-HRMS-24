@@ -26,7 +26,7 @@ namespace SigmaERP.attendance
             sqlDB.connectDB();
             ViewState["__ReadAction__"] = "0";
             ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "1";
+            ViewState["__UpdateAction__"] = "0";
             ViewState["__DeletAction__"] = "0";
             int[] pagePermission = { 259,262,263};
             if (!IsPostBack)
@@ -253,104 +253,189 @@ namespace SigmaERP.attendance
                 {
                     ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 }
-                 //1. Search by Company, Card No
+                string dataAccesCondition = AccessControl.getDataAccessCondition(ddlCompanyList.SelectedValue,"0");
+                string queryCondition = "";
+                string query = "select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord  where";
+                //1. Search by Company, Card No
                 if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord  where CompanyId='" + ddlCompanyList.SelectedValue + "'and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-                  //2. Search by Company,Department,Card No
+                    {
+                        queryCondition = " " + dataAccesCondition + "  and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    }
+                    
+                //2. Search by Company,Department,Card No
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord  where CompanyId='" + ddlCompanyList.SelectedValue + "' and DptId='" + ddlDepartmentName.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-                  //3. Search by Company,Shift,Card No
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord  where CompanyId='" + ddlCompanyList.SelectedValue + "' and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-                     //4. Search by Company,Department,Shift  
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length == 0 && ddlChoseYear.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                     //5. Search by Company,Department,Shift,CardNo 
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-                    //6. Search by Company,Department,Shift,CardNo,From Date,To Date
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
-                     //7. Search by Company,Department,Shift,CardNo,Year
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                    //8. Search by Company,Department,Shift,Year
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                    //9. Search by Company,Department,From date,To Date
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
-                  //10. Search by Company,Department,From date,To Date,Card No
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-                  
-                  //11. Search by Company,Department,Shift,From date,To Date
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
-                  // 12. Search by Company, Department
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' order by AttDate desc", dt = new DataTable());
+                    {
+                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "' and DptId='" + ddlDepartmentName.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    }
+                   
+                //3. Search by Company,Shift,Card No
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
+                    {
+                       queryCondition=" " + dataAccesCondition + " and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    }
+                   
+                //4. Search by Company,Department,Shift  
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length == 0 && ddlChoseYear.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0)
+                {
 
-                      //13.  Search by Company, Shift
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlDepartmentName.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                   //14. Search by Company, CardNo,From date,To date
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by AttDate desc";
+                }
+                //5. Search by Company,Department,Shift,CardNo 
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
+                    {
+                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    }
+                  
+                //6. Search by Company,Department,Shift,CardNo,From Date,To Date
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0)
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+                    
+                //7. Search by Company,Department,Shift,CardNo,Year
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0)
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                }
+                   
+                //8. Search by Company,Department,Shift,Year
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0)
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                }
+                    
+                //9. Search by Company,Department,From date,To Date
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0)
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+                 
+                //10. Search by Company,Department,From date,To Date,Card No
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0)
+                    {
+                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'";
+                    }
+                  
+
+                //11. Search by Company,Department,Shift,From date,To Date
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0)
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+                  
+                // 12. Search by Company, Department
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
+                {
+                    queryCondition= " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' order by AttDate desc"; 
+                }
+                   
+
+                //13.  Search by Company, Shift
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && ddlDepartmentName.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
+                {
+                    queryCondition = " " + dataAccesCondition + " and SftId='" + ddlShift.SelectedValue + "' order by AttDate desc";
+                }
+               
+                //14. Search by Company, CardNo,From date,To date
                 else if (ddlCompanyList.SelectedIndex > 0 && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0)
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and ATTDate >='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-                   //15. Search by Company,Department,Year
+                {
+                    queryCondition = "  " + dataAccesCondition + "  and ATTDate >='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                }
+                
+                //15. Search by Company,Department,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "'  order by AttDate desc", dt = new DataTable());
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "'  order by AttDate desc";
+                }
+                   
 
 
                 //------------------------------Search By Line or Group------------------------------------------------
 
                 // 4. Search by Company,Department,Shift,Grouping 
-                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId="+ddlGrouping.SelectedValue+" order by AttDate desc", dt = new DataTable());
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by AttDate desc";
+                }
+                   
 
-                            // 4. Search by Company,Department,Shift,Grouping ,CardNo
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex ==0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
-
-
-                   //5. Search by Company,Department,Shift,CardNo,From Date,To Date,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                    sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
-                  //6. Search by Company,Department,Shift,CardNo,Year,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                  //7. Search by Company,Department,Shift,Year,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                  //8. Search by Company,Department,Shift,From date,To Date,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex>0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
+                // 4. Search by Company,Department,Shift,Grouping ,CardNo
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                }
+                   
 
 
-                     // 4. Search by Company,Department,Grouping 
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by AttDate desc", dt = new DataTable());
+                //5. Search by Company,Department,Shift,CardNo,From Date,To Date,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+                  
+                //6. Search by Company,Department,Shift,CardNo,Year,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                }
+                   
+                //7. Search by Company,Department,Shift,Year,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "'";
+                }
+                   
+                //8. Search by Company,Department,Shift,From date,To Date,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+                  
 
-                            // 4. Search by Company,Department,Grouping ,CardNo
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc", dt = new DataTable());
 
-
-                   //5. Search by Company,Department,CardNo,From Date,To Date,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
-                  //6. Search by Company,Department,CardNo,Year,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                  //7. Search by Company,Department,Year,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc", dt = new DataTable());
-                  //8. Search by Company,Department,From date,To Date,Grouping
-                  else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
-                      sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc", dt = new DataTable());
-
-                //------------------------------------------------------------------------------------------------
+                // 4. Search by Company,Department,Grouping 
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by AttDate desc";
+                }
                     
+
+                // 4. Search by Company,Department,Grouping ,CardNo
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                }
+                    
+
+
+                //5. Search by Company,Department,CardNo,From Date,To Date,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+                   
+                //6. Search by Company,Department,CardNo,Year,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                }
+                   
+                //7. Search by Company,Department,Year,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                }
+                   
+                //8. Search by Company,Department,From date,To Date,Grouping
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
+                {
+                    queryCondition= "EmpStatus in ('1', '8')  and CompanyId = '" + ddlCompanyList.SelectedValue + "'and DptId = '" + ddlDepartmentName.SelectedValue + "' and GId = " + ddlGrouping.SelectedValue + " and ATTDate>= '" + ViewState["__FDate__"].ToString() + "' and ATTDate<= '" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                }
+
+                query += queryCondition;
+                sqlDB.fillDataTable(query,dt=new DataTable());
+                //------------------------------------------------------------------------------------------------
+
                 if (dt.Rows.Count == 0)
                 {
                     lblMessage.InnerText = "warning->Sorry,Any record are not founded";

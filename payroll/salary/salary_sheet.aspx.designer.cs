@@ -139,6 +139,42 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.TextBox txtEmpCardNo;
         
         /// <summary>
+        /// chkbanksheet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow chkbanksheet;
+        
+        /// <summary>
+        /// chkIsBankfordQatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIsBankfordQatar;
+        
+        /// <summary>
+        /// bankshhet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow bankshhet;
+        
+        /// <summary>
+        /// ddlBankSheet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlBankSheet;
+        
+        /// <summary>
         /// trHideForIndividual control.
         /// </summary>
         /// <remarks>

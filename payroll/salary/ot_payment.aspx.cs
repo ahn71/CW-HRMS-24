@@ -295,6 +295,11 @@ namespace SigmaERP.payroll.salary
                     }
                     else
                     {
+                    bool hasEmpcard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), CompanyList);
+                    if (!hasEmpcard)
+                    {
+                        return;
+                    }
                         if (rblSheet.SelectedValue == "0")
                         {
                             getSQLCMD = "SELECT EmpProximityNo,EmpId, EmpName,EmptypeId, Substring(EmpCardNo,10,6) as EmpCardNo , AbsentDay, BasicSalary, HouseRent, MedicalAllownce, AbsentDeduction,  TotalOTHour, OTRate, round(OverTimeAmount,0) as OverTimeAmount, round(TotalOTAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount, DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla ,IsSeperationGeneration,FORMAT(YearMonth,'MMMM-yyyy') as YearMonth" +

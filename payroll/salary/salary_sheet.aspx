@@ -3,7 +3,9 @@
         #ContentPlaceHolder1_ContentPlaceHolder1_tblGenerateType {
             width:100%;
         }
-       
+     td.chkbank {
+         white-space:nowrap;
+     }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -15,7 +17,7 @@
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="/payroll_default.aspx">Payroll</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll/salary_index.aspx">Salary</a></li>
+                    <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Pactive">Salary Sheet Report</a></li>
                 </ul>
@@ -94,6 +96,19 @@
                                
                            </td>
                        </tr>
+                         <tr runat="server" id="chkbanksheet" visible="false">
+                             <td class="chkbank">
+                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet" CssClass="chkbankSheet" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
+                             </td>
+                         </tr>
+                         <tr runat="server" id="bankshhet" visible="false">
+                              <td>Select Bank Report &nbsp;</td>
+                             <td>
+                             <asp:DropDownList runat="server" ID="ddlBankSheet" CssClass="form-control select_width">
+                               
+                             </asp:DropDownList>
+                                 </td>
+                         </tr>
                          <tr runat="server" id="trHideForIndividual">
                                 <td>Employee Type</td>                                
                                 <td>                                   
@@ -122,7 +137,7 @@
                              <td></td>
                              <td></td>
                              <td></td>
-                             <td>  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
+                             <td class="chkbank">  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
                          </tr>
                    </table>
                 </div>

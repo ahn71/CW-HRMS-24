@@ -48,7 +48,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li>/</li>
-                    <li><a href="/attendance_default.aspx">Attendance</a></li>
+                   <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li>/</li>
                     <li><a href="#" class="ds_negevation_inactive Mactive">Weekend Setup</a></li>
                 </ul>

@@ -17,7 +17,7 @@ namespace SigmaERP.payroll.salary
         //Permission=337
         protected void Page_Load(object sender, EventArgs e)
         {
-            int[] pagePermission = { 337 };
+            int[] pagePermission = { 337, 474 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
@@ -29,7 +29,7 @@ namespace SigmaERP.payroll.salary
 
                 classes.commonTask.loadEmpTye(rblEmployeeType);
                 rblEmployeeType.SelectedValue = "1";
-                setPrivilege();
+                setPrivilege(userPagePermition);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -40,7 +40,7 @@ namespace SigmaERP.payroll.salary
             }
         }
         DataTable dtSetPrivilege;
-        private void setPrivilege()
+        private void setPrivilege(int[] permissions)
         {
             try
             {
@@ -51,13 +51,17 @@ namespace SigmaERP.payroll.salary
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CShortName__"] = "MRC";
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
-
+                if (permissions.Contains(474))
+                {
+                    chkbanksheet.Visible = true;
+                }
                 //------------load privilege setting inof from db------
                 //string[] AccessPermission = new string[0];
                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "salary_sheet_Report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
                 //ViewState["__ReadAction__"] = AccessPermission[0];
                 commonTask.LoadDepartmentByCompanyInListBox(ViewState["__CompanyId__"].ToString(), lstAll);
                 classes.Payroll.loadMonthIdByCompany(ddlSelectMonth, ViewState["__CompanyId__"].ToString());
+                commonTask.loadBankNameCompanyWise("0001",ddlBankSheet);
                 //-----------------------------------------------------
 
 
@@ -149,6 +153,12 @@ namespace SigmaERP.payroll.salary
                 Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
                 string getSQLCMD;
                 DataTable dt = new DataTable();
+                if (ddlBankSheet.SelectedIndex >= 0)
+                {
+                    banksheetGenarate(yearMonth, DepartmentList);
+                 
+                }
+              
                 if (chkBankForwardingLetter.Checked)
                 {
                     getSQLCMD = "SELECT  EmpProximityNo as Sl,EmpId, EmpName, Substring(EmpCardNo,10,6) as EmpCardNo, DptName, DptId, CompanyId, TotalSalary, MobileNo,Format(YearMonth,'MMMM-yyyy') as YearMonth ,CompanyName ,EmpAccountNo  FROM   v_MonthlySalarySheet where " +
@@ -346,5 +356,46 @@ namespace SigmaERP.payroll.salary
             classes.commonTask.AddRemoveAll(lstSelected, lstAll);
         }       
        
+        private void banksheetGenarate(string yearmonth,string departmentList)
+        {
+            DataTable dt = new DataTable();
+            string paymentType = "";
+            string[] bankIdandShortname = ddlBankSheet.SelectedValue.Split('_');
+            string bankId = bankIdandShortname[0];
+           
+
+
+            string condition = "";
+            if (ddlBankSheet.SelectedIndex>0)
+            {
+                condition = "and ecs.BankId="+ bankId + "";
+            }
+          
+            string getSQLCMD = "select  ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary as BasicSalary,pms.TotalSalary,ExtraOtHour,ExtraOtAmount,(pms.AdvanceDeduction+pms.AbsentDeduction) as Deduction,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = 1 "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
+            sqlDB.fillDataTable(getSQLCMD, dt);
+            if (dt.Rows.Count == 0)
+            {
+                lblMessage.InnerText = "warning->Data not found."; return;
+            }
+             Session["__SalarySheetBankFord__"] = dt;
+          ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/payroll/salary/QatarBankfordReport.aspx?for=SalarySheet&&company=" + ddlCompanyName.SelectedValue + "&&month=" + ddlSelectMonth.SelectedItem.Text.Trim() + "');", true);
+
+        }
+
+        protected void chkIsBankfordQatar_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkIsBankfordQatar.Checked)
+            {
+                bankshhet.Visible = true;
+                chkExcel.Visible = false;
+                chkBankForwardingLetterXL.Visible = false;
+            }
+            else
+            {
+                bankshhet.Visible = false;
+                chkExcel.Visible = true;
+                chkBankForwardingLetterXL.Visible =true;
+            }
+        }
     }
 }

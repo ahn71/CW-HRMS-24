@@ -424,13 +424,20 @@ namespace SigmaERP.personnel
 
         private void load_CurrentSeperationList()
         {
+            
             try
             {
                 string CompanyId = (ddlCompanyCurrentList.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyCurrentList.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 dt = new DataTable();
+
+                string query = "select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
+                    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
+                    "where IsActive='True' and  " + condition + "";
+
                 sqlDB.fillDataTable("select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
                     " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
-                    " where CompanyId='"+CompanyId+"' and IsActive='True'",dt);               
+                    " where IsActive='True'  and  "+condition+" " ,dt);               
                 gvCurrentSeperationList.DataSource = dt;
                 gvCurrentSeperationList.DataBind();
             }
@@ -449,19 +456,21 @@ namespace SigmaERP.personnel
                     dateRange = " and EffectiveDate>='"+ Fdate [2]+ "-"+ Fdate [1]+ "-"+ Fdate [0]+ "' and EffectiveDate<='" + Tdate[2] + "-" + Tdate[1] + "-" + Tdate[0] + "' ";
                 }
                 string CompanyId = (ddlCompanyListActive.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString(): ddlCompanyListActive.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 dt = new DataTable();
                 if (txtEmpCardNo.Text.Trim().Length == 0)
                     query = " select  EmpSeparationId,EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,EmpType,DptName,DsgName,EmpStatusName, convert(VARCHAR(10),EffectiveDate, 105) AS EffectiveDate, convert(VARCHAR(10), GETDATE(), 105) AS CurrentDate  " +
                     "from v_Personnel_EmpSeparation  " +
                     "where EmpSeparationId in ( select max(EmpSeparationId) from v_Personnel_EmpSeparation  where CompanyId='" + CompanyId + "' group by EmpId) " +
                     "and Empid not In(select EmpId from Personnel_EmpCurrentStatus where CompanyId='" + CompanyId + "' and EmpStatus=1 and IsActive=1) " + dateRange +
-                    "order by EffectiveDate desc,EmpSeparationId desc";
+                    " and  "+ condition + " order by EffectiveDate desc,EmpSeparationId desc";
                 else
                     query = " select  EmpSeparationId,EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,EmpType,DptName,DsgName,EmpStatusName, convert(VARCHAR(10),EffectiveDate, 105) AS EffectiveDate, convert(VARCHAR(10), GETDATE(), 105) AS CurrentDate  " +
                     "from v_Personnel_EmpSeparation  " +
                     "where EmpSeparationId in ( select max(EmpSeparationId) from v_Personnel_EmpSeparation  where CompanyId='" + CompanyId + "' and EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "' group by EmpId) " +
                     "and Empid not In(select EmpId from Personnel_EmpCurrentStatus where CompanyId='" + CompanyId + "' and EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "' and EmpStatus=1 and IsActive=1) " +
-                    "order by EffectiveDate desc,EmpSeparationId desc";
+                    " and  "+ condition + " order by EffectiveDate desc,EmpSeparationId desc";
+
                 sqlDB.fillDataTable(query, dt);
 
                 gvCurrentSeperationListForActivation.DataSource = dt;
@@ -474,20 +483,21 @@ namespace SigmaERP.personnel
             try
             {
                 string CompanyId = (ddlCompanyListActiveLog.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyListActiveLog.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId, "0");
                 dt = new DataTable();
                 if (txtEmpCardNo.Text.Trim().Length == 0)
                     sqlDB.fillDataTable(" select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate,"+
                         "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
                         "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount "+
                         " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId "+
-                        "where v_EmployeeDetails.CompanyId ='" + CompanyId + "' " +
+                        "where v_EmployeeDetails." + condition + " " +
                         "order by ActiveDate desc", dt);
                 else                    
                         sqlDB.fillDataTable(" select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate," +
                             "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
                             "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount " +
                             " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId " +
-                            "where v_EmployeeDetails.CompanyId ='" + CompanyId + "' and EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' " +
+                            "where  EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' and  " + condition + " " +
                             "order by ActiveDate desc", dt);      
                 
                 gvSeparationActivitionLog.DataSource = dt;

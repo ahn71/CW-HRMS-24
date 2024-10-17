@@ -110,7 +110,7 @@ namespace SigmaERP.personnel
 
         protected void btnPrintpreview_Click(object sender, EventArgs e)
         {
-            
+            string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"All");
             if (rdball.Checked == true)
             {
               
@@ -141,15 +141,21 @@ namespace SigmaERP.personnel
                     }
                 }
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " order by DptCode,CustomOrdering", dt);
+
+               
+
+                string kk= "Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " "+ condition + " order by DptCode,CustomOrdering";
+
+                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " " + condition + "  order by DptCode,CustomOrdering", dt);
                 Session["__EmployeeProfile__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + rblReportStructure.SelectedValue + "');", true);  //Open New Tab for Sever side code
             }
             else if (rdbindividual.Checked == true)
             {
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1", dt);
+                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 "+ condition + "" , dt);
                 Session["__EmployeeProfile__"] = dt;
+
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-"+rblReportStructure.SelectedValue+"');", true);  //Open New Tab for Sever side code
             }
            // ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile');", true);  //Open New Tab for Sever side code
@@ -233,5 +239,7 @@ namespace SigmaERP.personnel
             classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, CompanyID, rblEmpType.SelectedValue);
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
         }
+
+        
     }
 }

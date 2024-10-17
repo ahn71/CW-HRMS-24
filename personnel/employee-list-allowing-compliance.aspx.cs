@@ -43,6 +43,9 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+                ViewState["__dptID__"] = getCookies["__DptId__"].ToString();
+                ViewState["__empId__"] = getCookies["__getEmpId__"].ToString();
+
                 DropDownList ddlCompanyList = new DropDownList();
                 Button btnSearch = new Button();
                 string[] AccessPermission = new string[0];
@@ -57,7 +60,9 @@ namespace SigmaERP.personnel
         }
         private void loadPendingWorkers()
         {
-            query = "select EmpId,CompanyId,EmpType,SUBSTRING(EmpCardNo,8,6)+' ('+EmpProximityNo+')' as EmpCardNo,convert(varchar(10),EmpJoiningDate,105) as EmpJoiningDate,EmpName,DptName,DsgName,DptId from v_EmployeeDetails where  EmpTypeId=1 and IsActive=1 and EmpStatus=1 and IsTransferredToCompliance is null and CompanyID='" + ViewState["__CompanyId__"].ToString()+ "' order by DptId";
+            string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"");
+
+            query = "select EmpId,CompanyId,EmpType,SUBSTRING(EmpCardNo,8,6)+' ('+EmpProximityNo+')' as EmpCardNo,convert(varchar(10),EmpJoiningDate,105) as EmpJoiningDate,EmpName,DptName,DsgName,DptId from v_EmployeeDetails where  EmpTypeId=1 and IsActive=1 and EmpStatus=1 and IsTransferredToCompliance is null " + condition + " order by DptId";
             sqlDB.fillDataTable(query, dt = new DataTable());
             if (dt.Rows.Count == 0)
             {

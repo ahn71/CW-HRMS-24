@@ -30,6 +30,11 @@ namespace SigmaERP.payroll.salary
         }
         private void getResponse(string empcard,string deptId,string date)
         {
+            bool hasEmpcard = AccessControl.hasEmpcardPermission(empcard, ViewState["__CompanyId__"].ToString());
+            if (!hasEmpcard)
+            {
+                return;
+            }
             string formatDate = txtDate.Text;
             string baseUrl = ApiConnector.RootUrl+ "/api/Salary/employeInfos/salaryIncrement/" + date ;
             string queryParams = "";
