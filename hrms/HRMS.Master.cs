@@ -36,7 +36,7 @@ namespace SigmaERP.hrms
                     {
 
                         ////UserName.InnerText = getCookies["__getFirstName__"].ToString();
-                        UserName.InnerText = Session["__UserNameText__"].ToString();
+                        UserName.InnerText = Session["__GetUserFullName__"].ToString();
                         ViewState["__getUserId__"] = getCookies["__getUserId__"].ToString();
                         Session["__GetUID__"] = ViewState["__getUserId__"].ToString();
                         UserEmail.InnerText = Session["__UserEmailText__"].ToString();

@@ -501,94 +501,8 @@
 
 
 
-        //function bindTableData(data) {
-        //    if ($('.adv-table').data('footable')) {
-        //        $('.adv-table').data('footable').destroy();
-        //    }
-        //    $('.adv-table').html('');
-        //    $('#filter-form-container').empty();
 
-        //    data.forEach(row => {
-        //        row.userRoleName = `
-        //<div class="permission-name-container">
-        //    ${row.userRoleName}
-        //    <div class="actions-container">
-        //        <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-        //            <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userRoleId}"><i class="uil uil-eye"></i></a></li>
-        //            <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
-        //            <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-        //        </ul>
-        //    </div>
-        //</div>
-        //`;
-
-        //        row.isActive = `
-        //<div class="form-check form-switch form-switch-primary form-switch-sm">
-        //    <input type="checkbox" class="form-check-input" id="switch-${row.userRoleId}" ${row.isActive ? 'checked' : ''}>
-        //    <label class="form-check-label" for="switch-${row.userRoleId}"></label>
-        //</div>
-        //`;
-
-        //        row.permissions = `
-        //<div class="features-icon-container">
-        //    <a href="javascript:void(0)" class="feature-btn" data-id="${row.userRoleId}"><i class="uil uil-star"></i></a>
-        //</div>
-        //`;
-        //    });
-
-        //    const columns = [
-        //        { "name": "userRoleId", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
-        //        { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
-        //        { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
-        //        { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
-        //        { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
-        //    ];
-
-        //    try {
-        //        $('.adv-table').footable({
-        //            "columns": columns,
-        //            "rows": data,
-        //            "filtering": {
-        //                "enabled": true,
-        //                "placeholder": "Search...",
-        //                "dropdownTitle": "Search in:",
-        //                "position": "left",
-        //                "containers": "#filter-form-container",
-        //                "space": true
-        //            }
-        //        }).on('postinit.ft.table', function (e) {
-        //            $('.footable-loader').hide();
-        //        });
-        //    } catch (error) {
-        //        console.error("Error initializing Footable:", error);
-        //    }
-
-        //    // Clear and re-attach event listeners
-        //    $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
-        //        const userRoleId = $(this).data('id');
-        //        FetchDataForEdit(userRoleId);
-        //        console.log('Edit button clicked for ID:', userRoleId);
-        //    });
-
-        //    $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-        //        const id = $(this).data('id');
-        //        Delete(id);
-        //        console.log('Delete button clicked for ID:', id);
-        //    });
-
-        //    $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-        //        const id = $(this).data('id');
-        //        // Handle the view action
-        //        console.log('View button clicked for ID:', id);
-        //    });
-
-        //    $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
-        //        const id = $(this).data('id');
-        //        console.log('Feature button clicked for ID:', id);
-        //        //FetchDataForEdit(id);
-        //    });
-        //}
-
+ 
         var selectedPermissionIDs = [];
         var responseData = null;
         function GetStpPkgFeatures() {
@@ -661,27 +575,7 @@
             });
         }
 
-        //function transformToJSTreeFormat(data) {
-        //    return data.map(function (item) {
-        //        let hasSelectedChild = item.children && item.children.some(child => child.state && child.state.selected);
-        //        return {
-        //            "id": item.isPermission,
-        //            "text": item.name,
-        //            "state": {
-        //                "opened": true,
-        //                "selected": hasSelectedChild
-        //            },
-        //            "children": item.children && item.children.length > 0 ? transformToJSTreeFormat(item.children) : [],
-        //            "li_attr": {
-        //                "id": item.isPermission
-        //            },
-        //            "original": {
-        //                "isPermission": item.isPermission
-        //            },
-        //            "icon": item.isPermission ? "fa fa-key custom-permission-icon" : "fa fa-lock custom-module-icon"
-        //        };
-        //    });
-        //}
+       
 
         function BoxExpland() {
             var scrollTop = $(window).scrollTop();

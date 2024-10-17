@@ -1153,6 +1153,19 @@
     }
     eye_Confirmpass();
 
+    function eye_Oldmpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtOldPasswoed");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Oldmpass();
+
     function eye_Loginpass() {
         $(".toggle-password2").click(function () {
             $(this).toggleClass("uil-eye");  // Toggle between eye and eye-slash icons
