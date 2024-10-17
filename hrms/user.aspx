@@ -348,11 +348,12 @@
                 
              }
          }
-         
-         function validateUser() {
+
+         async function validateUser() {
              var isValid = true;
-            let alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
+             let alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
              let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
              if ($('#chkIsGetUser').is(':checked')) {
                  $('#ddlReference').hide();
                  $('#repEmpError').html("");
@@ -362,10 +363,12 @@
                  if (selectedReferenceEmp == "0") {
                      $('#repEmpError').html("Please select a valid reference employee.");
                      $("#ddlReferenceEmp").focus();
+                     isValid = false;  // Mark as invalid
                  } else {
                      $('#repEmpError').html("");
                  }
              }
+
              let firstName = $('#txtFirstName').val().trim();
              if (firstName !== "" && !alphabeticPattern.test(firstName)) {
                  $('#firstNameError').html("Only alphabetic characters are allowed.");
@@ -374,14 +377,16 @@
              } else {
                  $('#firstNameError').html("");
              }
-             let LastName = $('#txtLastName').val().trim();
-             if (LastName !== "" && !alphabeticPattern.test(LastName)) {
+
+             let lastName = $('#txtLastName').val().trim();
+             if (lastName !== "" && !alphabeticPattern.test(lastName)) {
                  $('#lastNameError').html("Only alphabetic characters are allowed.");
                  $("#txtLastName").focus();
                  isValid = false;
              } else {
                  $('#lastNameError').html("");
              }
+
              if ($('#txtUserName').val().trim() === "") {
                  $('#userNameError').html("User Name is required.");
                  $("#txtUserName").focus();
@@ -389,6 +394,7 @@
              } else if ($('#txtUserName').val().trim().length < 6) {
                  $('#userNameError').html("User Name must be at least 6 characters.");
                  $("#txtUserName").focus();
+                 isValid = false;
              } else {
                  $('#userNameError').html("");
              }
@@ -417,30 +423,51 @@
              } else {
                  $('#userEmailError').html("");
              }
+
              let selectedRole = $('#ddlUserRole').val();
              if (selectedRole == "0") {
-                 $('#roleError').html("Please select role.");
+                 $('#roleError').html("Please select a role.");
                  $("#ddlUserRole").focus();
                  isValid = false;
              } else {
                  $('#roleError').html("");
              }
-             if (isValid) {
-                 // Get the trimmed text of the button
-                 var addnewElement = $("#btnSave").text().trim();
 
-                 // Compare the text, since addnewElement is a string now
+             // If validation passes, proceed with save or update
+             if (isValid) {
+                 var addnewElement = $("#btnSave").text().trim();  // Get the button text
+
+                 // If adding new user
                  if (addnewElement === "Save") {
-                     PostUsers();   // Call the function to save the user
-                     ClearTextBox(); // Clear the input fields after saving
+                     try {
+                         var result = await PostUsers(true);  // Wait for PostUsers to finish
+
+                         if (result === true) {  // Check if PostUsers returned true
+                             ClearTextBox();  // Clear the form fields
+                         }
+                     } catch (error) {
+                         console.error("An error occurred:", error);  // Handle any errors
+                     }
                  }
+                 // If updating existing user
                  else {
-                     updateUsers();  // Call the function to update the user
-                     ClearTextBox(); // Clear the input fields after updating
+
+                     try {
+                         var result = await  updateUsers(true);  // Wait for PostUsers to finish
+
+                         if (result === true) {  // Check if PostUsers returned true
+                             ClearTextBox();  // Clear the form fields
+                         }
+                     } catch (error) {
+                         console.error("An error occurred:", error);  // Handle any errors
+                     } ; 
+
+
+
                  }
              }
-
          }
+
 
 
 
@@ -669,7 +696,7 @@
              const columns = [
                  { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
                  { "name": "userImage", "title": "User", "className": "userDatatable-content" }, // Combined user image, name, and role column
-                 { "name": "dataAccessLevel", "title": "Access Level", "className": "userDatatable-content" },
+                 { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isApprovingAuthority", "title": "Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -726,7 +753,7 @@
                 console.log('User name clicked for ID:', userId);
 
                 // Redirect to userProfile.aspx with userId as a query parameter
-                window.location.href = `userProfile.aspx?userId=${userId}`;
+                window.open(`userProfile.aspx?userId=${userId}`, '_blank');
             });
 
          }
@@ -1172,7 +1199,7 @@
          function findDifferences(array1, array2) {
              return array1.filter(item => !array2.includes(item));
          }
-         function PostUsers() {
+         async function PostUsers(IsSave) {
              var refaranceEmp = $('#ddlReferenceEmp').val();
              var Company = $('#ddlCompany').val();
              var firstName = $('#txtFirstName').val().trim();
@@ -1184,39 +1211,14 @@
              var isActive = $('#chkIsActive').is(':checked');
              var isGuest = $('#chkIsGetUser').is(':checked');
              var isAuthPerm = $('#chkIsAuthPerm').is(':checked');
-             var treeInstance = $('#treeContainer').jstree(true);
-
              var dataAccessPermission = JSON.stringify(selectedIds);
-
-
-             ////var stringArray = ["00010", "0009", "0011"];
-             //var dataAccessPermission = dataAccessPermissionid.map(function (item) {
-             //    return Number(item);
-             //});
-             //console.log(dataAccessPermission); 
-
-             //var numberArray = selectedIds.map(function (item) {
-             //    return Number(item); // Convert each string to a number
-             //});
-
-             //// If needed, convert to JSON string for further use
-             //var dataAccessPermission = JSON.stringify(numberArray);
-
-             //console.log(numberArray);            // Output: [10, 9, 11]
-             //console.log(dataAccessPermission); // Output: "[10,9,11]"
-
-
              var jsonRolesData = JSON.stringify(PreviusPermissionsID);
              var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
 
-             
-             //var dataAccessPermissionInt = JSON.parse(dataAccessPermission);
              var rolesDataArray = JSON.parse(jsonRolesData);
              var updateDataArray = JSON.parse(jsonUpdateData);
              var removedItems = findDifferences(rolesDataArray, updateDataArray);
              var addedItems = findDifferences(updateDataArray, rolesDataArray);
-
-
 
              if (removedItems.length > 0 || addedItems.length > 0) {
                  rolesDataArray = rolesDataArray.filter(item => !removedItems.includes(item));
@@ -1225,9 +1227,8 @@
              var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
              var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
 
-
              var postData = {
-                  CompanyId: Company,
+                 CompanyId: Company,
                  FirstName: firstName,
                  LastName: lastName,
                  UserName: userName,
@@ -1237,39 +1238,55 @@
                  IsGuestUser: isGuest,
                  IsApprovingAuthority: isAuthPerm,
                  ReferenceID: refaranceEmp,
-                 AdditionalPermissions:additionalPermissions,
+                 AdditionalPermissions: additionalPermissions,
                  RemovedPermissions: removedPermissions,
-                 dataAccessPermission:dataAccessPermission,
+                 dataAccessPermission: dataAccessPermission,
                  IsActive: isActive,
              };
 
-             ApiCallPost(createUserUrl, token, postData)
-                 .then(function (response) {
-                     console.log('Data saved successfully:', response);
+             try {
+                 const response = await ApiCallPost(createUserUrl, token, postData);
+
+                 if (response.statusCode === 200) {
                      Swal.fire({
                          icon: 'success',
                          title: 'Success',
                          text: 'Data saved successfully!'
                      }).then((result) => {
                          if (result.isConfirmed) {
-                             //GetModule();
-                             //GetRoles();
-                             //GetPackages();
-                             GetUsers();
+                             GetUsers();  // Update user list or perform necessary actions
                          }
                      });
-                 })
-                 .catch(function (error) {
-                     console.error('Error saving data:', error);
+                     return true; // Indicate success
+                 } else if (response.statusCode === 400) {
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Username Exists',
+                         text: 'This Username already exists. Please choose a different username.'
+                     });
+                     return false; // Username exists, return false
+                 } else {
                      Swal.fire({
                          icon: 'error',
                          title: 'Error',
-                         text: 'Failed to save data. Please try again.'
+                         text: 'An error occurred. Please try again.'
                      });
+                     return false; // Some other error occurred
+                 }
+             } catch (error) {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: 'Failed to save data. Please try again.'
                  });
+                 return false; // Return false on error
+             }
          }
+
         
-         function updateUsers() {
+         async function updateUsers(IsSave) {
+             try {
+                 // Gather form values
                  var userId = $('#lblHidenUserId').val();
                  var refaranceEmp = $('#ddlReferenceEmp').val();
                  var Company = $('#ddlCompany').val();
@@ -1284,66 +1301,86 @@
                  var isAuthPerm = $('#chkIsAuthPerm').is(':checked');
                  var dataAccessPermission = JSON.stringify(selectedIds);
 
+                 // Serialize permission data
+                 var jsonRolesData = JSON.stringify(PreviusPermissionsID);
+                 var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
 
-             var jsonRolesData = JSON.stringify(PreviusPermissionsID);
-             var jsonUpdateData = JSON.stringify(selectedPermissionIDsUpdate);
+                 // Parse JSON data into arrays
+                 var rolesDataArray = JSON.parse(jsonRolesData);
+                 var updateDataArray = JSON.parse(jsonUpdateData);
 
-             var rolesDataArray = JSON.parse(jsonRolesData);
-             var updateDataArray = JSON.parse(jsonUpdateData);
-             var removedItems = findDifferences(rolesDataArray, updateDataArray);
-             var addedItems = findDifferences(updateDataArray, rolesDataArray);
+                 // Find differences (removed and added permissions)
+                 var removedItems = findDifferences(rolesDataArray, updateDataArray);
+                 var addedItems = findDifferences(updateDataArray, rolesDataArray);
 
+                 // Filter roles data to remove removed items
+                 if (removedItems.length > 0 || addedItems.length > 0) {
+                     rolesDataArray = rolesDataArray.filter(item => !removedItems.includes(item));
+                 }
 
+                 // Convert added and removed permissions back to JSON
+                 var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
+                 var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
 
-             if (removedItems.length > 0 || addedItems.length > 0) {
-                 rolesDataArray = rolesDataArray.filter(item => !removedItems.includes(item));
-             }
+                 // Prepare the update data object
+                 var updateData = {
+                     CompanyId: Company,
+                     FirstName: firstName,
+                     LastName: lastName,
+                     UserName: userName,
+                     UserPassword: userPassword,
+                     Email: userEmail,
+                     UserRoleID: userRole,
+                     IsGuestUser: isGuest,
+                     isApprovingAuthority: isAuthPerm,
+                     ReferenceID: refaranceEmp,
+                     AdditionalPermissions: additionalPermissions,
+                     RemovedPermissions: removedPermissions,
+                     dataAccessPermission: dataAccessPermission,
+                     IsActive: isActive
+                 };
 
-             var additionalPermissions = addedItems.length > 0 ? JSON.stringify(addedItems) : "";
-             var removedPermissions = removedItems.length > 0 ? JSON.stringify(removedItems) : "";
+                 // Make API call to update user
+                 const response = await ApiCallUpdate(updateUserUrl, token, updateData, userId);
 
-             var updateData = {
-                    CompanyId: Company,
-                    FirstName: firstName,
-                    LastName: lastName,
-                    UserName: userName,
-                    UserPassword: userPassword,
-                    Email: userEmail,
-                    UserRoleID: userRole,
-                    IsGuestUser: isGuest,
-                    isApprovingAuthority: isAuthPerm,
-                    ReferenceID: refaranceEmp,
-                    AdditionalPermissions: additionalPermissions,
-                    RemovedPermissions: removedPermissions,
-                    dataAccessPermission:dataAccessPermission,
-
-                    IsActive: isActive,
-                };
-
-             ApiCallUpdate(updateUserUrl, token, updateData, userId)
-                 .then(function (response) {
-                     console.log('Data updated successfully:', response);
+                 // Handle API response
+                 if (response.statusCode === 200) {
                      Swal.fire({
                          icon: 'success',
                          title: 'Success',
-                         text: 'Data updated successfully!'
+                         text: 'Data saved successfully!'
                      }).then((result) => {
                          if (result.isConfirmed) {
-                             //GetRoles();
-                             //GetPackages();
-                             GetUsers();
+                             GetUsers(); // Refresh user list or other necessary actions
                          }
                      });
-                 })
-                 .catch(function (error) {
-                     console.error('Error updating data:', error);
+                     return true; // Indicate success
+                 } else if (response.statusCode === 400) {
+                     Swal.fire({
+                         icon: 'error',
+                         title: 'Username Exists',
+                         text: 'This Username already exists. Please choose a different username.'
+                     });
+                     return false; // Username exists, indicate failure
+                 } else {
                      Swal.fire({
                          icon: 'error',
                          title: 'Error',
-                         text: 'Failed to update data. Please try again.'
+                         text: 'An error occurred. Please try again.'
                      });
+                     return false; // General error, indicate failure
+                 }
+             } catch (error) {
+                 // Handle any unexpected errors
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Error',
+                     text: 'Failed to save data. Please try again.'
                  });
+                 return false; // Indicate failure
+             }
          }
+
 
 
 

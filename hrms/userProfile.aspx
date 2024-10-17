@@ -73,7 +73,7 @@
                                       </div>
                                       <div class="card-body">
                                           <div class="row justify-content-center">
-                                              <div class="col-xxl-6">
+                                              <div class="col-xxl-12">
                                                   <div class="edit-profile__body mx-xl-20">
                                                       <table class="table">
                                                           <tbody>
@@ -122,7 +122,7 @@
                                       </div>
                                       <div class="card-body">
                                           <div class="row justify-content-center">
-                                              <div class="col-xxl-6">
+                                              <div class="col-xxl-12">
                                                   <div class="edit-profile__body mx-xl-20">
                                                       <table class="table">
                                                           <tbody>
@@ -140,9 +140,7 @@
                                                                   <td>
                                                                       <label id="txtAccess"></label>
                                                                       <label id="txtuserDataAccessLevel"></label>
-                                                                  </td>
-                                                                
-                                                                  
+                                                                  </td>                                                          
                                                               </tr>
 
                                                           </tbody>
@@ -485,7 +483,7 @@
 
 
                     $('#txtuserDataAccessLevel').text(data.dataAccessPermission);
-
+                    console.log('This Data Permission test :',data.dataAccessPermission);
                     if (data.userImage) {
                         $('#UserProfileImages').attr('src', data.userImage);
                     } else {
