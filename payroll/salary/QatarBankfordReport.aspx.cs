@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -39,84 +40,71 @@ namespace SigmaERP.payroll.salary
 
         private void ExportData()
         {
-            string gg = ViewState["__totalSalary__"].ToString();
-            string Qid = "";
+            // Session and ViewState caching
+            string bankShortName = Session["__bankShortname__"]?.ToString();
+            if (string.IsNullOrEmpty(bankShortName))
+            {
+                bankShortName = "CBQ and QIB";
+            }
+
+            string totalSalaryString = ViewState["__totalSalary__"]?.ToString();
+            string registrationID = ViewState["__registrationID__"]?.ToString();
+            string establishmentID = ViewState["__establishmentID__"]?.ToString();
+            string totalRows = ViewState["__totalRows__"]?.ToString() ?? "0";
             decimal totalSalary = 0;
             int totalRecord = 0;
 
-            Response.ClearContent();
-            Response.Buffer = true;
-            Response.AddHeader("content-disposition", "attachment; filename=banksheet.csv");
-            Response.ContentType = "text/csv";
-            Response.Charset = "";
+            // Initialize CSV content
+            var csvContent = new StringBuilder();
+            csvContent.AppendLine("EMPLOYER EID:,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Total Salaries,Total records:");
+            csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{establishmentID},,{bankShortName},{totalSalaryString},{totalRows}");
 
-    
-            Response.Write("EMPLOYER EID:,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Total Salaries,Total records:\n");
-
-            Response.Write($"{ViewState["__registrationID__"]},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{ViewState["__establishmentID__"]},{Qid},{Session["__bankShortname__"]}," + ViewState["__totalSalary__"] + "," + ViewState["__totalRows__"] + "\n");
-
-       
-            var headerValues = new List<string>();
-            headerValues.Add("Record ID"); 
+            // Column Headers
+            var headerValues = new List<string> { "Record ID" };
             foreach (DataControlField header in gvBannFord.Columns)
             {
                 headerValues.Add(header.HeaderText);
             }
+            csvContent.AppendLine(string.Join(",", headerValues));
 
-          
-            Response.Write(string.Join(",", headerValues) + "\n");
-
-        
-            if (gvBannFord.DataSource != null)
+            // Process Rows
+            foreach (GridViewRow row in gvBannFord.Rows)
             {
-                gvBannFord.DataBind(); 
-
-               
-                foreach (GridViewRow row in gvBannFord.Rows)
+                if (row.RowType == DataControlRowType.DataRow)
                 {
-                    if (row.RowType == DataControlRowType.DataRow)
+                    var cellValues = new List<string> { (row.RowIndex + 1).ToString() };
+                    for (int i = 0; i < row.Cells.Count; i++)
                     {
-                        var cellValues = new List<string>();
-
-                       
-                        cellValues.Add((row.RowIndex + 1).ToString()); 
-
-                      
-                        for (int i = 0; i < row.Cells.Count; i++)
-                        {
-                           
-                            string cellText = HttpUtility.HtmlDecode(row.Cells[i].Text.Trim());
-
-                            if (string.IsNullOrWhiteSpace(cellText) || cellText == "&nbsp;")
-                            {
-                                cellText = ""; 
-                            }
-
-                            if (cellText.Contains(","))
-                            {
-                                cellText = $"\"{cellText}\""; 
-                            }
-
-          
-                            cellValues.Add(cellText);
-                        }
-
-                        Response.Write(string.Join(",", cellValues) + "\n");
-
-                        if (decimal.TryParse(cellValues[6], out decimal netAmount))
-                        {
-                            totalSalary += netAmount;
-                        }
-
-                        totalRecord++;
+                        cellValues.Add(ProcessCellText(row.Cells[i].Text));
                     }
+
+                    // Append row to CSV
+                    csvContent.AppendLine(string.Join(",", cellValues));
+
+                    // Accumulate salary data
+                    if (decimal.TryParse(cellValues[6], out decimal netAmount))
+                    {
+                        totalSalary += netAmount;
+                    }
+                    totalRecord++;
                 }
             }
 
-            Response.Write("\n");
-         
-            Response.End();
+            // Output CSV
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=banksheet.csv");
+            Response.ContentType = "text/csv";
+            Response.Write(csvContent.ToString());
+            Response.Flush();
         }
+
+        private string ProcessCellText(string cellText)
+        {
+            cellText = HttpUtility.HtmlDecode(cellText?.Trim() ?? "");
+            return string.IsNullOrWhiteSpace(cellText) || cellText == "&nbsp;" ? "" : cellText.Contains(",") ? $"\"{cellText}\"" : cellText;
+        }
+
 
 
 
