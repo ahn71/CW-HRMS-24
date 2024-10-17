@@ -23,11 +23,20 @@ namespace SigmaERP.All_Report
         string query = "";
         protected void Page_Init(object sender, EventArgs e)
         {
-            this.Init += new System.EventHandler(this.Page_Init);
-            sqlDB.connectionString = Glory.getConnectionString();
-            sqlDB.connectDB();
+
+            //divError.InnerText += "load->Page_Init";
+            try {
+                this.Init += new System.EventHandler(this.Page_Init);
+                sqlDB.connectionString = Glory.getConnectionString();
+                sqlDB.connectDB();
+            }
+            catch (Exception ex) {
+                divError.InnerText+="error_init_31->" + ex.Message;
+            } 
+            
             try
             {
+
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
@@ -268,13 +277,14 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("DailyMovementByDateRange")) ShowDailyMovementByDateRange(query[1], query[2], query[3]);
                 //------------------------------------------------------------------------------------------------------
             }
-            catch { }
+            catch(Exception ex) { divError.InnerText += "error_load_277->" + ex.Message; }
         }
 
         protected void Page_Unload(object sender, EventArgs e)
         {
             try
             {
+                divError.InnerText += " Call -> Page_Unload";
                 rpd.Refresh();
                 CrystalReportViewer1.ReportSource = null;
                 rpd.Dispose();
@@ -285,7 +295,11 @@ namespace SigmaERP.All_Report
             }
             catch
             {
-                rpd.Refresh();
+                try {
+                    rpd.Refresh();
+                }
+                catch (Exception ex) { divError.InnerText += "error_Page_Unload-> " + ex.Message; }
+                
 
                 CrystalReportViewer1.ReportSource = null; ;
                 GC.Collect();
@@ -1908,6 +1922,8 @@ namespace SigmaERP.All_Report
         {
             try
             {
+                divError.InnerText += "Call->ShowEmpInformationBangla ";
+                
                 rpd = new ReportDocument();
                 if (ReportType == "BasicInfo")
                 {
@@ -1942,17 +1958,21 @@ namespace SigmaERP.All_Report
                 }
                 dt = new DataTable();
                 dt = (DataTable)Session["__EmpInformation__"];
+                divError.InnerText += "Data->" + dt.Rows.Count;
                 rpd.SetDataSource(dt);
 
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
-            catch { }
+            catch(Exception ex) {
+                divError.InnerText += "Data->" + dt.Rows.Count;
+            }
         }
         private void ShowEmpInformationBangla(string ReportType)
         {
             try
             {
+               
                 rpd = new ReportDocument();
                 if (ReportType == "BasicInfo")
                 {
@@ -1973,11 +1993,13 @@ namespace SigmaERP.All_Report
                 }
                 dt = new DataTable();
                 dt = (DataTable)Session["__EmpInformationBangla__"];
+
+               
                 rpd.SetDataSource(dt);
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
-            catch { }
+            catch(Exception ex) { divError.InnerText += "error->" + ex.Message; }
         }
         private void ShowRecrutmentPanelList(string MonthName)
         {
