@@ -153,11 +153,15 @@ namespace SigmaERP.payroll.salary
                 Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
                 string getSQLCMD;
                 DataTable dt = new DataTable();
-                if (ddlBankSheet.SelectedIndex >= 0)
+                if (chkIsBankfordQatar.Checked)
                 {
-                    banksheetGenarate(yearMonth, DepartmentList);
-                 
+                    if (ddlBankSheet.SelectedIndex >= 0)
+                    {
+                        banksheetGenarate(yearMonth, DepartmentList);
+
+                    }
                 }
+       
               
                 if (chkBankForwardingLetter.Checked)
                 {

@@ -98,7 +98,7 @@
                        </tr>
                          <tr runat="server" id="chkbanksheet" visible="false">
                              <td class="chkbank">
-                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet" CssClass="chkbankSheet" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
+                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet(Bank wise)" CssClass="chkbankSheet" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
                              </td>
                          </tr>
                          <tr runat="server" id="bankshhet" visible="false">
