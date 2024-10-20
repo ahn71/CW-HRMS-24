@@ -1571,7 +1571,7 @@ namespace SigmaERP.classes
 
         public static void loadBankNameCompanyWise(string companyId,DropDownList ddlbankList)
         {
-            HttpContext.Current.Session["__bankShortname__"] = "";
+           
             DataTable dt = new DataTable();
             sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and CompanyId='0001'", dt);
             ddlbankList.DataSource = dt;

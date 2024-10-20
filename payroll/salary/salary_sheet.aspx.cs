@@ -80,7 +80,8 @@ namespace SigmaERP.payroll.salary
                 {
                     txtEmpCardNo.Enabled = true;
                     pnl1.Enabled = false;
-                    trHideForIndividual.Visible = false;
+                    rblEmployeeType.Visible = false;
+                    trHideForIndividualLabel.Visible = false;
                     pnl1.Visible = false;
                     txtEmpCardNo.Focus();
 
@@ -89,7 +90,8 @@ namespace SigmaERP.payroll.salary
                 {
                     txtEmpCardNo.Enabled = false;
                     pnl1.Enabled = true;
-                    trHideForIndividual.Visible = true;
+                    rblEmployeeType.Visible = true;
+                    trHideForIndividualLabel.Visible = true;
                     pnl1.Visible = true;
                     rblEmployeeType.SelectedValue = "1";
                     rblPaymentType.SelectedValue = "Cash";
@@ -155,9 +157,13 @@ namespace SigmaERP.payroll.salary
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
                 {
-                    banksheetGenarate(yearMonth, DepartmentList);
-                    return;
+                    if (ddlBankSheet.SelectedIndex >= 0)
+                    {
+                        banksheetGenarate(yearMonth, DepartmentList);
+
+                    }
                 }
+       
               
                 if (chkBankForwardingLetter.Checked)
                 {
@@ -358,16 +364,19 @@ namespace SigmaERP.payroll.salary
        
         private void banksheetGenarate(string yearmonth,string departmentList)
         {
+           Session["__bankShortname__"] = "";
             DataTable dt = new DataTable();
-            string paymentType = "";
-            string[] bankIdandShortname = ddlBankSheet.SelectedValue.Split('_');
-            string bankId = bankIdandShortname[0];
-           
+            string paymentType = "";      
 
 
             string condition = "";
             if (ddlBankSheet.SelectedIndex>0)
             {
+                string[] bankIdandShortname = ddlBankSheet.SelectedValue.Split('_');
+
+
+                string bankId = bankIdandShortname[0];
+                Session["__bankShortname__"] = bankIdandShortname[1];
                 condition = "and ecs.BankId="+ bankId + "";
             }
           

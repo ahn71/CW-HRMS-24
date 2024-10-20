@@ -453,19 +453,23 @@ namespace SigmaERP.personnel
                     string EmpId = Request.QueryString["EmpId"];
                     
                         if (UpdateCardValidation() == false) return;                        
-                        if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true && updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
+                        if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true)
+                        {
+                        if (updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
                         {
                             if (txtMobileNo.Text.Trim().Length > 0)
                                 updateEmpAddress(EmpId);
                             AllClear();
                             if (EmpId == null)
                                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UpdateSuccess();", true);
-                            else 
+                            else
                             {
                                 Session["IsRedirect"] = "Yes";
-                                Response.Redirect("~/personnel/employee_list.aspx");                                 
+                                Response.Redirect("~/personnel/employee_list.aspx");
                             }
                         }
+                     }
+                        
                         else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableUpdate();", true);
                    
                 }
@@ -1950,7 +1954,7 @@ namespace SigmaERP.personnel
                     "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
                     " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
                     " Personnel_EmpPersonnal.Nationality, Personnel_EmpPersonnal.NationIDCardNo,Personnel_EmpPersonnal.NumberofChild," +
-                    "Personnel_EmpPersonnal.LastEdQualification,ersonnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
+                    "Personnel_EmpPersonnal.LastEdQualification,Personnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
                     "Left JOIN HRD_Qualification ON Personnel_EmpPersonnal.LastEdQualification=HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON " +
                     "Personnel_EmpPersonnal.RId = HRD_Religion.RId  where Personnel_EmpPersonnal.EmpId='" + EmpId + "'", dt = new DataTable());
                 if (dt.Rows.Count == 0)
