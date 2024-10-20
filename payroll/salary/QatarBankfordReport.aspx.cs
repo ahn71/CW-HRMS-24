@@ -5,6 +5,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -40,26 +41,25 @@ namespace SigmaERP.payroll.salary
 
         private void ExportData()
         {
-            // Session and ViewState caching
-            string bankShortName = Session["__bankShortname__"]?.ToString();
-            if (string.IsNullOrEmpty(bankShortName))
+            string bankShortName = Session["__bankShortname__"].ToString(); 
+            // Get necessary session and view state values
+            if (Session["__bankShortname__"].ToString() == "")
             {
                 bankShortName = "CBQ and QIB";
             }
+          
 
             string totalSalaryString = ViewState["__totalSalary__"]?.ToString();
             string registrationID = ViewState["__registrationID__"]?.ToString();
             string establishmentID = ViewState["__establishmentID__"]?.ToString();
             string totalRows = ViewState["__totalRows__"]?.ToString() ?? "0";
-            decimal totalSalary = 0;
-            int totalRecord = 0;
 
             // Initialize CSV content
             var csvContent = new StringBuilder();
             csvContent.AppendLine("EMPLOYER EID:,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Total Salaries,Total records:");
             csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{establishmentID},,{bankShortName},{totalSalaryString},{totalRows}");
 
-            // Column Headers
+            // Add headers to CSV
             var headerValues = new List<string> { "Record ID" };
             foreach (DataControlField header in gvBannFord.Columns)
             {
@@ -67,22 +67,27 @@ namespace SigmaERP.payroll.salary
             }
             csvContent.AppendLine(string.Join(",", headerValues));
 
-            // Process Rows
+            // Process each row in the GridView
+            decimal totalSalary = 0;
+            int totalRecord = 0;
             foreach (GridViewRow row in gvBannFord.Rows)
             {
                 if (row.RowType == DataControlRowType.DataRow)
                 {
                     var cellValues = new List<string> { (row.RowIndex + 1).ToString() };
+
                     for (int i = 0; i < row.Cells.Count; i++)
                     {
-                        cellValues.Add(ProcessCellText(row.Cells[i].Text));
+                        // Clean the cell text and replace &nbsp; with an empty string
+                        string cellText = CleanText(row.Cells[i].Text).Replace("&nbsp;", string.Empty);
+                        cellValues.Add(cellText);
                     }
 
-                    // Append row to CSV
+                    // Add the row data to CSV content
                     csvContent.AppendLine(string.Join(",", cellValues));
 
                     // Accumulate salary data
-                    if (decimal.TryParse(cellValues[6], out decimal netAmount))
+                    if (decimal.TryParse(cellValues[8], out decimal netAmount))
                     {
                         totalSalary += netAmount;
                     }
@@ -90,14 +95,31 @@ namespace SigmaERP.payroll.salary
                 }
             }
 
-            // Output CSV
+            // Update total salary and total records in CSV content
+            csvContent.AppendLine();
+            csvContent.Replace(totalSalaryString, totalSalary.ToString("F2"));
+            csvContent.Replace(totalRows, totalRecord.ToString());
+
+            // Output CSV file for download
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename=banksheet.csv");
             Response.ContentType = "text/csv";
             Response.Write(csvContent.ToString());
             Response.Flush();
+            Response.End();
         }
+
+        // Method to clean any HTML tags from text
+        private string CleanText(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            // Remove any HTML tags and trim spaces
+            return Regex.Replace(input, @"<[^>]*>", string.Empty).Trim();
+        }
+
 
         private string ProcessCellText(string cellText)
         {

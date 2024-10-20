@@ -364,16 +364,19 @@ namespace SigmaERP.payroll.salary
        
         private void banksheetGenarate(string yearmonth,string departmentList)
         {
+           Session["__bankShortname__"] = "";
             DataTable dt = new DataTable();
-            string paymentType = "";
-            string[] bankIdandShortname = ddlBankSheet.SelectedValue.Split('_');
-            string bankId = bankIdandShortname[0];
-           
+            string paymentType = "";      
 
 
             string condition = "";
             if (ddlBankSheet.SelectedIndex>0)
             {
+                string[] bankIdandShortname = ddlBankSheet.SelectedValue.Split('_');
+
+
+                string bankId = bankIdandShortname[0];
+                Session["__bankShortname__"] = bankIdandShortname[1];
                 condition = "and ecs.BankId="+ bankId + "";
             }
           
