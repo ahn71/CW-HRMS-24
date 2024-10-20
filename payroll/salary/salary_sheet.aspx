@@ -97,20 +97,11 @@
                            </td>
                        </tr>
                          <tr runat="server" id="chkbanksheet" visible="false">
-                             <td class="chkbank">
-                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet(Bank wise)" CssClass="chkbankSheet" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/>
-                             </td>
+
                          </tr>
-                         <tr runat="server" id="bankshhet" visible="false">
-                              <td>Select Bank Report &nbsp;</td>
-                             <td>
-                             <asp:DropDownList runat="server" ID="ddlBankSheet" CssClass="form-control select_width">
-                               
-                             </asp:DropDownList>
-                                 </td>
-                         </tr>
-                         <tr runat="server" id="trHideForIndividual">
-                                <td>Employee Type</td>                                
+                       
+                         <tr>
+                                <td><span  runat="server" id="trHideForIndividualLabel">Employee Type</span> </td>                                
                                 <td>                                   
                                     <asp:RadioButtonList ID="rblEmployeeType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
                                         
@@ -125,7 +116,9 @@
                                     </asp:RadioButtonList>
                                      
                                 </td>
-                             <td>
+                          <td class="chkbank">
+                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet(Bank wise)" CssClass="chkboxsalary" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/><br />
+                             
                                  <asp:CheckBox Visible="false" ID="chkBankForwardingLetter" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter" /> 
                                 <asp:CheckBox ID="chkExcel" CssClass="chkboxsalary" runat="server" Text="Salary Sheet(Excel)" />
                                 
@@ -138,6 +131,17 @@
                              <td></td>
                              <td></td>
                              <td class="chkbank">  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
+                         </tr>
+
+                           <tr runat="server" id="bankshhet" visible="false">
+                                <td></td>
+                             <td></td>
+                              <td>Select Bank</td>
+                             <td>
+                             <asp:DropDownList runat="server" ID="ddlBankSheet" CssClass="form-control select_width">
+                               
+                             </asp:DropDownList>
+                                 </td>
                          </tr>
                    </table>
                 </div>
