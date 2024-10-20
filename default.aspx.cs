@@ -25,35 +25,11 @@ namespace SigmaERP
                     }
                     else
                     {
-                        Response.Redirect("hrms/dashboard");
-                        //Response.Redirect("~/dashboard");
-                        if (Session["__IsCompliance__"].ToString().Equals("True"))
-                        {
-                            try
-                            {
-
-                                divSettings.Visible = false;
-                                divTools.Visible = false;
-
-                            }
-                            catch { Response.Redirect("~/default.aspx"); }
-                        }
-                        else if (Session["__UserNameText__"].ToString() == "common")
-                        {
-                            try
-                            {                               
-
-                                divSettings.Visible = false;
-                                divPersonnel.Visible = false;
-                                divTools.Visible = false;
-                                divPayroll.Visible = false;
-
-                            }
-                            catch { Response.Redirect("~/default.aspx"); }
-                        }
+                        Response.RedirectToRoute(Routing.dashboardRoutName);                        
+                        
                     }
                 }
-                catch { }
+                catch(Exception ex) { }
             }
         }
     }
