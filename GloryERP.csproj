@@ -2273,7 +2273,6 @@
     <Content Include="All Report\Dataset\StaffIDCard.xsc">
       <DependentUpon>StaffIDCard.xsd</DependentUpon>
     </Content>
-    <Content Include="WebForm1.aspx" />
     <None Include="All Report\Dataset\StaffIDCard.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
@@ -5787,13 +5786,6 @@
     </Compile>
     <Compile Include="vat_tax\vat_tax_years.aspx.designer.cs">
       <DependentUpon>vat_tax_years.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
