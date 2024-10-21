@@ -466,7 +466,7 @@ namespace SigmaERP.personnel
                 string ReportType = "";
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
                 string DepartmentID=(ddlDepartment.SelectedItem.Text.ToString().Equals("All"))?"":" and DptId='"+ddlDepartment.SelectedValue+"'";
-                string condition = AccessControl.getDataAccessCondition(CompanyId,"");
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 if (rdblSearchEmployee.SelectedItem.Text == "Basic" || rdblSearchEmployee.SelectedItem.Text == "Joining")
                 {
                     ReportType = "BasicInfo";
@@ -480,7 +480,7 @@ namespace SigmaERP.personnel
                         {
                     
                            if (ddlDepartment.SelectedItem.Text.ToString().Equals("All"))
-                               sqlCmd = "Select EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,DptId,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary,RealProximityNo,EmpProximityNo,EmpTypeId,EmpType,OverTime From v_EmployeeProfile where EmpStatus in('1','8') And IsActive=1 " + condition + " " + EmpTypeID + joining+ " Order by  DptCode,DptId,CustomOrdering";
+                               sqlCmd = "Select EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,DptId,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary,RealProximityNo,EmpProximityNo,EmpTypeId,EmpType,OverTime From v_EmployeeProfile where EmpStatus in('1','8') And IsActive=1 and " + condition + " " + EmpTypeID + joining+ " Order by  DptCode,DptId,CustomOrdering";
                            else
                                sqlCmd = "Select EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName, DptId,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary,RealProximityNo,EmpProximityNo,EmpTypeId,EmpType,OverTime From v_EmployeeProfile where EmpStatus in('1','8') And IsActive=1 AND CompanyId='" + CompanyId + "' and DptId ='" + ddlDepartment.SelectedValue + "' " + EmpTypeID + joining+ " Order by DptCode,DptId,CustomOrdering";                      
                        
@@ -492,7 +492,7 @@ namespace SigmaERP.personnel
                        //    lblMessage.InnerText = "warning-> Please Type Mininmum 4 Character of Card No !";
                        //    txtCardNo.Focus(); return;
                        //}
-                       sqlCmd = "Select EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone, SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName, DptId,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary,RealProximityNo From v_EmployeeProfile where EmpStatus in('1','8') " + condition + " and SN=" + ddlCardNo.SelectedValue + " "+ joining;
+                       sqlCmd = "Select EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone, SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName, DptId,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary,RealProximityNo From v_EmployeeProfile where EmpStatus in('1','8') and  " + condition + " and SN=" + ddlCardNo.SelectedValue + " "+ joining;
                    }
                     dt = new DataTable();
                     sqlDB.fillDataTable(sqlCmd, dt);
@@ -549,7 +549,7 @@ namespace SigmaERP.personnel
                             }
                         }
                         dt = new DataTable();
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and DsgId " + setPredicate + " and SN " + setSn + " "+condition+" order by CustomOrdering", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and DsgId " + setPredicate + " and SN " + setSn + " and  "+condition+" order by CustomOrdering", dt);
                     }
                     else 
                     {
@@ -562,7 +562,7 @@ namespace SigmaERP.personnel
                            
                         //}
                         dt = new DataTable();
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') " + condition + " and IsActive=1 and SN=" + ddlCardNo.SelectedValue + "", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8')and " + condition + " and IsActive=1 and SN=" + ddlCardNo.SelectedValue + "", dt);
                    
 
                     }
@@ -636,7 +636,7 @@ namespace SigmaERP.personnel
                     }
                     else
                     {
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and PerCity=" + ddlDistrict.SelectedValue + "  and SN " + setSn + " "+condition+" order by CustomOrdering", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and PerCity=" + ddlDistrict.SelectedValue + "  and SN " + setSn + " and  "+condition+" order by CustomOrdering", dt);
                     }
                 }
                     else
@@ -648,7 +648,7 @@ namespace SigmaERP.personnel
                           
                         //}
                         dt = new DataTable();
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') " + condition + " and IsActive=1 and SN=" + ddlCardNo.SelectedValue + "", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8')and  " + condition + " and IsActive=1 and SN=" + ddlCardNo.SelectedValue + "", dt);
 
 
                     }
@@ -772,11 +772,11 @@ namespace SigmaERP.personnel
                     dt = new DataTable();
                     if (ddlReligion.SelectedValue == "0000")
                     {
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and SN " + setSn + " "+condition+" order by CustomOrdering", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and SN " + setSn + " and  "+condition+" order by CustomOrdering", dt);
                     }
                     else
                     {
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and RId=" + ddlReligion.SelectedValue + " and SN " + setSn + " "+condition+" order by CustomOrdering", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') AND IsActive=1 and RId=" + ddlReligion.SelectedValue + " and SN " + setSn + " and "+condition+" order by CustomOrdering", dt);
                     }
                     }
                     else
@@ -790,7 +790,7 @@ namespace SigmaERP.personnel
                             
                         //}
                         dt = new DataTable();
-                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8') " + condition + " and IsActive=1 and SN=" + ddlCardNo.SelectedValue + "", dt);
+                        sqlDB.fillDataTable("Select EmpName,SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpTypeId,EmpType,CompanyName,DptName,DsgName,Convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,Convert(varchar(11),DateOfBirth,106) as DateOfBirth,RName,Sex,DstName,Address  From v_EmployeeDetails where EmpStatus in('1','8')and  " + condition + " and IsActive=1 and SN=" + ddlCardNo.SelectedValue + "", dt);
 
                     }
                 }
