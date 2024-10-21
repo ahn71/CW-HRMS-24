@@ -227,7 +227,15 @@ namespace SigmaERP.classes
             List<PermissionRoute> permissionRoutes = FetchPermissionRoutesFromApi(UserWithPermissionUrl, userId);
             foreach (PermissionRoute permissionRoute in permissionRoutes)
             {
+                //if (permissionRoute.PhysicalLocation == "~/Leave/leaveApplication.aspx")
+                //{
+                //    routes.MapPageRoute(permissionRoute.PermissionName, rootURL + permissionRoute.Url, permissionRoute.PhysicalLocation);
+
+                //}
                 routes.MapPageRoute(permissionRoute.PermissionName, rootURL + permissionRoute.Url, permissionRoute.PhysicalLocation);
+
+
+
             }
             //routes.MapPageRoute("ErrorRoute", "{*.aspx}", "~/Error.aspx");
             //routes.RouteExistingFiles = true;
