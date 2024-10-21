@@ -36,6 +36,10 @@ namespace SigmaERP.classes
         public static string appSettingsUrl = rootURL + "app-settings";
         private static string appSettingsPhyLocation = "~/hrms/AppSettings.aspx";
 
+        public static string profileRoutName = "Profile";
+        public static string profileUrl = rootURL + "profile";
+        private static string profilePhyLocation = "~/hrms/userProfile.aspx";
+
         public static string defualtUrl = "~/" + dashboardUrl;
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
@@ -43,6 +47,7 @@ namespace SigmaERP.classes
             routes.MapPageRoute(LoginRouteName, LoginRouteUrl, LoginRoutePhysicalFile);
             routes.MapPageRoute(dashboardRoutName, dashboardUrl, dashboardPhyLocation);
             routes.MapPageRoute(appSettingsName, appSettingsUrl, appSettingsPhyLocation);
+            routes.MapPageRoute(profileRoutName, profileUrl, profilePhyLocation);
             //routes.MapPageRoute(userName, userUrl, userPhyLocation);
         }
 
@@ -226,7 +231,7 @@ namespace SigmaERP.classes
                 //}
                 routes.MapPageRoute(permissionRoute.PermissionName, rootURL + permissionRoute.Url, permissionRoute.PhysicalLocation);
 
-
+                
 
             }
             //routes.MapPageRoute("ErrorRoute", "{*.aspx}", "~/Error.aspx");

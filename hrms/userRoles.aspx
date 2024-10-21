@@ -678,6 +678,6 @@
 
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
 
-   <script src="assets/theme_assets/js/apiHelper.js"></script>
+   <script src="/hrms/assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>
