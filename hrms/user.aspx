@@ -753,7 +753,7 @@
                 console.log('User name clicked for ID:', userId);
 
                 // Redirect to userProfile.aspx with userId as a query parameter
-                window.open(`userProfile.aspx?userId=${userId}`, '_blank');
+                window.open(`/hrms/profile?userId=${userId}`, '_blank');
             });
 
          }

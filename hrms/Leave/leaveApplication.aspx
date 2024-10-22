@@ -672,14 +672,14 @@
             </div>
         `;
                  row.approvalStatus = row.approvalStatus === null
-                     ? '<span class="badge bg-onlyme">Pending</span>'
+                     ? '<span class="badge-leave bg-onlyme">Pending</span>'
                      : row.approvalStatus === 0
-                         ? '<span class="badge bg-warning">Processing</span>'
+                         ? '<span class="badge-leave bg-warning">Processing</span>'
                          : row.approvalStatus === 1
-                             ? '<span class="badge bg-success">Approve</span>'
+                             ? '<span class="badge-leave bg-success">Approve</span>'
                              : row.approvalStatus === 2
-                                 ? '<span class="badge bg-rejected">Reject</span>'
-                                 : '<span class="badge bg-secondary">NA</span>';
+                                 ? '<span class="badge-leave bg-rejected">Reject</span>'
+                                 : '<span class="badge-leave bg-secondary">NA</span>';
              });
 
              const columns = [
