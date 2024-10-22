@@ -18,7 +18,7 @@ namespace SigmaERP.payroll.salary
         {
             ViewState["__company__"] = "";
             ViewState["__Month__"] = "";
-            getCompanyInfo();
+        
 
             BindData();
         }
@@ -27,6 +27,7 @@ namespace SigmaERP.payroll.salary
         {
             string _for = Request.QueryString["for"].ToString();
             ViewState["__company__"] = Request.QueryString["company"].ToString();
+            getCompanyInfo(ViewState["__company__"].ToString());
             ViewState["__Month__"] = Request.QueryString["month"].ToString();
             gvBannFord.DataSource = Session["__SalarySheetBankFord__"];
             gvBannFord.DataBind();
@@ -135,9 +136,9 @@ namespace SigmaERP.payroll.salary
             // Required for exporting GridView to Excel
         }
 
-        private void getCompanyInfo()
+        private void getCompanyInfo(string companyId)
         {
-            string query = "select RegistrationID, EstablishmentID from hrd_companyinfo where companyID = '0004'";
+            string query = "select RegistrationID, EstablishmentID from hrd_companyinfo where companyID = '"+ companyId + "'";
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             ViewState["__registrationID__"] = dt.Rows[0]["RegistrationID"].ToString();
             ViewState["__establishmentID__"] = dt.Rows[0]["EstablishmentID"].ToString();
