@@ -61,7 +61,7 @@ namespace SigmaERP.payroll.salary
                 //ViewState["__ReadAction__"] = AccessPermission[0];
                 commonTask.LoadDepartmentByCompanyInListBox(ViewState["__CompanyId__"].ToString(), lstAll);
                 classes.Payroll.loadMonthIdByCompany(ddlSelectMonth, ViewState["__CompanyId__"].ToString());
-                commonTask.loadBankNameCompanyWise("0001",ddlBankSheet);
+                commonTask.loadBankNameCompanyWise(ViewState["__CompanyId__"].ToString(), ddlBankSheet);
                 //-----------------------------------------------------
 
 
