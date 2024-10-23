@@ -328,7 +328,6 @@
         async function validateUser() {
             var isValid = true;
 
-            // Patterns for validation (Alphabetic and Email patterns for future use)
             let alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
             let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
