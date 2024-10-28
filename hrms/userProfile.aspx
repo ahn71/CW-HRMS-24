@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userProfile.aspx.cs" Inherits="SigmaERP.hrms.userProfile" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
-            .table td:first-child {
+    .table td:first-child {
         width: 30%; /* Adjust this percentage as needed */
     }
     .table td:last-child {

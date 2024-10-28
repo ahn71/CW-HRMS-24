@@ -317,7 +317,8 @@
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
-         var DataAccessLevel = 2;
+         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
 
@@ -327,7 +328,6 @@
         async function validateUser() {
             var isValid = true;
 
-            // Patterns for validation (Alphabetic and Email patterns for future use)
             let alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
             let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -672,14 +672,14 @@
             </div>
         `;
                  row.approvalStatus = row.approvalStatus === null
-                     ? '<span class="badge bg-onlyme">Pending</span>'
+                     ? '<span class="badge-leave bg-onlyme">Pending</span>'
                      : row.approvalStatus === 0
-                         ? '<span class="badge bg-warning">Processing</span>'
+                         ? '<span class="badge-leave bg-warning">Processing</span>'
                          : row.approvalStatus === 1
-                             ? '<span class="badge bg-success">Approve</span>'
+                             ? '<span class="badge-leave bg-success">Approve</span>'
                              : row.approvalStatus === 2
-                                 ? '<span class="badge bg-rejected">Reject</span>'
-                                 : '<span class="badge bg-secondary">NA</span>';
+                                 ? '<span class="badge-leave bg-rejected">Reject</span>'
+                                 : '<span class="badge-leave bg-secondary">NA</span>';
              });
 
              const columns = [

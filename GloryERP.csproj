@@ -1703,6 +1703,7 @@
     <Content Include="hrms\img\zip.png" />
     <Content Include="hrms\index.html" />
     <Content Include="hrms\Leave\leaveApplication.aspx" />
+    <Content Include="hrms\Leave\leaveApprove.aspx" />
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\modules.aspx" />
     <Content Include="hrms\style.css" />
@@ -3647,6 +3648,13 @@
     </Compile>
     <Compile Include="hrms\Leave\leaveApplication.aspx.designer.cs">
       <DependentUpon>leaveApplication.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveApprove.aspx.cs">
+      <DependentUpon>leaveApprove.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveApprove.aspx.designer.cs">
+      <DependentUpon>leaveApprove.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\modules.aspx.cs">
       <DependentUpon>modules.aspx</DependentUpon>

@@ -323,6 +323,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__UserEmailText__"] = userData.email;
                     Session["__UserImageLink__"] = userData.userImage;
                     Session["__RootUrl__"] = ApiConnector.RootUrl;
+                    Session["__UserDataAccessLevel__"] = userData.dataAccessLevel.ToString();
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;

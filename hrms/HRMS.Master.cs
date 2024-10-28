@@ -16,20 +16,20 @@ namespace SigmaERP.hrms
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-          
+
 
             if (!IsPostBack)
             {
                 try
                 {
                     //string url = "attendance/month-setup";
-                  
+
 
                     HttpCookie getCookies = Request.Cookies["userInfo"];
                     if (getCookies == null || getCookies.Value == "")
                     {
                         // Response.Redirect("~/ControlPanel/Login.aspx");
-                       // Response.Redirect("~/hrms/UI/auth/login.aspx");                        
+                        // Response.Redirect("~/hrms/UI/auth/login.aspx");                        
                         Response.RedirectToRoute(Routing.LoginRouteName);
                     }
                     else
@@ -50,7 +50,7 @@ namespace SigmaERP.hrms
                         Session["__LvEmpType__"] = getCookies["__LvEmpType__"].ToString();
                         Session["__IsCompliance__"] = getCookies["__IsCompliance__"].ToString();
                         Session["__UserNameText__"] = getCookies["__UserNameText__"].ToString();
-               
+
                         if (Session["__IsCompliance__"].ToString().Equals("True"))
                         {
                             try
@@ -96,9 +96,9 @@ namespace SigmaERP.hrms
                         }
 
 
-                      
+
                     }
-               
+
 
                 }
                 catch (Exception ex)

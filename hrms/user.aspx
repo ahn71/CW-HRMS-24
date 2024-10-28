@@ -626,7 +626,7 @@
              $('#filter-form-container').empty();
 
              let serialNumber = 1; // Initialize serial number
-             const defaultImage = 'user_img_default.jpg'; // Set the path to your default image here
+             const defaultImage = '/hrms/user_img_default.jpg'; // Set the path to your default image here
 
              data.forEach(row => {
                  row.serial = serialNumber++; // Assign serial number to each row
@@ -753,7 +753,7 @@
                 console.log('User name clicked for ID:', userId);
 
                 // Redirect to userProfile.aspx with userId as a query parameter
-                window.open(`userProfile.aspx?userId=${userId}`, '_blank');
+                window.open(`/hrms/profile?userId=${userId}`, '_blank');
             });
 
          }
@@ -1606,6 +1606,6 @@
     </style>
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
 
-    <script src="assets/theme_assets/js/apiHelper.js"></script>
+    <script src="/hrms/assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>
