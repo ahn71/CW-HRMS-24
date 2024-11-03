@@ -314,7 +314,8 @@
          var dptId = '<%=  Session["__DptId__"]%>';
          var dsgId = '<%=  Session["__DsgId__"]%>';
          var gId = '<%=  Session["__Gid__"]%>';
-         var sftId = '<%=  Session["__SftId__"]%>';
+        var sftId = '<%=  Session["__SftId__"]%>';
+
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';

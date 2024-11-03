@@ -1,5 +1,4 @@
 ﻿<%@ Page Title="Month Setup" Language="C#" MasterPageFile="~/attendance_nested.Master" AutoEventWireup="true" CodeBehind="monthly_setup.aspx.cs" Inherits="SigmaERP.attendance.monthly_setup" %>
-
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="../scripts/jquery-1.8.2.js"></script>
@@ -22,6 +21,13 @@
     <style>
         #ContentPlaceHolder1_MainContent_gvMonthSetup th {
             text-align:center;
+        }
+        .popup_submit {
+        background: #f5f5f5;
+        padding: 14px 0;
+        text-align: center;
+        position: sticky;
+        bottom: -5px;
         }
     </style>
 </asp:Content>
@@ -61,7 +67,7 @@
 
             <div class="main_box Mbox">
                 <div class="main_box_header MBoxheader">
-                    <h2>Month Setup</h2>
+                    <h2>Month Setup (Actual)</h2>
                 </div>
                 <div class="main_box_body Mbody">
                     <div class="main_box_content">
@@ -87,7 +93,7 @@
 
                                     <td>
 
-                                        <asp:TextBox ID="txtMonthName" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtMonthName" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                     
                                         <asp:CalendarExtender ID="txtMonthName_CalendarExtender" Format="MM-yyyy" runat="server" TargetControlID="txtMonthName">
                                         </asp:CalendarExtender>
@@ -102,7 +108,7 @@
                                     <td>:
                                     </td>
                                     <td>
-                                        <asp:TextBox ID="txtFromDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtFromDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
 
                                         <asp:CalendarExtender ID="txtFromDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtFromDate">
                                         </asp:CalendarExtender>
@@ -116,7 +122,7 @@
                                     </td>
                                     <td>
 
-                                        <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                        
                                         <asp:CalendarExtender ID="txtToDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtToDate">
                                         </asp:CalendarExtender>
@@ -132,7 +138,7 @@
                                     </td>
                                     <td>
 
-                                        <asp:TextBox ID="txtTotalNOofDay" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtTotalNOofDay" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" Enabled="false"></asp:TextBox>
                                         
                                     </td>
                                 </tr>
@@ -143,7 +149,7 @@
                                     </td>
                                     <td>
 
-                                        <asp:TextBox ID="txtTotalWeekend" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtTotalWeekend" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" Enabled="false"></asp:TextBox>
                                         
                                         
                                     </td>
@@ -155,7 +161,7 @@
                                     </td>
                                     <td>
 
-                                        <asp:TextBox ID="txtTotalHoliday" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtTotalHoliday" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" ></asp:TextBox>
                                         
                                     </td>
                                 </tr>
@@ -177,7 +183,7 @@
                                     </td>
                                     <td>
 
-                                        <asp:TextBox ID="txtExpectedPaymetnDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                        <asp:TextBox ID="txtExpectedPaymetnDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                        
                                         <asp:CalendarExtender ID="txtExpectedPaymetnDate_CalendarExtender" runat="server" TargetControlID="txtExpectedPaymetnDate" Format="dd-MM-yyyy">
                                         </asp:CalendarExtender>
@@ -291,7 +297,7 @@
                             DropShadow="True" PopupControlID="PopupWindow" TargetControlID="btnPopup" CancelControlID="btnCancel" PopupDragHandleControlID="divDrag" CacheDynamicResults="False" Enabled="True" >
                         </asp:ModalPopupExtender>
 
-                        <div style="border-radius: 5px;  border: 2px solid #086A99;border-top:0px; font-weight:bold; width: 380px;background:#ddd;padding:5px;" id="PopupWindow" >
+                        <div style="border-radius: 5px;  border: 2px solid #086A99;border-top:0px; font-weight:bold; height:350px; overflow-y:auto; background:#ddd;padding:5px;" id="PopupWindow" >
                             <div id="divDrag" class="boxFotter">
                                  <a ID="btnCancel" href="#"><img class="popup_close" src="../images/icon/cancel.png" alt="" style=" display:none" /></a>
                            <cnter> 
@@ -300,21 +306,25 @@
                                 
                              </div>
 
-                            <asp:Panel ID="Panel1" runat="server" BackColor="WhiteSmoke">
+                            <asp:Panel ID="Panel1" runat="server" BackColor="WhiteSmoke" >
 
-                             <asp:GridView runat="server" ID="gvWeekendDate" AutoGenerateColumns="false"  HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" Width="220px">
+                             <asp:GridView runat="server" ID="gvWeekendDate" AutoGenerateColumns="false"  HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" >
                                  <Columns>
-                                     <asp:BoundField HeaderText="Date" DataField="WDate" HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" ItemStyle-Width="100px" />
-                                     <asp:TemplateField AccessibleHeaderText="Choose" HeaderText="Chosen" ItemStyle-Width="150px"  ItemStyle-HorizontalAlign="center">
+                                     <asp:BoundField HeaderText="Date" DataField="WDate" HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" />
+                                     <asp:BoundField HeaderText="Day" DataField="WDay" HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White"  />
+                                     <asp:TemplateField AccessibleHeaderText="Choose" HeaderText="Chosen"  ItemStyle-HorizontalAlign="center">
                                          <ItemTemplate  >
-                                             <asp:CheckBox ID="SelectCheckBox" runat="server" ItemStyle-Width="60px" Checked="true" />
+                                             <asp:CheckBox ID="SelectCheckBox" runat="server"  Checked="false" />
                                            
 
                                          </ItemTemplate>
                                      </asp:TemplateField>
                                  </Columns>
                              </asp:GridView><br />
-                                <asp:Button ID="btnSubmit" Width="80px" Text="OK" runat="server" OnClick="btnSubmit_Click" /><br />
+                                <div class="popup_submit">
+                                    <asp:Button ID="btnSubmit" Width="80px" Text="OK" runat="server" OnClick="btnSubmit_Click" />
+                                </div>
+                                <br />
                            </asp:Panel>
                           
 

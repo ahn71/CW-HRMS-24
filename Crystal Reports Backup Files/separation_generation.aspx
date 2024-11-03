@@ -1,5 +1,4 @@
 ﻿<%@ Page Title="Separation Generation" Language="C#" MasterPageFile="~/payroll_nested.Master" AutoEventWireup="true" CodeBehind="separation_generation.aspx.cs" Inherits="SigmaERP.payroll.separation_generation" %>
-
 <%@ Register Assembly="ComplexScriptingWebControl" Namespace="ComplexScriptingWebControl" TagPrefix="cc1" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -20,8 +19,8 @@
                        <li> <a class="seperator" href="#"></a>/</li>
                        <li> <a href="/payroll_default.aspx">Payroll</a></li>   
                        <li> <a class="seperator" href="#"></a>/</li>                  
-                        <li> <a href="/payroll/salary_index.aspx">Salary</a></li>
-                        <li> <a class="seperator" href="#"></a>/</li>
+                       <li> <a href="/payroll/salary_index.aspx">Salary</a></li>
+                       <li> <a class="seperator" href="#"></a>/</li>
                        <li> <a href="#" class="ds_negevation_inactive Pactive">Separation Generation</a></li>
                    </ul>               
              </div>          
@@ -29,7 +28,7 @@
        </div>
       <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Separation Generation</h2>
+            <h2>Separation Generation (Actual)</h2>
         </div>
     	<div class="main_box_body Pbody">
             <div class="main_box_content">
@@ -66,6 +65,16 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td></td>   
+                                        <td>
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbTiffinBill" Text="Tiffin Bill" Checked="true" />
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbNightBill" Text="Night Bill" Checked="true" />
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbHolidayAllow" Text="Holiday Allow. " Checked="true" />
+                                        </td>                                    
+                                        
+
+                                    </tr>
+                                <tr>
                                     <td>
                                         Card No
                                     </td>
@@ -77,6 +86,23 @@
                                         <asp:TextBox ID="txtEmpCardNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" PLaceHolder="Type or Select Card No" Enabled="False" EnableTheming="True"></asp:TextBox>
                                     </td>
                                 </tr>
+                                  <tr>
+                                        <td>
+                                            Excepted Card No
+                                        </td>
+                                        <td>
+                                           <asp:TextBox ID="txtExceptedEmpCardNo"  ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" PLaceHolder="990001,990002,990003,......n" autocomplete="off"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            
+                                        </td>
+                                        <td>
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbSpecialGrossPer" Text="Special Gross (%)" Checked="false" />
+                                       <asp:TextBox runat="server" ID="txtSpecialGrossPer" placeholder="%" CssClass="form-control text_box_width" Text="60"></asp:TextBox>
+                                        </td>
+                                    </tr>
                                  <tr>
                                         <td>
                                            
@@ -90,7 +116,7 @@
                     </ContentTemplate>
                 </asp:UpdatePanel>
                 <div class="payroll_generation_button">                  
-                    <asp:Button ID="btnGeneration" CssClass="Pbutton" runat="server"  OnClick="btnGeneration_Click"  Text="Generation" />
+                    <asp:Button ID="btnGeneration" CssClass="Pbutton" runat="server" OnClientClick="return processing();"  OnClick="btnGeneration_Click"  Text="Generation" />
                <%--      <input  type="button" class="Pbutton" id="generate" value="Generation" Visible="false"/>--%>
                     <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/payroll_default.aspx" CssClass="Pbutton" />                   
                  </div>
@@ -133,6 +159,7 @@
         };
 
           $(document).ready(function () {
+              
               load();
             
             //Progressbar initialization
@@ -172,7 +199,7 @@
               $("#ddlEmpCardNo").select2();              
           }
 
-
+     
         function InputValidationBasket() {
             try {
                 if ($('#ddlMonthID').val().trim().length <= 1) {
@@ -226,15 +253,7 @@
             catch (exception)
             { }
         }
-        function processing() {
-            var checked_radio = $("[id*=rbGenaratingType] input:checked");
-
-            if (checked_radio.val() == 0) {
-                if (validation() == false) return false;
-            }
-            else {
-                if (indivisualvalidation() == false) return false;
-            }
+        function processing() {         
             $('#imgLoading').show();
             return true;
         }
@@ -251,11 +270,11 @@
             }, 10000);
         }
         function ProcessingEnd(total) {
-            showMessage("success->Successfully separation generated of " + total + "");
+            showMessage("Successfully separation generated of " + total + "","success");
             $('#imgLoading').hide();
         }
         function ProcessingEror(total) {
-            showMessage("error->" + total + "");
+            showMessage("Unable to separation generate " + total + "","error");
             $('#imgLoading').hide();
         }
 

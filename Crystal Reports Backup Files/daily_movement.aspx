@@ -94,7 +94,7 @@
                             </td>
                             <td>:</td>
                             <td>
-                                <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                 <asp:CalendarExtender
                                     ID="TextBoxDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtDate">
                                 </asp:CalendarExtender>
@@ -106,10 +106,12 @@
                             <td>
                                 <asp:RadioButtonList class="rb" ID="rblAttStatus" runat="server" RepeatDirection="Horizontal">
                                     <asp:ListItem Value="All" Selected="True">All</asp:ListItem>
-                                    <asp:ListItem Value="P">Pesent</asp:ListItem>
-                                    <asp:ListItem Value="L">Late</asp:ListItem>
-                                    <asp:ListItem Value="A">Absent</asp:ListItem>
-                                    <asp:ListItem Value="Lv">Leave</asp:ListItem>
+                                    <asp:ListItem Value="P">P</asp:ListItem>
+                                    <asp:ListItem Value="L">L</asp:ListItem>
+                                    <asp:ListItem Value="A">A</asp:ListItem>
+                                    <asp:ListItem Value="Lv">Lv</asp:ListItem>
+                                    <asp:ListItem Value="not_payable">Not Payable</asp:ListItem>
+                                    <asp:ListItem Value="WH">W&H</asp:ListItem>
                                 </asp:RadioButtonList>
                             </td>
                             <td>Card No
@@ -159,6 +161,7 @@
                                 <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  style="height:270px !important"  ClientIDMode="Static" runat="server"></asp:ListBox>
                             </div>
                 </div>
+                        
                         <div class="job_card_button_area">
                             <div>
                                 <center>

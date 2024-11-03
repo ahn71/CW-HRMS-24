@@ -82,12 +82,13 @@
                                 <td>&nbsp;:&nbsp;</td>   
                                <td>
                                <table>                                 
-                                      <td>                                 
-                                        <asp:TextBox ID="txtCardNo"  runat="server" PlaceHolder=" For Individual " ClientIDMode="Static" CssClass="form-control text_box_width_import" Enabled="False" ></asp:TextBox>
+                                      <tr>
+                                          <td>
+                                              <asp:TextBox ID="txtCardNo" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" Enabled="False" PlaceHolder=" For Individual "></asp:TextBox>
                                           </td>
-                                   <td>                                  
-                                        &nbsp;<asp:LinkButton ID="lnkNew" runat="server" Text="New" OnClientClick="InputBoxNew()"></asp:LinkButton>                              
-                                    </td>
+                                          <td>&nbsp;<asp:LinkButton ID="lnkNew" runat="server" OnClientClick="InputBoxNew()" Text="New"></asp:LinkButton>
+                                          </td>
+                                      </tr>
                                </table>
                             </td>
                                
@@ -95,28 +96,31 @@
                           
                            
                        </tr>
-                         <br />
-                           <tr>
-                                <td>Report Type </td>
-                                <td>&nbsp;:&nbsp;</td>
-                           <td colspan="5">
-                               <asp:RadioButtonList ID="rblReportType" runat="server" RepeatDirection="Horizontal" Font-Bold="true" AutoPostBack="True"  >
-                                   <asp:ListItem Text="Log in-out" Value="0" Selected="True"></asp:ListItem>
-                                   <asp:ListItem Text="Attendance status" Value="1"></asp:ListItem>
-                                   <asp:ListItem Text="Attendance summary" Value="2"></asp:ListItem>
-                                   <asp:ListItem Text="Job Card" Value="3"></asp:ListItem>
-                                   <asp:ListItem Text="Only W & H" Value="4"></asp:ListItem>
-                               </asp:RadioButtonList>
-                           </td>
-                            </tr>
-                                   <tr> 
-                                       <td>Employee Type</td> 
-                                        <td>&nbsp;:&nbsp;</td>                                                     
-                            <td colspan="5" >
-                                <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal" >
-                                </asp:RadioButtonList>
-                            </td>
-                         </tr> 
+                                <caption>
+                                    <br />
+                                    <tr>
+                                        <td>Report Type </td>
+                                        <td>&nbsp;:&nbsp;</td>
+                                        <td colspan="5">
+                                            <asp:RadioButtonList ID="rblReportType" runat="server" AutoPostBack="True" Font-Bold="true" RepeatDirection="Horizontal">
+                                                <asp:ListItem Selected="True" Text="Log in-out" Value="0"></asp:ListItem>
+                                                <asp:ListItem Text="Attendance status" Value="1"></asp:ListItem>
+                                                <asp:ListItem Text="Attendance summary" Value="2"></asp:ListItem>
+                                                <asp:ListItem Text="Job Card" Value="3"></asp:ListItem>
+                                                <asp:ListItem Text="Job Card New" Value="5"></asp:ListItem>
+                                                <asp:ListItem Text="Only W &amp; H" Value="4"></asp:ListItem>
+                                            </asp:RadioButtonList>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Employee Type</td>
+                                        <td>&nbsp;:&nbsp;</td>
+                                        <td colspan="5">
+                                            <asp:RadioButtonList ID="rblEmpType" runat="server" AutoPostBack="true" RepeatDirection="Horizontal">
+                                            </asp:RadioButtonList>
+                                        </td>
+                                    </tr>
+                                </caption>
                    </table>
                           </center>
                         </div>

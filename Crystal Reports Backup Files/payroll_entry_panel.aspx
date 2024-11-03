@@ -40,7 +40,7 @@
                     <li><a class="seperator" href="#">/</a></li>
                     <li>  <a href="/payroll/salary_index.aspx">Salary</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                     <li> <a href="#" class="ds_negevation_inactive Pactive">Salary Entry Panel</a></li>
+                     <li> <a href="#" class="ds_negevation_inactive Pactive">Salary Entry Panel (Actual)</a></li>
                 </ul>
             </div>
         </div>
@@ -65,7 +65,7 @@
    
    <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Salary Entry Panel</h2>
+            <h2>Salary Entry Panel (Actual)</h2>
         </div>
     	<div class="main_box_body Pbody">
             <div class="main_box_content">
@@ -180,17 +180,18 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>PF Member
-                                                </td>
+                                                
+                                                
+                                                <td>Over Time</td>
                                                 <td>:
                                                 </td>
                                                 <td>
                                                     <table>
                                                         <tr>
-                                                            <td><asp:CheckBox ID="chkPFMember" runat="server" Checked="true" ClientIDMode="Static" AutoPostBack="true" OnCheckedChanged="chkPFMember_CheckedChanged" /></td>
+                                                            <td runat="server" visible="false"><asp:CheckBox ID="chkPFMember" runat="server" Checked="true" ClientIDMode="Static" AutoPostBack="true" OnCheckedChanged="chkPFMember_CheckedChanged" /></td>
                                                             
-                                                            <td style="padding-left:61px;">Over Time</td>
-                                                            <td>:</td>
+                                                            
+                                                          
                                                             <td> 
                                                                 <asp:RadioButtonList ID="rblOverTime" runat="server" RepeatColumns="2" AutoPostBack="True" OnSelectedIndexChanged="chkPaymentType_SelectedIndexChanged">
                                                                     <asp:ListItem Value="1" Selected="True">Yes</asp:ListItem>
@@ -198,6 +199,7 @@
                                                                 </asp:RadioButtonList>
 
                                                             </td>
+                                                            <td><asp:CheckBox runat="server" ID="ckbSingleRateOT" ClientIDMode="Static" Text="Single Rate?" /></td>
                                                         </tr>
                                                     </table>
                                                     
@@ -358,7 +360,7 @@
                                                 </td>
                                             </tr>
 
-                                            <tr runat="server" id="trPFAmount">
+                                            <tr runat="server" id="trPFAmount" visible="false">
                                                 <td>PF Amount<asp:Label ID="lblPF" Font-Bold="true" ClientIDMode="Static" Text="" runat="server">0</asp:Label>
                                                 </td>
                                                 <td>:
@@ -422,7 +424,7 @@
                                                 </td>
                                                 <td>
 
-                                                    <asp:TextBox ID="txtAttenBonus" Enabled="false" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtAttenBonus"  runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
 
                                                 </td>
                                             </tr>
@@ -449,6 +451,17 @@
                                                         <asp:ListItem Value="150">150</asp:ListItem>
                                                         <asp:ListItem Value="200">200</asp:ListItem>                                                       
                                                     </asp:DropDownList>
+
+                                                </td>
+                                            </tr>
+                                            <tr id="tr4" runat="server" visible="true">
+                                                <td>TDS
+                                                </td>
+                                                <td>:
+                                                </td>
+                                                <td>
+
+                                                    <asp:TextBox ID="txtTDS" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
 
                                                 </td>
                                             </tr>
@@ -576,7 +589,8 @@
                 var houseRent = 0;
                 var others = 0;
                 var pf = 0;
-
+                var stffAttBonus = 400;
+                var workerAttBonus = 200;
                
               
                 var salary_type = $('#<%=hdfSalaryType.ClientID%>').val().trim();
@@ -844,7 +858,7 @@
                         {
                             var BP = ($('#hdfBasic').val().trim().length < 0) ? 0 : $('#hdfBasic').val();
                             if ($('#hfEmpTypeId').val() == '1')
-                                basic = Math.round((parseFloat(GetGross) - parseFloat(mft)) / 1.4, 0);
+                                basic = Math.round((parseFloat(GetGross) - parseFloat(mft)) / 1.5, 0);
                             else
                                 basic = Math.round(parseFloat(GetGross) * parseFloat(BP) / 100, 0);
                           
@@ -885,7 +899,10 @@
                         //}
                         //else
                         //{
-                            $('#txtAttenBonus').val(0);
+                        if ($('#hfEmpTypeId').val() == '1')
+                            $('#txtAttenBonus').val(workerAttBonus);
+                        else
+                            $('#txtAttenBonus').val(stffAttBonus);
                         //}
                         //-------------------End Basic Allowance Part-----------------------------------------------------------------------------
 

@@ -25,7 +25,7 @@
     </asp:UpdatePanel>
    <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Bonus Sheet</h2>
+            <h2>Bonus Sheet (Actual)</h2>
         </div>
     	<div class="main_box_body Pbody">
             <div class="main_box_content">

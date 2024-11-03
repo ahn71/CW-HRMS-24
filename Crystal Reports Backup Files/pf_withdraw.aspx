@@ -81,18 +81,11 @@
                                <div class="row tbl-controlPanel">
                                 <div class="col-sm-4">Withdraw/Closing Date<span class="requerd1">*</span></p></div>
                                 <div class="col-sm-8">
-                                    <asp:TextBox ID="txtWithdrawDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" ></asp:TextBox>  
+                                    <asp:TextBox ID="txtWithdrawDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off" ></asp:TextBox>  
                                     <asp:CalendarExtender ID="CalendarExtender4" runat="server" Format="dd-MM-yyyy" TargetControlID="txtWithdrawDate">
                                     </asp:CalendarExtender>                              
                                 </div>
-                              </div> 
-                            
-                                                        
-                            
-                               
-                         
-
-                        </div>
+                              </div></div>
                     </div>                    
                 </div>      
                 <div class="button_area Rbutton_area">                                        
@@ -117,7 +110,7 @@
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">  
                            
         <ContentTemplate>                    
-                    <asp:GridView ID="gvPFWithdrawList" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="EmpId"   AllowPaging="True"  PageSize="25"  OnRowCommand="gvPFWithdrawList_RowCommand"  >
+                    <asp:GridView ID="gvPFWithdrawList" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="EmpId"   AllowPaging="True"  PageSize="25"  OnRowCommand="gvPFWithdrawList_RowCommand" OnRowDataBound="gvPFWithdrawList_RowDataBound" >
 <HeaderStyle BackColor="#FFA500" Font-Bold="True" Font-Size="14px" ForeColor="White" Height="28px"></HeaderStyle>
                         <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                        <RowStyle HorizontalAlign="Center" />
@@ -140,7 +133,13 @@
                              <asp:BoundField DataField="Profit" HeaderText="Profit"  ItemStyle-Height="28px">
                                  <ItemStyle Height="28px"></ItemStyle>
                              </asp:BoundField>                  
-                            <asp:TemplateField HeaderText="Delete" >
+                            <asp:TemplateField HeaderText="Preview"  >                               
+                                <ItemTemplate>
+                                     <asp:LinkButton ID="btnPreview" runat="server" CommandName="preview" CommandArgument="<%#((GridViewRow)Container).RowIndex%>" Text="Preview" Font-Bold="true" ForeColor="Blue"></asp:LinkButton>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                             
+                             <asp:TemplateField HeaderText="Delete" >
                                 <ItemTemplate>
                                      <asp:LinkButton ID="lnkDelete" runat="server" CommandName="deleterow" CommandArgument="<%#((GridViewRow)Container).RowIndex%>" Text="Delete" Font-Bold="true" ForeColor="Red" OnClientClick="return confirm('Are you sure to delete?');" ></asp:LinkButton>
                                 </ItemTemplate>
@@ -157,8 +156,7 @@
     </div>
      <script type="text/javascript">     
          $(document).ready(function () {
-             $("#ddlEmployeeList").select2();
-           
+            load();           
          });
 
          function load() {
@@ -172,7 +170,11 @@
 
              return true;
          }        
+         function goToNewTabandWindow(url) {
+             load();
+            window.open(url);
 
+        }
          
 
 

@@ -87,7 +87,7 @@
                                        
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr >
                                     <td>Report Type
                                     </td>
                                     <td>:
@@ -110,7 +110,7 @@
                                     <td class="tdWidth">
                                         <asp:DropDownList runat="server" ID="ddlEmpCardNo" CssClass="form-control select_width" ClientIDMode="Static"></asp:DropDownList></td>
                                 </tr>
-                                 <tr>
+                                 <tr  runat="server" visible="false">
                                         <td>Report View
                                         </td>
                                         <td>:

@@ -116,15 +116,20 @@
                                        <td class="auto-style1" runat="server" visible="false">
                                      <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged" ></asp:DropDownList>
                                  </td>
-
+                                   <td>
+                                      Department 
+                                      </td>
+                                       <td class="auto-style1">
+                                     <asp:DropDownList runat="server" ID="ddlDepartment" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlDepartment_SelectedIndexChanged" ></asp:DropDownList>
+                                 </td>
                                   <td>
-                                      Deparment 
+                                      Roster 
                                       </td>
                                        <td class="auto-style1">
                                      <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged" ClientIDMode="Static" ></asp:DropDownList>
                                  </td>     
                                   <td>
-                                      <asp:CheckBox ID="chkLoadAllShiftList" runat="server" AutoPostBack="true" Text="All Assigned Shift" OnCheckedChanged="chkLoadAllShiftList_CheckedChanged" />
+                                      <asp:CheckBox ID="chkLoadAllShiftList" runat="server" AutoPostBack="true" Text="All Assigned Roster" OnCheckedChanged="chkLoadAllShiftList_CheckedChanged" />
                                   </td>                                                                                    
                                        <td>  <asp:Button runat="server" ID="btnDelete" CssClass="css_btn Ptbut" Font-Bold="true" Text="Delete full roster" OnClientClick="return confirm('Do you want to delete ?')" Width="125px" Height="34px" OnClick="btnDelete_Click"  /></td>
                                   <td>

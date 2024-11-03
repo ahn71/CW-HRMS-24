@@ -242,6 +242,9 @@
                      </asp:GridView>
                          
                 </div>
+                        <div>
+                            <a runat="server" id="aRosterMissingLog" href="#" target="_blank">Roster Missing Log</a>
+                        </div>
                    </ContentTemplate>
                 </asp:UpdatePanel>
           <div id="divProgressPanel" runat="server">

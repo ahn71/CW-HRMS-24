@@ -1,10 +1,8 @@
 ﻿<%@ Page Title="Leave Approval Panel" Language="C#" MasterPageFile="~/leave_nested.master" AutoEventWireup="true" CodeBehind="for_approve_leave_list.aspx.cs" Inherits="SigmaERP.personnel.for_approve_list" %>
 <%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
-
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="../scripts/jquery-1.8.2.js"></script>
         <script type="text/javascript">
-
             var oldgridcolor;
             function SetMouseOver(element) {
                 oldgridcolor = element.style.backgroundColor;
@@ -17,7 +15,6 @@
                // element.style.textDecoration = 'none';
 
             }
-
 </script>
     <style>
         #ContentPlaceHolder1_MainContent_gvForApprovedList td, th {
@@ -72,11 +69,18 @@
                             <asp:AsyncPostBackTrigger ControlID="ddlCompanyList" />
                             <asp:AsyncPostBackTrigger ControlID="ddlShiftName" />
                             <asp:AsyncPostBackTrigger ControlID="ddlDepartmentList" />
-                            <asp:AsyncPostBackTrigger ControlID="ddlFindingType" />
-                            
+                            <asp:AsyncPostBackTrigger ControlID="ddlFindingType" />                            
                         </Triggers>
                         <ContentTemplate>
+                          
                       <h2 style="border-bottom:1px solid white">Leave Approval Panel</h2>
+                              <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal" OnSelectedIndexChanged="rblEmpType_SelectedIndexChanged" >
+                                </asp:RadioButtonList>
+                              <div class="pull-right">
+                                <asp:Button ID="btnForword"  Text="Forword" CommandName="Forword" runat="server" Width="80px" Height="30px" Font-Bold="true" ForeColor="Blue" OnClientClick="return confirm('Do you want to forword all selectd application ?')" CssClass="hand" OnClick="btnForword_Click" />
+                                <asp:Button ID="btnYes"  Text="Approve" CommandName="Yes" runat="server" Width="80px" Height="30px" Font-Bold="true" ForeColor="Green" OnClientClick="return confirm('Do you want to approve all selectd application?')" CssClass="hand" OnClick="btnYes_Click" />
+                                <asp:Button ID="btnNot"  Text="Reject" CommandName="No" Font-Bold="true" Height="30px" ForeColor="red" runat="server" OnClientClick="return confirm('Do you want to reject all selectd application ?')" Width="80px" OnClick="btnNot_Click" />
+                            </div>
                             <%--<h2 style="float: right; margin-top: -42px;">
                           <asp:LinkButton runat="server" ID="lnkRefresh" Text="Refresh" ForeColor="gray" OnClick="lnkRefresh_Click"></asp:LinkButton> |
                           <a style="color:gray" href="../leave_default.aspx">Close</a></h2>--%>
@@ -105,8 +109,7 @@
                                  <td>:</td>
                                  <td class="tdWidth">
                                      <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="96%" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged" ></asp:DropDownList>
-                                 </td>
-                                                    
+                                 </td>                                                   
                                  
                                   <td>
                                      Type
@@ -139,25 +142,23 @@
                   </div>
                 <asp:UpdatePanel runat="server" ID="up2">
                     <Triggers>
-                        
-
                     </Triggers>
                     <ContentTemplate>
-
-                     <div  style="width: 100%; background-color:#fff;margin: auto;">
-                        
-                     <asp:GridView HeaderStyle-BackColor="#27235C" ID="gvForApprovedList" runat="server" AutoGenerateColumns="false"  HeaderStyle-ForeColor="White" HeaderStyle-Font-Bold="true" HeaderStyle-Font-Size="14px" AllowPaging="true" PageSize="40" Width="100%" DataKeyNames="LACode" OnRowCommand="gvForApprovedList_RowCommand" OnRowDataBound="gvForApprovedList_RowDataBound">
+                     <div  style="width: 100%; background-color:#fff;margin: auto;">                        
+                     <asp:GridView HeaderStyle-BackColor="#27235C" ID="gvForApprovedList" runat="server" AutoGenerateColumns="false"  HeaderStyle-ForeColor="White" HeaderStyle-Font-Bold="true" HeaderStyle-Font-Size="14px" Width="100%" DataKeyNames="LACode,EmpTypeId,EmpID" OnRowCommand="gvForApprovedList_RowCommand" OnRowDataBound="gvForApprovedList_RowDataBound">
                          <PagerStyle CssClass="gridview" />
                           <Columns>
                              <asp:BoundField DataField="LACode" HeaderText="LACode" Visible="false" />    
                               <asp:BoundField DataField="EmpCardNo" HeaderText="Card No" Visible="true" ItemStyle-Width="200px" ItemStyle-Height="25px" HeaderStyle-HorizontalAlign="Left" HeaderStyle-Height="28px"  />
                              <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true" ItemStyle-Width="200px" ItemStyle-Height="25px" HeaderStyle-HorizontalAlign="Left" HeaderStyle-Height="28px"  />
-                             <asp:BoundField DataField="LeaveName" HeaderText="Leave" Visible="true" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="188px"  />
-                             
+                              <asp:BoundField DataField="DsgName" HeaderText="Designation" Visible="true" ItemStyle-Width="200px" ItemStyle-Height="25px" HeaderStyle-HorizontalAlign="Left" HeaderStyle-Height="28px"  />
+                              <asp:BoundField DataField="DptName" HeaderText="Department" Visible="true" ItemStyle-Width="200px" ItemStyle-Height="25px" HeaderStyle-HorizontalAlign="Left" HeaderStyle-Height="28px"  />
+                              <asp:BoundField DataField="EmpType" HeaderText="Emp.Type" Visible="true" ItemStyle-Width="200px" ItemStyle-Height="25px" HeaderStyle-HorizontalAlign="Left" HeaderStyle-Height="28px"  />
+                             <asp:BoundField DataField="LeaveName" HeaderText="Leave" Visible="true" HeaderStyle-HorizontalAlign="Left" ItemStyle-Width="188px"  />                             
                               <asp:TemplateField HeaderText="From Date" >
                                 <ItemTemplate >
                                     <center>
-                                    <asp:TextBox ID="txtFromDate"  runat="server" CssClass="form-control text_box_width" Enabled="false"   Width="83px" Text='<%#(Eval("FromDate").ToString()) %>' ></asp:TextBox>
+                                    <asp:TextBox ID="txtFromDate"  runat="server" CssClass="form-control text_box_width" Enabled="false"   Width="100px" Text='<%#(Eval("FromDate").ToString()) %>' ></asp:TextBox>
                                     <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                  Enabled="True"
                                                 TargetControlID="txtFromDate" ID="CExtApplicationDate">
@@ -176,7 +177,7 @@
                            <asp:TemplateField HeaderText="To Date" >
                                <ItemTemplate>
                                    <center>
-                                   <asp:TextBox ID="txtToDate"  runat="server" CssClass="form-control text_box_width"   Enabled="false"  Width="83px" Text='<%#(Eval("ToDate").ToString()) %>'  ></asp:TextBox>
+                                   <asp:TextBox ID="txtToDate"  runat="server" CssClass="form-control text_box_width"   Enabled="false"  Width="100px" Text='<%#(Eval("ToDate").ToString()) %>'  ></asp:TextBox>
 
                                    <asp:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="txtToDate" Format="dd-MM-yyyy"  >
 
@@ -195,7 +196,7 @@
                                                   
                                                </asp:TableCell>--%>
                                               <asp:TableCell>
-                                                   <asp:TextBox ID="txtTotalDays" runat="server" Width="36px" style="text-align:center" CssClass="form-control text_box_width" Enabled="false" Font-Bold="true" ForeColor="Red" Text='<%#(Eval("TotalDays").ToString()) %>'></asp:TextBox>
+                                                   <asp:TextBox ID="txtTotalDays" runat="server" Width="36px" style="text-align:center" CssClass="form-control" Enabled="false" Font-Bold="true" ForeColor="Red" Text='<%#(Eval("TotalDays").ToString()) %>'></asp:TextBox>
                                               </asp:TableCell>
                                           </asp:TableRow>
                                       </asp:Table>
@@ -211,6 +212,25 @@
                                       <asp:Button ID="btnEdit" runat="server" Width="55px" Height="30px" Font-Bold="true" ForeColor="blue" Text="Edit" CommandName="Alter" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
                                   </ItemTemplate>
                               </asp:TemplateField>--%>
+                              <asp:TemplateField>
+                                            <HeaderTemplate>
+                                                Attachment                                       
+                                            </HeaderTemplate>
+                                            <ItemTemplate>
+                                                <asp:CheckBox ID="ckbAttachment" runat="server" Enabled="false"  />
+                                            </ItemTemplate>
+                                     <ItemStyle HorizontalAlign="Center" />
+                                        </asp:TemplateField>
+
+                              <asp:TemplateField HeaderText="Chosen" HeaderStyle-Width="35px">
+                                    <HeaderTemplate>
+                                        <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbAll" Text="All" OnCheckedChanged="ckbAll_CheckedChanged" AutoPostBack="true" />
+                                    </HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbChosen"  AutoPostBack="true" OnCheckedChanged="ckbChosen_CheckedChanged" />                                     
+                                  </ItemTemplate>
+                              </asp:TemplateField> 
+
 
                                <asp:TemplateField HeaderText="Details" HeaderStyle-Width="35px">
                                   <ItemTemplate>

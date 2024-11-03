@@ -67,6 +67,56 @@
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 
+    <style>
+        .btn-sm {
+            width: 100px;
+            height: 32px !important;
+        }
+        .fa-black{
+            color:#000000;
+        }
+        .notifi-user-image {
+            height: 40px !important;
+            width: 40px !important;
+            border-radius: 50%;
+        }
+        .avatar-icon {
+            background: #01b81a;
+            height: 20px;
+            width: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            box-shadow: 1px 1px 2px 2px #;
+            top: 25px;
+            left: 20px;
+            /* border: 1px solid #ddd; */
+            color: #fff;
+            /* font-size: 19px; */
+        }
+
+        .btn-sm span {
+            margin: -13px;
+            padding-left: 14px;
+        }
+        .btn-sm {
+            padding: 0 6px;
+            width: 90px;
+            height: 30px !important;
+            /* margin: 0; */
+            text-align: center;
+            /* display: inline-block; */
+            /* display: flex; */
+            /* justify-content: center; */
+        }
+
+        .notifi-simbole-icon {
+            font-size: 25px;
+            color: #b200ff;
+            vertical-align: middle;
+        }
+    </style>
+
 </head>
 <body>
     <form id="form1" runat="server">
@@ -1195,23 +1245,84 @@
                                     <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1">1</span></h2>
                                     <ul>
                                         <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                                            <div class="nav-notification__type nav-notification__type--primary">
-                                                <img class="svg" src="/hrms/img/svg/inbox.svg" alt="inbox">
+                                            <div class="nav-notification__type nav-notification__type--primary position-relative">
+                                                <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                                              <div class="position-absolute avatar-icon">
+                                                  <span><i class="uil-calendar-slash"></i></span>
+                                              </div>
+
                                             </div>
+
                                             <div class="nav-notification__details">
-                                                <p>
-                                                    <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Notification</a> v     
-                                                    <span>Upcoming Features </span>
+                                                <p class="fa-black">
+                                                    <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                                                    (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to 
+                <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
                                                 </p>
-                                                <p>
-                                                    <span class="time-posted">comming soon</span>
-                                                </p>
+                                            </div>
+                                            <div class="d-inline-flex">
+                                                <button type="button" class="btn btn-success btn-sm  m-2">Approve <span><i class="uil-check"></i></span></button>
+                                                <button type="button" class="btn btn-info btn-sm   m-2">Forward <span><i class="uil-share"></i></span> </button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm  m-2">Decline <span><i class="uil-multiply"></i></span></button>
                                             </div>
                                         </li>
+                                        <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                                            <div class="nav-notification__type nav-notification__type--primary position-relative">
+                                                <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                                                <div class="position-absolute avatar-icon">
+                                                    <span><i class="uil-check"></i></span>
+                                                </div>
 
+                                            </div>
 
+                                            <div class="nav-notification__details">
+                                                <p class="fa-black">
+                                                    Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to 
+                                                    <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been approved by 
+                                                    <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Enjoy your time off!
+                                                </p>
+                                            </div>
 
+                                        </li>
+                                        <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                                            <div class="nav-notification__type nav-notification__type--primary position-relative">
+                                                <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                                                <div class="position-absolute avatar-icon">
+                                                    <span><i class="uil-multiply"></i></span>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="nav-notification__details">
+                                                <p class="fa-black">
+                                                    Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to 
+              
+                                                    <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been rejected by 
+              
+                                                    <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Please contact them for more details.
+                                                </p>
+                                            </div>
+
+                                        </li>
+                                         <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                                            <div class="nav-notification__type nav-notification__type--primary position-relative">
+                                                <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                                                <div class="position-absolute avatar-icon">
+                                                    <span><i class="uil-share"></i></span>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="nav-notification__details">
+                                                <p class="fa-black">Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to 
+               <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been forwarded for 
+               further approval by <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. You will be notified once a decision is made.
+                                                </p>
+                                            </div>
+
+                                        </li>
                                     </ul>
+
                                     <a href="" class="dropdown-wrapper__more">See all incoming activity</a>
                                 </div>
                             </div>
@@ -1560,20 +1671,54 @@
 
     <script>
 
+         var token = '<%= Session["__UserToken__"] %>';
+         //var rootUrl = 'https://localhost:7220';
+         var rootUrl = '<%= Session["__RootUrl__"]%>';
+         var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+         var userId = '<%= Session["__GetUserId__"]%>';
+         var loginempId = '<%= Session["__GetEmpId__"]%>';
+<%--         var dptId = '<%=  Session["__DptId__"]%>';
+         var dsgId = '<%=  Session["__DsgId__"]%>';
+         var gId = '<%=  Session["__Gid__"]%>';
+         var sftId = '<%=  Session["__SftId__"]%>';--%>
+         var getLeavesNotificationUrl = rootUrl + '/api/Leave/lvApplications';
+
+         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+
         $(document).ready(function () {
             var userImage = '<%= Session["__UserImageLink__"] %>';
 
             if (userImage) {
-                $('#UserProfileImageMenu').attr('src', userImage); // Set the src of the image to display it
-                $('#userProfileImage').attr('src', userImage); // Set the src of the image to display it
+                $('#UserProfileImageMenu').attr('src', userImage);
+                $('#userProfileImage').attr('src', userImage); 
             } else {
-                // If there's no user image, you can set a default or empty image
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');
             }
 
+            GetLeavesNotification();
         });
+
+        function GetLeavesNotification() {
+            ApiCallwithCompanyId(getLeavesNotificationUrl, token, CompanyID)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log(responseData);
+                        $('.footable-loader').show();
+                        
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        } 
+
     </script>
+    <script src="assets/theme_assets/js/apiHelper.js"></script>
 
 </body>
 </html>

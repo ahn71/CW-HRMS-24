@@ -39,33 +39,27 @@
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="ddlCompanyName" />
                         <asp:AsyncPostBackTrigger ControlID="chkForAllCompany" />
-                        <asp:AsyncPostBackTrigger ControlID="ddlShiftName" />
                         <asp:AsyncPostBackTrigger ControlID="lnkNew" />
                     </Triggers>
                     <ContentTemplate>
                 <div class="bonus_generation" style="width: 61%; margin: 0px auto;">
                 <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
                      <table runat="server" visible="true" id="tblGenerateType" class="division_table_leave1" style="margin:0px auto">                                                                      
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        <asp:CheckBox ID="chkForAllCompany" Visible="false" runat="server" Text="For All Companies" AutoPostBack="True" />
-                                    </td>
-                                    <td></td>
-                                    <td>                                        
-                                    </td>
-                            </tr>
                                 <tr id="trForCompanyList" runat="server">
                                 <td>Company</td>
                                 <td>
                                     <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="96%" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
                                     </asp:DropDownList>
                                 </td>
-                             <td>Shift</td>
-                           <td>
-                               <asp:DropDownList ID="ddlShiftName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="96%" AutoPostBack="True" OnSelectedIndexChanged="ddlShiftName_SelectedIndexChanged"  >
-                               </asp:DropDownList>
-                           </td>
+                              <td>Employee Type</td>
+                                    <td>
+                                        <asp:CheckBox ID="chkForAllCompany" Visible="false" runat="server" Text="For All Companies" AutoPostBack="True" />
+                                        <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal">
+                                </asp:RadioButtonList>
+                                    </td>
+                                    <td></td>
+                                    <td>                                        
+                                    </td>
                            </tr>
                
                        <tr>
@@ -83,6 +77,11 @@
                            </td>
                        </tr>
                    </table>
+                    <br />
+                     <center>
+                          <asp:CheckBox runat="server" ID="ckbIndividualDetails"  Text="Individual Details"/>
+                     </center>
+                   
                 </div>
                   <div id="workerlist" runat="server" class="id_card" style="background-color: white; width: 61%;">
                             <div class="id_card_left EilistL">

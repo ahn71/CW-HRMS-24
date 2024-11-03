@@ -30,7 +30,6 @@
         </div>
     	<div class="main_box_body Pbody">
             <div class="main_box_content">
-
                 <asp:UpdatePanel ID="up1" runat="server" UpdateMode="Conditional">
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="ddlCompanyName" />
@@ -48,6 +47,21 @@
                                     <td>
                                         <asp:CheckBox Visible="false" ID="chkForAllCompany" runat="server" Text="For All Companies" AutoPostBack="True" />
                                     </td>
+                                    
+                            </tr>
+                            <tr>
+                                    <td>Report Type</td>
+                                    <td>
+                                        <asp:RadioButtonList ID="rblReportType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged" >
+                                        <asp:ListItem Selected="True" Text="Sheet" Value="Sheet"></asp:ListItem>
+                                        <asp:ListItem Selected="False" Text="Summary" Value="Summary"></asp:ListItem>
+                                    </asp:RadioButtonList>
+                                    </td>
+                                <td></td>
+                                <td><asp:RadioButtonList ID="rblSheet" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged"   >
+                                        <asp:ListItem Selected="True" Text="Regular" Value="0"></asp:ListItem>
+                                        <asp:ListItem Selected="False" Text="Separation" Value="1"></asp:ListItem>
+                                    </asp:RadioButtonList></td>
                                     
                             </tr>
                                 <tr id="trForCompanyList" runat="server">

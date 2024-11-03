@@ -5,6 +5,12 @@
         #ContentPlaceHolder1_ContentPlaceHolder1_gvPFSettings th,td {
             text-align:center;
         }
+        #txtFormDateP {
+            text-align:center;
+        }
+         #txtToDateP {
+            text-align:center;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -140,6 +146,35 @@
                     <asp:Button ID="btnSave" OnClientClick="return validateInputs();"  ClientIDMode="Static" class="Pbutton" runat="server" Text="Save" OnClick="btnSave_Click" />
                     <asp:Button ID="btnClose" ClientIDMode="Static" CssClass="Pbutton" PostBackUrl="~/hrd_default.aspx"  runat="server" Text="Close" />
                 </div>
+            <div class="input_division_info">
+                    <div class="row">
+                         <div class="col-sm-12">
+                              <div class="row tbl-controlPanel">
+                                <div class="col-sm-2">Date Range</div>
+                                <div class="col-sm-4">
+                                     <asp:TextBox ID="txtFromDateP" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>  
+                                    <asp:CalendarExtender ID="CalendarExtender2" runat="server" Format="dd-MM-yyyy" TargetControlID="txtFromDateP">
+                                    </asp:CalendarExtender>   
+                                    </div>    
+                                   <div class="col-sm-1">To</div>   
+                                   <div class="col-sm-4">                      
+                        <asp:TextBox ID="txtToDateP" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" ></asp:TextBox>  
+                                    <asp:CalendarExtender ID="CalendarExtender3" runat="server" Format="dd-MM-yyyy" TargetControlID="txtToDateP">
+                                    </asp:CalendarExtender>
+                                     </div>
+                           <div class="col-sm-1"><asp:Button ID="btnPrint" ClientIDMode="Static" CssClass="Pbutton"  runat="server" Text="Preview" OnClick="btnPrint_Click"/></div>  
+                            
+                                
+                              </div>
+                       
+                        
+                     
+                     
+                    
+                </div>
+                        </div>
+                 
+                </div>
             </ContentTemplate>
                       </asp:UpdatePanel>
 
@@ -147,7 +182,7 @@
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">    
         <ContentTemplate>
                      <%--<div id="ShiftConfig" class="datatables_wrapper" runat="server" style="width:100%; height:auto; max-height:500px;overflow:auto;overflow-x:hidden;"></div>--%>
-                    <asp:GridView ID="gvPFSettings" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="CompanyId,FdrID,Type"   AllowPaging="True" OnRowCommand="gvPFSettings_RowCommand" OnRowDataBound="gvPFSettings_RowDataBound"  >
+                    <asp:GridView ID="gvPFSettings" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="CompanyId,FdrID,Type"    AllowPaging="True" OnRowCommand="gvPFSettings_RowCommand" OnRowDataBound="gvPFSettings_RowDataBound"  OnPageIndexChanging="gvPFSettings_PageIndexChanging" >
 <HeaderStyle BackColor="#FFA500" Font-Bold="True" Font-Size="14px" ForeColor="White" Height="28px"></HeaderStyle>
                         <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                        <RowStyle HorizontalAlign="Center" />
@@ -307,6 +342,10 @@
              $('#btnDelete').removeClass('css_btn');
              $('#btnDelete').attr('disabled', 'disabled');
              //$('#dlDivision option:selected').text('---Select---');
+         }
+         function goToNewTabandWindow(url) {
+             window.open(url);
+
          }
     </script>
 </asp:Content>

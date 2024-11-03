@@ -132,6 +132,18 @@
                             <asp:TextBox ID="txtDesignationShortName" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
                         </td>
                     </tr>
+                        <tr>
+                        <td>
+                            Order No<span class="requerd1">*</span>
+                        </td>
+                        <td>
+                            :
+                        </td>
+                        <td>
+
+                            <asp:TextBox ID="txtOrderNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                        </td>
+                    </tr>
                     <tr hidden="hidden">
                         <td>
                             Designation Code <span class="requerd1">*</span>
@@ -196,6 +208,9 @@
                              <ItemStyle Height="28px"  />
                              </asp:BoundField>                              
                              <asp:BoundField DataField="DsgShortName" HeaderText="Dsg.ShortName" Visible="true"  ItemStyle-Height="28px" >
+                             <ItemStyle Height="28px"  />
+                             </asp:BoundField>
+                             <asp:BoundField DataField="Ordering" HeaderText="Order No" Visible="true"  ItemStyle-Height="28px" >
                              <ItemStyle Height="28px"  />
                              </asp:BoundField>
                              <asp:BoundField DataField="DsgStatus" HeaderText="Dsg Status" Visible="true"  ItemStyle-Height="28px" >                         

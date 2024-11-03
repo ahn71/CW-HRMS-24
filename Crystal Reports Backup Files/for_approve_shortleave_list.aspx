@@ -48,7 +48,7 @@
                        <li>/</li>
                        <li> <a href="/leave_default.aspx">Leave</a></li>
                        <li>/</li>
-                       <li> <a href="#" class="ds_negevation_inactive Lactive">Leave Approval Panel</a></li>
+                       <li> <a href="#" class="ds_negevation_inactive Lactive">Leave Short Approval Panel</a></li>
                    </ul>               
              </div>
           
@@ -76,8 +76,14 @@
                             
                         </Triggers>
                         <ContentTemplate>
-                      <h2 style="border-bottom:1px solid white">Leave Approval Panel</h2>
-                            <%--<h2 style="float: right; margin-top: -42px;">
+                      <h2 class="" style="border-bottom:1px solid white">Leave Short Approval Panel</h2>   
+                            <div class="pull-right">
+                                <asp:Button ID="btnForword"  Text="Forword" CommandName="Forword" runat="server" Width="80px" Height="30px" Font-Bold="true" ForeColor="Blue" OnClientClick="return confirm('Do you want to forword all selectd application ?')" CssClass="hand" OnClick="btnForword_Click" />
+                                <asp:Button ID="btnYes"  Text="Approve" CommandName="Yes" runat="server" Width="80px" Height="30px" Font-Bold="true" ForeColor="Green" OnClientClick="return confirm('Do you want to approve all selectd application?')" CssClass="hand" OnClick="btnYes_Click" />
+                                <asp:Button ID="btnNot"  Text="Reject" CommandName="No" Font-Bold="true" Height="30px" ForeColor="red" runat="server" OnClientClick="return confirm('Do you want to reject all selectd application ?')" Width="80px" OnClick="btnNot_Click" />
+                            </div>
+                           
+                          <%--<h2 style="float: right; margin-top: -42px;">
                           <asp:LinkButton runat="server" ID="lnkRefresh" Text="Refresh" ForeColor="gray" OnClick="lnkRefresh_Click"></asp:LinkButton> |
                           <a style="color:gray" href="../leave_default.aspx">Close</a></h2>--%>
                     
@@ -156,14 +162,21 @@
                               <asp:BoundField DataField="ToTime" HeaderText="To Time"  ItemStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="Red" />
                               <asp:BoundField DataField="LvTime" HeaderText="Leave Time" ItemStyle-HorizontalAlign="Center"  />                             
                               <asp:BoundField DataField="Remarks" HeaderText="Remarks"    ItemStyle-HorizontalAlign="Center" />  
-
+                                <asp:TemplateField HeaderText="Chosen" HeaderStyle-Width="35px">
+                                    <HeaderTemplate>
+                                        <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbAll" Text="All" OnCheckedChanged="ckbAll_CheckedChanged" AutoPostBack="true" />
+                                    </HeaderTemplate>
+                                  <ItemTemplate>
+                                      <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbChosen"  AutoPostBack="true" OnCheckedChanged="ckbChosen_CheckedChanged" />                                     
+                                  </ItemTemplate>
+                              </asp:TemplateField> 
                                <asp:TemplateField HeaderText="Details" HeaderStyle-Width="35px">
                                   <ItemTemplate>
                                       <asp:Button ID="btnView" runat="server" CommandName="View" Font-Bold="true" Text="View" Width="55px" Height="30px" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
                                   </ItemTemplate>
                               </asp:TemplateField>  
 
-                              <asp:TemplateField HeaderText="Approval" HeaderStyle-Width="80px">
+                              <asp:TemplateField Visible="false" HeaderText="Approval" HeaderStyle-Width="80px">
                                   <ItemTemplate>
                                       <asp:Table runat="server" >
                                           <asp:TableRow>
@@ -185,8 +198,7 @@
                                           </asp:TableRow>
                                       </asp:Table>
                                      <%--  --%>
-                                     <%-- <asp:Label ID="btnSeperator"  Text="|" CommandName="No" runat="server"  />--%>
-                                       
+                                     <%-- <asp:Label ID="btnSeperator"  Text="|" CommandName="No" runat="server"  />--%>                                 
 
                                   </ItemTemplate>
                               </asp:TemplateField>

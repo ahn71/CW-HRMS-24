@@ -49,8 +49,7 @@
     <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
             <h2>Salary Increment</h2>
-        </div>   
-        
+        </div>       
          <asp:TabContainer ID="tc1" runat="server" CssClass="fancy fancy-green" AutoPostBack="true" >
                                 <asp:TabPanel runat="server"  TabIndex="0" ID="tab1" HeaderText="Salary Entry">
                                     
@@ -71,6 +70,7 @@
                     </Triggers>
                     <ContentTemplate>
                         <asp:HiddenField ID="hfSalaryType" ClientIDMode="Static" runat="server" />
+                        <asp:HiddenField ID="hfEmpTypeId" ClientIDMode="Static" runat="server" />
                             <asp:HiddenField ID="hfTotalHouseRent" Value="0" runat="server" ClientIDMode="Static" />                                        
                             <asp:HiddenField ID="hdfSalaryType" Value="Gross" runat="server" ClientIDMode="Static" />
                             <asp:HiddenField ID="hdfsaveupdatestatus" Value="Save" runat="server" ClientIDMode="Static" />
@@ -86,6 +86,7 @@
                             <asp:HiddenField ID="hfBasicStatus" Value="0" runat="server" ClientIDMode="Static" />                                        
                             <asp:HiddenField ID="hfMedicalStatus" Value="Gross" runat="server" ClientIDMode="Static" />
                             <asp:HiddenField ID="hfFoodStatus" Value="Save" runat="server" ClientIDMode="Static" />
+                          
                             <asp:HiddenField ID="hfConveyanceStatus" Value="0" runat="server" ClientIDMode="Static" />
                             <asp:HiddenField ID="hfTechnicalStatus" Value="0" runat="server" ClientIDMode="Static" />
                             <asp:HiddenField ID="hfHouseStatus" Value="0" runat="server" ClientIDMode="Static" />
@@ -192,7 +193,7 @@
 
                                                 </td>
                                             </tr>
-                                            <tr id="trFood" runat="server" visible="false" >
+                                            <tr id="trFood" runat="server"  >
                                                 <td>Food<asp:Label Visible="true" ID="lblFood" Font-Bold="true" ClientIDMode="Static" Text="" runat="server"></asp:Label>
                                                 </td>
                                                 <td>:
@@ -295,7 +296,7 @@
                                                     <asp:TextBox ID="txtNewMedical" runat="server" ClientIDMode="Static" onkeypress="return totalSalaryCalculation(event)" CssClass="form-control text_box_width_2" Enabled="False"></asp:TextBox>
                                                 </td>
                                             </tr>
-                                            <tr id="trNewFood" runat="server" visible="false">
+                                            <tr id="trNewFood" runat="server" >
                                                 <td>Food<asp:Label Visible="true" ID="lblfoodnew" Font-Bold="true" ClientIDMode="Static" Text="" runat="server"></asp:Label>
                                                 </td>
                                                 <td>:
@@ -763,6 +764,8 @@
         //------------- Salary Calculation by Nayem---------------
         function SalaryCalculation() {
             try {
+                //alert('adsf')
+
                 var basic = 0;
                 var medical = 0;
                 var food = 0;
@@ -941,9 +944,12 @@
 
                         //-------------------End Transport and Others Allowance Part---------------------------------------------------------------
                         if ($('#hdfPfMember').val() == 'True') {
+                            
                             var pfa = $('#hfPFStatus').val();
+                            
                             if (pfa == "0") // 0=%
                             {
+                                
                                 var PFP = ($('#hdfPF').val().trim().length < 0) ? 0 : $('#hdfPF').val();
                                 pf = Math.round(parseFloat(basic) * parseFloat(PFP) / 100, 0);
                                 $('#txtNewPF').val(pf)
@@ -969,10 +975,15 @@
                         
 
                         var ba = $('#hfBasicStatus').val();
+                        var mft = parseInt($('#hdfMedical').val()) + parseInt($('#hdfFoodAllowance').val()) + parseInt($('#hdfConveyance').val());
                         if (ba == "0") // 0=%
                         {
                             var BP = ($('#hdfBasic').val().trim().length < 0) ? 0 : $('#hdfBasic').val();
+                             if ($('#hfEmpTypeId').val() == '1')
+                                basic = Math.round((parseFloat(GetGross) - parseFloat(mft)) / 1.5, 0);
+                            else
                             basic = Math.round(parseFloat(GetGross) * parseFloat(BP) / 100, 0);
+
                             $('#txtNewBasic').val(basic);
                         }
                         else if (ba == "1") // 1=৳ 
@@ -997,7 +1008,7 @@
                         }
                         else if (ma == "1") // 1=৳ 
                         {
-                            medical = $('#txtPresentMedical').val();
+                            medical = $('#hdfMedical').val();
                         }
                         else {
                             medical = "0";
@@ -1009,38 +1020,60 @@
 
                         //-------------------End Medical Allowance Part-----------------------------------------------------------------------------
                      
-                        
+                       var fa = $('#hfFoodStatus').val();
+                        if (fa == "0") // 0=%
+                        {
+                            var FP = ($('#hdfFoodAllowance').val().trim().length < 0) ? 0 : $('#hdfFoodAllowance').val();
+                            food = Math.round(parseFloat(GetGross) * parseFloat(FP) / 100, 0);                           
+                        }
+                        else if (fa == "1") // 1=৳
+                        {
+                            food = $('#hdfFoodAllowance').val();                            
+                        }
+                        else {
+                            food = "0";                          
+                        }
+                        $('#txtNewFoodAllowance').val(food);
+
+                        //-------------------End Food Allowance Part-----------------------------------------------------------------------------
 
 
                         var ha = $('#hfHouseStatus').val();
                         if (ha == "0") // 0=%
                         {
                             var HP = ($('#hdfhouserent').val().trim().length < 0) ? 0 : $('#hdfhouserent').val();
-                            houseRent = Math.round(parseFloat(GetGross) * parseFloat(HP) / 100, 0);
-                            $('#txtNewHouseRent').val(houseRent);
+                            if ($('#hfEmpTypeId').val() == '1')
+                            {
+                           
+                                houseRent = parseFloat(basic) * parseFloat(HP) / 100;
+                               // alert(houseRent);
+                                houseRent = Math.round(parseFloat(basic) * parseFloat(HP) / 100, 0);
+                              //   alert(houseRent);
+                            }                                
+                            else
+                                houseRent = Math.round(parseFloat(GetGross) * parseFloat(HP) / 100, 0);
+                          
                         }
                         else if (ha == "1") // 1=৳ 
-                            houseRent = $('#txtNewHouseRent').val();
+                            houseRent = $('#hdfhouserent').val();
                         else {
-                            houseRent = "0";
-                            $('#txtNewHouseRent').val(houseRent);
+                            houseRent = "0";                           
                         }
-
+                          $('#txtNewHouseRent').val(houseRent);
                         //-------------------End House Allowance Part-----------------------------------------------------------------------------
                         var ca = $('#hfConveyanceStatus').val();
                         if (ca == "0") // 0=%
                         {
                             var CP = ($('#hdfConveyance').val().trim().length < 0) ? 0 : $('#hdfConveyance').val();
                             convayance = Math.round(parseFloat(GetGross) * parseFloat(CP) / 100, 0);
-                            $('#txtNewConveyance').val(convayance);
+                           
                         }
                         else if (ca == "1") // 1=৳ 
-                            convayance = $('#txtNewConveyance').val();
+                            convayance = $('#hdfConveyance').val();
                         else {
-                            convayance = "0";
-                            $('#txtNewConveyance').val(convayance);
+                            convayance = "0";                           
                         }
-
+                         $('#txtNewConveyance').val(convayance);
                         others = parseFloat(GetGross) - (parseFloat(basic) + parseFloat(houseRent) + parseFloat(medical) + parseFloat(convayance));
                         $('#txtNewTransportOthers').val(0);
 

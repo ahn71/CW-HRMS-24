@@ -40,6 +40,7 @@
                     <ContentTemplate>
                   <div class="bonus_generation" style="width: 61%; margin: 0px auto;">           
                     <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
+                      
                      <table runat="server" visible="true" id="tblGenerateType" class="bonus_generation_table super_admin_option">                                                                      
                       
                                 <tr id="trForCompanyList" runat="server">
@@ -63,7 +64,7 @@
                           <td runat="server" id="tdMonth">Month</td>
                       
                            <td>
-                                <asp:TextBox ID="txtFromMonth"   runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar"></asp:TextBox>
+                                <asp:TextBox ID="txtFromMonth"   runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar" autocomplete="off"></asp:TextBox>
                                             <asp:CalendarExtender ID="txtPartialAttDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtFromMonth">
                                             </asp:CalendarExtender>
                                 <%--<asp:TextBox ID="txtMonth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar"></asp:TextBox>
@@ -75,7 +76,7 @@
                             <td> to Month</td>
                       
                            <td>
-                               <asp:TextBox Enabled="false" ID="txtToMonth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar"></asp:TextBox>
+                               <asp:TextBox Enabled="false" ID="txtToMonth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width_import" PLaceHolder="Click For Calendar" autocomplete="off"></asp:TextBox>
                                             <asp:CalendarExtender ID="CalendarExtender1" runat="server" Format="dd-MM-yyyy" TargetControlID="txtToMonth">
                                             </asp:CalendarExtender>
                            </td>
@@ -96,9 +97,17 @@
                                      <asp:ListItem  Value="BalanceSummary" Text="PF Balance Summary"></asp:ListItem>                                   
 			                    </asp:RadioButtonList>
                            </td>                                           
-                       </tr>                     
+                       </tr> 
+                          <tr>
+                            <td>Employee Type</td>                           
+                            <td><asp:RadioButtonList ID="rblEmployeeType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"></asp:RadioButtonList>
+                            </td>
+                           </tr>
                    </table>
+                          
                 </div>
+                       
+                           <div runat="server" visible="false">
                         <asp:Panel id="pnl1" runat="server" >
                    <div id="divDepartmentList" runat="server" class="id_card" style="background-color: white; width: 61%;">
                                <div class="id_card_left EilistL">
@@ -133,6 +142,8 @@
                                 </div>
                 </div>
                             </asp:Panel>
+                               </div>
+                            
                 <div class="payroll_generation_button">
                     <asp:UpdateProgress ID="UpdateProgress1" runat="server">
                                     <ProgressTemplate>
