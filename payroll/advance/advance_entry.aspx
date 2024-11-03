@@ -85,7 +85,7 @@
             <div class="main_box_content" style="overflow: hidden">  
                 <div>
                     <div style="display:flex; justify-content:flex-end; align-items:center;" >
-                        <a style="display:inline-block; margin:10px 0; text-align:center" runat="server" id="btnAddNew"  href="advance_entry_final.aspx" class="Pbutton">Add New</a>
+                        <a style="display:inline-block; margin:10px 0; text-align:center" runat="server" id="btnAddNew"  href="/hrms/advance/add" class="Pbutton">Add New</a>
                     </div>
                      
 

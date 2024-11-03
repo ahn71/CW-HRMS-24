@@ -304,16 +304,20 @@
  </main>
 
     <script>
-         var token = '<%= Session["__UserToken__"] %>';
+        var token = '<%= Session["__UserToken__"] %>';
+
          //var rootUrl = 'https://localhost:7220';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
          var loginempId = '<%= Session["__GetEmpId__"]%>';
-         var dptId = '<%=  Session["__DptId__"]%>';
-         var dsgId = '<%=  Session["__DsgId__"]%>';
-         var gId = '<%=  Session["__Gid__"]%>';
-         var sftId = '<%=  Session["__SftId__"]%>';
+        var dptId = '<%= Session["__DptId__"] %>' || null;
+        var dsgId = '<%= Session["__DsgId__"] %>' || null;
+        var gId = '<%= Session["__Gid__"] %>' || null;
+        var sftId = '<%= Session["__SftId__"] %>' || null;
+         
+        
+        
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';

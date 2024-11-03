@@ -286,6 +286,7 @@ namespace SigmaERP.hrms.UI.auth
         {
             try
             {
+               
                 string username = txtUsername.Text.Trim();
                 string password = txtPassword.Text.Trim();
                 string companyId = ddlCompany.SelectedValue;
@@ -328,7 +329,7 @@ namespace SigmaERP.hrms.UI.auth
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
-
+           
 
                     // Set cookie values
                     HttpCookie setCookies = new HttpCookie("userInfo")
