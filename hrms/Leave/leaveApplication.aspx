@@ -25,7 +25,6 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
  <main class="main-content">
       <div class="Dashbord">
-          <!---git test-->
          <div class="crm mb-25">
             <div class="container-fulid">
                <div class="card card-Vertical card-default card-md mt-4 mb-4">
@@ -305,17 +304,20 @@
  </main>
 
     <script>
-         var token = '<%= Session["__UserToken__"] %>';
+        var token = '<%= Session["__UserToken__"] %>';
+
          //var rootUrl = 'https://localhost:7220';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
          var loginempId = '<%= Session["__GetEmpId__"]%>';
-         var dptId = '<%=  Session["__DptId__"]%>';
-         var dsgId = '<%=  Session["__DsgId__"]%>';
-         var gId = '<%=  Session["__Gid__"]%>';
-        var sftId = '<%=  Session["__SftId__"]%>';
-
+        var dptId = '<%= Session["__DptId__"] %>' || null;
+        var dsgId = '<%= Session["__DsgId__"] %>' || null;
+        var gId = '<%= Session["__Gid__"] %>' || null;
+        var sftId = '<%= Session["__SftId__"] %>' || null;
+         
+        
+        
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';

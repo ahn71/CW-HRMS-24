@@ -63,9 +63,9 @@
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
+                    <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll/advance/advance_index.aspx">Advance</a></li>
+                    <li><a href="<%= Session["__topMenuAdvance__"] %>">Advance</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Pactive">Current Advance List</a></li>
                 </ul>
@@ -85,7 +85,7 @@
             <div class="main_box_content" style="overflow: hidden">  
                 <div>
                     <div style="display:flex; justify-content:flex-end; align-items:center;" >
-                        <a style="display:inline-block; margin:10px 0; text-align:center" runat="server" id="btnAddNew"  href="advance_entry_final.aspx" class="Pbutton">Add New</a>
+                        <a style="display:inline-block; margin:10px 0; text-align:center" runat="server" id="btnAddNew"  href="/hrms/advance/add" class="Pbutton">Add New</a>
                     </div>
                      
 

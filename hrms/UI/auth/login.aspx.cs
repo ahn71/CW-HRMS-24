@@ -286,6 +286,7 @@ namespace SigmaERP.hrms.UI.auth
         {
             try
             {
+               
                 string username = txtUsername.Text.Trim();
                 string password = txtPassword.Text.Trim();
                 string companyId = ddlCompany.SelectedValue;
@@ -328,7 +329,7 @@ namespace SigmaERP.hrms.UI.auth
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
-
+           
 
                     // Set cookie values
                     HttpCookie setCookies = new HttpCookie("userInfo")
@@ -353,6 +354,11 @@ namespace SigmaERP.hrms.UI.auth
                     ViewState["__IsCompliance__"] = "0";
                     ViewState["__CShortName__"] = "";
                     ViewState["__CompanyId__"] = companyId.ToString();
+
+                    Session["__dptId__"] = userData.dptId.ToString();
+                    Session["__empId__"] = userData.empId.ToString();
+                    string jjj = userData.isGuestUser.ToString();
+                    Session["__isGuestUser__"] = userData.isGuestUser.ToString();
 
                     return true;
                 }
@@ -477,6 +483,7 @@ namespace SigmaERP.hrms.UI.auth
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+             cardMenuUrl();
             if (LogingInfo())
             {
                 if (ViewState["__IsCompliance__"].ToString().Equals("True"))
@@ -530,5 +537,20 @@ namespace SigmaERP.hrms.UI.auth
         //}
 
 
+
+        private void cardMenuUrl()
+        {
+            Session["__topMenu__"] = "/hrms/attendance";
+            Session["__topMenuForLeave__"] = "/hrms/leave-root";
+            Session["__topMenuForPersonnel__"] = "/hrms/personnel/employees";
+            Session["__topMenuforSalary__"] = "/hrms/salary";
+            Session["__topMenuAdvance__"] = "/hrms/advance";
+            Session["__topMenuPayroll__"] = "/hrms/payroll";
+            Session["__bonusURl__"] = "/hrms/bonus";
+            Session["__vattaxURl__"] = "/hrms/vat-tax-root";
+            Session["__topMenuPf__"] = "/hrms/provident-found/provident-found";
+            Session["__topMenuforSettings__"] = "/hrms/settings";
+            Session["__cardUrl__"] = "";
+        }
     }
 }

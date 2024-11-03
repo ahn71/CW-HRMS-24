@@ -25,7 +25,6 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
  <main class="main-content">
       <div class="Dashbord">
-          <!---git test-->
          <div class="crm mb-25">
             <div class="container-fulid">
                <div class="card card-Vertical card-default card-md mt-4 mb-4">

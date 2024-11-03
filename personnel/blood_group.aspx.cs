@@ -130,7 +130,7 @@ namespace SigmaERP.personnel
         {
             CompanyId = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
             string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and EmpTypeId=" + rblEmpType.SelectedValue + "";
-                
+            string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
             if (rdball.Checked == true)
             {
                 dt = new DataTable();
@@ -164,7 +164,7 @@ namespace SigmaERP.personnel
                     }
                 }
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN " + setSn + " order by DptCode,CustomOrdering", dt);              
+                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN " + setSn + " and "+ condition + "  order by DptCode,CustomOrdering", dt);              
                 Session["__EmployeeBloodGroup__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeBloodGroup');", true);  //Open New Tab for Sever side code
             }
@@ -185,7 +185,7 @@ namespace SigmaERP.personnel
                     return;
                 }
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN=" + ddlCardNo.SelectedValue + " and ActiveSalary='True'", dt);
+                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN=" + ddlCardNo.SelectedValue + " and ActiveSalary='True' and "+ condition + "", dt);
                 Session["__EmployeeBloodGroup__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeBloodGroup');", true);  //Open New Tab for Sever side code
             }
@@ -199,7 +199,7 @@ namespace SigmaERP.personnel
                     return;
                 }
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where CompanyId='" + CompanyId + "' and BloodGroup='" + dsBloodGroup.SelectedItem.Text.Trim().ToString() + "' " + EmpTypeID + " and ActiveSalary='True' order by DptCode,CustomOrdering", dt);
+                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where CompanyId='" + CompanyId + "' and BloodGroup='" + dsBloodGroup.SelectedItem.Text.Trim().ToString() + "' " + EmpTypeID + " and ActiveSalary='True' and  "+ condition + " order by DptCode,CustomOrdering", dt);
                 if (dt.Rows.Count < 1)
                 {
                     lblMessage.InnerText = "warning-> Any Employees Are Not Founded of (" + dsBloodGroup.SelectedItem.Text + ") Blood Group."; return;

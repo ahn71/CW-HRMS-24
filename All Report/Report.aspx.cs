@@ -205,13 +205,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("NightBill")) ShowDailyNightBill(query[0] + "-" + query[1] + "-" + query[2] + "-" + query[3]);
                 else if (query[0].Equals("HolidayBill")) ShowHoliDayBill(query[0] + "-" + query[1] + "-" + query[2] + "-" + query[3]);
                 else if (query[0].Equals("Monthlytransferredamount")) ShowMonthlytransferredamount(query[1], query[2]);
-
                 else if (query[0].Equals("ContactInfo")) ShowContactInfo();
-
-
-
-
-
 
                 else if (query[0].Equals("DailyAttStatus")) ShowDailyAttStatus(query[1], query[2] + "-" + query[3] + "-" + query[4], query[5] + "-" + query[6] + "-" + query[7]);
                 else if (query[0].Equals("PromotionInfo")) ShowPromotionInfo();

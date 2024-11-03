@@ -819,6 +819,7 @@ namespace SigmaERP.attendance
         {
             try
             {
+               
 
                 if (txtEmpCardNo.Text.Trim().Length<5) 
                 {
@@ -832,7 +833,12 @@ namespace SigmaERP.attendance
                     txtFromDate.Focus();
                     return;
                 }
-                   
+                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), ddlCompanyList.SelectedValue);
+                if (!hasEmpCard)
+                {
+                    lblMessage.InnerText = "warning-> You have no access for this EmpCard !";
+                    return;
+                }
                 string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim());
                 if (EmployeeInfos == null) lblMessage.InnerText = "error->Please type valid employee card no";
                 else

@@ -2064,6 +2064,7 @@
     <Content Include="payroll\pay_slip2.aspx" />
     <Content Include="payroll\salary\IncrementEntitleReport.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
+    <Content Include="payroll\salary\QatarBankfordReport.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
     <Content Include="payroll\salary\salary_sheet_excel.aspx" />
@@ -2273,7 +2274,6 @@
     <Content Include="All Report\Dataset\StaffIDCard.xsc">
       <DependentUpon>StaffIDCard.xsd</DependentUpon>
     </Content>
-    <Content Include="WebForm1.aspx" />
     <None Include="All Report\Dataset\StaffIDCard.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
@@ -5024,6 +5024,13 @@
     <Compile Include="payroll\salary\ot_payment.aspx.designer.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>
     </Compile>
+    <Compile Include="payroll\salary\QatarBankfordReport.aspx.cs">
+      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\QatarBankfordReport.aspx.designer.cs">
+      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
+    </Compile>
     <Compile Include="payroll\salary\salary_processing.aspx.cs">
       <DependentUpon>salary_processing.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5787,13 +5794,6 @@
     </Compile>
     <Compile Include="vat_tax\vat_tax_years.aspx.designer.cs">
       <DependentUpon>vat_tax_years.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

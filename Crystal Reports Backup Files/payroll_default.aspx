@@ -26,20 +26,20 @@
                  <div class="col-lg-2">
                  </div>
                  <div runat="server" id="divBonus" class="col-lg-2 col-md-3 col-sm-6">
-                     <a class="ds_Settings_Basic_Text " href="/payroll/bonus_index.aspx"> <i class="uil uil-money-bill iconStyle"></i><br /> <span>Bonus</span></a>
+                     <a class="ds_Settings_Basic_Text " href="/hrms/bonus"> <i class="uil uil-money-bill iconStyle"></i><br /> <span>Bonus</span></a>
                      
                  </div>
                  <div runat="server" id="divAdvance" class=" col-lg-2 col-md-3 col-sm-6">
-                        <a class="ds_Settings_Basic_Text " href="/payroll/advance/advance_index.aspx"><i class="fas fa-hand-holding-usd FsiconStyle "></i><br /><span>Advance</span></a>
+                        <a class="ds_Settings_Basic_Text " href="/hrms/advance"><i class="fas fa-hand-holding-usd FsiconStyle "></i><br /><span>Advance</span></a>
                  </div>
                  <div runat="server" id="divSalary" class=" col-lg-2 col-md-3 col-sm-6">
-                      <a class="ds_Settings_Basic_Text " href="/payroll/salary_index.aspx"><i class="fas fa-money-bill-wave FsiconStyle"></i><br />Salary</a>
+                      <a class="ds_Settings_Basic_Text " href="/hrms/salary"><i class="fas fa-money-bill-wave FsiconStyle"></i><br />Salary</a>
                  </div>
                  <div runat="server" id="divSignatureEntry" class=" col-lg-2 col-md-3 col-sm-6">
                       <a class="ds_Settings_Basic_Text " href="/hrd/Signatures.aspx" target="_blank"><i class="fas fa-hand-holding-usd FsiconStyle "></i><br /><span>Signature</span></a>
                  </div>
                  <div runat="server" id="divPF" class="col-lg-2 col-md-3 col-sm-6">
-                     <a class="ds_Settings_Basic_Text " href="/pf/pf_index.aspx">
+                     <a class="ds_Settings_Basic_Text " href="/hrms/provident-found">
                          <i class="uil uil-money-stack FsiconStyle"></i><br />
                          <span>Provident Fund</span></a>
 
@@ -51,7 +51,7 @@
                                   <div class="col-lg-2">
                  </div>
                  <div runat="server" id="divVat" class=" col-lg-2 col-md-3 col-sm-6">
-                     <a class="ds_Settings_Basic_Text " href="/vat_tax/vat_tax_index.aspx">
+                     <a class="ds_Settings_Basic_Text " href="/hrms/vat-tax-root">
                          <i class="fas fa-money-check-alt FsiconStyle"></i><br />
                          <span>Vat&Tax
                          </span></a>

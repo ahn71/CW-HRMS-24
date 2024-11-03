@@ -121,6 +121,11 @@ namespace SigmaERP.attendance
                     txtCardNo.Focus();                    
                     return;
                 }
+                bool condition = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyId);
+                if (!condition)
+                {
+                    return;
+                }
                 SqlCmd = "select EmpId,substring(EmpCardNo,8,6) as EmpCardNo,EmpName,DsgName,DptId,DptName,CompanyId,CompanyName,Address,InTime,OutTime,Remark,AssignedBy,Place,convert(varchar(10),Date,105) as Date from v_tblOutDuty where Status=1 and CompanyId='" + CompanyId + "' and Date>='" + commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim()) + "' and Date<='" + commonTask.ddMMyyyyTo_yyyyMMdd(txtToDate.Text.Trim()) + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' order by Date ";                
             }
             sqlDB.fillDataTable(SqlCmd, dt = new DataTable());

@@ -32,7 +32,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li> <a href="#">/</a></li>
-                       <li> <a href="/hrd_default.aspx">Settings</a></li>
+                         <li><a href="<%= Session["__topMenuforSettings__"] %>">Settings</a></li>
                        <li> <a href="#">/</a></li>
                        <li> <a href="#" class="ds_negevation_inactive Ractive">Company</a></li>
                    </ul>               
@@ -160,7 +160,21 @@
                                  </asp:DropDownList>
                                         <%--<asp:TextBox ID="txtDefaultCurrency" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" ></asp:TextBox>--%>
                                     </td>
-                                </tr>                               
+                                   
+                                      
+                                </tr>   
+                                <tr>
+                                    <td>Registration No</td>
+                                    <td>:</td>
+                                    <td class="mt-2"><asp:TextBox runat="server" ID="txtRegistrationInfos" CssClass="form-control text_box_width"></asp:TextBox></td>
+                                      
+                                </tr>
+                                <tr>
+                                      <td>Establishment No</td>
+                                      <td>:</td>
+                                    <td><asp:TextBox runat="server" ID="txtEstablesed" CssClass="form-control text_box_width"></asp:TextBox></td>
+
+                                </tr>
                             </table>                            
                         </div>
                              
@@ -274,7 +288,7 @@
                     </div>
 
                 <div  class="show_division_info">
-                    <asp:GridView ID="gvCompanyInfo" runat="server" AutoGenerateColumns="False" Width="100%"  AllowPaging="True" PageSize="4"  DataKeyNames="ID,CompanyId" OnPageIndexChanging="gvCompanyInfo_PageIndexChanging" OnRowCommand="gvCompanyInfo_RowCommand" OnRowDataBound="gvCompanyInfo_RowDataBound" OnRowDeleting="gvCompanyInfo_RowDeleting"  >
+                    <asp:GridView ID="gvCompanyInfo" runat="server" AutoGenerateColumns="False" Width="100%"  AllowPaging="True" PageSize="5"  DataKeyNames="ID,CompanyId" OnPageIndexChanging="gvCompanyInfo_PageIndexChanging" OnRowCommand="gvCompanyInfo_RowCommand" OnRowDataBound="gvCompanyInfo_RowDataBound" OnRowDeleting="gvCompanyInfo_RowDeleting"  >
                 <HeaderStyle BackColor="#0057AE" Height="28px" HorizontalAlign="Center" Font-Bold="True" Font-Size="14px" ForeColor="White"></HeaderStyle>
                          <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                           <Columns>
@@ -292,7 +306,7 @@
                              <%--<asp:ButtonField ButtonType="Button" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="btnForAlterInGV"    HeaderText="Edit" Text="Edit" CommandName="Alter" />--%>
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                         <HeaderTemplate>
-                                            Delete
+                                            Update
                                         </HeaderTemplate>
                                         <ItemTemplate>
                                             <asp:Button ID="btnAlter" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Edit" CommandName="Alter"

@@ -331,9 +331,24 @@ namespace SigmaERP.attendance
                 string[] Month = ddlMonthList.SelectedValue.Split('-');
                 string sql = "";
                 DataTable dt = new DataTable();
-                if (rblGenerateType.SelectedValue == "1")                    
+                if (rblGenerateType.SelectedValue == "1")
+                {
+                    bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), ddlCompanyName.SelectedValue);
+
+                    if (!hasEmpCard)
+                    {
+                        lblMessage.InnerText = "warning-> You have no permission on this Employee";
+                        txtCardNo.Focus();
+                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                        return;
+                    }
+
                     sql = " Select EmpId,SubString(EmpCardNo,8,15)+' ( '+EmpProximityNo+' )' as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime, 1 as OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays,PaybleDays From v_tblAttendanceRecord " +
-                        " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "'  order by  ATTDate";
+                     " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "'  order by  ATTDate";
+                }                  
+                 
+
+
                 else                    
                     sql = " Select EmpId,SubString(EmpCardNo,8,15)+' ( '+EmpProximityNo+' )' as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,1 as OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays,PaybleDays From v_tblAttendanceRecord " +
                         " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + "  Order By convert(int,DptId), CustomOrdering,Empid, ATTDate";

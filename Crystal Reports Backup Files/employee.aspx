@@ -35,9 +35,7 @@
             <ul>
                 <li><a href="/default.aspx">Dashboard</a></li>
                 <li> <a href="#">/</a></li>
-                <li> <a href="/personnel_defult.aspx">Personnel</a></li>
-                <li> <a href="#">/</a></li>
-                 <li> <a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                 <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                 <li> <a href="#">/</a></li>
                 <li> <a href="#" class="ds_negevation_inactive Ptactive">Employees Entry</a></li>
             </ul>               
@@ -547,6 +545,17 @@
                                             <asp:TextBox ID="txtMobileNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
                                         </td>
                                     </tr>
+                                    <tr>
+                                          <td>
+                                        EmployeeVisa No
+                                        </td>
+                                        <td>:</td>
+                                        <td>
+                                           <asp:TextBox runat="server" ID="txtEmpVisaNo" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                        </td>
+                                       
+                                    </tr>
+                                  
                                    
                                     <tr id="trel" runat="server" visible="false">
                                         <td>Earned Leave

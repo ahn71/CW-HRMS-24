@@ -430,7 +430,7 @@ namespace SigmaERP.classes
                 //_attCommon.DeleteTempRawData(ProcessingID);
             }
         }
-        public DataTable LoadProcessedAttendanceData(string CompanyId, string DepartmentId, string AttDate, bool ForAllEmployee, string EmpId,string EmpType)
+        public DataTable LoadProcessedAttendanceData(string CompanyId, string DepartmentId, string AttDate, bool ForAllEmployee, string EmpId,string EmpType,string dataAccesLevel)
         {
             try
             {
@@ -440,17 +440,27 @@ namespace SigmaERP.classes
                     query = "select Right(ecs.EmpCardNo,Len(ecs.EmpCardNo)-7)+' ('+ecs.EmpProximityNo+')' as EmpCardNo,ecs.EmpType,ecs.EmpDutyType,ISNULL( ecs.WeekendType,'Regular') as WeekendType,ecs.EmpName,ecs.DptName,ecs.DsgName, case when atd.ODID >0 then atd.ATTStatus+'(OD)' else atd.ATTStatus end as ATTStatus, " +
                    "   atd.InHour+':'+atd.InMin+':'+atd.InSec as Intime,atd.OutHour+':'+atd.OutMin+':'+atd.OutSec as Outtime,Format(ATTDate,'dd-MMM-yyyy') as ATTDate,atd.AttManual,case when sft.SftId is null then '' else sft.SftName +' [ '+ convert (varchar(8), SftStartTime)+' - '+convert (varchar(8),sft.SftEndTime)+' ]' end as sftinfo  from  tblAttendanceRecord as atd left join HRD_Shift sft on atd.SftId=sft.SftId  inner join " +
                    " v_Personnel_EmpCurrentStatus ecs on " +
-                   " atd.EmpId=ecs.EmpId and ecs.IsActive=1 AND atd.ATTDate='" + AttDate + "' and atd.CompanyId='" + CompanyId + "' AND  (ecs.EmpCardNo  Like '%"+ EmpId + "' or ecs.EmpAttCard='"+ EmpId + "')";
-                else if (DepartmentId.Equals("0"))
+                   " atd.EmpId=ecs.EmpId and ecs.IsActive=1 AND atd.ATTDate='" + AttDate + "' and atd.CompanyId='" + CompanyId + "' AND  (ecs.EmpCardNo  Like '%" + EmpId + "' or ecs.EmpAttCard='" + EmpId + "')";
+
+                else if (DepartmentId.Equals("0")) {
+                    string condition = "and atd.CompanyId='" + CompanyId + "'";
+                    if (dataAccesLevel=="4" || dataAccesLevel == "2")
+                    {
+                        condition += "and atd.CompanyId='" + CompanyId + "' and atd.DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ")";
+                    }
                     query = "select Right(ecs.EmpCardNo,Len(ecs.EmpCardNo)-7)+' ('+ecs.EmpProximityNo+')' as EmpCardNo,ecs.EmpType,ecs.EmpDutyType,ISNULL( ecs.WeekendType,'Regular') as WeekendType,ecs.EmpName,ecs.DptName,ecs.DsgName, case when atd.ODID >0 then atd.ATTStatus+'(OD)' else atd.ATTStatus end as ATTStatus, " +
-                        "  atd.InHour+':'+atd.InMin+':'+atd.InSec as Intime,atd.OutHour+':'+atd.OutMin+':'+atd.OutSec as Outtime,Format(ATTDate,'dd-MMM-yyyy') as ATTDate,atd.AttManual ,case when sft.SftId is null then '' else sft.SftName +' [ '+ convert (varchar(8), SftStartTime)+' - '+convert (varchar(8),sft.SftEndTime)+' ]' end as sftinfo  from  tblAttendanceRecord as atd left join HRD_Shift sft on atd.SftId=sft.SftId inner join " +
-                        " v_Personnel_EmpCurrentStatus ecs on " +
-                        " atd.EmpId=ecs.EmpId and ecs.IsActive=1 and atd.CompanyId='" + CompanyId + "' AND atd.ATTDate='" + AttDate + "'"+ EmpType + " order by ecs.DptId,ecs.CustomOrdering";
+                       "  atd.InHour+':'+atd.InMin+':'+atd.InSec as Intime,atd.OutHour+':'+atd.OutMin+':'+atd.OutSec as Outtime,Format(ATTDate,'dd-MMM-yyyy') as ATTDate,atd.AttManual ,case when sft.SftId is null then '' else sft.SftName +' [ '+ convert (varchar(8), SftStartTime)+' - '+convert (varchar(8),sft.SftEndTime)+' ]' end as sftinfo  from  tblAttendanceRecord as atd left join HRD_Shift sft on atd.SftId=sft.SftId inner join " +
+                       " v_Personnel_EmpCurrentStatus ecs on " +
+                       " atd.EmpId=ecs.EmpId and ecs.IsActive=1 "+ condition + "  AND atd.ATTDate='" + AttDate + "' " + EmpType + " order by ecs.DptId,ecs.CustomOrdering";
+                }
+                   
+
                 else
                     query = "select Right(ecs.EmpCardNo,Len(ecs.EmpCardNo)-7)+' ('+ecs.EmpProximityNo+')' as EmpCardNo,ecs.EmpType,ecs.EmpDutyType,ISNULL( ecs.WeekendType,'Regular') as WeekendType,ecs.EmpName,ecs.DptName,ecs.DsgName, case when atd.ODID >0 then atd.ATTStatus+'(OD)' else atd.ATTStatus end as ATTStatus, " +
                     "  atd.InHour+':'+atd.InMin+':'+atd.InSec as Intime,atd.OutHour+':'+atd.OutMin+':'+atd.OutSec as Outtime,Format(ATTDate,'dd-MMM-yyyy') as ATTDate,atd.AttManual ,case when sft.SftId is null then '' else sft.SftName +' [ '+ convert (varchar(8), SftStartTime)+' - '+convert (varchar(8),sft.SftEndTime)+' ]' end as sftinfo  from  tblAttendanceRecord as atd left join HRD_Shift sft on atd.SftId=sft.SftId inner join " +
                     " v_Personnel_EmpCurrentStatus ecs on " +
                     " atd.EmpId=ecs.EmpId and ecs.IsActive=1 AND atd.ATTDate='" + AttDate + "' and atd.CompanyId='" + CompanyId + "' AND atd.DptId='" + DepartmentId + "'" + EmpType + " order by ecs.CustomOrdering";
+
                 return CRUD.ExecuteReturnDataTable(query);
 
             }

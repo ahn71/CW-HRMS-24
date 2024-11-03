@@ -24,9 +24,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                       <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Roster Missing Panel</a></li>
                    </ul>

@@ -132,9 +132,17 @@ namespace SigmaERP.attendance
             if (txtCardNo.Text.Trim().Length == 0) sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "  ANd InHour<>'00' and OutHour='00'  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + "  order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ", dt = new DataTable());
             else
             {
+                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyList);
                 if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
                 {
                     lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
+                    txtCardNo.Focus();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+                if (!hasEmpCard)
+                {
+                    lblMessage.InnerText = "warning-> You have no permission on this Employee";
                     txtCardNo.Focus();
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;

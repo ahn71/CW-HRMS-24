@@ -23,6 +23,7 @@ namespace SigmaERP.payroll.advance
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                classes.commonTask.LoadBranch(ddlCompanyList);
                 btnRefundWaive.Visible = false;
                 pnlRefundWaive.Visible = false;
                 clearLoanDetailsDatatable();
@@ -75,6 +76,7 @@ namespace SigmaERP.payroll.advance
                         }
                         
                     }
+                   
                     classes.Employee.LoadEmpCardNoForPayroll_EmpID(ddlEmpCardNo, ViewState["__CompanyId__"].ToString(), EmpId);
                     ddlCompanyList.Enabled = false;
                     ddlEmpCardNo.SelectedValue = EmpId;
@@ -100,7 +102,7 @@ namespace SigmaERP.payroll.advance
 
                 if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
                 {
-                    classes.commonTask.LoadBranch(ddlCompanyList);
+                   
                     // classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
                     return;
                 }

@@ -10,9 +10,9 @@
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
+                    <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li> 
                     <li><a class="seperator" href="#">/</a></li>
-                    <li>  <a href="/pf/pf_index.aspx">Provident Fund</a></li>
+                      <li><a href="<%= Session["__topMenuPf__"] %>"> Provident Fund</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                      <li> <a href="#" class="ds_negevation_inactive Pactive">Provident Fund Reports</a></li>
                 </ul>

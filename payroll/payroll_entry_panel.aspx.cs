@@ -480,9 +480,14 @@ namespace SigmaERP.payroll
         {
             try
             {
-                SQLOperation.selectBySetCommandInDatatable("select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,EmpPresentSalary,CompanyId,"+
+                string condition = AccessControl.getDataAccessCondition(companyId,"0");
+                string query = "select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,EmpPresentSalary,CompanyId," +
                     " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,BasicSalary,MedicalAllownce,HouseRent ," +
-                    " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND CompanyId='"+companyId+"' order by SN ", dt = new DataTable(), sqlDB.connection);
+                    " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND " + condition + " order by SN";
+
+                SQLOperation.selectBySetCommandInDatatable("select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,EmpPresentSalary,CompanyId,"+
+                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,DptId,BasicSalary,MedicalAllownce,HouseRent ," +
+                    " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND "+ condition+ " order by SN ", dt = new DataTable(), sqlDB.connection);
                 gvSalaryList.DataSource = dt;
                 gvSalaryList.DataBind();
                 ViewState["__IsChanged__"] = "no";

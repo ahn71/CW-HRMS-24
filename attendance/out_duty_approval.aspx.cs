@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -66,9 +67,10 @@ namespace SigmaERP.attendance
             try
             {
                 string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000") || ddlCompanyList.SelectedValue.ToString().Equals("")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 dtForApprovedList = new DataTable();
                 string EmpType = rblEmpType.SelectedValue == "All" ? "" : " and od.EmpTypeId=" + rblEmpType.SelectedValue;
-                sqlCmd = "select substring(od.EmpCardNo,8,6) as EmpCardNo ,od.SL,od.EmpName,od.EmpId,od.DptName,od.DsgName, Format(od.Date,'dd-MM-yyyy') as Date ,od.Type,case when od.Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome from v_tblOutDuty as od inner join tblOutDutyAuthorityAccessControl ac on od.Processing=ac.AuthorityPosition and od.EmpId=ac.EmpID and od.IsActive=1 and ac.AuthorityID= '" + ViewState["__UserId__"].ToString() + "'  and od.Status=0  where od.CompanyId='" + CompanyId + "'" + EmpType;
+                sqlCmd = "select substring(od.EmpCardNo,8,6) as EmpCardNo ,od.SL,od.EmpName,od.EmpId,od.DptName,od.DsgName, Format(od.Date,'dd-MM-yyyy') as Date ,od.Type,case when od.Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome from v_tblOutDuty as od inner join tblOutDutyAuthorityAccessControl ac on od.Processing=ac.AuthorityPosition and od.EmpId=ac.EmpID and od.IsActive=1 and ac.AuthorityID= '" + ViewState["__UserId__"].ToString() + "'  and od.Status=0  where od." + condition + "" + EmpType;
                 sqlDB.fillDataTable(sqlCmd, dtForApprovedList = new DataTable());  
                 if (dtForApprovedList.Rows == null || dtForApprovedList.Rows.Count == 0)
                 {

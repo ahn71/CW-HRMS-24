@@ -229,8 +229,9 @@ namespace SigmaERP.personnel
                 //        setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "'";
                 //    }
                 //}
+                string ownempId = AccessControl.hasOwnEmpIdWithOtherDepartment();
                 dt = new DataTable();
-               string sqlCmd= "select DptId,DptName,DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from v_EmployeeDetails where DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " and IsActive=1 and EmpStatus in(1,8)" +
+               string sqlCmd= "select DptId,DptName,DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from v_EmployeeDetails where DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " "+ ownempId + " and IsActive=1 and EmpStatus in(1,8)" +
                     " Group by DptId,DptName,DsgId,DsgName";
                //sqlCmd = "Select * from v_ManPowerStatus where SN " + setSn + "";
                 sqlDB.fillDataTable(sqlCmd, dt);

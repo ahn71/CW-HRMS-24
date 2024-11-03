@@ -66,11 +66,13 @@ namespace SigmaERP.personnel
                     classes.Employee.LoadEmpStatus(ddlEmpStatus);
                    classes.commonTask.LoadShiftOnlyIndependent(ddlShift, ddlBranch.SelectedValue);
                     if (ViewState["__CardNoType__"].ToString().Equals("True"))
-                        classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
-                    else 
-                    { 
-                        AutoGenerateEmpId(); 
-                        classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
+                        loadDepartMentWithCode();
+                    //classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+                    else
+                    {
+                        AutoGenerateEmpId();
+                        loadDepartMents();
+                        //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
                     }
                     classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
                     FlatCustomOrdering();        
@@ -164,7 +166,9 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                ViewState["__dptID__"] = getCookies["__DptId__"].ToString();
                 classes.commonTask.LoadBranch(ddlBranch, ViewState["__CompanyId__"].ToString());
+
                 string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
                 ViewState["__ReadAction__"] = AccessPermission[0];
@@ -449,19 +453,23 @@ namespace SigmaERP.personnel
                     string EmpId = Request.QueryString["EmpId"];
                     
                         if (UpdateCardValidation() == false) return;                        
-                        if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true && updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
+                        if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true)
+                        {
+                        if (updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
                         {
                             if (txtMobileNo.Text.Trim().Length > 0)
                                 updateEmpAddress(EmpId);
                             AllClear();
                             if (EmpId == null)
                                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UpdateSuccess();", true);
-                            else 
+                            else
                             {
                                 Session["IsRedirect"] = "Yes";
-                                Response.Redirect("~/personnel/employee_list.aspx");                                 
+                                Response.Redirect("~/personnel/employee_list.aspx");
                             }
                         }
+                     }
+                        
                         else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableUpdate();", true);
                    
                 }
@@ -1898,13 +1906,14 @@ namespace SigmaERP.personnel
             {
                CompanyId=(ddlBranch.SelectedValue.Equals("0000"))?ViewState["__CompanyId__"].ToString():ddlBranch.SelectedValue;
                 LoadCompanyInfo();
-                
+
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
-                    classes.commonTask.SearchDepartmentWithCode(CompanyId, ddlDepartment);
+                    loadDepartMentWithCode();
+                //classes.commonTask.SearchDepartmentWithCode(CompanyId, ddlDepartment);
                 else
                 {
-
-                    classes.commonTask.SearchDepartment(CompanyId, ddlDepartment);
+                    loadDepartMents();
+                    //classes.commonTask.SearchDepartment(CompanyId, ddlDepartment);
                     AutoGenerateEmpId();
                 }
                 FlatCustomOrdering();
@@ -1945,7 +1954,7 @@ namespace SigmaERP.personnel
                     "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
                     " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
                     " Personnel_EmpPersonnal.Nationality, Personnel_EmpPersonnal.NationIDCardNo,Personnel_EmpPersonnal.NumberofChild," +
-                    "Personnel_EmpPersonnal.LastEdQualification,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
+                    "Personnel_EmpPersonnal.LastEdQualification,Personnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
                     "Left JOIN HRD_Qualification ON Personnel_EmpPersonnal.LastEdQualification=HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON " +
                     "Personnel_EmpPersonnal.RId = HRD_Religion.RId  where Personnel_EmpPersonnal.EmpId='" + EmpId + "'", dt = new DataTable());
                 if (dt.Rows.Count == 0)
@@ -1967,7 +1976,7 @@ namespace SigmaERP.personnel
                 dsNationIDCardNo.Text = dt.Rows[0]["NationIDCardNo"].ToString();
                 dsNoOfExperience.Text = dt.Rows[0]["NoOfExperience"].ToString();
                 dsPlaceOfBirth.Text = dt.Rows[0]["PlaceOfBirth"].ToString();
-
+                txtEmpVisaNo.Text = dt.Rows[0]["EmpVisaNo"].ToString();
                 dsSex.Text = dt.Rows[0]["Sex"].ToString();
                 dsWeight.Text = dt.Rows[0]["Weight"].ToString();
                 // btnSavePersonal.Text = "Update";
@@ -2020,7 +2029,7 @@ namespace SigmaERP.personnel
                 //DataTable dtEmp;
                 //sqlDB.fillDataTable("SELECT EmpId FROM v_HRD_Shift", dtEmp = new DataTable());
                 string EmpId = ViewState["__EmpId__"].ToString();
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo) ", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__EmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
@@ -2055,6 +2064,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@NoOfExperience", dsNoOfExperience.Text.Trim());
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text);
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2244,7 +2254,7 @@ namespace SigmaERP.personnel
                 {
                     EmpId = ddlEmpCardNo.SelectedValue;
                 }
-                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo where EmpId=@EmpId ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo where EmpId=@EmpId ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", EmpId);
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
                 cmd.Parameters.AddWithValue("@MotherName", dsMotherName.Text.Trim());
@@ -2286,6 +2296,7 @@ namespace SigmaERP.personnel
                 else cmd.Parameters.AddWithValue("@NoOfExperience", dsNoOfExperience.Text.Trim());
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text.Trim());
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2509,8 +2520,46 @@ namespace SigmaERP.personnel
             }
             return dt.Rows[0]["GID"].ToString();
         }
-        //---- End Data Import----
 
 
+        private void loadDepartMents()
+        {
+            if (Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+               
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+               
+            }
+
+        }
+
+        private void  loadDepartMentWithCode()
+        {
+            if (Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "3")
+            {
+
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+
+            }
+        }
+        //---- End Data Import----)
     }
 }

@@ -46,7 +46,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li>/</li>
-                       <li> <a href="/leave_default.aspx">Leave</a></li>
+                     <li><a href="<%= Session["__topMenuForLeave__"] %>">Leave</a></li>
                        <li>/</li>
                        <li> <a href="#" class="ds_negevation_inactive Lactive">Leave Short Approval Panel</a></li>
                    </ul>               

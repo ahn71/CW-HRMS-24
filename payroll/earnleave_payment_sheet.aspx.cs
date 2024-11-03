@@ -189,7 +189,11 @@ namespace SigmaERP.payroll
                 }
                 else
                 {
-
+                    bool hasEmpcard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), CompanyList);
+                    if (!hasEmpcard)
+                    {
+                        return;
+                    }
                     getSQLCMD = " SELECT DptId, CompanyId, DsgName,EmpId, EmpName, EmpPresentSalary, DptName, GrdName, CompanyName, Address,SUBSTRING(EmpCardNo,10,4) as EmpCardNo, PayableEarnLeaveDays, WithdrawableEarnLeaveDays, PayableAmount, OneDaySalary, convert(varchar(10), EmpJoiningDate,105) as EmpJoiningDate,preJan,pJan,pFeb,pMar,pApr,pMay,pJun,pJul,pAug,pSep,pOct,pNov,pDec,nDec,(preJan+pJan+pFeb+pMar+pApr+pMay+pJun+pJul+pAug+pSep+pOct+pNov+pDec) as TotalPresent,StampDeductions,round(TotalAmount,0) as TotalAmount,WithdrawableEarnLeavePer,TotalEarnLeaveDays,SepntEarnLeaveDays,EmpType,EmpTypeID,BasicSalary,ReserveEeanLeaveDays,GName,EmpProximityNo,CurrentYearEarnLeaveDays,PreviousYearEarnLeaveDays FROM v_Payroll_EarnLeavePaymentSheet " +
                           " where " +
                           " IsSeparated='" + isSeperated + "' and convert(varchar(10),StartDate,120)='" + startDate + "' and convert(varchar(10),EndDate,120)='" + endDate + "' and CompanyId  in(" + CompanyList + ") and  EmpCardNo Like'%"+txtEmpCardNo.Text.Trim()+"'    " +

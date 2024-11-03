@@ -80,13 +80,13 @@ namespace SigmaERP
                         if (page== "Signatures.aspx")
                             Response.Redirect("/default.aspx");
 
-                            if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()) != "Master Admin")
-                            {
-                                string[] pages = { "pf_index.aspx", "pf_settings.aspx", "pfentrypanel.aspx", "pf_ManualEntry.aspx", "pf_FDR.aspx", "pf_interestentry.aspx", "pf_YearlyExpense.aspx", "pf_interest_distribution.aspx", "pf_report.aspx", "pf_withdraw.aspx",
-                                    "advance_index.aspx", "advance_entry.aspx", "advance_entry_final.aspx", "advance_monthly_installment_setup.aspx","advance_info.aspx", "advance_list.aspx"};
-                                if (pages.Contains(page))
-                                    Response.Redirect("/default.aspx");
-                            }
+                            //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()) != "Master Admin")
+                            //{
+                            //    string[] pages = { "pf_index.aspx", "pf_settings.aspx", "pfentrypanel.aspx", "pf_ManualEntry.aspx", "pf_FDR.aspx", "pf_interestentry.aspx", "pf_YearlyExpense.aspx", "pf_interest_distribution.aspx", "pf_report.aspx", "pf_withdraw.aspx",
+                            //        "advance_index.aspx", "advance_entry.aspx", "advance_entry_final.aspx", "advance_monthly_installment_setup.aspx","advance_info.aspx", "advance_list.aspx"};
+                            //    if (pages.Contains(page))
+                            //        Response.Redirect("/default.aspx",true);
+                            //}
 
                         }
 

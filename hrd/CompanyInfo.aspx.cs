@@ -129,7 +129,7 @@ namespace SigmaERP.hrd
             try
             {
                 DataTable dt = new DataTable();
-                sqlDB.fillDataTable("Select ID, CompanyId,CompanyType, CompanyName,HeadOfficeId, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName from HRD_CompanyInfo where ID=" + ID + " ", dt);
+                sqlDB.fillDataTable("Select ID, CompanyId,CompanyType, CompanyName,HeadOfficeId, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName,RegistrationId,EstablishmentId from HRD_CompanyInfo where ID=" + ID + " ", dt);
                 if (dt.Rows.Count == 0)
                 {
                     if (upSave.Value == "0")
@@ -169,6 +169,8 @@ namespace SigmaERP.hrd
                 ddlCardNoDigit.SelectedValue = dt.Rows[0]["CardNoDigits"].ToString();
                 txtStartCardNo.Text = dt.Rows[0]["StartCardNo"].ToString();
                 ddlMachine.SelectedValue = dt.Rows[0]["AttMachineName"].ToString();
+                txtRegistrationInfos.Text = dt.Rows[0]["RegistrationId"].ToString();
+                txtEstablesed.Text = dt.Rows[0]["EstablishmentId"].ToString();
                 if (dt.Rows[0]["CardNoType"].ToString().Equals("True"))
                 {
                     rblCardNoType.SelectedValue = "1";
@@ -255,7 +257,7 @@ namespace SigmaERP.hrd
             {
                 System.Data.SqlTypes.SqlDateTime getDate;
                 getDate = SqlDateTime.Null;
-                SqlCommand cmd = new SqlCommand("Insert into  HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName)  values (@CompanyId,@CompanyType,@HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType,  @MultipleBranch, @Comments, @CompanyLogo,@StartCardNo,@Weekend,@ShortName,@CardNoType,@FlatCode,@CardNoDigits,@AttMachineName) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName,RegistrationId,EstablishmentId)  values (@CompanyId,@CompanyType,@HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType,  @MultipleBranch, @Comments, @CompanyLogo,@StartCardNo,@Weekend,@ShortName,@CardNoType,@FlatCode,@CardNoDigits,@AttMachineName,@RegistrationId,@EstablishmentId) ", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
                 cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
@@ -296,6 +298,11 @@ namespace SigmaERP.hrd
                 else cmd.Parameters.AddWithValue("@FlatCode", 0);
                 cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
                 cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
+                cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
+                cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
+
+
+
                 int result = (int)cmd.ExecuteNonQuery();
                 if (result > 0)
                 {
@@ -340,7 +347,7 @@ namespace SigmaERP.hrd
                 getDate = SqlDateTime.Null;
                 if (FileUpload1.HasFile == true)
                 {
-                    SqlCommand cmd = new SqlCommand(" update HRD_CompanyInfo  Set CompanyId=@CompanyId, CompanyType=@CompanyType, HeadOfficeId=@HeadOfficeId, CompanyName=@CompanyName, CompanyNameBangla=@CompanyNameBangla, Address=@Address, AddressBangla=@AddressBangla, Country=@Country, Telephone=@Telephone, Fax=@Fax, DefaultCurrency=@DefaultCurrency, BusinessType=@BusinessType, MultipleBranch=@MultipleBranch, Comments=@Comments, CompanyLogo=@CompanyLogo,StartCardNo=@StartCardNo,Weekend=@Weekend,ShortName=@ShortName,CardNoType=@CardNoType,FlatCode=@FlatCode,CardNoDigits=@CardNoDigits,AttMachineName=@AttMachineName where ID=@ID ", sqlDB.connection);
+                    SqlCommand cmd = new SqlCommand(" update HRD_CompanyInfo  Set CompanyId=@CompanyId, CompanyType=@CompanyType, HeadOfficeId=@HeadOfficeId, CompanyName=@CompanyName, CompanyNameBangla=@CompanyNameBangla, Address=@Address, AddressBangla=@AddressBangla, Country=@Country, Telephone=@Telephone, Fax=@Fax, DefaultCurrency=@DefaultCurrency, BusinessType=@BusinessType, MultipleBranch=@MultipleBranch, Comments=@Comments, CompanyLogo=@CompanyLogo,StartCardNo=@StartCardNo,Weekend=@Weekend,ShortName=@ShortName,CardNoType=@CardNoType,FlatCode=@FlatCode,CardNoDigits=@CardNoDigits,AttMachineName=@AttMachineName,RegistrationId=@RegistrationId,EstablishmentId=@EstablishmentId where ID=@ID ", sqlDB.connection);
                     cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
                     cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
                     cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
@@ -382,6 +389,8 @@ namespace SigmaERP.hrd
 
                     cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
                     cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
+                    cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
+                    cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
 
                    /* cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
                     cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
@@ -460,7 +469,7 @@ namespace SigmaERP.hrd
                 }
                 else if (FileUpload1.HasFile == false)
                 {
-                    SqlCommand cmd = new SqlCommand("  update HRD_CompanyInfo  Set CompanyId=@CompanyId, CompanyType=@CompanyType, HeadOfficeId=@HeadOfficeId, CompanyName=@CompanyName, CompanyNameBangla=@CompanyNameBangla, Address=@Address, AddressBangla=@AddressBangla, Country=@Country, Telephone=@Telephone, Fax=@Fax, DefaultCurrency=@DefaultCurrency, BusinessType=@BusinessType, MultipleBranch=@MultipleBranch, Comments=@Comments, StartCardNo=@StartCardNo,Weekend=@Weekend,ShortName=@ShortName,CardNoType=@CardNoType,FlatCode=@FlatCode,CardNoDigits=@CardNoDigits,AttMachineName=@AttMachineName where ID=@ID  ", sqlDB.connection);
+                    SqlCommand cmd = new SqlCommand("  update HRD_CompanyInfo  Set CompanyId=@CompanyId, CompanyType=@CompanyType, HeadOfficeId=@HeadOfficeId, CompanyName=@CompanyName, CompanyNameBangla=@CompanyNameBangla, Address=@Address, AddressBangla=@AddressBangla, Country=@Country, Telephone=@Telephone, Fax=@Fax, DefaultCurrency=@DefaultCurrency, BusinessType=@BusinessType, MultipleBranch=@MultipleBranch, Comments=@Comments, StartCardNo=@StartCardNo,Weekend=@Weekend,ShortName=@ShortName,CardNoType=@CardNoType,FlatCode=@FlatCode,CardNoDigits=@CardNoDigits,AttMachineName=@AttMachineName,RegistrationId=@RegistrationId,EstablishmentId=@EstablishmentId where ID=@ID  ", sqlDB.connection);
                     cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
                     cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
                     cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
@@ -528,6 +537,8 @@ namespace SigmaERP.hrd
                     else cmd.Parameters.AddWithValue("@FlatCode", 0);
                     cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
                     cmd.Parameters.AddWithValue("@AttMachineName",ddlMachine.SelectedValue);
+                    cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
+                    cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
                     int result = (int)cmd.ExecuteNonQuery();
 
                     if (result > 0)

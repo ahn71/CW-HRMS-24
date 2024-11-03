@@ -139,13 +139,22 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.TextBox txtEmpCardNo;
         
         /// <summary>
-        /// trHideForIndividual control.
+        /// chkbanksheet control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trHideForIndividual;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow chkbanksheet;
+        
+        /// <summary>
+        /// trHideForIndividualLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl trHideForIndividualLabel;
         
         /// <summary>
         /// rblEmployeeType control.
@@ -164,6 +173,15 @@ namespace SigmaERP.payroll.salary {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rblPaymentType;
+        
+        /// <summary>
+        /// chkIsBankfordQatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIsBankfordQatar;
         
         /// <summary>
         /// chkBankForwardingLetter control.
@@ -191,6 +209,24 @@ namespace SigmaERP.payroll.salary {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetterXL;
+        
+        /// <summary>
+        /// bankshhet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow bankshhet;
+        
+        /// <summary>
+        /// ddlBankSheet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlBankSheet;
         
         /// <summary>
         /// pnl1 control.

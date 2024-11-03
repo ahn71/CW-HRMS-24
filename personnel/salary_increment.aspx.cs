@@ -19,17 +19,20 @@ namespace SigmaERP.personnel
         //View=343,Add=344,Delete=345
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
+       
 
-            int[] pagePermission = { 343, 344, 345 };
+
 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] pagePermission = { 343, 344, 345 };
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -70,7 +73,7 @@ namespace SigmaERP.personnel
                 if (permissions.Contains(340))
                     ViewState["__WriteAction__"] = "1";
                 if (permissions.Contains(342))
-                    ViewState["__DeletAction__"] = "0";
+                    ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
 
                 //if (ViewState["__ReadAction__"].ToString().Equals("0")) 
