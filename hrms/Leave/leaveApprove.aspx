@@ -8,12 +8,12 @@
             vertical-align: middle;
         }
 
-        .line-height {
+        /*.line-height {
                 line-height: 96px;
         }
         .action-btn{
             margin-top: -36px;
-        }
+        }*/
         .total-day{
             text-align:center;
         }
@@ -40,6 +40,7 @@
         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
+        var getLeaveApproveUrl = rootUrl + '/api/Leave/approval';
 
         $(document).ready(function () {
             GetLeaves();  // Fetch leave data on document ready
@@ -64,57 +65,113 @@
         } 
         function BindAppicationData(responseData) {
             var leaveContainer = $('.application');
-                leaveContainer.empty();
+            leaveContainer.empty();
+
             responseData.forEach(function (leave) {
                 var leaveCard = `
-                <div class="col-lg-6 col-xl-6 col-md-12 mb-25">
-                    <div class="card shadow-sm ">
-                        <div class="card-body">
-                            <div class="row g-3 mb-3 justify-content-between">
-                                <div class="col-md-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="d-flex align-items-center">
-                                    <img src="${leave.empPicture ? '../images/' + leave.empPicture : '../user_img_default.jpg'}" 
-                                         style="height: 50px; width: 50px;" 
-                                         class="rounded-circle me-3" 
-                                         alt="Profile Picture">
-                                    <div>
-                                        <span class="fw-bold">${leave.empName}</span>
-                                        <span class="fst-italic d-block">${leave.dsgName}</span>
+            <div class="col-lg-6 col-xl-6 col-md-12 mb-25 d-block d-lg-flex">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-3 mb-3 justify-content-between">
+                            <div class="col-md-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${leave.empPicture ? '../images/' + leave.empPicture : '../user_img_default.jpg'}" 
+                                             style="height: 50px; width: 50px;" 
+                                             class="rounded-circle me-3" 
+                                             alt="Profile Picture">
+                                        <div>
+                                            <span class="fw-bold">${leave.empName}</span>
+                                            <span class="fst-italic d-block">${leave.dsgName}</span>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="from" class="form-label">From</label>
-                                    <input type="text" class="form-control" value="${formatDate(leave.leaveStartDate)}" readonly>
-                                </div>
-                                <div class="col-md-1 text-center line-height">
-                                   <i class="fas fa-arrow-right"></i>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="to" class="form-label">To</label>
-                                    <input type="text" class="form-control" value="${formatDate(leave.leaveEndDate)}" readonly>
-                                </div>
-                                <div class="col-md-1">
-                                    <label for="totalDays" class="form-label">Total</label>
-                                    <input type="text" class="form-control total-day" value="${leave.totalLeaveDays}" readonly>
-                                </div>
+                            <div class="col-md-3">
+                                <label for="from" class="form-label">From</label>
+                                <input type="text" class="form-control" value="${formatDate(leave.leaveStartDate)}" readonly>
                             </div>
-                            <div class="d-flex action-btn justify-content-end">
-                                <button class="btn btn-primary m-2">Approve</button>
-                                <button class="btn btn-primary m-2">Forward</button>
-                                <button class="btn btn-outline-secondary m-2">Reject</button>
+                            <div class="col-md-3">
+                                <label for="to" class="form-label">To</label>
+                                <input type="text" class="form-control" value="${formatDate(leave.leaveEndDate)}" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="totalDays" class="form-label">Total</label>
+                                <input type="text" class="form-control total-day" value="${leave.totalLeaveDays}" readonly>
+                            </div>
+                        </div>
+                       
+                        <div class="d-flex action-btn justify-content-between">
+                            <div>
+                                <label for="totalDays" class="form-label">${leave.leaveName}</label>
+                            </div>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-success btn-sm m-2 leave-action-btn" 
+                                    data-id="${leave.id}" 
+                                    data-notification-id="${0}" 
+                                    data-status="${1}">
+                                    Approve <span><i class="uil-check"></i></span>
+                                </button>
+                                <button type="button" class="btn btn-info btn-sm m-2 leave-action-btn" 
+                                    data-id="${leave.id}" 
+                                    data-notification-id="${0}" 
+                                    data-status="${0}">
+                                    Forward <span><i class="uil-share"></i></span>
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm m-2 leave-action-btn" 
+                                    data-id="${leave.id}" 
+                                    data-notification-id="${0}" 
+                                    data-status="${2}">
+                                    Decline <span><i class="uil-multiply"></i></span>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>`;
+                </div>
+            </div>`;
 
                 // Append the generated card to the container
                 leaveContainer.append(leaveCard);
             });
+
+            $('.application').on('click', '.leave-action-btn', function () {
+                // Retrieve data attributes from the clicked button
+                var leaveId = $(this).data('id');
+                var notificationId = $(this).data('notification-id');
+                var approval_status = $(this).data('status');
+
+                LeaveApprove(leaveId, notificationId, approval_status);
+            });
         }
+
+        function LeaveApprove(LeaveId, notificationId, approval_status) {
+            var updateData = {
+                id: LeaveId,
+                notificationId: notificationId,
+                approval_status: approval_status
+            };
+
+            ApiCallUpdateWithoutId(getLeaveApproveUrl, token, updateData)
+                .then(function (response) {
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Leave Approved successfull!'
+                    }).then(() => {
+                        // Optional: Reload data or refresh the UI here if needed
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        }
+
 
         function formatDate(dateString) {
             var date = new Date(dateString);
@@ -124,7 +181,6 @@
                 day: 'numeric'
             });
         }
-
 
 
     </script>

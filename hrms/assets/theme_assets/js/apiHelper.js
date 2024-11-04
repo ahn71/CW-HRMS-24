@@ -184,6 +184,29 @@ function ApiCallUpdate(url, token, updateData, id) {
         });
     });
 }
+
+function ApiCallUpdateWithoutId(url, token, updateData) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: JSON.stringify(updateData),
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while updating data:', status, error);
+                reject(error);
+            }
+        });
+    });
+}
+
 function ApiDeleteById(url, token, id) {
     return new Promise(function (resolve, reject) {
         $.ajax({
