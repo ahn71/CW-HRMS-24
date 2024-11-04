@@ -311,10 +311,10 @@
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
          var loginempId = '<%= Session["__GetEmpId__"]%>';
-        var dptId = '<%= Session["__DptId__"] %>' || null;
-        var dsgId = '<%= Session["__DsgId__"] %>' || null;
-        var gId = '<%= Session["__Gid__"] %>' || null;
-        var sftId = '<%= Session["__SftId__"] %>' || null;
+         var dptId = '<%= Session["__DptId__"] %>' || null;
+         var dsgId = '<%= Session["__DsgId__"] %>' || null;
+         var gId = '<%= Session["__Gid__"] %>' || null;
+         var sftId = '<%= Session["__SftId__"] %>' || null;
          
         
         

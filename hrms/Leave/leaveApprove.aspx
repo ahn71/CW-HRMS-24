@@ -39,7 +39,7 @@
         var sftId = '<%=  Session["__SftId__"]%>';
         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
-        var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
+        var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplicationForApprove';
         var getLeaveApproveUrl = rootUrl + '/api/Leave/approval';
 
         $(document).ready(function () {
