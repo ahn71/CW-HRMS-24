@@ -63,6 +63,29 @@ function ApiCallwithCompanyId(baseUrl, token, companyId) {
         });
     });
 }
+function ApiCallwithEmp(baseUrl, token, companyId, EmpId) {
+    return new Promise(function (resolve, reject) {
+        // Format the URL to include companyId as part of the path and EmpId as a query parameter
+        const url = `${baseUrl}/${companyId}?EmpId=${EmpId}`;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while fetching data:', status, error);
+                reject(error);
+            }
+        });
+    });
+}
+
 
 function ApiCallById(url, token, id) {
     return new Promise(function (resolve, reject) {

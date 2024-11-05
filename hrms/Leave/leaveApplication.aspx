@@ -626,7 +626,7 @@
 
 
         function GetLeaves() {
-            ApiCallwithCompanyId(getLeavesApplicationUrl, token,CompanyID)
+            ApiCallwithEmp(getLeavesApplicationUrl, token, CompanyID, loginempId)
                 .then(function (response) {
                     if (response.statusCode === 200) {
                         var responseData = response.data;
