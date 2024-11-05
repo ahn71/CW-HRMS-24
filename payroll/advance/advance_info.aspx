@@ -10,8 +10,7 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-           <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li>
+                   
                     <li><a class="seperator" href="#">/</a></li>
                  <li><a href="<%= Session["__topMenuAdvance__"] %>">Advance</a></li>
                     <li><a class="seperator" href="#">/</a></li>

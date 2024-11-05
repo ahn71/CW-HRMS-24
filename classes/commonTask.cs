@@ -1269,7 +1269,7 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
+                sqlCmd = "select distinct FORMAT(CONVERT(DATE, EffectiveMonth + '-01'),'MMM-yyyy')" +
                          " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;

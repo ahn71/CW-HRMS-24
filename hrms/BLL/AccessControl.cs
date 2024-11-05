@@ -203,7 +203,7 @@ namespace SigmaERP.hrms.BLL
         public static string hasOwnEmpIdWithOtherDepartment()
         {
             // Fetch the session value dynamically when this method is called
-            string hasOtherDeptAccessButNotOwn =" or  EmpId='" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + "'";
+            string hasOtherDeptAccessButNotOwn =" or  EmpId=" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + "";
             return hasOtherDeptAccessButNotOwn;
 
     }

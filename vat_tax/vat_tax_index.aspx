@@ -10,8 +10,7 @@
 
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li>
+       
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Pactive">Vat and Tax</a></li>
                 </ul>
