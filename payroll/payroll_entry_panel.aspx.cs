@@ -297,6 +297,10 @@ namespace SigmaERP.payroll
                     txtBasic.Enabled = true;
                     txtPresentSalary.Enabled = false;
                     txtBasic.Focus();
+
+                    txtHouseRent.Enabled = true;
+                    txtConveyanceAllow.Enabled = true;
+                    txtFoodAllowance.Enabled = true;
                 }
                 else
                 {
@@ -481,12 +485,12 @@ namespace SigmaERP.payroll
             try
             {
                 string condition = AccessControl.getDataAccessCondition(companyId,"0");
-                string query = "select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,EmpPresentSalary,CompanyId," +
-                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,BasicSalary,MedicalAllownce,HouseRent ," +
+                string query = "select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent , FoodAllownce,ConvenceAllownce, EmpPresentSalary,CompanyId," +
+                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,BasicSalary,FoodAllownce,ConvenceAllownce,MedicalAllownce,HouseRent ," +
                     " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND " + condition + " order by SN";
 
-                SQLOperation.selectBySetCommandInDatatable("select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,EmpPresentSalary,CompanyId,"+
-                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,DptId,BasicSalary,MedicalAllownce,HouseRent ," +
+                SQLOperation.selectBySetCommandInDatatable("select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,FoodAllownce,ConvenceAllownce,EmpPresentSalary,CompanyId," +
+                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,DptId,BasicSalary,FoodAllownce,ConvenceAllownce,MedicalAllownce,HouseRent ," +
                     " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND "+ condition+ " order by SN ", dt = new DataTable(), sqlDB.connection);
                 gvSalaryList.DataSource = dt;
                 gvSalaryList.DataBind();
@@ -650,8 +654,8 @@ namespace SigmaERP.payroll
                         lblFood.ForeColor = System.Drawing.Color.Green;
                         //if (hfIsGarments.Value == "1")
                         //{
-                            
-                                txtFoodAllowance.Text = dr[0]["FoodAllownce"].ToString();
+                        if (txtFoodAllowance.Text.Trim() == "0" || txtFoodAllowance.Text.Trim() == " ")
+                            txtFoodAllowance.Text = dr[0]["FoodAllownce"].ToString();
                             
                         //}
                     }
@@ -676,10 +680,10 @@ namespace SigmaERP.payroll
                         lblConveyance.ForeColor = System.Drawing.Color.Green;
                         //if (hfIsGarments.Value == "1")
                         //{
-                            //if (txtConveyanceAllow.Text.Trim() == "0" || txtConveyanceAllow.Text.Trim() == " ")
-                            //{
-                                txtConveyanceAllow.Text = dr[0]["ConvenceAllownce"].ToString();
-                            //}
+                        if (txtConveyanceAllow.Text.Trim() == "0" || txtConveyanceAllow.Text.Trim() == " ")
+                        {                     
+                            txtConveyanceAllow.Text = dr[0]["ConvenceAllownce"].ToString();
+                        }
                         //}
                     }
 
@@ -702,7 +706,7 @@ namespace SigmaERP.payroll
                         lblTechnical.ForeColor = System.Drawing.Color.Green;
                         //if (hfIsGarments.Value == "1")
                         //{
-                        //    if (txtTechnicalAllow.Text.Trim() == "0" || txtTechnicalAllow.Text.Trim() == " ")
+                        //  if (txtTechnicalAllow.Text.Trim() == "0" || txtTechnicalAllow.Text.Trim() == " ")
                         //    {
                                 txtTechnicalAllow.Text = dr[0]["TechnicalAllowance"].ToString();
                         //    }
@@ -729,10 +733,10 @@ namespace SigmaERP.payroll
 
                         //if (hfIsGarments.Value == "1")
                         //{
-                        //    if (txtHouseRent.Text.Trim() == "0" || txtHouseRent.Text.Trim() == " ")
-                        //    {
-                                txtHouseRent.Text = dr[0]["HouseRent"].ToString();
-                        //    }
+                       if (txtHouseRent.Text.Trim() == "0" || txtHouseRent.Text.Trim() == " ")
+                          {
+                            txtHouseRent.Text = dr[0]["HouseRent"].ToString();
+                         }
                         //}
                     }
 
@@ -784,7 +788,7 @@ namespace SigmaERP.payroll
 
                         //if (hfIsGarments.Value == "1")
                         //{
-                        //    if (txtPFAmount.Text.Trim() == "0" || txtPFAmount.Text.Trim() == " ")
+                        //if (txtPFAmount.Text.Trim() == "0" || txtPFAmount.Text.Trim() == " ")
                         //    {
                                 txtPFAmount.Text = dr[0]["PFAllowance"].ToString();
                         //    }

@@ -1106,7 +1106,6 @@
     <Content Include="ControlPanel\CreateAccount.aspx" />
     <Content Include="ControlPanel\Login.aspx" />
     <Content Include="ControlPanel\user_privilege.aspx" />
-    <Content Include="ControlPanel\WebForm1.aspx" />
     <Content Include="default.aspx" />
     <Content Include="EmployeeImages\CompanyLogo\logo.png" />
     <Content Include="hrd\business_type.aspx" />
@@ -2064,7 +2063,6 @@
     <Content Include="payroll\pay_slip2.aspx" />
     <Content Include="payroll\salary\IncrementEntitleReport.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
-    <Content Include="payroll\salary\QatarBankfordReport.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
     <Content Include="payroll\salary\salary_sheet_excel.aspx" />
@@ -3503,13 +3501,6 @@
     </Compile>
     <Compile Include="ControlPanel\user_privilege.aspx.designer.cs">
       <DependentUpon>user_privilege.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ControlPanel\WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ControlPanel\WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
@@ -5023,13 +5014,6 @@
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.designer.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="payroll\salary\QatarBankfordReport.aspx.cs">
-      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="payroll\salary\QatarBankfordReport.aspx.designer.cs">
-      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\salary_processing.aspx.cs">
       <DependentUpon>salary_processing.aspx</DependentUpon>

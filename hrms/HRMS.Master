@@ -67,6 +67,56 @@
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 
+    <style>
+        .btn-sm {
+            width: 100px;
+            height: 32px !important;
+        }
+        .fa-black{
+            color:#000000;
+        }
+        .notifi-user-image {
+            height: 40px !important;
+            width: 40px !important;
+            border-radius: 50%;
+        }
+        .avatar-icon {
+            background: #01b81a;
+            height: 20px;
+            width: 20px;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            box-shadow: 1px 1px 2px 2px #;
+            top: 25px;
+            left: 20px;
+            /* border: 1px solid #ddd; */
+            color: #fff;
+            /* font-size: 19px; */
+        }
+
+        .btn-sm span {
+            margin: -13px;
+            padding-left: 14px;
+        }
+        .btn-sm {
+            padding: 0 6px;
+            width: 90px;
+            height: 30px !important;
+            /* margin: 0; */
+            text-align: center;
+            /* display: inline-block; */
+            /* display: flex; */
+            /* justify-content: center; */
+        }
+
+        .notifi-simbole-icon {
+            font-size: 25px;
+            color: #b200ff;
+            vertical-align: middle;
+        }
+    </style>
+
 </head>
 <body>
     <form id="form1" runat="server">
@@ -1193,25 +1243,10 @@
                             <div class="dropdown-parent-wrapper">
                                 <div class="dropdown-wrapper">
                                     <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1">1</span></h2>
-                                    <ul>
-                                        <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                                            <div class="nav-notification__type nav-notification__type--primary">
-                                                <img class="svg" src="/hrms/img/svg/inbox.svg" alt="inbox">
-                                            </div>
-                                            <div class="nav-notification__details">
-                                                <p>
-                                                    <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Notification</a> v     
-                                                    <span>Upcoming Features </span>
-                                                </p>
-                                                <p>
-                                                    <span class="time-posted">comming soon</span>
-                                                </p>
-                                            </div>
-                                        </li>
-
-
-
+                                    <ul class="nav-notification-list">
+                                        <!-- Notifications will be dynamically added here -->
                                     </ul>
+
                                     <a href="" class="dropdown-wrapper__more">See all incoming activity</a>
                                 </div>
                             </div>
@@ -1560,19 +1595,211 @@
 
     <script>
 
+         var token = '<%= Session["__UserToken__"] %>';
+         //var rootUrl = 'https://localhost:7220';
+         var rootUrl = '<%= Session["__RootUrl__"]%>';
+         var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+         var userId = '<%= Session["__GetUserId__"]%>';
+         var userId = '7125';
+         var loginempId = '<%= Session["__GetEmpId__"]%>';
+<%--         var dptId = '<%=  Session["__DptId__"]%>';
+         var dsgId = '<%=  Session["__DsgId__"]%>';
+         var gId = '<%=  Session["__Gid__"]%>';
+         var sftId = '<%=  Session["__SftId__"]%>';--%>
+         var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
+
+         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+
         $(document).ready(function () {
             var userImage = '<%= Session["__UserImageLink__"] %>';
 
             if (userImage) {
-                $('#UserProfileImageMenu').attr('src', userImage); // Set the src of the image to display it
-                $('#userProfileImage').attr('src', userImage); // Set the src of the image to display it
+                $('#UserProfileImageMenu').attr('src', userImage);
+                $('#userProfileImage').attr('src', userImage); 
             } else {
-                // If there's no user image, you can set a default or empty image
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');
             }
 
+            GetLeavesNotification();
         });
+
+        function GetLeavesNotification() {
+            ApiCallByCompId(getLeavesNotificationUrl, token, userId)
+                .then(function (response) {
+                    // Check if the response status is valid and contains data
+                    if (response.status === "200" && response.data) {
+                        // Set up example notifications directly in the response data
+                        response.data = [
+                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                        <div class="nav-notification__type nav-notification__type--primary position-relative">
+                            <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                            <div class="position-absolute avatar-icon">
+                                <span><i class="uil-calendar-slash"></i></span>
+                            </div>
+                        </div>
+                        <div class="nav-notification__details">
+                            <p class="fa-black">
+                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                                (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
+                            </p>
+                        </div>
+                        <div class="d-inline-flex">
+                            <button type="button" class="btn btn-success btn-sm m-2">Approve <span><i class="uil-check"></i></span></button>
+                            <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
+                            <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
+                        </div>
+                    </li>`,
+                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                        <div class="nav-notification__type nav-notification__type--primary position-relative">
+                            <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                            <div class="position-absolute avatar-icon">
+                                <span><i class="uil-check"></i></span>
+                            </div>
+                        </div>
+                        <div class="nav-notification__details">
+                            <p class="fa-black">
+                                Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been approved by
+                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Enjoy your time off!
+                            </p>
+                        </div>
+                    </li>`,
+                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                        <div class="nav-notification__type nav-notification__type--primary position-relative">
+                            <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                            <div class="position-absolute avatar-icon">
+                                <span><i class="uil-calendar-slash"></i></span>
+                            </div>
+                        </div>
+                        <div class="nav-notification__details">
+                            <p class="fa-black">
+                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                                (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
+                            </p>
+                        </div>
+                        <div class="d-inline-flex">                            
+                            <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
+                            <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
+                        </div>
+                    </li>`,
+                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                        <div class="nav-notification__type nav-notification__type--primary position-relative">
+                            <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                            <div class="position-absolute avatar-icon">
+                                <span><i class="uil-check"></i></span>
+                            </div>
+                        </div>
+                        <div class="nav-notification__details">
+                            <p class="fa-black">
+                                Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been rejected by
+                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>.
+                            </p>
+                        </div>
+                    </li>`
+                            // Additional notifications can be added similarly
+                        ];
+
+                        // Select the container where notifications will be added
+                        var notificationList = document.querySelector('.nav-notification-list');
+
+                        // Clear any existing notifications
+                        notificationList.innerHTML = '';
+
+                        // Loop through each notification item and insert into the list
+                        response.data.forEach(function (notificationItem) {
+                            notificationList.insertAdjacentHTML('beforeend', notificationItem);
+                        });
+                    } else {
+                        console.error('No notifications available or invalid response status.');
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
+
+
+         //`
+         //               <li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+         //                   <div class="nav-notification__type nav-notification__type--primary position-relative">
+         //                       <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+         //                       <div class="position-absolute avatar-icon">
+         //                           <span><i class="uil-calendar-slash"></i></span>
+         //                       </div>
+         //                   </div>
+         //                   <div class="nav-notification__details">
+         //                       <p class="fa-black">
+         //                           ${notification.title}
+         //                       </p>
+         //                   </div>
+         //                   <div class="d-inline-flex">
+         //                       <button type="button" class="btn btn-success btn-sm m-2" onclick="handleAction('${notification.actions.approve.end_point}', '${notification.actions.approve.method}', ${notification.actions.approve.data.id}, ${notification.actions.approve.data.approval_status}, ${notification.actions.approve.data.notification_id})">
+         //                           Approve <span><i class="uil-check"></i></span>
+         //                       </button>
+         //                       <button type="button" class="btn btn-info btn-sm m-2" onclick="handleAction('${notification.actions.forward.end_point}', '${notification.actions.forward.method}', ${notification.actions.forward.data.id}, ${notification.actions.forward.data.approval_status}, ${notification.actions.forward.data.notification_id})">
+         //                           Forward <span><i class="uil-share"></i></span>
+         //                       </button>
+         //                       <button type="button" class="btn btn-outline-danger btn-sm m-2" onclick="handleAction('${notification.actions.reject.end_point}', '${notification.actions.reject.method}', ${notification.actions.reject.data.id}, ${notification.actions.reject.data.approval_status}, ${notification.actions.reject.data.notification_id})">
+         //                           Decline <span><i class="uil-multiply"></i></span>
+         //                       </button>
+         //                   </div>
+         //               </li>
+         //           `;
+
+
+
+        // Function to handle the button actions
+        //function handleAction(endpoint, method, id, approvalStatus, notificationId) {
+        //    // Make API call based on action (Approve, Forward, Reject)
+        //    fetch(endpoint, {
+        //        method: method,
+        //        headers: {
+        //            'Content-Type': 'application/json',
+        //            'Authorization': `Bearer ${token}`
+        //        },
+        //        body: JSON.stringify({
+        //            id: id,
+        //            approval_status: approvalStatus,
+        //            notification_id: notificationId
+        //        })
+        //    })
+        //        .then(response => response.json())
+        //        .then(data => {
+        //            console.log('Action performed:', data);
+        //            // Optionally, refresh notifications or give user feedback
+        //        })
+        //        .catch(error => {
+        //            console.error('Error performing action:', error);
+        //        });
+        //}
+
+
+
+        function ApiCallByCompId(url, token, id) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: `${url}/${id}`, // Constructs the URL dynamically with the id
+                    type: 'GET',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token // Adds Bearer token for authentication
+                    },
+                    data: {
+                        moduleID: id// Sends id in the data object
+                       // Adds companyID as a parameter in the request
+                    },
+                    success: function (data) {
+                        resolve(data); // Resolves the Promise with the response data
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred while fetching data:', status, error); // Logs error details
+                        reject(error); // Rejects the Promise with the error
+                    }
+                });
+            });
+        }
+
     </script>
 
 </body>
