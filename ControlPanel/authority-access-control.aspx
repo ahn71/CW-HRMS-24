@@ -162,7 +162,7 @@
                              </asp:BoundField> 
                              <asp:TemplateField HeaderText="Possition" >
                                 <ItemTemplate>
-                                    <asp:TextBox runat="server" ID="txtLvAuthorityOrder" CssClass="txt form-control"  Text='<%#Eval("LvAuthorityOrder")%>'></asp:TextBox>   
+                                    <asp:TextBox runat="server" ID="txtLvAuthorityOrder" CssClass="txt form-control"></asp:TextBox>   
                                     
                                 </ItemTemplate>
                             </asp:TemplateField>
