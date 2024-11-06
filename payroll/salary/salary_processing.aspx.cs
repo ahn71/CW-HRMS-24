@@ -21,7 +21,7 @@ namespace SigmaERP.payroll.salary
         DataTable dt;
         string query = "";
         //View=334 Process/Add=335 Delete=336
-        int[] pagePermission = { 334, 335, 336 };
+     
         protected void Page_Load(object sender, EventArgs e)
         {
            
@@ -29,7 +29,7 @@ namespace SigmaERP.payroll.salary
             sqlDB.connectDB();
             if (!IsPostBack)
             {
-
+                int[] pagePermission = { 334, 335, 336 };
                 ViewState["__ReadAction__"] = "0";
                 ViewState["__WriteAction__"] = "0";
                 ViewState["__DeletAction__"] = "0";
