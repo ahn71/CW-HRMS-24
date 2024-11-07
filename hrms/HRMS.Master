@@ -1600,7 +1600,7 @@
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
-         var userId = '7125';
+         //var userId = '7125';
          var loginempId = '<%= Session["__GetEmpId__"]%>';
 <%--         var dptId = '<%=  Session["__DptId__"]%>';
          var dsgId = '<%=  Session["__DsgId__"]%>';
