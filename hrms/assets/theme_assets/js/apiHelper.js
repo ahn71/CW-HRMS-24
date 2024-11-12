@@ -86,6 +86,28 @@ function ApiCallwithEmp(baseUrl, token, companyId, EmpId) {
     });
 }
 
+function ApiCallAuthority(baseUrl, token, companyId, UserId) {
+    return new Promise(function (resolve, reject) {
+        // Construct the URL using template literals
+        const url = `${baseUrl}/${companyId}?UserId=${UserId}`;
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while fetching data:', status, error);
+                reject(error);
+            }
+        });
+    });
+}
 
 function ApiCallById(url, token, id) {
     return new Promise(function (resolve, reject) {
