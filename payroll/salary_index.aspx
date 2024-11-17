@@ -204,6 +204,14 @@
                 </div>
                   <% } %>
 
+                   
+                 <div class=" col-md-2" title="Punishment&Other's Pay">
+                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/Punishment_OthersPay.aspx"><img class="image_width_for_module" src="../images/common/qualification.ico" /><br />Punishment&Other's Pay</a> 
+                    
+                 </div>
+                
+                 <div class=" col-md-2"></div>
+             </div>
                 <%--<div class=" col-md-2" title="Final Bill Payment Sheet">
                       <a class="ds_Settings_Basic_Text Pbox" href="/payroll/final_bill_payment_sheet.aspx"><img class="image_width_for_module" src="/images/common/qualification.ico" /><br />Seperation Final Bill Sheet</a> 
                     
@@ -219,17 +227,7 @@
 
                 <div class=" col-md-2"></div>
             </div>
-            <%--    <div class="row">
-
-                 <div class=" col-md-2"></div>
-
-                 <div class=" col-md-2" title="Punishment&Other's Pay">
-                      <a class="ds_Settings_Basic_Text Pbox" href="/payroll/Punishment_OthersPay.aspx"><img class="image_width_for_module" src="../images/common/qualification.ico" /><br />Punishment&Other's Pay</a> 
-                    
-                 </div>
-                
-                 <div class=" col-md-2"></div>
-             </div>--%>
+            
         </div>
        <% } %>
     </div>

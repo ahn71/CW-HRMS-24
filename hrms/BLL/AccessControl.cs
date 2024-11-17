@@ -229,9 +229,9 @@ namespace SigmaERP.hrms.BLL
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             if (dt.Rows.Count > 0)
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
 }

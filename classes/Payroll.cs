@@ -47,6 +47,8 @@ namespace SigmaERP.classes
             {
                 DataTable dt=new DataTable ();
                 sqlDB.fillDataTable("select Distinct case when FromDate is null then  Format(YearMonth,'MMM-yyyy') else Format(YearMonth,'MMM-yyyy')+' [ '+ convert(varchar(10),FromDate,120)+' to '+ convert(varchar(10),ToDate,120)+' ]'  end  as YearMonth,case when FromDate is null then convert(varchar(10), YearMonth, 120) else   convert(varchar(10), YearMonth, 120) + '/' + convert(varchar(10), FromDate, 120) + '/' + convert(varchar(10), ToDate, 120) end as MonthYear, year(YearMonth), month(YearMonth) from Payroll_MonthlySalarySheet where CompanyId = '"+CompanyId+"' order by year(YearMonth) desc, month(YearMonth) desc", dt);
+
+                string hhh = "select Distinct case when FromDate is null then  Format(YearMonth,'MMM-yyyy') else Format(YearMonth,'MMM-yyyy')+' [ '+ convert(varchar(10),FromDate,120)+' to '+ convert(varchar(10),ToDate,120)+' ]'  end  as YearMonth,case when FromDate is null then convert(varchar(10), YearMonth, 120) else   convert(varchar(10), YearMonth, 120) + '/' + convert(varchar(10), FromDate, 120) + '/' + convert(varchar(10), ToDate, 120) end as MonthYear, year(YearMonth), month(YearMonth) from Payroll_MonthlySalarySheet where CompanyId = '" + CompanyId + "' order by year(YearMonth) desc, month(YearMonth) desc";
                 ddlMonthList.DataSource = dt;
                 ddlMonthList.DataValueField = "MonthYear";
                 ddlMonthList.DataTextField = "YearMonth";
