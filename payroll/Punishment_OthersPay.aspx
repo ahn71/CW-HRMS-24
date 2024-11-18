@@ -35,8 +35,7 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
+             
                     <li><a class="seperator" href="#">/</a></li>
                     <li>  <a href="/payroll/salary_index.aspx">Salary</a></li>
                     <li><a class="seperator" href="#">/</a></li>
