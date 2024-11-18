@@ -160,6 +160,7 @@ namespace SigmaERP.payroll.salary
                     if (ddlBankSheet.SelectedIndex >= 0)
                     {
                         banksheetGenarate(yearMonth, DepartmentList);
+                        return;
 
                     }
                 }
@@ -380,7 +381,7 @@ namespace SigmaERP.payroll.salary
                 condition = "and ecs.BankId="+ bankId + "";
             }
           
-            string getSQLCMD = "select  ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary as BasicSalary,pms.TotalSalary,ExtraOtHour,ExtraOtAmount,(pms.AdvanceDeduction+pms.AbsentDeduction) as Deduction,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = 1 "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
+            string getSQLCMD = "select  ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary as BasicSalary,pms.TotalSalary,ExtraOtHour,ExtraOtAmount,(pms.AdvanceDeduction+pms.AbsentDeduction) as Deduction,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = "+rblEmployeeType.SelectedValue+" "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
             sqlDB.fillDataTable(getSQLCMD, dt);
             if (dt.Rows.Count == 0)
             {
