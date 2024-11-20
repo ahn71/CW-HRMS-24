@@ -1609,8 +1609,8 @@
          var gId = '<%=  Session["__Gid__"]%>';
          var sftId = '<%=  Session["__SftId__"]%>';--%>
         //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
+        //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
         var getLeavesNotificationUrl ='https://localhost:44322/api/Notification/notification';
-
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         $(document).ready(function () {
@@ -1739,35 +1739,35 @@
         const approvalStatus = data.approval_status;
         const notificationId = data.notificationId;
 
-        // Perform actions based on the passed 'action'
-        console.log(`Action: ${action}`);
-        console.log(`ID: ${id}`);
-        console.log(`Approval Status: ${approvalStatus}`);
-        console.log(`Notification ID: ${notificationId}`);
+                    var updateData = {
+                id: id,
+                notificationId: notificationId,
+                approval_status: approvalStatus
+        };
+        const getleaveApproaleUrl = `${rootUrl}/api/${action}`;
+        console.loggetleaveApproaleUrl
 
-        // Example: Handle the approval process
-        if (action === 'Leave / approval') {
-            // Call an API, update UI, or perform other logic
-            console.log('Handling leave approval...');
-            
-            // Example API call using fetch
-            fetch('/api/leave/approval', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id, approvalStatus, notificationId })
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log('API response:', result);
-                alert('Leave approval processed successfully!');
-            })
-            .catch(error => {
-                console.error('Error processing approval:', error);
-                alert('Failed to process approval.');
-            });
-        }
+            ApiCallUpdateWithoutId(getleaveApproaleUrl, token, updateData)
+                .then(function (response) {
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Leave Approved successfull!'
+                    }).then(() => {
+                         GetLeaves();
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        
+        
     } catch (error) {
         console.error('Error in handleButtonClick:', error);
         alert('An error occurred. Please try again.');
@@ -1829,7 +1829,61 @@
         //        });
         //}
 
-        
+        const leaveId = $(this).data('id');
+        const notificationId = $(this).data('notification-id');
+        const approvalStatus = $(this).data('status');
+
+        function ApiCallUpdateWithoutId(url, token, updateData) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: JSON.stringify(updateData),
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error occurred while updating data:', status, error);
+                reject(error);
+            }
+        });
+    });
+}
+
+        function LeaveApprove(LeaveId, notificationId, approval_status) {
+            var updateData = {
+                id: LeaveId,
+                notificationId: notificationId,
+                approval_status: approval_status
+            };
+
+            ApiCallUpdateWithoutId(getLeaveApproveUrl, token, updateData)
+                .then(function (response) {
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Leave Approved successfull!'
+                    }).then(() => {
+                         GetLeaves();
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        }
+
+
 
         function ApiCallByCompId(url, token, userId) {
             return new Promise(function (resolve, reject) {
