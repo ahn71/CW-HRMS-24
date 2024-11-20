@@ -17,7 +17,23 @@
 
             }
 
-     </script>
+            function Cardbox() {
+                var CardboxElement = $("#Cardbox");
+                var addnewElement = $("#addnew");
+
+                if (addnewElement.html() === "Add New") {
+                    CardboxElement.show();
+
+                    addnewElement.text("Close");
+                } else {
+                    CardboxElement.hide();
+                    addnewElement.html("Add New");
+
+                }
+            }
+
+        </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap-grid.min.css" integrity="sha512-Aa+z1qgIG+Hv4H2W3EMl3btnnwTQRA47ZiSecYSkWavHUkBF2aPOIIvlvjLCsjapW1IfsGrEO3FU693ReouVTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         #ContentPlaceHolder1_MainContent_gvMonthSetup th {
             text-align:center;
@@ -33,9 +49,14 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-     <div class="row Rrow">
-        <div class="col-md-12 ds_nagevation_bar">
-            <div style="margin-top: 5px">
+     <div style="align-items:center; padding:25px 0" class="row align-items-center Rrow">
+         <div class="col-md-6">
+             <div class="title-header">
+                 <h2 style="margin:0" class="m-0">Attendance</h2>
+             </div>
+         </div>
+        <div class="col-md-6 ds_nagevation_bar">
+            <div style="margin-top: 0">
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li>/</li>
@@ -65,159 +86,115 @@
         <ContentTemplate>
 
 
-            <div class="main_box Mbox">
-                <div class="main_box_header MBoxheader">
-                    <h2>Month Setup (Actual)</h2>
+            <div class="main_box m-0 Mbox"  >
+
+                <div class="btn-wrapper mb-2">
+                    <div class="dm-button-list d-flex flex-wrap justify-content-end">
+                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
+                    </div>
                 </div>
-                <div class="main_box_body Mbody">
-                    <div class="main_box_content">
-                        <div class="input_division_info">
-                            <table class="input_division_info">
-                                <asp:HiddenField ID="hdMonthSetup" ClientIDMode="Static" runat="server" Value="" />
 
-                                <tr>
-                                    <td>
-                                        Company<span class="requerd1">*</span>
-                                    </td>
-                                    <td>:</td>
-                                    <td>
-                                <asp:DropDownList ID="ddlCompanyList" runat="server" ClientIDMode="Static"  CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged" >
+                <div class="main_box_body Mbody" style="display: none;" id="Cardbox">
+                    <div class="main_box_content mb-5">
+                      
+                            <div class="row">
+                                    <asp:HiddenField ID="hdMonthSetup" ClientIDMode="Static" runat="server" Value="" />
+
+
+                            <div class="col-lg-3">
+                                <p>Company<span class="requerd1">*</span></p>
+                                 <asp:DropDownList ID="ddlCompanyList" runat="server" ClientIDMode="Static"  CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged" >
                                </asp:DropDownList>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Month ID(mm-yyyy)<span class="requerd1">*</span>
-                                    </td>
-                                    <td>:
-                                    </td>
+                            </div>
 
-                                    <td>
+                            <div class="col-lg-3">
+                                <p>Month<span class="requerd1">*</span></p>
+                                 <asp:TextBox ID="txtMonthName" runat="server"  ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
 
-                                        <asp:TextBox ID="txtMonthName" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
-                                    
-                                        <asp:CalendarExtender ID="txtMonthName_CalendarExtender" Format="MM-yyyy" runat="server" TargetControlID="txtMonthName">
+                                 <asp:CalendarExtender ID="txtMonthName_CalendarExtender" Format="MM-yyyy" runat="server" TargetControlID="txtMonthName">
                                         </asp:CalendarExtender>
-                                    
-                                       <%-- <asp:RequiredFieldValidator ForeColor="Red" ValidationGroup="save" ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtMonthID" ErrorMessage="*"></asp:RequiredFieldValidator>--%>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>From Date<span class="requerd1">*</span>
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
-                                        <asp:TextBox ID="txtFromDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+
+                            </div>
+
+
+                            <div class="col-lg-3">
+                               <p>From Date<span class="requerd1">*</span></p> 
+                                 <asp:TextBox ID="txtFromDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
 
                                         <asp:CalendarExtender ID="txtFromDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtFromDate">
                                         </asp:CalendarExtender>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>To Date<span class="requerd1">*</span>
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
+                            </div>
 
-                                        <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+                            <div class="col-lg-3">
+                                <td>To Date<span class="requerd1">*</span>
+                                    <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                        
                                         <asp:CalendarExtender ID="txtToDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtToDate">
                                         </asp:CalendarExtender>
-                                       
-                                        <asp:Button ID="btnCalculation" runat="server" Text="Calculation" OnClick="btnCalculation_Click" />
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total No of Days
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
-
-                                        <asp:TextBox ID="txtTotalNOofDay" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" Enabled="false"></asp:TextBox>
+                                       <div style="transform: translate(-3px, -37px);" class="d-flex justify-content-end">
+                                           <asp:Button ID="btnCalculation" runat="server" CssClass="btn btn-success"  Text="Calculation" OnClick="btnCalculation_Click" />
+                                       </div>
                                         
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total Weekend
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
+                            </div>
 
-                                        <asp:TextBox ID="txtTotalWeekend" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" Enabled="false"></asp:TextBox>
-                                        
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total Holiday
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
+                            <div class="col-lg-3">
+                               <p>Total No of Days</p> 
+                                 <asp:TextBox ID="txtTotalNOofDay" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" Enabled="false"></asp:TextBox>
+                            </div>
+                            <div class="col-lg-3">
+                              <p>Total Weekend</p>  
+                                 <asp:TextBox ID="txtTotalWeekend" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" Enabled="false"></asp:TextBox>
+                            </div>
 
-                                        <asp:TextBox ID="txtTotalHoliday" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" ></asp:TextBox>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Total Working Days
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
+                            <div class="col-lg-3">
+                                <p>Total Holiday</p>
+                                <asp:TextBox ID="txtTotalHoliday" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" ></asp:TextBox>
+                            </div>
+                            <div class="col-lg-3">
+                                <p>Total Working Days</p>
+                                <asp:TextBox ID="txtTotalWorkingDays" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                            </div>
 
-                                        <asp:TextBox ID="txtTotalWorkingDays" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Expected Payment Date<span class="requerd1">*</span>
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
 
-                                        <asp:TextBox ID="txtExpectedPaymetnDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+<div class="col-lg-3">
+                              <p>Expected Payment Date<span class="requerd1">*</span></p>  
+                                <asp:TextBox ID="txtExpectedPaymetnDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                        
                                         <asp:CalendarExtender ID="txtExpectedPaymetnDate_CalendarExtender" runat="server" TargetControlID="txtExpectedPaymetnDate" Format="dd-MM-yyyy">
                                         </asp:CalendarExtender>
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Month Status<span class="requerd1">*</span>
-                                    </td>
-                                    <td>:
-                                    </td>
-                                    <td>
+                            </div>
 
-                                        <%--<asp:TextBox ID="txtMonthStaus" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>--%>
-
-                                        <asp:DropDownList ID="ddlMonthStatus" CssClass="form-control text_box_width" runat="server" Width="200px" >
+                            <div class="col-lg-3">
+                              <p>Month Status<span class="requerd1">*</span></p>  
+                                <asp:DropDownList ID="ddlMonthStatus" CssClass="form-control text_box_width" runat="server" >
                                             <asp:ListItem Value="0" Text=" "></asp:ListItem>
                                             <asp:ListItem Value="1" Text="Active"></asp:ListItem>
                                             <asp:ListItem Value="2" Text="Inactive"></asp:ListItem>
                                         </asp:DropDownList>
                                         <asp:RequiredFieldValidator ForeColor="Red" ValidationGroup="save" ID="RequiredFieldValidator9" runat="server" ControlToValidate="ddlMonthStatus" ErrorMessage="*"></asp:RequiredFieldValidator>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="button_area Rbutton_area" style="text-align:center">                           
+                            </div>
+
+                            <div class="col-lg-3">
+                                 <p style="opacity:0">Month Status<span class="requerd1">*</span></p>  
+                                   <div class="Rbutton_area" style="text-align:start">                           
                             <asp:Button ID="btnShow" CssClass="Mbutton" runat="server" Text="List All" Visible="False" />
                             <asp:Button ID="btnSave" CssClass="Mbutton" ValidationGroup="save" runat="server" Text="Save" OnClick="btnSave_Click" />
                             <asp:Button ID="btnClear" runat="server" Text="Clear" CssClass="Mbutton" OnClick="btnClear_Click" />
                             <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/attendance_default.aspx" CssClass="Mbutton" />
                             <asp:Button ID="btnPopup" runat="server" Text="Close"  style="display:none" CssClass="Mbutton" />                          
+                        </div> 
+                            </div>
+
                         </div>
 
-                        <div class="dataTables_wrapper monthly_table_setup show_division_info">
+
+                    </div>
+                </div>
+            </div>
+
+
+            <%--Table--%>
+             <div class="dataTables_wrapper monthly_table_setup show_division_info ">
                             <asp:GridView ID="gvMonthSetup" runat="server" AutoGenerateColumns="False" DataKeyNames="MonthId" HeaderStyle-BackColor="#0057AE"
                                 CellPadding="4" AllowPaging="True" ForeColor="#333333" Width="100%"
                                 PageSize="12" OnRowCommand="gvMonthSetup_RowCommand" OnRowDeleting="gvMonthSetup_RowDeleting" OnRowEditing="gvMonthSetup_RowEditing" OnPageIndexChanging="gvMonthSetup_PageIndexChanging" OnRowDataBound="gvMonthSetup_RowDataBound">
@@ -258,19 +235,52 @@
                                     </asp:TemplateField>
                                     
 
-                                    <asp:TemplateField HeaderText="Edit">
+                                    <asp:TemplateField HeaderText="Action">
                                         <ItemTemplate>
-                                            <asp:Button ID="lnkEdit" runat="server" Font-Bold="true" Text="Edit" CommandName="Edit"   ControlStyle-CssClass="btnForAlterInGV"  CommandArgument='<%#((GridViewRow)Container).RowIndex %>' />
+                    <%--                        <asp:Button ID="lnkEdit" runat="server" Font-Bold="true" Text="Edit" CommandName="Edit"   ControlStyle-CssClass="btnForAlterInGV"  CommandArgument='<%#((GridViewRow)Container).RowIndex %>' />--%>
+
+                                            <asp:LinkButton
+                                                ID="lnkEdit"
+                                                runat="server"
+                                                Font-Bold="true"
+                                                CommandName="Edit"
+                                                CssClass="btnForAlterInGV action-btn"
+                                                CommandArgument='<%# ((GridViewRow)Container).RowIndex %>'>
+                                          <i class="fa fa-edit"></i>
+                                            </asp:LinkButton>
+                                            <asp:LinkButton
+                                                ID="lnkDelete"
+                                                runat="server"
+                                                CommandName="Delete"
+                                                CssClass="btnForDeleteInGV action-btn"
+                                                CommandArgument='<%# Eval("MonthID") %>'
+                                                OnClientClick="return confirm('Are you sure you want to delete the record?');">
+                                                <i class="fa fa-trash"></i>
+                                            </asp:LinkButton>
+
+
+
                                         </ItemTemplate>
                                     </asp:TemplateField>
 
-                                    <asp:TemplateField HeaderText="Delete">
+<%--                                    <asp:TemplateField HeaderText="Delete">
                                         <ItemTemplate>
-                                            <asp:Button ID="lnkDelete" runat="server" Text="Delete" CommandName="Delete" ControlStyle-CssClass="btnForDeleteInGV"  
+                                          <asp:Button ID="lnkDelete" runat="server" Text="Delete" CommandName="Delete" ControlStyle-CssClass="btnForDeleteInGV"  
                                                 OnClientClick="return confirm('Are you sure, you want to delete the record?')"
                                                 CommandArgument='<%# Eval("MonthID") %>' />
+
+                                            <asp:LinkButton
+                                                ID="lnkDelete"
+                                                runat="server"
+                                                CommandName="Delete"
+                                                CssClass="btnForDeleteInGV"
+                                                CommandArgument='<%# Eval("MonthID") %>'
+                                                OnClientClick="return confirm('Are you sure you want to delete the record?');">
+                                              <i class="fa fa-trash"></i>
+                                            </asp:LinkButton>
+
                                         </ItemTemplate>
-                                    </asp:TemplateField>
+                                    </asp:TemplateField>--%>
 
 
                                 </Columns>
@@ -288,11 +298,6 @@
                             </asp:GridView>
                             <%--<div runat="server" id="divPunismentList" style="width: 500px; height: 599px;"></div>--%>
                         </div>
-
-
-                    </div>
-                </div>
-            </div>
             <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" Drag="True" 
                             DropShadow="True" PopupControlID="PopupWindow" TargetControlID="btnPopup" CancelControlID="btnCancel" PopupDragHandleControlID="divDrag" CacheDynamicResults="False" Enabled="True" >
                         </asp:ModalPopupExtender>

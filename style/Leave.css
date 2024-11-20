@@ -200,12 +200,7 @@ label {
     text-shadow: 5px 5px 5px #000;
     }
 
-.Mbody {
-  background: #c6c6b4 none repeat scroll 0 0;
-  border-bottom: 2px solid #2B5E4E !important;
-  border-left: 2px solid #2B5E4E !important;
-  border-right: 2px solid #2B5E4E !important;
-}
+
 
 .Mbutton{
     background:#2B5E4E;
@@ -345,13 +340,6 @@ label {
 /*Ripon*/
 
 
-
-.main_box {
-    margin: 20px auto;
-    /*min-width: 300px;*/
-    width:80%;
-    background:#c6c6b4;
-}
 .main_box1 {
     margin: 20px auto;
      width:645px;
