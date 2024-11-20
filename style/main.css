@@ -381,23 +381,6 @@ width: 650px;
     
 }
 
-
-.main_box_body {
-background: none repeat scroll 0 0 #C6C6B4;
-border-bottom: 2px solid #27235C;
-border-left: 2px solid #27235C;
-border-radius: 0 0 5px 5px;
-border-right: 2px solid #27235C;
-padding: 10px;
-}
-.main_box_content {
-background: none repeat scroll 0 0 #FFFFFF;
-border: 1px solid #909090;
-margin: 0 auto;
-padding: 10px;
-/*width: 600px;*/
-}
-
 /* Main_box end */
 
 
@@ -409,23 +392,47 @@ padding: 10px;
     left:43%;
     top:38%;
 }
-
-.cancel_Btn {
-    background-color: #A20019;
-    background-image: linear-gradient(#A20019, #A20019);
-    background-repeat: repeat-x;
-    border: 1px solid #7C0618;
-    border-radius: 3px;
-    color: #fff;
-    display: inline-block;
-    font-size: 13px;
-    font-weight: bold;
-    padding: 8px 15px !important;
-    position: relative;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    vertical-align: middle;
-    width: auto;
+.main_box_content {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 7px 29px 0px;
+    background: rgb(255, 255, 255);
+    padding: 18px 25px;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(233, 233, 233);
+    border-image: initial;
 }
+    .main_box_content p{
+        font-weight:500;
+    }
+.Mbutton {
+    box-shadow: transparent !important;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: normal;
+    background: #8231d3 !important;
+    margin: 0px 3px;
+    padding: 8px 14px;
+    border: 0 !important;
+}
+
+    .cancel_Btn {
+        background-color: #A20019;
+        background-image: linear-gradient(#A20019, #A20019);
+        background-repeat: repeat-x;
+        border: 1px solid #7C0618;
+        border-radius: 3px;
+        color: #fff;
+        display: inline-block;
+        font-size: 13px;
+        font-weight: bold;
+        padding: 8px 15px !important;
+        position: relative;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        vertical-align: middle;
+        width: auto;
+    }
 
 .greenBtn{ 
     color: #fff;
@@ -763,9 +770,53 @@ background-color: #086A99;
 }
 
 
+.dataTables_wrapper th {
+    color: White;
+    background-color: #eee !important;
+    font-weight: 600;
+    height: 50px !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+    border-bottom: 0 !important;
+    color: #000000;
+    border-top: 0;
+    font-size: 16px;
+    /* text-align: start !important; */
+}
+.dataTables_wrapper.monthly_table_setup.show_division_info {
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.action-btn {
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    background: transparent;
+    color: #000000;
+}
 
+.dataTables_wrapper{
+    border: 0 !important;
+}
 
-
-
-
-
+table {
+    max-width: 100%;
+    background-color: #fff !important;
+    border: 0;
+    padding:20px !important;
+}
+.gridview a {
+    margin: auto 1%;
+    border-radius: 50%;
+    background-color: #ffffff !important;
+    padding: 5px 10px 5px 10px;
+    color: #fff;
+    text-decoration: none;
+    -o-box-shadow: 1px 1px 1px #111;
+    -moz-box-shadow: 1px 1px 1px #111;
+    -webkit-box-shadow: 1px 1px 1px #111;
+    /* box-shadow: 1px 1px 1px #111; */
+    margin: 3px !important;
+}
