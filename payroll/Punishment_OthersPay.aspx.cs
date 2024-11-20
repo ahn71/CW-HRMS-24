@@ -39,7 +39,7 @@ namespace SigmaERP.payroll
         {
             try
             {
-
+              
                 ViewState["__WriteAction__"] = "1";
                 ViewState["__DeletAction__"] = "1";
                 ViewState["__ReadAction__"] = "1";
@@ -49,7 +49,8 @@ namespace SigmaERP.payroll
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadBranch(ddlCompanyList2, ViewState["__CompanyId__"].ToString());
 
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForpayrollentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_entry_panel.aspx", gvpunishment, btnSave, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);

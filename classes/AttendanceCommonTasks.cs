@@ -196,7 +196,7 @@ namespace SigmaERP.classes
             {
                 dt = new DataTable();
                 string[] Leave_Info = new string[2];
-                dt = CRUD.ExecuteReturnDataTable("select LACode,LeaveName from v_Leave_LeaveApplicationDetails where IsApproved=1 and LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
+                dt = CRUD.ExecuteReturnDataTable("select ApplicationId,LeaveName from v_Leave_LeaveApplicationDetails where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
                 if (dt.Rows.Count > 0)
                 {
                     Leave_Info[0] = dt.Rows[0]["LACode"].ToString();
@@ -311,6 +311,8 @@ namespace SigmaERP.classes
                 dt = new DataTable();             
                 if(DeviceType== "zkbiotime")
                     query = "select  emp_code as CardNo,FORMAT(punch_time,'yyyy-MM-dd HH:mm:ss') as PunchTime from zkbiotime.dbo.iclock_transaction where punch_time >='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and punch_time <='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  and emp_code='" + CardNo + "'  order by  FORMAT(punch_time,'yyyy-MM-dd HH:mm:ss')";
+               else if (DeviceType == "HIKVISION")
+                    query = "select  EmployeeId as CardNo,FORMAT(AuthDateTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from attslog where AuthDateTime >='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and AuthDateTime <='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  and EmployeeId='" + CardNo + "'  order by  FORMAT(AuthDateTime,'yyyy-MM-dd HH:mm:ss')";
                 else // default att2000 [Old zk]
                     query = "select  distinct u.BADGENUMBER as CardNo,format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PunchTime from cw_att_zk.dbo.CHECKINOUT c inner join cw_att_zk.dbo.USERINFO u on c.USERID=u.USERID where c.CHECKTIME>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and c.CHECKTIME<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND u.BADGENUMBER='" + CardNo + "' order by format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss')";
 
