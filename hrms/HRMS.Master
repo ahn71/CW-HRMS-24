@@ -1240,14 +1240,16 @@
                             <a href="javascript:;" class="nav-item-toggle icon-active">
                                 <img class="svg" src="/hrms/img/svg/alarm.svg" alt="img">
                             </a>
+                             
+                            
                             <div class="dropdown-parent-wrapper">
                                 <div class="dropdown-wrapper">
                                     <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1">1</span></h2>
                                     <ul class="nav-notification-list">
                                         <!-- Notifications will be dynamically added here -->
+
                                     </ul>
 
-                                    <a href="" class="dropdown-wrapper__more">See all incoming activity</a>
                                 </div>
                             </div>
                         </div>
@@ -1596,8 +1598,8 @@
     <script>
 
          var token = '<%= Session["__UserToken__"] %>';
-         var rootUrl = 'https://localhost:7220';
-         <%--var rootUrl = '<%= Session["__RootUrl__"]%>';--%>
+         //var rootUrl = 'http://localhost:5081';
+         var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
          //var userId = '7125';
@@ -1606,7 +1608,8 @@
          var dsgId = '<%=  Session["__DsgId__"]%>';
          var gId = '<%=  Session["__Gid__"]%>';
          var sftId = '<%=  Session["__SftId__"]%>';--%>
-         var getLeavesNotificationUrl = rootUrl + '/api/Notification/html';
+        //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
+        var getLeavesNotificationUrl ='https://localhost:44322/api/Notification/notification';
 
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
@@ -1620,84 +1623,88 @@
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');
             }
-
+         
             GetLeavesNotification();
         });
-
+        function approval() {
+            alert('ok');
+            console.log("ok"); 
+        }
         function GetLeavesNotification() {
             ApiCallByCompId(getLeavesNotificationUrl, token, userId)
                 .then(function (response) {
                     // Check if the response status is valid and contains data
                     if (response.status === "200" && response.data) {
+                      
                         // Set up example notifications directly in the response data
-                        response.data = [
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-calendar-slash"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
-                                (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
-                            </p>
-                        </div>
-                        <div class="d-inline-flex">
-                            <button type="button" class="btn btn-success btn-sm m-2">Approve <span><i class="uil-check"></i></span></button>
-                            <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
-                            <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
-                        </div>
-                    </li>`,
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <i class="uil-calendar-slash notifi-simbole-icon"></i>
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-check"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been approved by
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Enjoy your time off!
-                            </p>
-                        </div>
-                    </li>`,
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-calendar-slash"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
-                                (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
-                            </p>
-                        </div>
-                        <div class="d-inline-flex">                            
-                            <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
-                            <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
-                        </div>
-                    </li>`,
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <i class="uil-calendar-slash notifi-simbole-icon"></i>
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-check"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been rejected by
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>.
-                            </p>
-                        </div>
-                    </li>`
-                            // Additional notifications can be added similarly
-                        ];
+                    //    response.data = [
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-calendar-slash"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                    //            (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
+                    //        </p>
+                    //    </div>
+                    //    <div class="d-inline-flex">
+                    //        <button type="button" class="btn btn-success btn-sm m-2">Approve <span><i class="uil-check"></i></span></button>
+                    //        <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
+                    //        <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
+                    //    </div>
+                    //</li>`,
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-check"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been approved by
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Enjoy your time off!
+                    //        </p>
+                    //    </div>
+                    //</li>`,
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-calendar-slash"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                    //            (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
+                    //        </p>
+                    //    </div>
+                    //    <div class="d-inline-flex">                            
+                    //        <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
+                    //        <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
+                    //    </div>
+                    //</li>`,
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-check"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been rejected by
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>.
+                    //        </p>
+                    //    </div>
+                    //</li>`
+                    //        // Additional notifications can be added similarly
+                    //    ];
 
                         // Select the container where notifications will be added
                         var notificationList = document.querySelector('.nav-notification-list');
@@ -1707,6 +1714,7 @@
 
                         // Loop through each notification item and insert into the list
                         response.data.forEach(function (notificationItem) {
+                            console.log(notificationItem);
                             notificationList.insertAdjacentHTML('beforeend', notificationItem);
                         });
                     } else {
@@ -1718,6 +1726,53 @@
                 });
         }
 
+
+ function Approval(action, data) {
+    try {
+        // Parse the JSON data
+        alert('HEllo CW');
+        console.log("actions is",action);
+        console.log("data is ",data);
+
+        // Extract the values from parsedData
+        const id = data.Id;
+        const approvalStatus = data.approval_status;
+        const notificationId = data.notificationId;
+
+        // Perform actions based on the passed 'action'
+        console.log(`Action: ${action}`);
+        console.log(`ID: ${id}`);
+        console.log(`Approval Status: ${approvalStatus}`);
+        console.log(`Notification ID: ${notificationId}`);
+
+        // Example: Handle the approval process
+        if (action === 'Leave / approval') {
+            // Call an API, update UI, or perform other logic
+            console.log('Handling leave approval...');
+            
+            // Example API call using fetch
+            fetch('/api/leave/approval', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id, approvalStatus, notificationId })
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('API response:', result);
+                alert('Leave approval processed successfully!');
+            })
+            .catch(error => {
+                console.error('Error processing approval:', error);
+                alert('Failed to process approval.');
+            });
+        }
+    } catch (error) {
+        console.error('Error in handleButtonClick:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
 
 
          //`
@@ -1774,20 +1829,16 @@
         //        });
         //}
 
+        
 
-
-        function ApiCallByCompId(url, token, id) {
+        function ApiCallByCompId(url, token, userId) {
             return new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: `${url}/${id}`, // Constructs the URL dynamically with the id
+                    url: `${url}?userId=${userId}`, // Appends the userId as a query parameter
                     type: 'GET',
                     dataType: 'json',
                     headers: {
                         'Authorization': 'Bearer ' + token // Adds Bearer token for authentication
-                    },
-                    data: {
-                        moduleID: id// Sends id in the data object
-                       // Adds companyID as a parameter in the request
                     },
                     success: function (data) {
                         resolve(data); // Resolves the Promise with the response data
@@ -1798,7 +1849,8 @@
                     }
                 });
             });
-        }
+}
+
 
     </script>
 
