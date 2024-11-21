@@ -326,8 +326,13 @@
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
 
-         var getEmployeeUrl = rootUrl + '/api/Employee/EmployeeName';
-         var getLeaveTypeUrl = rootUrl + '/api/Leave/LeaveType';
+        var empUrl = '/api/Employee/EmployeeName';
+        var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
+
+
+        var getLeaveTypeUrl = rootUrl + '/api/Leave/LeaveType';
+
+
 
         async function validateUser() {
             var isValid = true;

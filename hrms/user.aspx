@@ -305,7 +305,10 @@
          var getUsersUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesWithGuestUrl = rootUrl + '/api/UserRoles/userRolesWithGuestUser';
-         var getEmployeeUrl = rootUrl + '/api/Employee/EmployeeName';
+
+         var empUrl = '/api/Employee/EmployeeName';
+         var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
+
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
          var createUserUrl = rootUrl + '/api/User/users/create';
