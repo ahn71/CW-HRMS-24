@@ -68,6 +68,19 @@
     </asp:ContentPlaceHolder>
 
     <style>
+        .navbar-right__menu .nav-item-toggle.icon-active:before {
+    position: absolute;
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    right: -7px;
+    top: -2px;
+    border: 2px solid var(--color-white);
+}
+        .navbar-right__menu .nav-notification .nav-item-toggle:before {
+    background: #ffffff !important;
+}
         .btn-sm {
             width: 100px;
             height: 32px !important;
@@ -115,7 +128,19 @@
             color: #b200ff;
             vertical-align: middle;
         }
+        span.position-absolute.count-number {
+    background: red;
+    text-align: center;
+    top: -20px;
+    color: #fff;
+    border-radius: 50%;
+    right: -10px;
+    font-size: 12px;
+    line-height: 21px;
+    /* padding: 7px; */
+}
     </style>
+ 
 
 </head>
 <body>
@@ -1235,16 +1260,20 @@
 
                 <ul class="navbar-right__menu">
                     <!-- ends: nav-message -->
-                    <li class="nav-notification">
+                    <li onclick="showNotify();" class="nav-notification">
                         <div class="dropdown-custom">
                             <a href="javascript:;" class="nav-item-toggle icon-active">
                                 <img class="svg" src="/hrms/img/svg/alarm.svg" alt="img">
+
+                                <div class="notify-count position-relative">
+                                    <span class="position-absolute count-number"></span>
+                                </div>
                             </a>
-                             
+                       
                             
-                            <div class="dropdown-parent-wrapper">
+                            <div id="notify_wrapper" style="display:none" class="dropdown-parent-wrapper">
                                 <div class="dropdown-wrapper">
-                                    <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1">1</span></h2>
+                                    <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1 count-number">1</span><span class="badge-circle badge-warning ms-1 d-none normal">1</span></h2>
                                     <ul class="nav-notification-list">
                                         <!-- Notifications will be dynamically added here -->
 
@@ -1254,6 +1283,7 @@
                             </div>
                         </div>
                     </li>
+                    
                     <!-- ends: .nav-notification -->
                     <% if (IsRouteExists("settings"))
                         { %>
@@ -1517,7 +1547,7 @@
             </div>
         </footer>
     </form>
-
+   
     <div id="overlayer">
         <div class="loader-overlay">
             <div class="dm-spin-dots spin-lg">
@@ -1597,6 +1627,11 @@
 
     <script>
 
+        function showNotify() {
+    $('#notify_wrapper').toggle(); 
+}
+
+
          var token = '<%= Session["__UserToken__"] %>';
          //var rootUrl = 'http://localhost:5081';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
@@ -1626,16 +1661,49 @@
          
             GetLeavesNotification();
         });
-        function approval() {
-            alert('ok');
-            console.log("ok"); 
-        }
-        function GetLeavesNotification() {
+ 
+    //nipun
+        $(document).ready(function() {
+            $('.nav-notification').click(function () {
+                var notificationsCount = document.querySelector('.normal');
+                let normalCount = notificationsCount.innerHTML;
+
+                var notificationsCount = document.querySelector('.count-number');
+                let totalCount = notificationsCount.innerHTML;
+                if (totalCount == 0)
+                    return;
+                let remainigCount = totalCount - normalCount;
+                SetNotificationNumber(remainigCount);
+                ControlNormalNotificationCount();
+
+            });
+
+});
+
+
+    function GetLeavesNotification() {
             ApiCallByCompId(getLeavesNotificationUrl, token, userId)
                 .then(function (response) {
                     // Check if the response status is valid and contains data
-                    if (response.status === "200" && response.data) {
-                      
+                    if (response.status === "200") {
+                        var notificationsCount = document.querySelector('.normal');
+                        notificationsCount.innerHTML = response.data.unseen;
+                        SetNotificationNumber(response.data.unseen+response.data.task);
+                        if (response.data.notifications) {
+                             var notificationList = document.querySelector('.nav-notification-list');
+
+                            
+                           notificationList.innerHTML = '';
+                        // Loop through each notification item and insert into the list
+                        response.data.notifications.forEach(function (notificationItem) {
+                            console.log(notificationItem);
+                            notificationList.insertAdjacentHTML('beforeend', notificationItem);
+                        });
+
+                        }
+                        else {
+                        console.error('No notifications available');
+                    }
                         // Set up example notifications directly in the response data
                     //    response.data = [
                     //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
@@ -1707,34 +1775,49 @@
                     //    ];
 
                         // Select the container where notifications will be added
-                        var notificationList = document.querySelector('.nav-notification-list');
-
-                        // Clear any existing notifications
-                        notificationList.innerHTML = '';
-
-                        // Loop through each notification item and insert into the list
-                        response.data.forEach(function (notificationItem) {
-                            console.log(notificationItem);
-                            notificationList.insertAdjacentHTML('beforeend', notificationItem);
-                        });
+                       
                     } else {
-                        console.error('No notifications available or invalid response status.');
+                        console.error('Invalid response status.');
                     }
                 })
                 .catch(function (error) {
                     console.error('Error occurred while fetching data:', error);
                 });
         }
+    function DecreaseNotification() {
+            let notificationsCount = document.querySelector('.count-number');
+            let notificationNumber = notificationsCount.innerHTML;
+            notificationNumber=notificationNumber-1
+            SetNotificationNumber(notificationNumber);
+        }
+    function SetNotificationNumber(notificationNumber) {
+            var notificationsCount = document.querySelector('.count-number');
+            notificationsCount.innerHTML = notificationNumber;
 
+        $(document).ready(function () {
+                if ($(".count-number").html().trim() === "0") {
+                    $(".count-number").hide();
 
- function Approval(action, data) {
+                }
+                else {
+                    $(".count-number").show();
+                }
+
+            });
+        }
+    function ControlNormalNotificationCount() {
+        const getleaveApproaleUrl = `${rootUrl}/api/Notification/notification-count`;
+        NotificationCountUpdate(getleaveApproaleUrl,token)
+         
+       }
+    function Approval(item_id,action, data) {
     try {
         // Parse the JSON data
-        alert('HEllo CW');
         console.log("actions is",action);
-        console.log("data is ",data);
+        console.log("data is ", data);
+        $("#hide_" + item_id).addClass("d-none");
 
-        // Extract the values from parsedData
+        // Extract the values from parsedDatas
         const id = data.Id;
         const approvalStatus = data.approval_status;
         const notificationId = data.notificationId;
@@ -1744,11 +1827,12 @@
                 notificationId: notificationId,
                 approval_status: approvalStatus
         };
-        const getleaveApproaleUrl = `${rootUrl}/api/${action}`;
+        const getleaveApproaleUrl = `${rootUrl}/api/${action}?CompanyID=${CompanyID}`;
         console.loggetleaveApproaleUrl
-
-            ApiCallUpdateWithoutId(getleaveApproaleUrl, token, updateData)
+            ApiCallUpdate(getleaveApproaleUrl, token, updateData)
                 .then(function (response) {
+                    $("#" + id).hide(); 
+                    DecreaseNotification();
                     console.log('Data updated successfully:', response);
                     Swal.fire({
                         icon: 'success',
@@ -1772,7 +1856,74 @@
         console.error('Error in handleButtonClick:', error);
         alert('An error occurred. Please try again.');
     }
+        }
+    function NotificationCountUpdate(url, token) {
+            $.ajax({
+                url: url, 
+                type: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}` 
+                },
+                success: function (response) {
+                    $('#response').text('API call successful!');
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    $('#response').text('API call failed: ' + xhr.responseText);
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+     function ApiCallUpdate(url, token, updateData) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url:url,
+                    type: 'PUT',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    data: JSON.stringify(updateData),
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred while updating data:', status, error);
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+    function ApiCallCountUpdate(url, token) {
+     return new Promise((resolve, reject) => {
+        fetch(url, {
+            method: 'PUT', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, 
+            },
+            body: JSON.stringify({}) 
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                resolve(data); 
+            } else {
+                reject(data); 
+            }
+        })
+        .catch(error => {
+            reject(error); 
+        });
+    });
 }
+
+
+
+
 
 
          //`
@@ -1829,59 +1980,37 @@
         //        });
         //}
 
-        const leaveId = $(this).data('id');
-        const notificationId = $(this).data('notification-id');
-        const approvalStatus = $(this).data('status');
+       
 
-        function ApiCallUpdateWithoutId(url, token, updateData) {
-    return new Promise(function (resolve, reject) {
-        $.ajax({
-            url: url,
-            type: 'PUT',
-            dataType: 'json',
-            contentType: 'application/json',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-            data: JSON.stringify(updateData),
-            success: function (data) {
-                resolve(data);
-            },
-            error: function (xhr, status, error) {
-                console.error('Error occurred while updating data:', status, error);
-                reject(error);
-            }
-        });
-    });
-}
+        //function LeaveApprove(LeaveId, notificationId, approval_status) {
+        //    var updateData = {
+        //        id: LeaveId,
+        //        notificationId: notificationId,
+        //        approval_status: approval_status
+        //    };
+          
+        //    ApiCallUpdate(getLeaveApproveUrl, token, updateData , CompanyID)
+        //        .then(function (response) {
+        //            console.log('Data updated successfully:', response);
+        //            Swal.fire({
+        //                icon: 'success',
+        //                title: 'Success',
+        //                text: 'Leave Approved successfull!'
+        //            }).then(() => {
+        //                 GetLeaves();
+        //            });
+        //        })
+        //        .catch(function (error) {
+        //            console.error('Error updating data:', error);
+        //            Swal.fire({
+        //                icon: 'error',
+        //                title: 'Error',
+        //                text: 'Failed to update data. Please try again.'
+        //            });
+        //        });
+        //}
 
-        function LeaveApprove(LeaveId, notificationId, approval_status) {
-            var updateData = {
-                id: LeaveId,
-                notificationId: notificationId,
-                approval_status: approval_status
-            };
 
-            ApiCallUpdateWithoutId(getLeaveApproveUrl, token, updateData)
-                .then(function (response) {
-                    console.log('Data updated successfully:', response);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Leave Approved successfull!'
-                    }).then(() => {
-                         GetLeaves();
-                    });
-                })
-                .catch(function (error) {
-                    console.error('Error updating data:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to update data. Please try again.'
-                    });
-                });
-        }
 
 
 
@@ -1905,6 +2034,9 @@
             });
 }
 
+
+
+        
 
     </script>
 
