@@ -205,8 +205,20 @@
 
                                                 </td>
                                             </tr>
+
+                                             <tr runat="server" id="tr5">
+                                                <td>Payer Bank
+                                                </td>
+                                                <td>:
+                                                </td>
+                                                <td>
+                                                    <asp:DropDownList runat="server" ID="ddlPayerBank" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
+                                                </td>
+                                            </tr>
+
+
                                             <tr runat="server" id="trBank">
-                                                <td>Bank Name
+                                                <td>Salary Bank
                                                 </td>
                                                 <td>:
                                                 </td>
@@ -214,6 +226,9 @@
                                                     <asp:DropDownList runat="server" ID="ddlBankList" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
                                                 </td>
                                             </tr>
+
+
+                                            
 
                                             <tr runat="server" id="trAccount">
                                                 <td>Account No

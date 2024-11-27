@@ -1108,6 +1108,8 @@
     <Content Include="ControlPanel\user_privilege.aspx" />
     <Content Include="default.aspx" />
     <Content Include="EmployeeImages\CompanyLogo\logo.png" />
+    <Content Include="hrd\bankentry_panel.aspx" />
+    <Content Include="hrd\bank_entry_panel.aspx" />
     <Content Include="hrd\business_type.aspx" />
     <Content Include="hrd\department.aspx" />
     <Content Include="hrd\designation.aspx" />
@@ -3509,6 +3511,20 @@
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrd\bankentry_panel.aspx.cs">
+      <DependentUpon>bankentry_panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrd\bankentry_panel.aspx.designer.cs">
+      <DependentUpon>bankentry_panel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrd\bank_entry_panel.aspx.cs">
+      <DependentUpon>bank_entry_panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrd\bank_entry_panel.aspx.designer.cs">
+      <DependentUpon>bank_entry_panel.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrd\business_type.aspx.cs">
       <DependentUpon>business_type.aspx</DependentUpon>
