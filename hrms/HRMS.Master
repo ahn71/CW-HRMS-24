@@ -180,6 +180,10 @@
     margin-bottom: 5px;
     font-size: 16px !important;
 }
+     .list-settings {
+    height: 300px;
+    overflow: scroll;
+}
         
     </style>
  
@@ -1510,6 +1514,19 @@
                                             </div>
                                         </li>
                                         <%} %>
+
+                                         <li class="d-flex">
+                                            <div class="me-3"><i class="QualiStyle uil uil-globe"></i></div>
+                                            <div class="flex-grow-1">
+                                                <h6>
+                                                    <a href="bank-entry" runat="server" class="stretched-link">Bank Entry
+                                                    </a>
+                                                </h6>
+                                                <p>Bank Entry</p>
+                                            </div>
+                                        </li>
+
+
                                     </ul>
                                 </div>
                             </div>

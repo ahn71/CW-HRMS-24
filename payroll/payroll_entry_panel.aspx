@@ -206,6 +206,34 @@
                                                 </td>
                                             </tr>
 
+
+
+                                               <tr>
+                                                
+                                                
+                                                <td>Is Vacation</td>
+                                                <td>:
+                                                </td>
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                      <asp:CheckBox runat="server" ID="chkIsvacation" Text="IsVacation" />
+                                                            </td>
+                                                      
+                                                          
+                                                           
+                                                            
+                                                        </tr>
+                                                    </table>
+                                                    
+
+                                                </td>
+                                            </tr>
+
+
+
+
                                              <tr runat="server" id="tr5">
                                                 <td>Payer Bank
                                                 </td>

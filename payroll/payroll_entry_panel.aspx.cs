@@ -326,12 +326,13 @@ namespace SigmaERP.payroll
         private void saveSalary() 
         {
             try {
+                int isVacation = (chkIsvacation.Checked) ? 1 : 0;
                 SqlCommand cmd = new SqlCommand("update Personnel_EmpCurrentStatus  Set SalaryCount=@SalaryCount,BankId=@BankId," +
                     "EmpAccountNo=@EmpAccountNo,GrdName=@GrdName,EmpJoinigSalary=@EmpJoinigSalary, PreEmpSalary=@PreEmpSalary, EmpPresentSalary=@EmpPresentSalary, " +
                     " PreBasicSalary=@PreBasicSalary, BasicSalary=@BasicSalary,PreMedicalAllownce=@PreMedicalAllownce,"+
                     " MedicalAllownce=@MedicalAllownce,PreFoodAllownce=@PreFoodAllownce, FoodAllownce=@FoodAllownce,"+
                     "PreConvenceAllownce=@PreConvenceAllownce, ConvenceAllownce=@ConvenceAllownce, PreHouseRent=@PreHouseRent,"+
-                    " HouseRent=@HouseRent,PreAttendanceBonus=@PreAttendanceBonus,AttendanceBonus=@AttendanceBonus,NightAllownce=@NightAllownce,OverTime=@OverTime,PreOthersAllownce=@PreOthersAllownce,OthersAllownce=@OthersAllownce,DormitoryRent=@DormitoryRent,IsSingleRateOT=@IsSingleRateOT,IncomeTax=@IncomeTax,PayerBankId=@PayerBankId where SN=@SN", sqlDB.connection);
+                    " HouseRent=@HouseRent,PreAttendanceBonus=@PreAttendanceBonus,AttendanceBonus=@AttendanceBonus,NightAllownce=@NightAllownce,OverTime=@OverTime,PreOthersAllownce=@PreOthersAllownce,OthersAllownce=@OthersAllownce,DormitoryRent=@DormitoryRent,IsSingleRateOT=@IsSingleRateOT,IncomeTax=@IncomeTax,PayerBankId=@PayerBankId,IsVacation=@isVacation where SN=@SN", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@SN", ddlEmpCardNo.SelectedValue);
                 if (chkPaymentType.SelectedValue=="1")
@@ -372,6 +373,7 @@ namespace SigmaERP.payroll
                 cmd.Parameters.AddWithValue("@OthersAllownce", txtOthers.Text.Trim());
                 cmd.Parameters.AddWithValue("@DormitoryRent", ddlDormitoryRent.SelectedValue);
                 cmd.Parameters.AddWithValue("@PayerBankId", ddlPayerBank.SelectedValue);
+                cmd.Parameters.AddWithValue("@isVacation", isVacation);
 
                 //if (chkPFMember.Checked)
                 //{

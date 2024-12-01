@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,17 +49,23 @@ namespace SigmaERP.payroll.salary
             {
                 bankShortName = "CBQ and QIB";
             }
-          
+            string jjj = ViewState["__Month__"].ToString();
+            string monthYear = jjj.Split('[')[0].Trim(); // "Nov-2024"
+
+            // Convert the month-year string to DateTime
+            DateTime result = DateTime.ParseExact(monthYear, "MMM-yyyy", CultureInfo.InvariantCulture);
+
 
             string totalSalaryString = ViewState["__totalSalary__"]?.ToString();
             string registrationID = ViewState["__registrationID__"]?.ToString();
             string establishmentID = ViewState["__establishmentID__"]?.ToString();
             string totalRows = ViewState["__totalRows__"]?.ToString() ?? "0";
+            string bankAcounnt = Session["__bankAcount__"].ToString();
 
             // Initialize CSV content
             var csvContent = new StringBuilder();
-            csvContent.AppendLine("EMPLOYER EID:,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Total Salaries,Total records:");
-            csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{establishmentID},,{bankShortName},{totalSalaryString},{totalRows}");
+            csvContent.AppendLine("EMPLOYER EID:,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Payer IBAN,Salary Year and Month,Total Salaries,Total records:");
+            csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{establishmentID},,{bankShortName},{bankAcounnt},{result:yyyyMM},{totalSalaryString},{totalRows}");
 
             // Add headers to CSV
             var headerValues = new List<string> { "Record ID" };
