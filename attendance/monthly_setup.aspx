@@ -32,6 +32,15 @@
                 }
             }
 
+            function BoxExpland() {
+                var scrollTop = $(window).scrollTop();
+
+                $("#Cardbox").show();
+                $("#addnew").text("Close");
+                
+                $(window).scrollTop(scrollTop);
+            }
+
         </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap-grid.min.css" integrity="sha512-Aa+z1qgIG+Hv4H2W3EMl3btnnwTQRA47ZiSecYSkWavHUkBF2aPOIIvlvjLCsjapW1IfsGrEO3FU693ReouVTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
@@ -44,6 +53,9 @@
         text-align: center;
         position: sticky;
         bottom: -5px;
+        }
+        #addnew{
+            background-color:#b200ff !important;
         }
     </style>
 </asp:Content>
@@ -90,7 +102,7 @@
 
                 <div class="btn-wrapper mb-2">
                     <div class="dm-button-list d-flex flex-wrap justify-content-end">
-                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
+                        <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-primary  btn-squared">Add New</button>
                     </div>
                 </div>
 

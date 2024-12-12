@@ -20,18 +20,19 @@ img {
     height: 40px;
     border-bottom: 3px solid #CCCCCC;
 }
-
+.gridview a{
+    color :black !important;
+}
 #menu {
-
-	border: 0 solid #546CB4;
-	float: left;
-	font-size: 15px;
-	font-weight: normal;
-	padding: 0;
-    position:absolute;
-    z-index:99;
-    width:940px;
-    margin:0px;
+    border: 0 solid #546CB4;
+    float: left;
+    font-size: 15px;
+    font-weight: normal;
+    padding: 0;
+    position: absolute;
+    z-index: 99;
+    width: 940px;
+    margin: 0px;
 }
 
 .requerd1 {
@@ -405,7 +406,7 @@ width: 650px;
     .main_box_content p{
         font-weight:500;
     }
-.Mbutton {
+/*.Mbutton {
     box-shadow: transparent !important;
     cursor: pointer;
     display: inline-block;
@@ -415,7 +416,7 @@ width: 650px;
     margin: 0px 3px;
     padding: 8px 14px;
     border: 0 !important;
-}
+}*/
 
     .cancel_Btn {
         background-color: #A20019;
@@ -803,7 +804,6 @@ background-color: #086A99;
 
 table {
     max-width: 100%;
-    background-color: #fff !important;
     border: 0;
     padding:20px !important;
 }

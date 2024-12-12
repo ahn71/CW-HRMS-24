@@ -24,13 +24,15 @@ namespace SigmaERP.attendance
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
-            int[] pagePermission = { 259,262,263};
+
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+                int[] pagePermission = { 259, 262, 263 };
+
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
                 //string script = "$(document).ready(function () { $('[id*=btnForGet]').click(); });";
                 //ClientScript.RegisterStartupScript(this.GetType(), "load", script, true);
@@ -172,7 +174,7 @@ namespace SigmaERP.attendance
                     string StateStatus = gvAttendanceList.DataKeys[index].Values[8].ToString();
                  
 
-                    Response.Redirect("/attendance/attendance.aspx?eid_cn_at=" + EmpId + "_" + EmpCardNo + "_" + AttDate + "_" + AttStatus + "_" + InTime + "_" + OutTime + "_" + EmpType + "_" + EmpName + "_" + StateStatus + "");
+                    Response.Redirect("/attendance/attendance.aspx?eid_cn_at=" + EmpId + "_" + EmpCardNo + "_" + AttDate + "_" + AttStatus + "_" + InTime + "_" + OutTime + "_" + EmpType + "_" + EmpName + "_" + StateStatus + "",true);
                 }
             }
             catch (Exception ex) { }
@@ -432,7 +434,12 @@ namespace SigmaERP.attendance
                 {
                     queryCondition= "EmpStatus in ('1', '8')  and CompanyId = '" + ddlCompanyList.SelectedValue + "'and DptId = '" + ddlDepartmentName.SelectedValue + "' and GId = " + ddlGrouping.SelectedValue + " and ATTDate>= '" + ViewState["__FDate__"].ToString() + "' and ATTDate<= '" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
                 }
-
+               
+                if (queryCondition == "")
+                {
+                    loadAttendanceList();
+                    return;
+                }
                 query += queryCondition;
                 sqlDB.fillDataTable(query,dt=new DataTable());
                 //------------------------------------------------------------------------------------------------

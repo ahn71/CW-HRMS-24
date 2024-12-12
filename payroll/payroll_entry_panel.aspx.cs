@@ -640,21 +640,14 @@ namespace SigmaERP.payroll
                     {
                         lblMedical.Text = " ( ৳ )";
                         lblMedical.ForeColor = System.Drawing.Color.Green;
-                        txtMedical.Text = dr[0]["MedicalAllownce"].ToString();
-                        //if (hfIsGarments.Value == "1")
-                        //{
-                        //    if (txtMedical.Text.Trim() == "0" || txtMedical.Text.Trim() == " ")
-                        //    {
-                        //        txtMedical.Text = dr[0]["MedicalAllownce"].ToString();
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    if (txtMedical.Text.Trim() == "0" || txtMedical.Text.Trim() == " ")
-                        //    {
-                        //        txtMedical.Text = dr[0]["MedicalAllownce"].ToString();
-                        //    }
-                        //}
+                        txtMedical.Enabled = true;
+
+                        if (txtMedical.Text.Trim() == "0" || txtMedical.Text.Trim() == " ")
+                        {
+                            txtMedical.Text = dr[0]["TechnicalAllowance"].ToString();
+                        }
+
+
                     }
 
                     else  // 2 =x
@@ -727,13 +720,14 @@ namespace SigmaERP.payroll
                     {
                         lblTechnical.Text = " ( ৳ )";
                         lblTechnical.ForeColor = System.Drawing.Color.Green;
-                        //if (hfIsGarments.Value == "1")
-                        //{
-                        //  if (txtTechnicalAllow.Text.Trim() == "0" || txtTechnicalAllow.Text.Trim() == " ")
-                        //    {
+                        txtTechnicalAllow.Enabled = true;
+
+                         if (txtTechnicalAllow.Text.Trim() == "0" || txtTechnicalAllow.Text.Trim() == " ")
+                           {
                                 txtTechnicalAllow.Text = dr[0]["TechnicalAllowance"].ToString();
-                        //    }
-                        //}
+                           }
+
+
                     }
 
                     else  // 2 =x
@@ -772,6 +766,7 @@ namespace SigmaERP.payroll
 
                     if (dr[0]["OthStatus"].ToString() == "0") // 0 =% 
                     {
+                        txtOthers.Enabled = false;
                         lblOthers.Text = " ( " + dr[0]["OthersAllowance"].ToString() + " % )";
                         lblOthers.ForeColor = System.Drawing.Color.Blue;
                         hdfOthers.Value = dr[0]["OthersAllowance"].ToString();
@@ -780,18 +775,16 @@ namespace SigmaERP.payroll
                     {
                         lblOthers.Text = " ( ৳ )";
                         lblOthers.ForeColor = System.Drawing.Color.Green;
-
-                        //if (hfIsGarments.Value == "1")
-                        //{
-                        //    if (txtOthers.Text.Trim() == "0" || txtOthers.Text.Trim() == " ")
-                        //    {
-                                txtOthers.Text = dr[0]["OthersAllowance"].ToString();
-                        //    }
-                        //}
+                        txtOthers.Enabled = true;
+                        if (txtOthers.Text.Trim() == "0" || txtOthers.Text.Trim() == " ")
+                        {
+                            txtOthers.Text = dr[0]["OthersAllowance"].ToString();
+                        }
                     }
 
                     else  // 2 =x
                     {
+                        txtOthers.Enabled = false;
                         lblOthers.Text = " ( x )";
                         lblOthers.ForeColor = System.Drawing.Color.Red;
                     }
