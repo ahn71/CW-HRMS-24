@@ -58,24 +58,6 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.RadioButtonList rblEmpType;
         
         /// <summary>
-        /// trImportFrom control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trImportFrom;
-        
-        /// <summary>
-        /// rblImportFrom control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblImportFrom;
-        
-        /// <summary>
         /// ddlCompanyList control.
         /// </summary>
         /// <remarks>
@@ -94,40 +76,13 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.DropDownList ddlDepartmentList;
         
         /// <summary>
-        /// tdSelectFile control.
+        /// fullSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdSelectFile;
-        
-        /// <summary>
-        /// tdFileUpload control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdFileUpload;
-        
-        /// <summary>
-        /// FileUpload1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
-        
-        /// <summary>
-        /// spnFullFromDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell spnFullFromDate;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl fullSection;
         
         /// <summary>
         /// txtFullAttDate control.
@@ -137,15 +92,6 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFullAttDate;
-        
-        /// <summary>
-        /// CExtApplicationDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CExtApplicationDate;
         
         /// <summary>
         /// spnFullToDate control.
@@ -175,6 +121,15 @@ namespace SigmaERP.attendance {
         protected global::AjaxControlToolkit.CalendarExtender CalendarExtender1;
         
         /// <summary>
+        /// partialSection control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl partialSection;
+        
+        /// <summary>
         /// txtCardNo control.
         /// </summary>
         /// <remarks>
@@ -182,15 +137,6 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCardNo;
-        
-        /// <summary>
-        /// tdPartialFromDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdPartialFromDate;
         
         /// <summary>
         /// txtPartialAttDate control.
@@ -211,15 +157,6 @@ namespace SigmaERP.attendance {
         protected global::AjaxControlToolkit.CalendarExtender txtPartialAttDate_CalendarExtender;
         
         /// <summary>
-        /// trPartialToDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trPartialToDate;
-        
-        /// <summary>
         /// txtPartialToDate control.
         /// </summary>
         /// <remarks>
@@ -238,15 +175,6 @@ namespace SigmaERP.attendance {
         protected global::AjaxControlToolkit.CalendarExtender CalendarExtender2;
         
         /// <summary>
-        /// Button3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button3;
-        
-        /// <summary>
         /// btnImport control.
         /// </summary>
         /// <remarks>
@@ -254,6 +182,51 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnImport;
+        
+        /// <summary>
+        /// trImportFrom control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trImportFrom;
+        
+        /// <summary>
+        /// rblImportFrom control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rblImportFrom;
+        
+        /// <summary>
+        /// tdSelectFile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdSelectFile;
+        
+        /// <summary>
+        /// tdFileUpload control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdFileUpload;
+        
+        /// <summary>
+        /// FileUpload1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
         
         /// <summary>
         /// lblErrorMessage control.

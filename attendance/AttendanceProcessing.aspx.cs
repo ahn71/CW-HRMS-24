@@ -34,6 +34,7 @@ namespace SigmaERP.attendance
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 ViewState["__OT__"] = "0";
                 setPrivilege();
+                ToggleSections(rblImportType.SelectedValue);
             }
             if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
@@ -128,6 +129,8 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
+
+
         private void deleteAbsentNotification(DateTime selectdDate, string condition)
         {
             sqlCmd = "delete AttAbsentNotification_Log where Date='" + selectdDate.ToString("yyyy-MM-dd") + "' " + condition;
@@ -230,40 +233,75 @@ namespace SigmaERP.attendance
                 //    FileUpload1.Focus();
                 //    return false;
                 //}
-                if (rblImportType.SelectedValue == "FullImport" && rblDateType.SelectedValue == "SingleDate" && txtFullAttDate.Text.Trim().Length < 10)
-                {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select attendance date";
-                    txtFullAttDate.Focus();
+                //if (rblImportType.SelectedValue == "FullImport" && rblDateType.SelectedValue == "SingleDate" && txtFullAttDate.Text.Trim().Length < 10)
+                //{
+                //    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                //    lblErrorMessage.Text = "Please select attendance date";
+                //    txtFullAttDate.Focus();
+                //    return false;
+                //}
+                if (rblImportType.SelectedValue == "FullImport" &&
+                    rblDateType.SelectedValue == "SingleDate" &&
+                    txtFullAttDate.Text.Trim().Length < 10)
+                   {
+                    string message = "Please select attendance date";
+                    lblErrorMessage.Text = message;
+                    //txtFullAttDate.Focus();
+
+                    ScriptManager.RegisterStartupScript(
+                        this.Page,
+                        Page.GetType(),
+                        "showSweetAlert",
+                        $"Swal.fire({{ icon: 'error', title: 'Error', text: '{message}', confirmButtonText: 'OK' }});",
+                        true
+                    );
                     return false;
                 }
+
+
+
 
                 if (rblImportType.SelectedValue != "FullImport" && txtCardNo.Text.Trim().Length < 4)
                 {
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please type valid card no";
+                    //lblErrorMessage.Text = "Please type valid card no";
+                    
+
+                    ScriptManager.RegisterStartupScript(
+                    this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please type valid card no', confirmButtonText: 'OK' }});", true);
                     txtCardNo.Focus();
                     return false;
                 }
                 if (rblImportType.SelectedValue != "FullImport" && txtPartialAttDate.Text.Trim().Length < 10)
                 {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select partial attendance date";
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                    //lblErrorMessage.Text = "Please select partial attendance date";
+
+                    ScriptManager.RegisterStartupScript(
+                   this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please select partial attendance date', confirmButtonText: 'OK' }});", true);
+
                     txtPartialAttDate.Focus();
                     return false;
                 }
 
                 if (txtFullToDate.Visible == true && txtFullToDate.Text.Trim().Length < 10)
                 {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select To date";
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                    //lblErrorMessage.Text = "Please select To date";
+
+                    ScriptManager.RegisterStartupScript(
+                   this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please select To date', confirmButtonText: 'OK' }});", true);
                     txtFullToDate.Focus();
                     return false;
                 }
                 else if (txtPartialToDate.Visible == true && txtPartialToDate.Text.Trim().Length < 10)
                 {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select To date";
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                    //lblErrorMessage.Text = "Please select To date";
+
+                    ScriptManager.RegisterStartupScript(
+                   this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please select To date', confirmButtonText: 'OK' }});", true);
+
                     txtPartialToDate.Focus();
                     return false;
                 }
@@ -326,6 +364,24 @@ namespace SigmaERP.attendance
                 tdSelectFile.Visible = true;
             }
                 
+        }
+
+        protected void rblImportType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ToggleSections(rblImportType.SelectedValue);
+        }
+        private void ToggleSections(string selectedValue)
+        {
+            if (selectedValue == "FullImport")
+            {
+                fullSection.Visible = true;
+                partialSection.Visible = false;
+            }
+            else if (selectedValue == "PartialImport")
+            {
+                fullSection.Visible = false;
+                partialSection.Visible = true;
+            }
         }
     }
 }

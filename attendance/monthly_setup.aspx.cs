@@ -310,6 +310,9 @@ namespace SigmaERP.attendance
               
                 if (e.CommandName == "Edit")
                 {
+                   
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "CallBoxExpland", "BoxExpland();", true);
+
                     if (!ViewState["__preRIndex__"].ToString().Equals("No")) gvMonthSetup.Rows[int.Parse(ViewState["__preRIndex__"].ToString())].BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
 
                     int rIndex = int.Parse((e.CommandArgument).ToString());
@@ -333,7 +336,7 @@ namespace SigmaERP.attendance
 
                     txtMonthName.Enabled = false;
 
-
+                  
 
                 }
                 else if (e.CommandName == "Delete")
