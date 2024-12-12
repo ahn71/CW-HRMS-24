@@ -112,15 +112,6 @@ namespace SigmaERP {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divMonthlyStatus;
         
         /// <summary>
-        /// divAttReportDaterange control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAttReportDaterange;
-        
-        /// <summary>
         /// divManpowerWiseAttendance control.
         /// </summary>
         /// <remarks>

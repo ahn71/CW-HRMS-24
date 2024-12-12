@@ -296,6 +296,7 @@ namespace SigmaERP.hrms.UI.auth
                 string response = apiConnector.Login("/api/LogIn/Login", username, password, companyId);
                 var jsonResponse = JsonConvert.DeserializeObject<dynamic>(response);
 
+           
                 if (jsonResponse.statusCode == 200)
                 {
                     

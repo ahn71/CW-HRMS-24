@@ -27,6 +27,12 @@ namespace SigmaERP
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
+            if (HttpContext.Current.Session != null && HttpContext.Current.Session["User"] == null)
+            {
+                // Session is null, meaning the user is not logged in or the session has expired
+                // Redirect to the login page
+                HttpContext.Current.Response.Redirect("~/Login.aspx");
+            }
 
         }
 

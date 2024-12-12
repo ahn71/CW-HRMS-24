@@ -47,7 +47,7 @@ namespace SigmaERP.attendance
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
                 ViewState["__ReadAction__"] = AccessPermission[0];
-
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 classes.commonTask.LoadShiftNameByCompany(ViewState["__CompanyId__"].ToString(),ddlShift);
                 classes.commonTask.LoadMonthName(ViewState["__CompanyId__"].ToString(), ddlMonthName);
                 trMonth.Visible = false;
