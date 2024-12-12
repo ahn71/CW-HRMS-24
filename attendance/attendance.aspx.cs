@@ -104,16 +104,16 @@ namespace SigmaERP.attendance
                 txtFromDate.Enabled = false;
                 btnSave.Text = "Update";
 
-                if (ViewState["__UpdateAction__"].Equals("0"))
-                {
-                    btnSave.Enabled = false;
-                    btnSave.CssClass = "";
-                }
-                else
-                {
-                    btnSave.Enabled = true;
-                    btnSave.CssClass = "Mbutton";
-                }
+                //if (ViewState["__UpdateAction__"].Equals("0"))
+                //{
+                //    btnSave.Enabled = false;
+                //    btnSave.CssClass = "";
+                //}
+                //else
+                //{
+                //    btnSave.Enabled = true;
+                //    btnSave.CssClass = "Mbutton";
+                //}
 
                 sqlDB.fillDataTable("select SftId,DptName,CompanyId from v_Personnel_EmpCurrentStatus where EmpId='"+empId+"'",dt=new DataTable ());
 

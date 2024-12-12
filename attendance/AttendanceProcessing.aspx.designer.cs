@@ -229,15 +229,6 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
         
         /// <summary>
-        /// lblErrorMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblErrorMessage;
-        
-        /// <summary>
         /// gvAttendance control.
         /// </summary>
         /// <remarks>
@@ -254,5 +245,14 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl ulAttMissingLog;
+        
+        /// <summary>
+        /// lblErrorMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErrorMessage;
     }
 }

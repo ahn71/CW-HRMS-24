@@ -75,7 +75,9 @@
                                     ID="CalendarExtender1" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtToDate">
                                 </asp:CalendarExtender></td>
                                 <td>
-                                    <asp:Button ID="btnSearch" CssClass="Mbutton" runat="server" Text="Search" OnClick="btnSearch_Click"   />
+                                    <asp:Button ID="btnSearch" CssClass="
+                                        
+                                        " runat="server" Text="Search" OnClick="btnSearch_Click"   />
                                 </td>
                                 <td>
                                     <asp:Button ID="btnPrint" CssClass="Mbutton" runat="server" Text="Print"  OnClientClick="portraitPrintHTML('divAbsentNotificationList')"  />

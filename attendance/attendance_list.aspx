@@ -53,7 +53,12 @@
             margin-top: -37px;
             font: bold;
         }
-          
+         .Mbody {
+  background: #c6c6b4 none repeat scroll 0 0;
+  border-bottom: 2px solid #2B5E4E !important;
+  border-left: 2px solid #2B5E4E !important;
+  border-right: 2px solid #2B5E4E !important;
+}
     </style>
   <script type="text/javascript">
       //$(function () {
@@ -107,7 +112,7 @@
                  <h2></h2>
                  <h2 class="emp_header_right">
                      <!--<a href="/leave/aplication.aspx">Close</a>-->
-                     <asp:Button ID="Button1" runat="server" CssClass="Mbutton" Height="34px"  PostBackUrl="~/attendance_default.aspx" Style="border: 1px solid;" Text="Close" Width="75px" />
+                     <asp:Button ID="Button1" runat="server" CssClass="Mbutton" Height="34px"  PostBackUrl="~/attendance_default.aspx"  Style="border: 1px solid;" Text="Close" Width="75px" />
                      <asp:Button ID="btnRefresh" runat="server" CssClass="Mbutton" Height="34px" OnClick="btnRefresh_Click" Text="Refresh" Width="75px" />
                      <asp:Button ID="btnClear" runat="server" CssClass="Mbutton" Height="34px" OnClick="btnClear_Click" Text="Clear" Width="75px" />
                  </h2>

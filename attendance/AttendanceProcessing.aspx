@@ -25,16 +25,26 @@
         }
 
 
-         document.addEventListener('DOMContentLoaded', function () {
-                    // Initialize Flatpickr on the TextBox
-                const calendar = flatpickr(".DatePicker", {
-                      dateFormat: "d-m-Y",
-                        allowInput: true,
-                    });
-
-                    // Trigger calendar on icon click
-                
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Flatpickr only if it hasn't been initialized
+            if (!document.querySelector(".DatePicker")._flatpickr) {
+                flatpickr(".DatePicker", {
+                    dateFormat: "d-m-Y",
+                    allowInput: true,
                 });
+            }
+
+            // Trigger calendar on icon click
+            document.querySelectorAll(".DatePicker").forEach(function (element) {
+                const icon = element.nextElementSibling; // Assuming the icon is next to the input
+                if (icon) {
+                    icon.addEventListener("click", function () {
+                        element._flatpickr.open(); // Open Flatpickr programmatically
+                    });
+                }
+            });
+        });
+
     </script>
 
 
@@ -287,7 +297,9 @@
 
                         <div class="col-lg-6">
 
-                              <asp:Button ID="btnImport" runat="server" Style="float: left;" CssClass="Mbutton" Text="Process" OnClick="btnImport_Click" />
+                              <asp:Button ID="btnImport" runat="server" Style="float: left;" CssClass="Mbutton
+                                  
+                                  " Text="Process" OnClick="btnImport_Click" />
                         </div>
 
 
@@ -337,19 +349,7 @@
                             </div>
                         </div>
 
-                    </ContentTemplate>
-                </asp:UpdatePanel>
-
-                <div class="import_data_footer">
-
-                    <div class="import_data_footer_right" style="height: 30px;">
-                        <asp:Label ID="lblErrorMessage" runat="server" ClientIDMode="Static" ForeColor="Red" Text=""></asp:Label>
-                    </div>
-
-                </div>
-
-
-                <div class="dataTables_wrapper">
+                           <div class="dataTables_wrapper">
                     <asp:GridView ID="gvAttendance" runat="server" AllowPaging="True" Style="font-size: 13px" AutoGenerateColumns="False" DataKeyNames="EmpCardNo" CellPadding="4" ForeColor="#333333" Height="13px" PageSize="1500" Width="100%" OnPageIndexChanging="gvAttendance_PageIndexChanging" OnRowDataBound="gvAttendance_RowDataBound">
                         <PagerStyle CssClass="gridview" Height="20px" />
                         <AlternatingRowStyle BackColor="White" />
@@ -448,6 +448,19 @@
                         <li><a target="_blank" href="attendance_missing_log.aspx">attendance missing log</a></li>
                     </ul>
                 </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+
+                <div class="import_data_footer">
+
+                    <div class="import_data_footer_right" style="height: 30px;">
+                        <asp:Label ID="lblErrorMessage" runat="server" ClientIDMode="Static" ForeColor="Red" Text=""></asp:Label>
+                    </div>
+
+                </div>
+
+
+             
 
 
 
