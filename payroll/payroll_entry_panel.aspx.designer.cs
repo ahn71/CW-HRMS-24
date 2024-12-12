@@ -409,6 +409,33 @@ namespace SigmaERP.payroll {
         protected global::System.Web.UI.WebControls.CheckBox ckbSingleRateOT;
         
         /// <summary>
+        /// chkIsvacation control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIsvacation;
+        
+        /// <summary>
+        /// tr5 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow tr5;
+        
+        /// <summary>
+        /// ddlPayerBank control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPayerBank;
+        
+        /// <summary>
         /// trBank control.
         /// </summary>
         /// <remarks>

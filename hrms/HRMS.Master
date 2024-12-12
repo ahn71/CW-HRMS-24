@@ -68,6 +68,19 @@
     </asp:ContentPlaceHolder>
 
     <style>
+        .navbar-right__menu .nav-item-toggle.icon-active:before {
+    position: absolute;
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    right: -7px;
+    top: -2px;
+    border: 2px solid var(--color-white);
+}
+        .navbar-right__menu .nav-notification .nav-item-toggle:before {
+    background: #ffffff !important;
+}
         .btn-sm {
             width: 100px;
             height: 32px !important;
@@ -115,7 +128,65 @@
             color: #b200ff;
             vertical-align: middle;
         }
+        span.position-absolute.count-number {
+    background: red;
+    text-align: center;
+    top: -20px;
+    color: #fff;
+    border-radius: 50%;
+    right: -10px;
+    font-size: 12px;
+    line-height: 21px;
+    /* padding: 7px; */
+}
+
+/*.dropdown-custom-notify{         
+    position: absolute;
+    width: 300px;
+    right: 80px;
+    top: 55px;
+    z-index: 100;
+}*/
+     .dropdown-custom-notify {
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    width: 460px !important;
+    transition: var(--transition);
+    pointer-events: none;
+    background: var(--color-white);
+    box-shadow: 0 5px 30px rgba(var(--light-gray-rgba), 0.15);
+    transform: scale(0.7);
+    transform-origin: top right;
+    z-index:999;
+} 
+     .dropdown-custom-notify:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 35px;
+    top: -35px;
+    left: 0;
+}
+     .navbar-right__menu .dropdown-wrapper__title {
+    margin: 10px;
+    border-radius: 6px;
+    background: var(--bg-lighter);
+    padding: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+     .navbar-right__menu .nav-notification__details p {
+    margin-bottom: 5px;
+    font-size: 16px !important;
+}
+     .list-settings {
+    height: 300px;
+    overflow: scroll;
+}
+        
     </style>
+ 
 
 </head>
 <body>
@@ -1235,23 +1306,30 @@
 
                 <ul class="navbar-right__menu">
                     <!-- ends: nav-message -->
-                    <li class="nav-notification">
-                        <div class="dropdown-custom">
+                    <li onclick="showNotify();" class="nav-notification">
+                        <div class="dropdown-custom-">
                             <a href="javascript:;" class="nav-item-toggle icon-active">
                                 <img class="svg" src="/hrms/img/svg/alarm.svg" alt="img">
+
+                                <div class="notify-count position-relative">
+                                    <span class="position-absolute count-number"></span>
+                                </div>
                             </a>
-                            <div class="dropdown-parent-wrapper">
+                       
+                            
+                            <div id="notify_wrapper" style="display:none" class="dropdown-parent-wrapper dropdown-custom-notify">
                                 <div class="dropdown-wrapper">
-                                    <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1">1</span></h2>
+                                    <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1 count-number">1</span><span class="badge-circle badge-warning ms-1 d-none normal">1</span></h2>
                                     <ul class="nav-notification-list">
                                         <!-- Notifications will be dynamically added here -->
+
                                     </ul>
 
-                                    <a href="" class="dropdown-wrapper__more">See all incoming activity</a>
                                 </div>
                             </div>
                         </div>
                     </li>
+                    
                     <!-- ends: .nav-notification -->
                     <% if (IsRouteExists("settings"))
                         { %>
@@ -1436,6 +1514,19 @@
                                             </div>
                                         </li>
                                         <%} %>
+
+                                         <li class="d-flex">
+                                            <div class="me-3"><i class="QualiStyle uil uil-globe"></i></div>
+                                            <div class="flex-grow-1">
+                                                <h6>
+                                                    <a href="bank-entry" runat="server" class="stretched-link">Bank Entry
+                                                    </a>
+                                                </h6>
+                                                <p>Bank Entry</p>
+                                            </div>
+                                        </li>
+
+
                                     </ul>
                                 </div>
                             </div>
@@ -1515,7 +1606,7 @@
             </div>
         </footer>
     </form>
-
+   
     <div id="overlayer">
         <div class="loader-overlay">
             <div class="dm-spin-dots spin-lg">
@@ -1595,8 +1686,14 @@
 
     <script>
 
+        function showNotify() {
+           
+    $('#notify_wrapper').toggle(); 
+}
+
+
          var token = '<%= Session["__UserToken__"] %>';
-         //var rootUrl = 'https://localhost:7220';
+         //var rootUrl = 'http://localhost:5081';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
          var userId = '<%= Session["__GetUserId__"]%>';
@@ -1606,8 +1703,9 @@
          var dsgId = '<%=  Session["__DsgId__"]%>';
          var gId = '<%=  Session["__Gid__"]%>';
          var sftId = '<%=  Session["__SftId__"]%>';--%>
-         var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
-
+        //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
+        //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
+        var getLeavesNotificationUrl ='https://localhost:44322/api/Notification/notification';
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         $(document).ready(function () {
@@ -1620,103 +1718,271 @@
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');
             }
-
+         
             GetLeavesNotification();
         });
+ 
+    //nipun
+        $(document).ready(function() {
+            $('.nav-notification').click(function () {
+                var notificationsCount = document.querySelector('.normal');
+                let normalCount = notificationsCount.innerHTML;
 
-        function GetLeavesNotification() {
+                var notificationsCount = document.querySelector('.count-number');
+                let totalCount = notificationsCount.innerHTML;
+                if (totalCount == 0)
+                    return;
+                let remainigCount = totalCount - normalCount;
+                SetNotificationNumber(remainigCount);
+                ControlNormalNotificationCount();
+
+            });
+
+});
+
+
+    function GetLeavesNotification() {
             ApiCallByCompId(getLeavesNotificationUrl, token, userId)
                 .then(function (response) {
                     // Check if the response status is valid and contains data
-                    if (response.status === "200" && response.data) {
-                        // Set up example notifications directly in the response data
-                        response.data = [
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-calendar-slash"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
-                                (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
-                            </p>
-                        </div>
-                        <div class="d-inline-flex">
-                            <button type="button" class="btn btn-success btn-sm m-2">Approve <span><i class="uil-check"></i></span></button>
-                            <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
-                            <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
-                        </div>
-                    </li>`,
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <i class="uil-calendar-slash notifi-simbole-icon"></i>
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-check"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been approved by
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Enjoy your time off!
-                            </p>
-                        </div>
-                    </li>`,
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-calendar-slash"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
-                                (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
-                            </p>
-                        </div>
-                        <div class="d-inline-flex">                            
-                            <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
-                            <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
-                        </div>
-                    </li>`,
-                            `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
-                        <div class="nav-notification__type nav-notification__type--primary position-relative">
-                            <i class="uil-calendar-slash notifi-simbole-icon"></i>
-                            <div class="position-absolute avatar-icon">
-                                <span><i class="uil-check"></i></span>
-                            </div>
-                        </div>
-                        <div class="nav-notification__details">
-                            <p class="fa-black">
-                                Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been rejected by
-                                <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>.
-                            </p>
-                        </div>
-                    </li>`
-                            // Additional notifications can be added similarly
-                        ];
+                    if (response.status === "200") {
+                        var notificationsCount = document.querySelector('.normal');
+                        notificationsCount.innerHTML = response.data.unseen;
+                        SetNotificationNumber(response.data.unseen+response.data.task);
+                        if (response.data.notifications) {
+                             var notificationList = document.querySelector('.nav-notification-list');
 
-                        // Select the container where notifications will be added
-                        var notificationList = document.querySelector('.nav-notification-list');
-
-                        // Clear any existing notifications
-                        notificationList.innerHTML = '';
-
+                            
+                           notificationList.innerHTML = '';
                         // Loop through each notification item and insert into the list
-                        response.data.forEach(function (notificationItem) {
+                        response.data.notifications.forEach(function (notificationItem) {
+                            console.log(notificationItem);
                             notificationList.insertAdjacentHTML('beforeend', notificationItem);
                         });
+
+                        }
+                        else {
+                        console.error('No notifications available');
+                    }
+                        // Set up example notifications directly in the response data
+                    //    response.data = [
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-calendar-slash"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                    //            (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
+                    //        </p>
+                    //    </div>
+                    //    <div class="d-inline-flex">
+                    //        <button type="button" class="btn btn-success btn-sm m-2">Approve <span><i class="uil-check"></i></span></button>
+                    //        <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
+                    //        <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
+                    //    </div>
+                    //</li>`,
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-check"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been approved by
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>. Enjoy your time off!
+                    //        </p>
+                    //    </div>
+                    //</li>`,
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <img class="notifi-user-image" src="user_img_default.jpg" alt="user">
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-calendar-slash"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Johirull Islam</a>
+                    //            (Jr. Software Developer) has applied for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> Days)
+                    //        </p>
+                    //    </div>
+                    //    <div class="d-inline-flex">                            
+                    //        <button type="button" class="btn btn-info btn-sm m-2">Forward <span><i class="uil-share"></i></span></button>
+                    //        <button type="button" class="btn btn-outline-danger btn-sm m-2">Decline <span><i class="uil-multiply"></i></span></button>
+                    //    </div>
+                    //</li>`,
+                    //        `<li class="nav-notification__single nav-notification__single--unread d-flex flex-wrap">
+                    //    <div class="nav-notification__type nav-notification__type--primary position-relative">
+                    //        <i class="uil-calendar-slash notifi-simbole-icon"></i>
+                    //        <div class="position-absolute avatar-icon">
+                    //            <span><i class="uil-check"></i></span>
+                    //        </div>
+                    //    </div>
+                    //    <div class="nav-notification__details">
+                    //        <p class="fa-black">
+                    //            Your leave request for <strong>CL</strong> from <strong>1st Sep 2024</strong> to <strong>3rd Sep 2024</strong> (<strong>3</strong> days) has been rejected by
+                    //            <a href="" class="subject stretched-link text-truncate" style="max-width: 180px;">Mr. Rokibul Islam</a>.
+                    //        </p>
+                    //    </div>
+                    //</li>`
+                    //        // Additional notifications can be added similarly
+                    //    ];
+
+                        // Select the container where notifications will be added
+                       
                     } else {
-                        console.error('No notifications available or invalid response status.');
+                        console.error('Invalid response status.');
                     }
                 })
                 .catch(function (error) {
                     console.error('Error occurred while fetching data:', error);
                 });
         }
+    function DecreaseNotification() {
+            let notificationsCount = document.querySelector('.count-number');
+            let notificationNumber = notificationsCount.innerHTML;
+            notificationNumber=notificationNumber-1
+            SetNotificationNumber(notificationNumber);
+        }
+    function SetNotificationNumber(notificationNumber) {
+            var notificationsCount = document.querySelector('.count-number');
+            notificationsCount.innerHTML = notificationNumber;
+
+        $(document).ready(function () {
+                if ($(".count-number").html().trim() === "0") {
+                    $(".count-number").hide();
+
+                }
+                else {
+                    $(".count-number").show();
+                }
+
+            });
+        }
+    function ControlNormalNotificationCount() {
+        const getleaveApproaleUrl = `${rootUrl}/api/Notification/notification-count`;
+        NotificationCountUpdate(getleaveApproaleUrl,token)
+         
+       }
+    function Approval(item_id,action, data) {
+    try {
+        // Parse the JSON data
+        console.log("actions is",action);
+        console.log("data is ", data);
+        $("#hide_" + item_id).addClass("d-none");
+
+        // Extract the values from parsedDatas
+        const id = data.Id;
+        const approvalStatus = data.approval_status;
+        const notificationId = data.notificationId;
+
+                    var updateData = {
+                id: id,
+                notificationId: notificationId,
+                approval_status: approvalStatus
+        };
+        const getleaveApproaleUrl = `${rootUrl}/api/${action}?CompanyID=${CompanyID}`;
+        console.loggetleaveApproaleUrl
+            ApiCallUpdate(getleaveApproaleUrl, token, updateData)
+                .then(function (response) {
+                    $("#" + id).hide(); 
+                    DecreaseNotification();
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Leave Approved successfull!'
+                    }).then(() => {
+                         GetLeaves();
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        
+        
+    } catch (error) {
+        console.error('Error in handleButtonClick:', error);
+        alert('An error occurred. Please try again.');
+    }
+        }
+    function NotificationCountUpdate(url, token) {
+            $.ajax({
+                url: url, 
+                type: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}` 
+                },
+                success: function (response) {
+                    $('#response').text('API call successful!');
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    $('#response').text('API call failed: ' + xhr.responseText);
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+     function ApiCallUpdate(url, token, updateData) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url:url,
+                    type: 'PUT',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    data: JSON.stringify(updateData),
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error occurred while updating data:', status, error);
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+    function ApiCallCountUpdate(url, token) {
+     return new Promise((resolve, reject) => {
+        fetch(url, {
+            method: 'PUT', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, 
+            },
+            body: JSON.stringify({}) 
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                resolve(data); 
+            } else {
+                reject(data); 
+            }
+        })
+        .catch(error => {
+            reject(error); 
+        });
+    });
+}
+
+
+
 
 
 
@@ -1774,20 +2040,48 @@
         //        });
         //}
 
+       
+
+        //function LeaveApprove(LeaveId, notificationId, approval_status) {
+        //    var updateData = {
+        //        id: LeaveId,
+        //        notificationId: notificationId,
+        //        approval_status: approval_status
+        //    };
+          
+        //    ApiCallUpdate(getLeaveApproveUrl, token, updateData , CompanyID)
+        //        .then(function (response) {
+        //            console.log('Data updated successfully:', response);
+        //            Swal.fire({
+        //                icon: 'success',
+        //                title: 'Success',
+        //                text: 'Leave Approved successfull!'
+        //            }).then(() => {
+        //                 GetLeaves();
+        //            });
+        //        })
+        //        .catch(function (error) {
+        //            console.error('Error updating data:', error);
+        //            Swal.fire({
+        //                icon: 'error',
+        //                title: 'Error',
+        //                text: 'Failed to update data. Please try again.'
+        //            });
+        //        });
+        //}
 
 
-        function ApiCallByCompId(url, token, id) {
+
+
+
+        function ApiCallByCompId(url, token, userId) {
             return new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: `${url}/${id}`, // Constructs the URL dynamically with the id
+                    url: `${url}?userId=${userId}`, // Appends the userId as a query parameter
                     type: 'GET',
                     dataType: 'json',
                     headers: {
                         'Authorization': 'Bearer ' + token // Adds Bearer token for authentication
-                    },
-                    data: {
-                        moduleID: id// Sends id in the data object
-                       // Adds companyID as a parameter in the request
                     },
                     success: function (data) {
                         resolve(data); // Resolves the Promise with the response data
@@ -1798,7 +2092,11 @@
                     }
                 });
             });
-        }
+}
+
+
+
+        
 
     </script>
 

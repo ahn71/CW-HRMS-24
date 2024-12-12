@@ -1269,7 +1269,7 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
+                sqlCmd = "select distinct FORMAT(CONVERT(DATE, EffectiveMonth + '-01'),'MMM-yyyy')" +
                          " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
@@ -1573,7 +1573,7 @@ namespace SigmaERP.classes
         {
            
             DataTable dt = new DataTable();
-            sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and CompanyId='0001'", dt);
+            sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and IsPayer=1 and CompanyId='0001'", dt);
             ddlbankList.DataSource = dt;
             ddlbankList.DataValueField = "BankId";
             ddlbankList.DataTextField = "BankName";
@@ -2443,6 +2443,20 @@ namespace SigmaERP.classes
                 dl.Items.Insert(0, new ListItem("---Select---", "0"));
             }
             catch { }
+        }
+
+        public static string getBankAcount(string bankID)
+        {
+            string query = "select BankAccount from hrd_bankinfo where BankId =" + bankID;
+            DataTable dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0]["BankAccount"].ToString();
+            else
+                return "";
+
+
+
+
         }
 
     }

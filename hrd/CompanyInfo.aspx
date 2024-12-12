@@ -259,7 +259,8 @@
                                          <asp:DropDownList ID="ddlMachine" ClientIDMode="Static" CssClass="form-control select_width"  runat="server">
                                              <asp:ListItem Value="zkbiotime">ZK Biotime</asp:ListItem>
                                              <asp:ListItem Value="ZK">ZK</asp:ListItem>
-                                             <asp:ListItem Value="RMS">RMS</asp:ListItem>                                            
+                                             <asp:ListItem Value="RMS">RMS</asp:ListItem>    
+                                             <asp:ListItem Value="HIKVISION">HIKVISION</asp:ListItem>
                                          </asp:DropDownList>
                                     </td>
                                 </tr>

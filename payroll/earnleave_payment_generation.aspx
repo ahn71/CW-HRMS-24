@@ -16,8 +16,7 @@
                <div style="margin-top: 5px">
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
-                       <li> <a class="seperator" href="#"></a>/</li>
-                        <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li> 
+                   
                        <li> <a class="seperator" href="#"></a>/</li>                  
                         <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                         <li> <a class="seperator" href="#"></a>/</li>

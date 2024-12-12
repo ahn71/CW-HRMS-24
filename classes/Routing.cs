@@ -40,6 +40,10 @@ namespace SigmaERP.classes
         public static string profileUrl = rootURL + "profile";
         private static string profilePhyLocation = "~/hrms/userProfile.aspx";
 
+        public static string bankEntryName = "BankEntry";
+        public static string bankEntryUrl = rootURL+"bank-entry";
+        public static string bankEntryPhyLocation = "~/hrd/bankentry_panel.aspx";
+
         public static string defualtUrl = "~/" + dashboardUrl;
         public static void RegisterInitialRoutes(RouteCollection routes)
         {
@@ -48,6 +52,7 @@ namespace SigmaERP.classes
             routes.MapPageRoute(dashboardRoutName, dashboardUrl, dashboardPhyLocation);
             routes.MapPageRoute(appSettingsName, appSettingsUrl, appSettingsPhyLocation);
             routes.MapPageRoute(profileRoutName, profileUrl, profilePhyLocation);
+            routes.MapPageRoute(bankEntryName, bankEntryUrl, bankEntryPhyLocation);
             //routes.MapPageRoute(userName, userUrl, userPhyLocation);
         }
 

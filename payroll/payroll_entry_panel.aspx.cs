@@ -21,16 +21,17 @@ namespace SigmaERP.payroll
         //View=328 Add=329 update=330
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__WriteAction__"] = "0";
-           // ViewState["__DeletAction__"] = "1";
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__UpdateAction__"] = "1";
-
-            int[] pagePermission = { 328,329,330 };
+           
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack) {
+                ViewState["__WriteAction__"] = "0";
+                // ViewState["__DeletAction__"] = "1";
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__UpdateAction__"] = "1";
+
+                int[] pagePermission = { 328, 329, 330 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -160,8 +161,10 @@ namespace SigmaERP.payroll
         {
             try
             {
+                string query= "select  SalaryCount, EmpAccountNo,BankId,PayerBankId,GrdName,EmpJoinigSalary,EmpPresentSalary,BasicSalary,MedicalAllownce,HouseRent,EmpTypeId,EmpType," +
+                    "ConvenceAllownce,FoodAllownce,AttendanceBonus,PfMember,PfDate,PFAmount,HouseRent_Persent,Medical,PF_Persent,SalaryType,NightAllownce,OverTime,OthersAllownce,DormitoryRent,IsNull(IsSingleRateOT,0) as IsSingleRateOT,IncomeTax from v_EmployeeDetails where SN=" + ddlEmpCardNo.SelectedValue + "";
                 dt = new DataTable();
-                sqlDB.fillDataTable("select  SalaryCount, EmpAccountNo,BankId,GrdName,EmpJoinigSalary,EmpPresentSalary,BasicSalary,MedicalAllownce,HouseRent,EmpTypeId,EmpType," +
+                sqlDB.fillDataTable("select  SalaryCount, EmpAccountNo,BankId,PayerBankId,GrdName,EmpJoinigSalary,EmpPresentSalary,BasicSalary,MedicalAllownce,HouseRent,EmpTypeId,EmpType," +
                     "ConvenceAllownce,FoodAllownce,AttendanceBonus,PfMember,PfDate,PFAmount,HouseRent_Persent,Medical,PF_Persent,SalaryType,NightAllownce,OverTime,OthersAllownce,DormitoryRent,IsNull(IsSingleRateOT,0) as IsSingleRateOT,IncomeTax from v_EmployeeDetails where SN=" + ddlEmpCardNo.SelectedValue + "", dt);
                 if (dt.Rows.Count > 0)
                 {
@@ -193,6 +196,8 @@ namespace SigmaERP.payroll
                         trBank.Visible = true;
                         trAccount.Visible = true; 
                         loadBankList();
+                        loadPayerList();
+                        ddlPayerBank.SelectedValue= (dt.Rows[0]["PayerBankId"].ToString().Equals("")) ? "0" : dt.Rows[0]["PayerBankId"].ToString();
                         ddlBankList.SelectedValue = (dt.Rows[0]["BankId"].ToString().Equals("")) ? "0" : dt.Rows[0]["BankId"].ToString();
                         txtEmpAccNo.Text = dt.Rows[0]["EmpAccountNo"].ToString();
                     }
@@ -321,12 +326,13 @@ namespace SigmaERP.payroll
         private void saveSalary() 
         {
             try {
+                int isVacation = (chkIsvacation.Checked) ? 1 : 0;
                 SqlCommand cmd = new SqlCommand("update Personnel_EmpCurrentStatus  Set SalaryCount=@SalaryCount,BankId=@BankId," +
                     "EmpAccountNo=@EmpAccountNo,GrdName=@GrdName,EmpJoinigSalary=@EmpJoinigSalary, PreEmpSalary=@PreEmpSalary, EmpPresentSalary=@EmpPresentSalary, " +
                     " PreBasicSalary=@PreBasicSalary, BasicSalary=@BasicSalary,PreMedicalAllownce=@PreMedicalAllownce,"+
                     " MedicalAllownce=@MedicalAllownce,PreFoodAllownce=@PreFoodAllownce, FoodAllownce=@FoodAllownce,"+
                     "PreConvenceAllownce=@PreConvenceAllownce, ConvenceAllownce=@ConvenceAllownce, PreHouseRent=@PreHouseRent,"+
-                    " HouseRent=@HouseRent,PreAttendanceBonus=@PreAttendanceBonus,AttendanceBonus=@AttendanceBonus,NightAllownce=@NightAllownce,OverTime=@OverTime,PreOthersAllownce=@PreOthersAllownce,OthersAllownce=@OthersAllownce,DormitoryRent=@DormitoryRent,IsSingleRateOT=@IsSingleRateOT,IncomeTax=@IncomeTax where SN=@SN", sqlDB.connection);
+                    " HouseRent=@HouseRent,PreAttendanceBonus=@PreAttendanceBonus,AttendanceBonus=@AttendanceBonus,NightAllownce=@NightAllownce,OverTime=@OverTime,PreOthersAllownce=@PreOthersAllownce,OthersAllownce=@OthersAllownce,DormitoryRent=@DormitoryRent,IsSingleRateOT=@IsSingleRateOT,IncomeTax=@IncomeTax,PayerBankId=@PayerBankId,IsVacation=@isVacation where SN=@SN", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@SN", ddlEmpCardNo.SelectedValue);
                 if (chkPaymentType.SelectedValue=="1")
@@ -366,6 +372,9 @@ namespace SigmaERP.payroll
                 cmd.Parameters.AddWithValue("@PreOthersAllownce", txtOthers.Text.Trim());
                 cmd.Parameters.AddWithValue("@OthersAllownce", txtOthers.Text.Trim());
                 cmd.Parameters.AddWithValue("@DormitoryRent", ddlDormitoryRent.SelectedValue);
+                cmd.Parameters.AddWithValue("@PayerBankId", ddlPayerBank.SelectedValue);
+                cmd.Parameters.AddWithValue("@isVacation", isVacation);
+
                 //if (chkPFMember.Checked)
                 //{
                 //    cmd.Parameters.AddWithValue("@PfMember", 1);
@@ -430,6 +439,7 @@ namespace SigmaERP.payroll
             if (chkPaymentType.SelectedValue == "1")
             {
                 loadBankList();
+                loadPayerList();
                 trBank.Visible = true;
                 trAccount.Visible = true;              
             }
@@ -467,7 +477,7 @@ namespace SigmaERP.payroll
         private void loadBankList() 
         {
             DataTable dtBank;
-            sqlDB.fillDataTable("select * from HRD_BankInfo", dtBank = new DataTable());
+            sqlDB.fillDataTable("select * from HRD_BankInfo where isActive=1", dtBank = new DataTable());
             ddlBankList.DataValueField = "BankId";
             ddlBankList.DataTextField = "BankName";
             ddlBankList.DataSource = dtBank;
@@ -475,6 +485,19 @@ namespace SigmaERP.payroll
             ddlBankList.Items.Insert(0, new ListItem(string.Empty, "0"));
           
         }
+
+        private void loadPayerList()
+        {
+            DataTable dtBank;
+            sqlDB.fillDataTable("select * from HRD_BankInfo where isActive=1 and IsPayer=1", dtBank = new DataTable());
+            ddlPayerBank.DataValueField = "BankId";
+            ddlPayerBank.DataTextField = "BankName";
+            ddlPayerBank.DataSource = dtBank;
+            ddlPayerBank.DataBind();
+            ddlPayerBank.Items.Insert(0, new ListItem(string.Empty, "0"));
+
+        }
+
         private void allClear() 
         {
 

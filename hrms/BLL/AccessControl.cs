@@ -203,7 +203,7 @@ namespace SigmaERP.hrms.BLL
         public static string hasOwnEmpIdWithOtherDepartment()
         {
             // Fetch the session value dynamically when this method is called
-            string hasOtherDeptAccessButNotOwn =" or  EmpId='" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + "'";
+            string hasOtherDeptAccessButNotOwn =" or  EmpId=" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + "";
             return hasOtherDeptAccessButNotOwn;
 
     }
@@ -229,9 +229,9 @@ namespace SigmaERP.hrms.BLL
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             if (dt.Rows.Count > 0)
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
 }

@@ -21,15 +21,16 @@ namespace SigmaERP.personnel
         protected void Page_Load(object sender, EventArgs e)
         {
 
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
-            int[] pagePermission = { 227, 228, 229 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                int[] pagePermission = { 227, 228, 229 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);

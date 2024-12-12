@@ -31,7 +31,7 @@
                     { %>
                 <div class="col-md-2">
                     <a class="ds_Settings_Basic_Text" href="/settings/department">
-                        <img class="image_width_for_module" src="images/common/department.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/department.ico" /><br />
                         Department</a>
 
                 </div>
@@ -41,7 +41,7 @@
                     { %>
                 <div class=" col-md-2">
                     <a class="ds_Settings_Basic_Text" href="/settings/designation">
-                        <img class="image_width_for_module" src="images/common/designation.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/designation.ico" /><br />
                         Designation</a>
                 </div>
                 <%} %>
@@ -49,7 +49,7 @@
                     { %>
                 <div class=" col-md-2">
                     <a class="ds_Settings_Basic_Text" href="/settings/grade">
-                        <img class="image_width_for_module" src="images/common/grade.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/grade.ico" /><br />
                         Grade</a>
                 </div>
                 <%} %>
@@ -57,7 +57,7 @@
                     { %>
                 <div class=" col-md-2">
                     <a class="ds_Settings_Basic_Text" href="/settings/shift">
-                        <img class="image_width_for_module" src="images/common/Class Schedule.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/Class Schedule.ico" /><br />
                         Shift</a>
                 </div>
                 <%} %>
@@ -68,26 +68,13 @@
 
             <div class="row">
 
-                <div class=" col-md-2"></div>
+              <div class=" col-md-2"></div>
 
-                <div class=" col-md-2  ">
-                    <a class="ds_Settings_Basic_Text" href="/hrd/SpecialTimeTable.aspx">
-                        <img class="image_width_for_module" src="images/common/Class Schedule.ico" /><br />
-                        Special Timetable</a>
-
-                </div>
-
-                <div class=" col-md-2  ">
-                    <a class="ds_Settings_Basic_Text" href="/hrd/SpecialBreakTime.aspx">
-                        <img class="image_width_for_module" src="images/common/Class Schedule.ico" /><br />
-                        Special Breaks</a>
-
-                </div>
                 <% if (IsRouteExists("settings/religion"))
                     { %>
                 <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/religion">
-                        <img class="image_width_for_module" src="images/common/religion.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/religion.ico" /><br />
                         Religion</a>
 
                 </div>
@@ -98,7 +85,7 @@
                 <div class=" col-md-2  ">
 
                     <a class="ds_Settings_Basic_Text" href="/settings/district">
-                        <img class="image_width_for_module" src="images/common/distric add.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/distric add.ico" /><br />
                         District</a>
                 </div>
                 <%} %>
@@ -113,7 +100,7 @@
                 <div class=" col-md-2  ">
 
                     <a class="ds_Settings_Basic_Text" href="/settings/thana">
-                        <img class="image_width_for_module" src="images/common/thana add.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/thana add.ico" /><br />
                         Thana</a>
                 </div>
                 <%} %>
@@ -121,7 +108,7 @@
                     { %>
                 <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/stamp-deduction">
-                        <img class="image_width_for_module" src="images/common/add document.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/add document.ico" /><br />
                         Stamp Deduction</a>
 
                 </div>
@@ -132,7 +119,7 @@
                 <div class=" col-md-2  ">
 
                     <a class="ds_Settings_Basic_Text" href="/settings/line-group">
-                        <img class="image_width_for_module" src="images/common/businesstype.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/businesstype.ico" /><br />
                         Line/Group</a>
                 </div>
                 <%} %>
@@ -141,7 +128,7 @@
                 <div class=" col-md-2  ">
 
                     <a class="ds_Settings_Basic_Text" href="/settings/company">
-                        <img class="image_width_for_module" src="images/common/company.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/company.ico" /><br />
                         Company</a>
                 </div>
                 <%} %>
@@ -157,7 +144,7 @@
 
                 <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/others">
-                        <img class="image_width_for_module" src="images/common/others.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/others.ico" /><br />
                         Others</a>
                 </div>
                 <%} %>
@@ -165,7 +152,7 @@
                     { %>
                 <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/floor">
-                        <img class="image_width_for_module" src="images/common/add document.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/add document.ico" /><br />
                         Floor</a>
 
                 </div>
@@ -175,7 +162,7 @@
                 <div class=" col-md-2  ">
 
                     <a class="ds_Settings_Basic_Text" href="/settings/business">
-                        <img class="image_width_for_module" src="images/common/businesstype.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/businesstype.ico" /><br />
                         Business Type</a>
                 </div>
                 <%} %>
@@ -184,7 +171,7 @@
 
                 <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/qualification">
-                        <img class="image_width_for_module" src="images/common/qualification.ico" /><br />
+                        <img class="image_width_for_module" src="/images/common/qualification.ico" /><br />
                         Qualification</a>
 
                 </div>

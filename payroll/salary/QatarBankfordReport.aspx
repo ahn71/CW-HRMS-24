@@ -40,7 +40,7 @@
                    <asp:BoundField DataField="ExtraOtAmount" HeaderText="Extra Income" ItemStyle-Width="150" />
                    <asp:BoundField DataField="Deduction" HeaderText="Deductions" ItemStyle-Width="150" />
                    <asp:BoundField DataField="PaymentType" HeaderText="Payment Type" ItemStyle-Width="150" />
-                   <asp:BoundField DataField="Notes" HeaderText="Notes/Comments" ItemStyle-Width="150" />
+                   <asp:BoundField DataField="Note" HeaderText="Notes/Comments" ItemStyle-Width="150" />
                 </Columns>
 
             </asp:GridView>

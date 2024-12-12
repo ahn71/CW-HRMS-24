@@ -249,8 +249,9 @@ namespace SigmaERP.personnel
                 //}
 
                 string ownempId =AccessControl.hasOwnEmpIdWithOtherDepartment();
+
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-                sqlCmd = "Select CompanyName,SftName,EmpName,Substring(EmpCardNo,8,15) as EmpCardNo ,GrdName,DptName,DsgName,Format(EffectiveDate,'dd-MM-yyyy') as EffectiveDate,EmpStatusName,Remarks,Address From v_SeparationSheet where CompanyId='" + CompanyId + "' and EFMonth='" + ddlMonthName.SelectedValue + "' and DptId " + setPredicate + " or "+ ownempId + " and IsActive=1 order by EffectiveDate";
+                sqlCmd = "Select CompanyName,SftName,EmpName,Substring(EmpCardNo,8,15) as EmpCardNo ,GrdName,DptName,DsgName,Format(EffectiveDate,'dd-MM-yyyy') as EffectiveDate,EmpStatusName,Remarks,Address From v_SeparationSheet where CompanyId='" + CompanyId + "' and EFMonth='" + ddlMonthName.SelectedValue + "' and DptId " + setPredicate + " "+ ownempId + " and IsActive=1 order by EffectiveDate";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 Session["__SeparationSheet__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SeparationSheet-" + MonthName + "');", true);  //Open New Tab for Sever side code

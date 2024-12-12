@@ -35,8 +35,7 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
+
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                     <li><a class="seperator" href="#">/</a></li>
@@ -206,8 +205,48 @@
 
                                                 </td>
                                             </tr>
+
+
+
+                                               <tr>
+                                                
+                                                
+                                                <td>Is Vacation</td>
+                                                <td>:
+                                                </td>
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                      <asp:CheckBox runat="server" ID="chkIsvacation" Text="IsVacation" />
+                                                            </td>
+                                                      
+                                                          
+                                                           
+                                                            
+                                                        </tr>
+                                                    </table>
+                                                    
+
+                                                </td>
+                                            </tr>
+
+
+
+
+                                             <tr runat="server" id="tr5">
+                                                <td>Payer Bank
+                                                </td>
+                                                <td>:
+                                                </td>
+                                                <td>
+                                                    <asp:DropDownList runat="server" ID="ddlPayerBank" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
+                                                </td>
+                                            </tr>
+
+
                                             <tr runat="server" id="trBank">
-                                                <td>Bank Name
+                                                <td>Salary Bank
                                                 </td>
                                                 <td>:
                                                 </td>
@@ -215,6 +254,9 @@
                                                     <asp:DropDownList runat="server" ID="ddlBankList" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
                                                 </td>
                                             </tr>
+
+
+                                            
 
                                             <tr runat="server" id="trAccount">
                                                 <td>Account No

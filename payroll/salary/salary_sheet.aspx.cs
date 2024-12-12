@@ -160,6 +160,7 @@ namespace SigmaERP.payroll.salary
                     if (ddlBankSheet.SelectedIndex >= 0)
                     {
                         banksheetGenarate(yearMonth, DepartmentList);
+                        return;
 
                     }
                 }
@@ -365,6 +366,7 @@ namespace SigmaERP.payroll.salary
         private void banksheetGenarate(string yearmonth,string departmentList)
         {
            Session["__bankShortname__"] = "";
+            Session["__bankAcount__"] = "";
             DataTable dt = new DataTable();
             string paymentType = "";      
 
@@ -377,10 +379,15 @@ namespace SigmaERP.payroll.salary
 
                 string bankId = bankIdandShortname[0];
                 Session["__bankShortname__"] = bankIdandShortname[1];
+                Session["__bankAcount__"] = commonTask.getBankAcount(bankId);
                 condition = "and ecs.BankId="+ bankId + "";
             }
           
-            string getSQLCMD = "select  ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary as BasicSalary,pms.TotalSalary,ExtraOtHour,ExtraOtAmount,(pms.AdvanceDeduction+pms.AbsentDeduction) as Deduction,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = 1 "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
+            string getSQLCMD = @"select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.PayerBankId,pbi.BankShortName as PayerBankShotname,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary as BasicSalary,pms.TotalSalary,Isnull(ExtraOtHour,0) as ExtraOtHour,Isnull(ExtraOtAmount,0) as ExtraOtAmount,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes,Isnull(ecs.IsVacation,0) as IsVacation,
+  case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction) end as Deduction,
+  case when Isnull(ecs.IsVacation,0)= 1 then 0 else pms.TotalSalary end as TotalSalary,
+  case when Isnull(ecs.IsVacation,0)= 1 then 'Vacation' else '' end as Note" +
+                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = "+rblEmployeeType.SelectedValue+" "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
             sqlDB.fillDataTable(getSQLCMD, dt);
             if (dt.Rows.Count == 0)
             {
@@ -406,5 +413,7 @@ namespace SigmaERP.payroll.salary
                 chkBankForwardingLetterXL.Visible =true;
             }
         }
+
+       
     }
 }

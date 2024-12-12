@@ -89,10 +89,21 @@ Parameter name: virtualPath
 [2024-11-03 23:06:01] Object reference not set to an instance of an object.
 [2024-11-06 09:54:49] Object reference not set to an instance of an object.
 [2024-11-06 22:50:52] Object reference not set to an instance of an object.
-[2024-11-21 23:25:21] Object reference not set to an instance of an object.
-[2024-11-21 23:26:37] Object reference not set to an instance of an object.
-[2024-11-24 10:39:05] Object reference not set to an instance of an object.
-[2024-11-27 22:42:55] Object reference not set to an instance of an object.
-[2024-11-27 22:43:14] Object reference not set to an instance of an object.
-[2024-11-27 22:43:56] Object reference not set to an instance of an object.
-[2024-12-04 16:37:13] Object reference not set to an instance of an object.
+[2024-11-19 16:09:49] Cannot perform runtime binding on a null reference
+[2024-11-19 16:09:55] Cannot perform runtime binding on a null reference
+[2024-11-20 13:00:40] Object reference not set to an instance of an object.
+[2024-11-21 10:18:57] Object reference not set to an instance of an object.
+[2024-11-21 10:19:05] Object reference not set to an instance of an object.
+[2024-11-24 10:06:43] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:06:52] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:06:58] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:07:12] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:07:18] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:08:29] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:08:33] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 10:08:41] Unexpected character encountered while parsing value: <. Path '', line 0, position 0.
+[2024-11-24 11:29:46] Object reference not set to an instance of an object.
+[2024-11-24 11:29:55] Object reference not set to an instance of an object.
+[2024-11-25 17:02:18] Object reference not set to an instance of an object.
+[2024-11-27 10:01:15] Object reference not set to an instance of an object.
+[2024-12-01 11:57:20] Object reference not set to an instance of an object.
