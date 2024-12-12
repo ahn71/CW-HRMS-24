@@ -1574,6 +1574,7 @@ namespace SigmaERP.classes
            
             DataTable dt = new DataTable();
             sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and IsPayer=1 and CompanyId='0001'", dt);
+            string sajj = "select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and IsPayer=1 and CompanyId='0001'";
             ddlbankList.DataSource = dt;
             ddlbankList.DataValueField = "BankId";
             ddlbankList.DataTextField = "BankName";
