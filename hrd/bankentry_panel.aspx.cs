@@ -65,7 +65,7 @@ namespace SigmaERP.hrd
         {
             int isPayer = chkIspayer.Checked ? 1 : 0;
             string query = "Insert into hrd_bankinfo (BankName,BankShortName,BankAccount,CompanyId,IsPayer)" +
-                " Values('" + txtbankName.Text.Trim().ToString() + "','" + txtbankshortname.Text.Trim().ToString() + "','" + txtBankacount.Text.Trim().ToString() + "','" + ddlCompany.SelectedValue + "'," + isPayer + ")";
+                " Values('" + txtbankName.Text.Trim().ToString() + "','" + txtbankshortname.Text.Trim().ToString() + "','" + txtBankacount.Text.Trim().ToString() + "','" + ddlCompany.SelectedValue.ToString() + "'," + isPayer + ")";
             bool result = CRUD.Execute(query);
             if (result)
                 Console.WriteLine("Data Saved Successfully");
@@ -96,12 +96,14 @@ namespace SigmaERP.hrd
             CheckBox chkActive = (CheckBox)sender;
             GridViewRow row = (GridViewRow)chkActive.NamingContainer;
             string bankId = gvbanklist.DataKeys[row.RowIndex].Value.ToString();
-            bool isActive = false;
-            if (chkActive.Checked)
-            {
-                isActive = true;
-            }
+            //bool isActive = false;
+            int isActive = chkActive.Checked ? 1 : 0;
+            //if (chkActive.Checked)
+            //{
+            //    isActive = true;
+            //}
             string query = "update hrd_bankinfo SET IsActive=" + isActive + " where BankId=" + bankId;
+            CRUD.Execute(query);
         }
 
 

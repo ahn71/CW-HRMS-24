@@ -383,8 +383,9 @@ namespace SigmaERP.payroll.salary
                 condition = "and ecs.BankId="+ bankId + "";
             }
           
-            string getSQLCMD = @"select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.PayerBankId,pbi.BankShortName as PayerBankShotname,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary as BasicSalary,pms.TotalSalary,Isnull(ExtraOtHour,0) as ExtraOtHour,Isnull(ExtraOtAmount,0) as ExtraOtAmount,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes,Isnull(ecs.IsVacation,0) as IsVacation,
+            string getSQLCMD = @"select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.PayerBankId,pbi.BankShortName as PayerBankShotname,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary,pms.BasicSalary,pms.TotalSalary,Isnull(ExtraOtHour,0) as ExtraOtHour,Isnull(ExtraOtAmount,0) as ExtraOtAmount,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes,Isnull(ecs.IsVacation,0) as IsVacation,
   case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction) end as Deduction,
+pms.EmpPresentSalary-case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction) end as NetAmount,
   case when Isnull(ecs.IsVacation,0)= 1 then 0 else pms.TotalSalary end as TotalSalary,
   case when Isnull(ecs.IsVacation,0)= 1 then 'Vacation' else '' end as Note" +
                 " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = "+rblEmployeeType.SelectedValue+" "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
