@@ -65,7 +65,7 @@ namespace SigmaERP.payroll.salary
             // Initialize CSV content
             var csvContent = new StringBuilder();
             string datecheck = DateTime.Now.ToString("HH:mm");
-            csvContent.AppendLine("EMPLOYER EID,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Payer IBAN,Salary Year and Month,Total Salaries,Total records");
+            csvContent.AppendLine("Employer EID,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Payer IBAN,Salary Year and Month,Total Salaries,Total records");
             csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{datecheck},{establishmentID},,{bankShortName},{bankAcounnt},{result:yyyyMM},{totalSalaryString},{totalRows}");
 
             // Add headers to CSV

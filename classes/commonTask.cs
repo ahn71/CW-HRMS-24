@@ -101,6 +101,7 @@ namespace SigmaERP.classes
         {
             dt = new DataTable();
             dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT EmpType, EmpTypeId FROM HRD_EmployeeType");
+            string jj = "SELECT EmpType, EmpTypeId FROM HRD_EmployeeType";
             if (dt.Rows.Count > 1)
                 rbl.Items.Add(new ListItem("All", "All"));
             for (byte i = 0; i < dt.Rows.Count; i++)
@@ -1269,8 +1270,7 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlCmd = "select distinct FORMAT(CONVERT(DATE, EffectiveMonth + '-01'),'MMM-yyyy')" +
-                         " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+                sqlCmd = "select distinct FORMAT( CAST(RIGHT(EffectiveMonth, 4)+'-'+ LEFT(EffectiveMonth, 2) + '-01' AS DATETIME),'MMM-yyyy') as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";

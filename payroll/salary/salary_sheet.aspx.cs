@@ -115,15 +115,24 @@ namespace SigmaERP.payroll.salary
         {
             try
             {
+                string bMnth = "";
                 string CompanyList = "";
                 string DepartmentList = "";
 
                 string[] monthInfo = ddlSelectMonth.SelectedValue.Split('/');
                 string yearMonth = "";
                 if (monthInfo.Length > 1)
+                {
                     yearMonth = " AND YearMonth='" + monthInfo[0] + "' AND FromDate='" + monthInfo[1] + "' AND ToDate='" + monthInfo[2] + "'";
+                    bMnth = " GenerateDate >= '" + monthInfo[1] + "' AND GenerateDate<= '" + monthInfo[2] + "'";
+                }
+
                 else
+                {
                     yearMonth = " AND YearMonth='" + monthInfo[0] + "'";
+                }
+                    
+
                 if (!Page.IsValid)   // If Java script are desible then 
                 {
                     lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
@@ -159,7 +168,7 @@ namespace SigmaERP.payroll.salary
                 {
                     if (ddlBankSheet.SelectedIndex >= 0)
                     {
-                        banksheetGenarate(yearMonth, DepartmentList);
+                        banksheetGenarate(yearMonth, DepartmentList,rblSheet.SelectedValue, bMnth);
                         return;
 
                     }
@@ -363,14 +372,18 @@ namespace SigmaERP.payroll.salary
             classes.commonTask.AddRemoveAll(lstSelected, lstAll);
         }       
        
-        private void banksheetGenarate(string yearmonth,string departmentList)
+        private void banksheetGenarate(string yearmonth,string departmentList,string salarySheet,string bnmnth)
         {
            Session["__bankShortname__"] = "";
             Session["__bankAcount__"] = "";
             DataTable dt = new DataTable();
-            string paymentType = "";      
+            string paymentType = "";
 
-
+            string empStatus = "ecs.EmpStatus in ('1','8')";
+            if (salarySheet == "1")
+            {
+                empStatus = "ecs.EmpStatus not in ('1','8') ";
+            }
             string condition = "";
             if (ddlBankSheet.SelectedIndex>0)
             {
@@ -383,12 +396,15 @@ namespace SigmaERP.payroll.salary
                 condition = "and ecs.BankId="+ bankId + "";
             }
           
-            string getSQLCMD = @"select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.PayerBankId,pbi.BankShortName as PayerBankShotname,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary,pms.BasicSalary,pms.TotalSalary,Isnull(ExtraOtHour,0) as ExtraOtHour,Isnull(ExtraOtAmount,0) as ExtraOtAmount,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes,Isnull(ecs.IsVacation,0) as IsVacation,
-  case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction) end as Deduction,
-pms.EmpPresentSalary-case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction) end as NetAmount,
+            string getSQLCMD = @"
+with bns as (select EmpId,BonusAmount from Payroll_YearlyBonusSheet where CompanyId='0001' AND "+ bnmnth + @")
+select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.PayerBankId,pbi.BankShortName as PayerBankShotname,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary,pms.BasicSalary,pms.TotalSalary,Isnull(ExtraOtHour,0) as ExtraOtHour,Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmount,0) as ExtraOtAmount,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes,Isnull(ecs.IsVacation,0) as IsVacation,
+  case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as Deduction,
+
+pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmount,0)-case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as NetAmount,
   case when Isnull(ecs.IsVacation,0)= 1 then 0 else pms.TotalSalary end as TotalSalary,
   case when Isnull(ecs.IsVacation,0)= 1 then 'Vacation' else '' end as Note" +
-                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = "+rblEmployeeType.SelectedValue+" "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+"";
+                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId left join bns on pms.Empid=bns.empid  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = "+rblEmployeeType.SelectedValue+" "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+" and "+ empStatus + "";
             sqlDB.fillDataTable(getSQLCMD, dt);
             if (dt.Rows.Count == 0)
             {

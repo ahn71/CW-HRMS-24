@@ -780,7 +780,7 @@
                 var salary_type = $('#<%=hdfSalaryType.ClientID%>').val().trim();
 
                 if (salary_type.trim() == "Scale") {
-                    alert("Scall123");
+                    //alert("Scall123");
                     basic = $('#txtBasic').val();
                     //-------------------End Basic Allowance Part-----------------------------------------------------------------------------
 
