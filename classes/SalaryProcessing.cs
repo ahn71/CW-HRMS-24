@@ -162,10 +162,10 @@ namespace SigmaERP.classes
                     salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString());
 
                     //get Others Pay
-                    //salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
+                    salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
 
                     //get Others Deduction
-                    //salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
+                    salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
                     
                     //get PF Deduction 
                     if (hasPF)
