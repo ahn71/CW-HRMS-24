@@ -157,7 +157,7 @@ namespace SigmaERP.classes
                         }
                     //getting Attendance Status (Leave,Absent,Present,Late) 
                     salaryRecord = getAttendanceStatus(salaryRecord);
-
+                    // check git
                     //check Attendance bonus
                     salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString());
 
