@@ -385,6 +385,12 @@ namespace SigmaERP.attendance
                     string DutyType = Get_Needed_EmployeeInfo[4];
                     AttendanceCommonTasks _attCommon = new AttendanceCommonTasks();
                     string[] rosterInfo = _attCommon.GetRosterInfo(AttDate.ToString("yyyy-MM-dd"), Get_Needed_EmployeeInfo[0], DutyType, Get_Needed_EmployeeInfo[5], Get_Needed_EmployeeInfo[6]);
+                    if (rosterInfo == null)
+                    {
+                        lblMessage.InnerText = "warning->Shift/Roster not assigned";
+                        return;
+                    }
+                        
                     if (DutyType=="Roster")  // if employee duty type is roster then execute if block
                     {
                         // to get all roster information 
@@ -505,13 +511,20 @@ namespace SigmaERP.attendance
                          //---------------------------------------------------------------------------------------
                         else
                         {
-                            //InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
-                            //OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();
+                                //InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
+                                //OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();
 
-                            InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text).Equals(12)) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
-                            OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text).Equals(12)) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();   
-                            string[] Roster_Operation_Status = classes.mManually_Attendance_Count.Roster_Operation_TimeChecking(TimeSpan.Parse(rosterInfo[3].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]), TimeSpan.Parse(InHur + ":" + txtInMin.Text.Trim() + ":00"));
 
+                   
+
+                                InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text).Equals(12)) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
+                            OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text).Equals(12)) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();
+
+                                classes.mManually_Attendance_Count.Roster_Operation_TimeChecking(TimeSpan.Parse(rosterInfo[3].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]), TimeSpan.Parse(InHur + ":" + txtInMin.Text.Trim() + ":00"));
+
+                                string[] Roster_Operation_Status = classes.mManually_Attendance_Count.Roster_Operation_TimeChecking(TimeSpan.Parse(rosterInfo[3].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]), TimeSpan.Parse(InHur + ":" + txtInMin.Text.Trim() + ":00"));
+
+                     
                             if (!bool.Parse(Roster_Operation_Status[0]))
                             {
                                 lblMessage.InnerText = "error->" + Roster_Operation_Status[1];
@@ -665,7 +678,10 @@ namespace SigmaERP.attendance
                    
 
                 }
-                catch { }
+                catch (Exception ex)
+                {
+
+                }
             }
             catch { }
         }

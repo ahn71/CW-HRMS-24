@@ -68,11 +68,11 @@ namespace SigmaERP.personnel
 
 
 
-                if (permissions.Contains(339))
+                if (permissions.Contains(343))
                     ViewState["__ReadAction__"] = "1";
-                if (permissions.Contains(340))
+                if (permissions.Contains(344))
                     ViewState["__WriteAction__"] = "1";
-                if (permissions.Contains(342))
+                if (permissions.Contains(345))
                     ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
 

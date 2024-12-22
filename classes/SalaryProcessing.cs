@@ -367,9 +367,9 @@ namespace SigmaERP.classes
             // Attendance Bonus
 
             //NetPayable (with normal OT)
-            salaryRecord.NetPayable = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.OverTimeAmount;
+            salaryRecord.NetPayable = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.OverTimeAmount+ salaryRecord.OthersPay;
             //NetPayable (with actual OT)
-            salaryRecord.TotalSalary = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.TotalOTAmount;
+            salaryRecord.TotalSalary = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.TotalOTAmount+ salaryRecord.OthersPay;
             if (salaryRecord.NetPayable > 0)
             {
                 salaryRecord.NetPayable -= salaryRecord.Stampdeduct;

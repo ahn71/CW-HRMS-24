@@ -130,9 +130,9 @@
                    </div>
                   
                    
-                 <div runat="server" id="divAttReportDaterange" class=" col-lg-2 col-md-3 col-sm-6 " title="Manpower Wise Attendance Report">
+              <%--   <div runat="server" id="divAttReportDaterange" class=" col-lg-2 col-md-3 col-sm-6 " title="Manpower Wise Attendance Report">
                      <a class="ds_Settings_Basic_Text cardStyle" href="/attendance/att_report_daterange.aspx"><i class="uil uil-user-arrows iconStyle"></i><br />Attendance By Date Range</a>
-                 </div> 
+                 </div> --%>
 
                      <% if (IsRouteExists("attendance/manpower-wise"))
                           { %>
