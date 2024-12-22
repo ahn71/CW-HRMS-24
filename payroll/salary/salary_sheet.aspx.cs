@@ -399,7 +399,7 @@ namespace SigmaERP.payroll.salary
             string getSQLCMD = @"
 with bns as (select EmpId,BonusAmount from Payroll_YearlyBonusSheet where CompanyId='0001' AND "+ bnmnth + @")
 select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.EmpName,bi.BankShortName,ecs.PayerBankId,pbi.BankShortName as PayerBankShotname,ecs.EmpAccountNo,'M' as SalaryFrequency,pms.PayableDays,pms.EmpPresentSalary,pms.BasicSalary,pms.TotalSalary,Isnull(ExtraOtHour,0) as ExtraOtHour,Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmount,0) as ExtraOtAmount,case when ecs.BankId=54 then 'Salary' else 'Normal Payment' end  as PaymentType,''  as Notes,Isnull(ecs.IsVacation,0) as IsVacation,
-  case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as Deduction,
+  case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as Deduction,(pms.TotalSalary+Isnull(bns.BonusAmount,0)) as OrginalAmount,EmpNetGross,
 
 pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmount,0)-case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as NetAmount,
   case when Isnull(ecs.IsVacation,0)= 1 then 0 else pms.TotalSalary end as TotalSalary,
