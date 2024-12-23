@@ -1626,6 +1626,8 @@
 
     <script>
 
+
+
          var token = '<%= Session["__UserToken__"] %>';
          //var rootUrl = 'http://localhost:5081';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
