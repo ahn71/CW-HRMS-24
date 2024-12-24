@@ -145,21 +145,23 @@ label {
 
 .Lbox, .Mbox {width:100% !important;}
 .Lactive{color:#5EC1FF !important; font-weight: bold;}
-.LBoxheader {background: #5EC1FF none repeat scroll 0 0 !important; border: 1px solid #5EC1FF !important;}
+.LBoxheader {background: #ffffff none repeat scroll 0 0 !important; 
+             border: none !important;
+             }
 .LBoxheader h2{   
     font-size: 20px;
     margin: 5px 0 !important;
     padding: 0;
     font-weight: 500;
-    text-shadow: 5px 5px 5px #000;
+    /*text-shadow: 5px 5px 5px #000;*/
     }
 
-.Lbody {
+/*.Lbody {
   background: #c6c6b4 none repeat scroll 0 0;
   border-bottom: 2px solid #5EC1FF !important;
   border-left: 2px solid #5EC1FF !important;
   border-right: 2px solid #5EC1FF !important;
-}
+}*/
 
 .Ltab {width:450px;}
 
@@ -457,22 +459,25 @@ label {
     width: 650px;
 }
 
-.main_box_body_leave {
-    background: none repeat scroll 0 0 #C6C6B4;
+/*.main_box_body_leave {
+    background: none repeat scroll 0 0 #f8f8f8;
     border-bottom: 2px solid #076C9C;
     border-left: 2px solid #076C9C;
     border-radius: 0 0 5px 5px;
     border-right: 2px solid #076C9C;
     min-height: 200px;
     padding: 10px;
-}
+}*/
+
 
 .main_box_content_leave {
     background: none repeat scroll 0 0 #FFFFFF;
-    border: 1px solid #909090;
-    margin: 0 auto;
+    /* border: 1px solid #909090; */
     padding: 10px;
-    /*width: 600px;*/
+    /* width: 600px; */
+    margin-top: 10px;
+    /* border-radius: 20px; */
+    border-radius: 10px;
 }
 
 .input_division_info_leave {

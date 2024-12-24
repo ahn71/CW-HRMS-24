@@ -16,6 +16,16 @@
 
     <!-- inject:css -->
 
+        <link href="../style/main.css" rel="stylesheet" />
+    <link href="../style/master.css" rel="stylesheet" />
+    <link href="../style/hrd.css" rel="stylesheet" />
+    <link href="../style/personnel.css" rel="stylesheet" />
+    <link href="../style/Leave.css" rel="stylesheet" />
+    <link href="../style/attendance.css" rel="stylesheet" />
+    <link href="../style/payroll.css" rel="stylesheet" />
+    <link href="../style/Pf.css" rel="stylesheet" />
+    <link href="../style/tools.css" rel="stylesheet" />
+    <link href="../style/gridview.css" rel="stylesheet" />
     <link rel="stylesheet" href="/hrms/assets/vendor_assets/css/bootstrap/bootstrap.css">
 
     <link rel="stylesheet" href="/hrms/assets/vendor_assets/css/daterangepicker.css">
