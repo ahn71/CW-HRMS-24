@@ -21,7 +21,7 @@ namespace SigmaERP.personnel
         string SqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
-            int[] pagePermission = { 431 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
@@ -34,7 +34,7 @@ namespace SigmaERP.personnel
             lblErrorMessage.Text = "";
             if (!IsPostBack)
             {
-      
+                int[] pagePermission = { 431 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);

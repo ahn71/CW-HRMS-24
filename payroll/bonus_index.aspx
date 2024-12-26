@@ -75,7 +75,7 @@
                <% if (IsRouteExists("bonus/bonus-summary"))
                    { %>
                  <div runat="server" id="aBonusSummary" class=" col-md-2" title="Bonus Summary">
-                     <a class="ds_Settings_Basic_Text " href="/hrmrs/bonus/bonus-summary"><i class="fas fa-money-check FsiconStyle"></i><br /><span>B. Summary</span></a> 
+                     <a class="ds_Settings_Basic_Text " href="/hrms/bonus/bonus-summary"><i class="fas fa-money-check FsiconStyle"></i><br /><span>B. Summary</span></a> 
                  
                  </div>
                  <% } %>

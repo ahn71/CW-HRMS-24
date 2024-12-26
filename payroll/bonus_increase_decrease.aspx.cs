@@ -20,16 +20,17 @@ namespace SigmaERP.payroll
         //permission(View=403 Increase=404 Decrease=405)
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";  //increase
-            ViewState["__DeletAction__"] = "0"; //decreese
-            int[] pagePermission = { 403, 404, 405 };
-
+            
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";  //increase
+                ViewState["__DeletAction__"] = "0"; //decreese
+                int[] pagePermission = { 403, 404, 405 };
+
 
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
