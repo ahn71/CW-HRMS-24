@@ -1003,6 +1003,25 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void _loadEmpTye(RadioButtonList rl)
+        {
+            try
+            {
+                dt = new DataTable();
+
+                sqlDB.fillDataTable("select EmpTypeId,EmpType from  HRD_EmployeeType ", dt);
+                rl.DataSource = dt;
+
+                rl.DataValueField = "EmpTypeId";
+                rl.DataTextField = "EmpType";
+                rl.DataBind();
+                rl.Items.Insert(rl.Items.Count, new ListItem("All", "0"));
+                rl.SelectedIndex = rl.Items.Count - 1;
+
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoAppoinmentLetter(string EmpTypeId, string DId, string DptId, DropDownList dl)
         {
             try

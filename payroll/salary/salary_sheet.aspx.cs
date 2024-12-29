@@ -17,18 +17,22 @@ namespace SigmaERP.payroll.salary
         //Permission=337
         protected void Page_Load(object sender, EventArgs e)
         {
-            int[] pagePermission = { 337, 474 };
+           
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] pagePermission = { 337, 474 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
 
-                classes.commonTask.loadEmpTye(rblEmployeeType);
+                classes.commonTask._loadEmpTye(rblEmployeeType);
+              
                 rblEmployeeType.SelectedValue = "1";
+                
+               
                 setPrivilege(userPagePermition);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
@@ -378,6 +382,11 @@ namespace SigmaERP.payroll.salary
             Session["__bankAcount__"] = "";
             DataTable dt = new DataTable();
             string paymentType = "";
+            string empptype = "";
+            if (rblEmployeeType.SelectedValue != "0")
+            {
+                empptype = "and ei.EmpTypeId = '" + rblEmployeeType.SelectedValue+"'";
+            }
 
             string empStatus = "ecs.EmpStatus in ('1','8')";
             if (salarySheet == "1")
@@ -404,7 +413,7 @@ select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.Em
 pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmount,0)-case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as NetAmount,
   case when Isnull(ecs.IsVacation,0)= 1 then 0 else pms.TotalSalary end as TotalSalary,
   case when Isnull(ecs.IsVacation,0)= 1 then 'Vacation' else '' end as Note" +
-                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId left join bns on pms.Empid=bns.empid  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1 and ei.EmpTypeId = "+rblEmployeeType.SelectedValue+" "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+" and "+ empStatus + "";
+                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId left join bns on pms.Empid=bns.empid  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1  "+ empptype + " "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+" and "+ empStatus + "";
             sqlDB.fillDataTable(getSQLCMD, dt);
             if (dt.Rows.Count == 0)
             {
@@ -422,15 +431,29 @@ pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmo
                 bankshhet.Visible = true;
                 chkExcel.Visible = false;
                 chkBankForwardingLetterXL.Visible = false;
+                //rblAlll.Visible = true;
             }
             else
             {
                 bankshhet.Visible = false;
                 chkExcel.Visible = true;
                 chkBankForwardingLetterXL.Visible =true;
+                //rblAlll.Visible = false;
             }
         }
 
-       
+        //protected void rblAlll_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    if (rblAlll.Checked)
+        //        rblEmployeeType.Visible = false;
+        //    else
+        //        rblEmployeeType.Visible = true;
+
+        //}
+
+        protected void rblEmployeeType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //rblAlll.Checked = false;
+        }
     }
 }
