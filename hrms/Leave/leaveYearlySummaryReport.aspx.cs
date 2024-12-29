@@ -1,5 +1,4 @@
 ﻿using adviitRuntimeScripting;
-using ComplexScriptingSystem;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
 using System;
@@ -10,11 +9,10 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace SigmaERP.leave
+namespace SigmaERP.hrms.Leave
 {
-    public partial class yearly_leaveStatus_report : System.Web.UI.Page
+    public partial class leaveYearlySummaryReport : System.Web.UI.Page
     {
-        //permission=311;
         DataTable dt;
         string companyId = "";
         string sqlCmd = "";
@@ -41,6 +39,8 @@ namespace SigmaERP.leave
             }
 
         }
+
+
         private void loadYear()
         {
             try
@@ -70,14 +70,14 @@ namespace SigmaERP.leave
                 ////System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "yearly_leaveStatus_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
                 //ViewState["__ReadAction__"] = AccessPermission[0];               
-                commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);              
-                
+                commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
+
 
             }
             catch { }
 
         }
-        private void GenerateYearlyLeaveStarus() 
+        private void GenerateYearlyLeaveStarus()
         {
             try
             {
@@ -87,11 +87,11 @@ namespace SigmaERP.leave
                 if (!Page.IsValid)   // If Java script are desible then 
                 {
                     lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
-                }         
+                }
 
                 if (chkForAllCompany.Checked)
                 {
-                    CompanyList = classes.commonTask.getCompaniesList(ddlCompanyName);                    
+                    CompanyList = classes.commonTask.getCompaniesList(ddlCompanyName);
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
                 }
                 else
@@ -99,31 +99,32 @@ namespace SigmaERP.leave
                     string Cid = (ddlCompanyName.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
                     CompanyList = "in ('" + Cid + "')";
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
-                    
+
                 }
                 string sqlCmd = "";
                 string IsIndividual = "";
                 if (txtCardNo.Text.Trim().Length > 0)
                 {
-                    if(txtCardNo.Text.Trim().Length<4)
+                    if (txtCardNo.Text.Trim().Length < 4)
                     {
                         lblMessage.InnerText = "warning-> Please Type Mininmum 4 Character of Card Number!";
                         return;
                     }
                     IsIndividual = "Yes";
                     sqlCmd = "SELECT  v_v_v_Leave_Yearly_Status.Year, v_v_v_Leave_Yearly_Status.EmpName,v_v_v_Leave_Yearly_Status.EmpCardNo,Sex, v_v_v_Leave_Yearly_Status.DptName," +
-                   "v_v_v_Leave_Yearly_Status.SftName,v_v_v_Leave_Yearly_Status.CompanyName,v_v_v_Leave_Yearly_Status.Address,v_v_v_Leave_Yearly_Status.DsgName," +                
+                   "v_v_v_Leave_Yearly_Status.SftName,v_v_v_Leave_Yearly_Status.CompanyName,v_v_v_Leave_Yearly_Status.Address,v_v_v_Leave_Yearly_Status.DsgName," +
                    "v_v_v_Leave_Yearly_Status.CL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.CL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.CL_Remaining END As CL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.CL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.CL_Total END AS CL_Total," +
                    "v_v_v_Leave_Yearly_Status.SL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.SL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.SL_Remaining END As SL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.SL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.SL_Total END AS SL_Total," +
                     "v_v_v_Leave_Yearly_Status.AL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.AL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.AL_Remaining END As AL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.AL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.AL_Total END AS AL_Total," +
                    "v_v_v_Leave_Yearly_Status.ML_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.ML_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.ML_Remaining END As ML_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.ML_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.ML_Total END AS ML_Total," +
                    "v_v_v_Leave_Yearly_Status.OPL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.OPL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OPL_Remaining END As OPL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.OPL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OPL_Total END AS OPL_Total," +
-                   "v_v_v_Leave_Yearly_Status.OL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Remaining END As OL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Total END AS OL_Total" +                   
+                   "v_v_v_Leave_Yearly_Status.OL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Remaining END As OL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Total END AS OL_Total" +
                    " FROM  dbo.v_v_v_Leave_Yearly_Status" +
-                   " where Year ='" + ddlYear.SelectedValue + "'  AND CompanyId " + CompanyList + " and EmpCardNo like '%"+txtCardNo.Text.Trim()+"'" +
+                   " where Year ='" + ddlYear.SelectedValue + "'  AND CompanyId " + CompanyList + " and EmpCardNo like '%" + txtCardNo.Text.Trim() + "'" +
                    "ORDER BY v_v_v_Leave_Yearly_Status.CompanyName,v_v_v_Leave_Yearly_Status.SftName,v_v_v_Leave_Yearly_Status.DptName";
                 }
-                else {
+                else
+                {
                     IsIndividual = "No";
                     sqlCmd = "SELECT  v_v_v_Leave_Yearly_Status.Year, v_v_v_Leave_Yearly_Status.EmpName,substring(v_v_v_Leave_Yearly_Status.EmpCardNo,8,15) as EmpCardNo, v_v_v_Leave_Yearly_Status.DptName," +
                    "v_v_v_Leave_Yearly_Status.SftName,v_v_v_Leave_Yearly_Status.CompanyName,v_v_v_Leave_Yearly_Status.Address,v_v_v_Leave_Yearly_Status.DsgName," +
@@ -132,22 +133,22 @@ namespace SigmaERP.leave
                     "v_v_v_Leave_Yearly_Status.AL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.AL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.AL_Remaining END As AL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.AL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.AL_Total END AS AL_Total," +
                    "v_v_v_Leave_Yearly_Status.ML_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.ML_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.ML_Remaining END As ML_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.ML_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.ML_Total END AS ML_Total," +
                    "v_v_v_Leave_Yearly_Status.OPL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.OPL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OPL_Remaining END As OPL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.OPL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OPL_Total END AS OPL_Total," +
-                   "v_v_v_Leave_Yearly_Status.OL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Remaining END As OL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Total END AS OL_Total" +  
+                   "v_v_v_Leave_Yearly_Status.OL_Spend, CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Remaining IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Remaining END As OL_Remaining,CASE  WHEN v_v_v_Leave_Yearly_Status.OL_Total IS NULL THEN 0 ELSE v_v_v_Leave_Yearly_Status.OL_Total END AS OL_Total" +
                 " FROM  dbo.v_v_v_Leave_Yearly_Status" +
                 " where Year ='" + ddlYear.SelectedValue + "'  AND CompanyId " + CompanyList + " AND " +
                 " DptId " + DepartmentList + "" +
                 "ORDER BY v_v_v_Leave_Yearly_Status.CompanyName,v_v_v_Leave_Yearly_Status.SftName,v_v_v_Leave_Yearly_Status.DptName";
- 
+
                 }
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
 
                 if (dt.Rows.Count == 0)
                 {
-                    lblMessage.InnerText = "warning->Sorry any record are not founded"; return;         
+                    lblMessage.InnerText = "warning->Sorry any record are not founded"; return;
                 }
-               
+
                 Session["__YearlyLeaveStatus__"] = dt;
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=YearlyLeaveStatus-"+IsIndividual+"');", true);  //Open New Tab for Sever side code
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=YearlyLeaveStatus-" + IsIndividual + "');", true);  //Open New Tab for Sever side code
             }
             catch { }
         }
@@ -157,38 +158,38 @@ namespace SigmaERP.leave
             try
             {
 
-              
+
                 if (lstSelected.Items.Count < 1 && txtCardNo.Text.Trim().Length == 0)
                 { lblMessage.InnerText = "warning-> Please Select Department!"; lstSelected.Focus(); return; }
                 string CompanyList = "";
                 string DepartmentList = "";
                 string empType = "";
                 string _empType = "";
-          
-                    
+
+
                 if (!Page.IsValid)   // If Java script are desible then 
                 {
                     lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
                 }
-             
+
                 ViewState["__FromDate__"] = ddlYear.SelectedValue + "-01-01";
-                ViewState["__ToDate__"] = ddlYear.SelectedValue + "-12-31"; 
+                ViewState["__ToDate__"] = ddlYear.SelectedValue + "-12-31";
 
                 if (chkForAllCompany.Checked)
                 {
-                    CompanyList = classes.commonTask.getCompaniesList(ddlCompanyName);                  
+                    CompanyList = classes.commonTask.getCompaniesList(ddlCompanyName);
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
                 }
                 else
                 {
                     string Cid = (ddlCompanyName.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
                     CompanyList = "in ('" + Cid + "')";
-                   
+
                 }
                 if (!ckbIndividualDetails.Checked)
                 {
-                    
-                        
+
+
                     if (txtCardNo.Text.Trim().Length == 0)
                     {
                         if (rblEmpType.SelectedValue != "All")
@@ -207,17 +208,18 @@ namespace SigmaERP.leave
  bEL as (select EmpID, isnull(sum(EarnLeaveDays), 0) as EarnLeaveDays from Earnleave_BalanceDetailsLog where GenerateDate >= '" + ddlYear.SelectedValue + @"-01-01' and GenerateDate<= '" + ddlYear.SelectedValue + @"-12-31' group by EmpID),
                        lv as (
                        select EmpId, sum(case when ShortName='c/l' then TotalLeaveDays else 0 end ) as CL, sum(case when ShortName='s/l' then TotalLeaveDays else 0 end ) as SL, sum(case when ShortName='a/l' then TotalLeaveDays else 0 end ) as AL, sum(case when ShortName='m/l' then TotalLeaveDays else 0 end ) as ML, sum(case when ShortName='wp/l' then TotalLeaveDays else 0 end ) as LWP from Leave_LeaveApplications lva left join  tblLeaveConfig c on lva.LeaveTypeId =c.LeaveId where  approvalStatus='1' and LeaveStartDate >= '" + ddlYear.SelectedValue + @"-01-01' AND LeaveStartDate <= '" + ddlYear.SelectedValue + @"-12-31'  group by EmpId)
-					   , ed as (select * from v_EmployeeDetails where IsActive=1 "+ empType + @" AND CompanyId " + CompanyList + " AND " +
+					   , ed as (select * from v_EmployeeDetails where IsActive=1 " + empType + @" AND CompanyId " + CompanyList + " AND " +
                         "  DptId " + DepartmentList + @")
                       SELECT ed.EmpId,convert(varchar(10),EmpJoiningDate,105) as SftName, EmpName,substring(EmpCardNo,10,6)+' ('+ed.EmpProximityNo+')' EmpCardNo, Sex,  isnull(CL,0) as CL,ISNULL(SL,0) as SL,ISNULL(ML,0) as ML,ISNULL(AL,0) as AL,ISNULL(LWP,0) as LWP,DptId, DptName, DsgId, DsgName, CompanyId, SftId, SftName,CompanyName,Address,ISNULL(bEL.EarnLeaveDays,0) as  bEL,ISNULL(pEL.ReserveEeanLeaveDays,0) as pEL FROM lv right join ed on lv.EmpId=ed.EmpId left join bEL on ed.EmpId=bEL.EmpID left join pEl on ed.EmpId=pEl.EmpID where ed.IsActive=1 and lv.EmpId is not null or ( lv.EmpId  is null  and ed.EmpStatus in(1,8)) and ed.EmpJoiningDate < '" + ddlYear.SelectedValue + @"-12-31'   order by convert(int, DptId),convert(int,SUBSTRING(EmpCardNo,10,6))";
 
 
-                        
+
                     }
                     else
                     {
-                        if (rblEmpType.SelectedValue != "All")                        {
-                            
+                        if (rblEmpType.SelectedValue != "All")
+                        {
+
                             _empType = "(" + rblEmpType.SelectedItem.Text + ")";
                         }
                         //sqlCmd = @"with bEL as (
@@ -234,15 +236,15 @@ namespace SigmaERP.leave
                         sqlCmd = @" with  pEL as(select EmpID, ReserveEeanLeaveDays from Earnleave_Reserved where ReserveFor = '" + ddlYear.SelectedValue + @"-01-01'),
  bEL as (select EmpID, isnull(sum(EarnLeaveDays), 0) as EarnLeaveDays from Earnleave_BalanceDetailsLog where GenerateDate >= '" + ddlYear.SelectedValue + @"-01-01' and GenerateDate<= '" + ddlYear.SelectedValue + @"-12-31' group by EmpID),
                        lv as (
-                       select EmpId, sum(case when ShortName='c/l' then TotalDays else 0 end ) as CL, sum(case when ShortName='s/l' then TotalDays else 0 end ) as SL, sum(case when ShortName='a/l' then TotalDays else 0 end ) as AL, sum(case when ShortName='m/l' then TotalDays else 0 end ) as ML, sum(case when ShortName='wp/l' then TotalDays else 0 end ) as LWP from Leave_LeaveApplication lva left join  tblLeaveConfig c on lva.LeaveId=c.LeaveId where  IsApproved=1 and FromDate >= '" + ddlYear.SelectedValue + @"-01-01' AND FromDate <= '" + ddlYear.SelectedValue + @"-12-31' AND EmpId='"+ EmpId + @"' group by EmpId)
+                       select EmpId, sum(case when ShortName='c/l' then TotalDays else 0 end ) as CL, sum(case when ShortName='s/l' then TotalDays else 0 end ) as SL, sum(case when ShortName='a/l' then TotalDays else 0 end ) as AL, sum(case when ShortName='m/l' then TotalDays else 0 end ) as ML, sum(case when ShortName='wp/l' then TotalDays else 0 end ) as LWP from Leave_LeaveApplication lva left join  tblLeaveConfig c on lva.LeaveId=c.LeaveId where  IsApproved=1 and FromDate >= '" + ddlYear.SelectedValue + @"-01-01' AND FromDate <= '" + ddlYear.SelectedValue + @"-12-31' AND EmpId='" + EmpId + @"' group by EmpId)
 					   , ed as (select * from v_EmployeeDetails where IsActive=1 AND EmpId='" + EmpId + @"')" +
                      " SELECT ed.EmpId,convert(varchar(10),EmpJoiningDate,105) as SftName, EmpName,substring(EmpCardNo,10,6)+' ('+ed.EmpProximityNo+')' EmpCardNo, Sex,  isnull(CL,0) as CL,ISNULL(SL,0) as SL,ISNULL(ML,0) as ML,ISNULL(AL,0) as AL,ISNULL(LWP,0) as LWP,DptId, DptName, DsgId, DsgName, CompanyId, SftId, SftName,CompanyName,Address,ISNULL(bEL.EarnLeaveDays,0) as  bEL,ISNULL(pEL.ReserveEeanLeaveDays,0) as pEL FROM lv right join ed on lv.EmpId=ed.EmpId left join bEL on ed.EmpId=bEL.EmpID left join pEl on ed.EmpId=pEl.EmpID   where ed.IsActive=1  and ed.EmpJoiningDate < '" + ddlYear.SelectedValue + @"-12-31' AND CompanyId " + CompanyList +
                         " AND ed.EmpId='" + EmpId + @"' order by convert(int, DptId),convert(int,SUBSTRING(EmpCardNo,10,6)) ";
                     }
                     //sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                     dt = new DataTable();
-                    dt=CRUD.ExecuteReturnDataTable(sqlCmd);
-                    if (dt==null|| dt.Rows.Count == 0)
+                    dt = CRUD.ExecuteReturnDataTable(sqlCmd);
+                    if (dt == null || dt.Rows.Count == 0)
                     {
                         lblMessage.InnerText = "warning->Data not found."; return;
                     }
@@ -252,28 +254,28 @@ namespace SigmaERP.leave
                     Session["__LeaveYearlySummary__"] = dt;
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=LeaveYearlySummary-" + ddlYear.SelectedValue + "-" + _empType + "');", true);  //Open New Tab for Sever side code
                 }
-                else 
+                else
                 {
-                   
+
                     if (txtCardNo.Text.Trim().Length == 0)
                     {
                         if (rblEmpType.SelectedValue != "All")
                             empType = " and lv.EmpTypeID=" + rblEmpType.SelectedValue;
-                        DepartmentList = classes.commonTask.getDepartmentList(lstSelected);      
-                        sqlCmd = @"with  ed as (select * from v_EmployeeDetails where IsActive=1  AND CompanyId " + CompanyList + " AND   DptId " + DepartmentList 
-                            +"), " +
-                         " pEL as(select EmpID, ReserveEeanLeaveDays  from Earnleave_Reserved where ReserveFor = '" + ddlYear.SelectedValue+ "-01-01') , bEL as (select EmpID, isnull(sum(EarnLeaveDays), 0) as EarnLeaveDays from Earnleave_BalanceDetailsLog where GenerateDate >= '" + ddlYear.SelectedValue + "-01-01' and GenerateDate<= '" + ddlYear.SelectedValue + "-12-31'  group  by EmpID) " +
+                        DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+                        sqlCmd = @"with  ed as (select * from v_EmployeeDetails where IsActive=1  AND CompanyId " + CompanyList + " AND   DptId " + DepartmentList
+                            + "), " +
+                         " pEL as(select EmpID, ReserveEeanLeaveDays  from Earnleave_Reserved where ReserveFor = '" + ddlYear.SelectedValue + "-01-01') , bEL as (select EmpID, isnull(sum(EarnLeaveDays), 0) as EarnLeaveDays from Earnleave_BalanceDetailsLog where GenerateDate >= '" + ddlYear.SelectedValue + "-01-01' and GenerateDate<= '" + ddlYear.SelectedValue + "-12-31'  group  by EmpID) " +
                          "select ed.CompanyId,lv.EmpId,ed.CompanyName,ed.Address,TotalDays, LACode, ShortName,LeaveName,SUBSTRING(ed.EmpCardNo,10,6) EmpCardNo,ed.EmpName,ed.DptId,ed.DptName,ed.DsgId,ed.DsgName, convert(varchar, ApplyDate,105) ApplyDate,convert(varchar, FromDate,105) FromDate,convert(varchar, ToDate,105) ToDate,case when ShortName='s/l'  then TotalDays else 0  end SL,case when ShortName='c/l' then TotalDays else 0  end CL,case when ShortName='a/l' then TotalDays else 0 end EL ,case when  ShortName='m/l' then TotalDays else 0 end ML  ,ed.Sex as EmpType,ISNULL(bEL.EarnLeaveDays,0) as  bEL,ISNULL(pEL.ReserveEeanLeaveDays,0) as pEL,ed.EmpProximityNo as OPL,convert(varchar(10), ed.EmpJoiningDate,105) as OL from v_Leave_LeaveApplication lv inner join ed on lv.EmpId=ed.EmpId  left join bEL on ed.EmpId=bEL.EmpID left join pEL on ed.EmpID=pEL.EmpID  where IsApproved=1   " + empType + " and year(FromDate)='" + ddlYear.SelectedValue + "' and lv.CompanyId " + CompanyList + " AND lv.DptId " + DepartmentList +
                             " order by convert(int, ed.DptId),convert(int,SUBSTRING(ed.EmpCardNo,10,6)),year(FromDate),month(FromDate),FromDate ";
                     }
                     else
                     {
-                        string EmpId = Employee.getEmpIdByCardNo(ddlCompanyName.SelectedValue,txtCardNo.Text);
+                        string EmpId = Employee.getEmpIdByCardNo(ddlCompanyName.SelectedValue, txtCardNo.Text);
                         if (EmpId == "")
                         {
                             lblMessage.InnerText = "warning->Invalid Card No!"; return;
                         }
-                        sqlCmd = @"with  ed as (select * from v_EmployeeDetails where IsActive=1  AND CompanyId " + CompanyList + " and EmpId='"+ EmpId + @"')," +
+                        sqlCmd = @"with  ed as (select * from v_EmployeeDetails where IsActive=1  AND CompanyId " + CompanyList + " and EmpId='" + EmpId + @"')," +
                          " pEL as(select EmpID, ReserveEeanLeaveDays  from Earnleave_Reserved where ReserveFor = '" + ddlYear.SelectedValue + "-01-01') , bEL as (select EmpID, isnull(sum(EarnLeaveDays), 0) as EarnLeaveDays from Earnleave_BalanceDetailsLog where GenerateDate >= '" + ddlYear.SelectedValue + "-01-01' and GenerateDate<= '" + ddlYear.SelectedValue + "-12-31'  group  by EmpID) " +
                                     "select ed.CompanyId,lv.EmpId,ed.CompanyName,ed.Address,TotalDays, LACode, ShortName,LeaveName,SUBSTRING(ed.EmpCardNo,10,6) EmpCardNo,ed.EmpName,ed.DptId,ed.DptName,ed.DsgId,ed.DsgName, convert(varchar, ApplyDate,105) ApplyDate,convert(varchar, FromDate,105) FromDate,convert(varchar, ToDate,105) ToDate,case when ShortName='s/l'  then TotalDays else 0  end SL,case when ShortName='c/l' then TotalDays else 0  end CL,case when ShortName='a/l' then TotalDays else 0 end EL ,case when  ShortName='m/l' then TotalDays else 0 end ML  ,ed.Sex as EmpType,ISNULL(bEL.EarnLeaveDays,0) as  bEL,ISNULL(pEL.ReserveEeanLeaveDays,0) as pEL,ed.EmpProximityNo as OPL,convert(varchar(10), ed.EmpJoiningDate,105) as OL from v_Leave_LeaveApplication lv inner join ed on lv.EmpId=ed.EmpId  left join bEL on ed.EmpId=bEL.EmpID left join pEL on ed.EmpID=pEL.EmpID  where IsApproved=1  and year(FromDate)='" + ddlYear.SelectedValue + "' and lv.EmpId='" + EmpId + @"'  order by year(FromDate),month(FromDate),  FromDate ";
                     }
@@ -290,18 +292,18 @@ namespace SigmaERP.leave
                     Session["__dtLeave__"] = dtLeave;
                     Session["__LeaveYearlySummaryIndividualDetails__"] = dt;
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=LeaveYearlySummaryIndividualDetails-" + ddlYear.SelectedValue + "');", true);  //Open New Tab for Sever side code              
-                  
+
                 }
             }
             catch { }
         }
-        
+
 
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)
         {
 
 
-            companyId= (ddlCompanyName.SelectedValue=="0000")?ViewState["__CompanyId__"].ToString():ddlCompanyName.SelectedValue.ToString();
+            companyId = (ddlCompanyName.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
             lstSelected.Items.Clear();
             commonTask.LoadDepartment(companyId, lstAll);
             loadYear();
@@ -329,7 +331,7 @@ namespace SigmaERP.leave
 
         protected void btnPreview_Click(object sender, EventArgs e)
         {
-           //GenerateYearlyLeaveStarus();
+            //GenerateYearlyLeaveStarus();
             GenerateYearlyLeaveStarus_SG();
         }
     }

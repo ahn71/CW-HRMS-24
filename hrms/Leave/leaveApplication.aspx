@@ -93,7 +93,7 @@
                                                <label for="datepicker5" class="color-dark fs-14 fw-500 align-center mb-10">
                                                    Apply Date<span class="text-danger">*</span>
                                                </label>
-                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker5" placeholder="Apply Date">
+                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" autocomplete="off" id="datepicker5" placeholder="Apply Date">
                                                <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
                                                <span class="text-danger" id="applydateError"></span>
 
@@ -104,7 +104,7 @@
                                                <label for="datepicker" class="color-dark fs-14 fw-500 align-center mb-10">
                                                   Leave Start Date<span class="text-danger">*</span>
                                                </label>
-                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker" placeholder="Start Date" onchange="calculateTotalDays()">
+                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker" placeholder="Start Date" autocomplete="off" onchange="calculateTotalDays()">
                                                <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
                                              <span class="text-danger" id="lvstartdateError"></span>
 
@@ -115,7 +115,7 @@
                                                <label for="datepicker2" class="color-dark fs-14 fw-500 align-center mb-10">
                                                  Leave End Date<span class="text-danger">*</span>
                                                </label>
-                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker2" placeholder="End Date" onchange="calculateTotalDays()">
+                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker2" placeholder="End Date" autocomplete="off" onchange="calculateTotalDays()">
                                                <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
                                            <span class="text-danger" id="datepicker2Error"></span>
 
@@ -137,7 +137,7 @@
                                                <label for="datepicker3" class="color-dark fs-14 fw-500 align-center mb-10">
                                                   Pregnant Date<span class="text-danger">*</span>
                                                </label>
-                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker3" placeholder="Pregnant Date">
+                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" autocomplete="off" id="datepicker3" placeholder="Pregnant Date">
                                                <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
                                                <span class="text-danger" id="datepicker3Error"></span>
 
@@ -148,7 +148,7 @@
                                                <label for="datepicker4" class="color-dark fs-14 fw-500 align-center mb-10">
                                                    Expected Delivery Date <span class="text-danger">*</span>
                                                </label>
-                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" id="datepicker4" placeholder="Expected Delivery Date" ">
+                                               <input type="text" class="form-control ih-medium ip-light radius-xs b-light px-15" autocomplete="off" id="datepicker4" placeholder="Expected Delivery Date" ">
                                                <img class="svg calendar-icon" src="/hrms/img/svg/calendar.svg" alt="calendar">
                                                <span class="text-danger" id="datepicker4Error"></span>
 

@@ -75,7 +75,8 @@
         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplicationForApprove';
-        var getLeaveApproveUrl = rootUrl + '/api/Leave/approval';
+                                                                                         
+        var getLeaveApproveUrl = rootUrl + '/api/Leave/approval?companyID=' + CompanyID;
 
         $(document).ready(function () {
             GetLeaves();  // Fetch leave data on document ready
@@ -133,7 +134,7 @@
                 let declineButton = `
             <button type="button" class="btn btn-outline-danger btn-sm m-2 leave-action-btn" 
                 data-id="${row.id}" 
-                data-notification-id="0" 
+                data-notification-id="${row.notificationId}" 
                 data-status="2">
                 Decline <span><i class="uil-multiply"></i></span>
             </button>
@@ -144,7 +145,7 @@
                     forwardButton = `
                 <button type="button" class="btn btn-info btn-sm m-2 leave-action-btn" 
                     data-id="${row.id}" 
-                    data-notification-id="0" 
+                    data-notification-id="${row.notificationId}" 
                     data-status="0">
                     Forward <span><i class="uil-share"></i></span>
                 </button>
@@ -153,7 +154,7 @@
                     approveButton = `
                 <button type="button" class="btn btn-success btn-sm m-2 leave-action-btn" 
                     data-id="${row.id}" 
-                    data-notification-id="0" 
+                    data-notification-id="${row.notificationId}" 
                     data-status="1">
                     Approve <span><i class="uil-check"></i></span>
                 </button>
@@ -162,7 +163,7 @@
                     forwardButton = `
                 <button type="button" class="btn btn-info btn-sm m-2 leave-action-btn" 
                     data-id="${row.id}" 
-                    data-notification-id="0" 
+                    data-notification-id="${row.notificationId}" 
                     data-status="0">
                     Forward <span><i class="uil-share"></i></span>
                 </button>
@@ -170,7 +171,7 @@
                     approveButton = `
                 <button type="button" class="btn btn-success btn-sm m-2 leave-action-btn" 
                     data-id="${row.id}" 
-                    data-notification-id="0" 
+                    data-notification-id="${row.notificationId}" 
                     data-status="1">
                     Approve <span><i class="uil-check"></i></span>
                 </button>

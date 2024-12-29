@@ -1705,6 +1705,8 @@
     <Content Include="hrms\index.html" />
     <Content Include="hrms\Leave\leaveApplication.aspx" />
     <Content Include="hrms\Leave\leaveApprove.aspx" />
+    <Content Include="hrms\Leave\leaveConfiguration.aspx" />
+    <Content Include="hrms\Leave\leaveYearlySummaryReport.aspx" />
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\modules.aspx" />
     <Content Include="hrms\style.css" />
@@ -3663,6 +3665,20 @@
     </Compile>
     <Compile Include="hrms\Leave\leaveApprove.aspx.designer.cs">
       <DependentUpon>leaveApprove.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveConfiguration.aspx.cs">
+      <DependentUpon>leaveConfiguration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveConfiguration.aspx.designer.cs">
+      <DependentUpon>leaveConfiguration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveYearlySummaryReport.aspx.cs">
+      <DependentUpon>leaveYearlySummaryReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveYearlySummaryReport.aspx.designer.cs">
+      <DependentUpon>leaveYearlySummaryReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\modules.aspx.cs">
       <DependentUpon>modules.aspx</DependentUpon>
