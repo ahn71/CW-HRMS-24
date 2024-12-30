@@ -15,6 +15,9 @@
         body{
             color:black !important;
         }
+        .lstdata option{
+            padding: 5px;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -46,7 +49,7 @@
                                         <asp:AsyncPostBackTrigger ControlID="lnkNew" />
                                     </Triggers>
                                     <ContentTemplate>
-                                        <div class="bonus_generation" style="width: 61%; margin: 0px auto;">
+                                        <div class="bonus_generation" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; width: 80%; margin: 0px auto; padding:20px">
                                             <h1 runat="server" visible="false" id="WarningMessage" style="color: red; text-align: center"></h1>
                                             <table runat="server" visible="true" id="tblGenerateType" class="division_table_leave1" style="margin: 0px auto">
                                                 <tr id="trForCompanyList" runat="server">
@@ -86,7 +89,7 @@
                      </center>
                                              <div id="workerlist" runat="server" class="id_card" style="background-color: white; width: 99%;">
                                             <div class="id_card_left EilistL">
-                                                <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" SelectionMode="Multiple"></asp:ListBox>
+                                                <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec p-2" SelectionMode="Multiple"></asp:ListBox>
                                             </div>
                                             <div class="id_card_center EilistC">
                                                 <table style="margin-top: 0px;" class="employee_table">

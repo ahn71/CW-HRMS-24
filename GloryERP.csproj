@@ -1703,6 +1703,9 @@
     <Content Include="hrms\img\zip%402x.png" />
     <Content Include="hrms\img\zip.png" />
     <Content Include="hrms\index.html" />
+    <Content Include="hrms\Leave\EarnLeaveProcessing.aspx" />
+    <Content Include="hrms\Leave\EarnLeaveReport.aspx" />
+    <Content Include="hrms\Leave\HolyDaySetup.aspx" />
     <Content Include="hrms\Leave\leaveApplication.aspx" />
     <Content Include="hrms\Leave\leaveApprove.aspx" />
     <Content Include="hrms\Leave\leaveConfiguration.aspx" />
@@ -3651,6 +3654,27 @@
     </Compile>
     <Compile Include="hrms\HRMS.Master.designer.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\EarnLeaveProcessing.aspx.cs">
+      <DependentUpon>EarnLeaveProcessing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\EarnLeaveProcessing.aspx.designer.cs">
+      <DependentUpon>EarnLeaveProcessing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\EarnLeaveReport.aspx.cs">
+      <DependentUpon>EarnLeaveReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\EarnLeaveReport.aspx.designer.cs">
+      <DependentUpon>EarnLeaveReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\HolyDaySetup.aspx.cs">
+      <DependentUpon>HolyDaySetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\HolyDaySetup.aspx.designer.cs">
+      <DependentUpon>HolyDaySetup.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\Leave\leaveApplication.aspx.cs">
       <DependentUpon>leaveApplication.aspx</DependentUpon>
@@ -5842,6 +5866,7 @@
     <Folder Include="EmployeeImages\LeaveDocument\" />
     <Folder Include="EmployeeImages\Signature\" />
     <Folder Include="hrms\StaticFiles\" />
+    <Folder Include="System\Web\UI\WebControls\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="CRDESIGNERLib">
