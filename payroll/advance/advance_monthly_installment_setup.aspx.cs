@@ -22,16 +22,18 @@ namespace SigmaERP.payroll.advance
         int InstallmentTotalAmount = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
-            ViewState["__ReadAction__"] = "0";
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__UpdateAction__"] = "0";
+         
 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
-            int[] pagePermission = { 354,355,356 };
+         
             if (!IsPostBack)
             {
+                int[] pagePermission = { 354, 355, 356 };
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);

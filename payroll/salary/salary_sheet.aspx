@@ -101,9 +101,10 @@
                          <tr>
                                 <td><span  runat="server" id="trHideForIndividualLabel">Employee Type</span> </td>                                
                                 <td>                                   
-                                    <asp:RadioButtonList ID="rblEmployeeType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
+                                    <asp:RadioButtonList ID="rblEmployeeType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" OnSelectedIndexChanged="rblEmployeeType_SelectedIndexChanged" AutoPostBack="true">
                                         
                                     </asp:RadioButtonList>
+                               <%--     <asp:RadioButton runat="server" ID="rblAlll" value="0" Text="All" OnCheckedChanged="rblAlll_CheckedChanged" Visible="false" AutoPostBack="true"/>--%>
                                 </td>
                            <%--  <td>Payment Type</td>    --%>                            
                                 <td>                                   

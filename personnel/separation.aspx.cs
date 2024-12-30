@@ -26,18 +26,19 @@ namespace SigmaERP.personnel
         //Separation Activation Log=283
         protected void Page_Load(object sender, EventArgs e)
         {
-  
-                ViewState["__SeparationEntry=__"] = "0";
-                ViewState["__CurrentSeparationList__"] = "0";
-                ViewState["__SeparationActivation__"] = "0";
-                ViewState["__SeparationActivationLog__"] = "0";
 
-            int[] pagePermission = { 280, 281, 282, 283 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+
+                ViewState["__SeparationEntry=__"] = "0";
+                ViewState["__CurrentSeparationList__"] = "0";
+                ViewState["__SeparationActivation__"] = "0";
+                ViewState["__SeparationActivationLog__"] = "0";
+
+                int[] pagePermission = { 280, 281, 282, 283 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
@@ -259,6 +260,7 @@ namespace SigmaERP.personnel
             try
             {
                 SQLOperation.selectBySetCommandInDatatable("select EmpSeparationId,EmpId,EmpCardNo,EmpName,EmpTypeId,convert(varchar(11),EffectiveDate,105) as EffectiveDate,EmpStatusName,EmpType,convert(varchar(11),EntryDate,105) as EntryDate,Remarks  from v_Personnel_EmpSeparation where IsActive='false' ", dt = new DataTable(), sqlDB.connection);
+                string nnn = "select EmpSeparationId,EmpId,EmpCardNo,EmpName,EmpTypeId,convert(varchar(11),EffectiveDate,105) as EffectiveDate,EmpStatusName,EmpType,convert(varchar(11),EntryDate,105) as EntryDate,Remarks  from v_Personnel_EmpSeparation where IsActive='false'";
                 gvSeparationList.DataSource = dt;
                 gvSeparationList.DataBind();
             }

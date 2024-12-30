@@ -90,6 +90,9 @@ namespace SigmaERP.personnel
                 dt = new DataTable();
                 if (!chkLoadAllShiftList.Checked) sqlDB.fillDataTable("select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='"+ddlGrouopList.SelectedValue.ToString()+"' order by STId Desc ", dt);
                 else sqlDB.fillDataTable("select STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='" + ddlGrouopList.SelectedValue.ToString() + "' order by STId Desc ", dt);
+
+                string hhhh = "select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='" + ddlGrouopList.SelectedValue.ToString() + "' order by STId Desc ";
+
                 ddlAssignShift.DataTextField = "Title";
                 ddlAssignShift.DataValueField = "SftId_DptId";
                 ddlAssignShift.DataSource = dt;
@@ -181,7 +184,11 @@ namespace SigmaERP.personnel
             }
 
             string[] Dates = ddlAssignShift.SelectedItem.Text.Split('|');
-            
+            if (Dates.Length == 0)
+            {
+                lblErrorMessage.Text = "Shift missing";
+                return;
+            }
             Extend_Schedule(Dates[1]);
             if (gvEmpList.Rows.Count > 0)
             {

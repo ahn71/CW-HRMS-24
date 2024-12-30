@@ -27,12 +27,13 @@ namespace SigmaERP.payroll
             sqlDB.connectDB();
             lblMessage.InnerText = "";
 
-            ViewState["__WriteAction__"] = "0";
-            ViewState["__DeletAction__"] = "0";
-            int[] pagePermission = { 401,402 };
+       
 
             if (!IsPostBack)
             {
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+                int[] pagePermission = { 401, 402 };
                 Session["OPERATION_PROGRESS"] = 0;
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
@@ -69,9 +70,9 @@ namespace SigmaERP.payroll
                 //{
                     classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                if(permission.Contains(402))
+                if(permission.Contains(401))
                     ViewState["__WriteAction__"] = "1";
-                if(permission.Contains(403))
+                if(permission.Contains(402))
                     ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
                 //ddlCompanyList.Enabled = false;

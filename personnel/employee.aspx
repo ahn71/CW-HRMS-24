@@ -497,7 +497,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Last Educational Qualifi
+                                        <td>Last Educational Qualification
                                         </td>
                                         <td>:
                                         </td>
