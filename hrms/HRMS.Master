@@ -1477,6 +1477,17 @@
                                             </div>
                                         </li>
                                         <%} %>
+
+                                       <li class="d-flex">
+                                            <div class="me-3"><i class="QualiStyle uil uil-globe"></i></div>
+                                            <div class="flex-grow-1">
+                                                <h6>
+                                                    <a href="../hrd/bankentry_panel.aspx" runat="server" class="stretched-link">Bank Entry Panel
+                                                    </a>
+                                                </h6>
+                                                <p>Bank Entry Panel</p>
+                                            </div>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

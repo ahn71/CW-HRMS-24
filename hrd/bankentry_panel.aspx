@@ -70,6 +70,9 @@
             .slider.round:before {
                 border-radius: 50%;
             }
+                .text-align-left {
+        text-align: left; /* Or right, depending on your language */
+    }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -121,9 +124,11 @@
             <asp:BoundField DataField="BankShortName" HeaderText="Bank shortName" Visible="true" ItemStyle-Height="28px" ItemStyle-HorizontalAlign="center">
                 <ItemStyle Height="28px"></ItemStyle>
             </asp:BoundField>
-            <asp:BoundField DataField="BankAccount" HeaderText="Account Number" Visible="true" ItemStyle-Height="28px" ItemStyle-HorizontalAlign="center" ItemStyle-CssClass="fontF">
-                <ItemStyle Height="28px"></ItemStyle>
+            <asp:BoundField DataField="BankAccount" HeaderText="Account Number" Visible="true" ItemStyle-Height="28px" ItemStyle-HorizontalAlign="center" ItemStyle-CssClass="english-font">
+               
             </asp:BoundField>
+
+ 
 
             <asp:TemplateField HeaderText="Edit">
                 <ItemTemplate>

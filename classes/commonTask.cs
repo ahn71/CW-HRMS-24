@@ -777,7 +777,7 @@ namespace SigmaERP.classes
             try
             {
                 string condition = AccessControl.loadDepartmetCondition(CompanyId);
-                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1 and IsInitial=1 and " + condition + "", dt = new DataTable());
+                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1 and " + condition + "", dt = new DataTable());
                 string condggition="select SftId,SftName from HRD_Shift where IsActive = 1 and IsInitial = 1 and " + condition + "";
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
@@ -1592,7 +1592,7 @@ namespace SigmaERP.classes
         {
            
             DataTable dt = new DataTable();
-            sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and IsPayer=1 and CompanyId='0001'", dt);
+            sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and   IsPayer=1 and CompanyId='0001'", dt);
             string sajj = "select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and IsPayer=1 and CompanyId='0001'";
             ddlbankList.DataSource = dt;
             ddlbankList.DataValueField = "BankId";

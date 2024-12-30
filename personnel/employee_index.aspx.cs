@@ -35,7 +35,7 @@ namespace SigmaERP.personnel
                         divEmployeeListReport.Visible = false;
                         divEmployeeProfileReport.Visible = false;
                         divManPowerStatusReport.Visible = false;
-                        divMonthlyManPowerReport.Visible = false;
+                        //divMonthlyManPowerReport.Visible = false;
                         divContactListReport.Visible = false;
                         divIDCardReport.Visible = false;
                         divBloodGroup.Visible = false;

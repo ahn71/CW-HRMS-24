@@ -20,13 +20,15 @@ namespace SigmaERP.personnel
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
-            int[] pagePermission = { 278 };
+         
 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+                int[] pagePermission = { 278 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
 
@@ -195,7 +197,7 @@ namespace SigmaERP.personnel
                     else setPredicate += ",'" + lstSelected.Items[b].Value + "'";
                 }
                 string shiftlist=(ddlShift.SelectedValue=="00")?"":" and SftId='"+ddlShift.SelectedValue+"'";
-                string EmpTypeID = rblEmpType.SelectedValue.Equals("All") ? "" : " and EmpTypeId="+rblEmpType.SelectedValue+"";
+                string EmpTypeID = rblEmpType.SelectedValue.Equals("All") ? "" : " and EmpTypeId ="+rblEmpType.SelectedValue+"";
                 //dt = new DataTable();
                 //string sqlCmd = "Select Max(SN) as SN,EmpId From  v_ManPowerStatus where  DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " and EmpStatus in('1','8') and ActiveSalary='True' and IsActive=1 Group by EmpId";
                 //sqlDB.fillDataTable(sqlCmd, dt);

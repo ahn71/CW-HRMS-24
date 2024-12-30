@@ -20,12 +20,13 @@ namespace SigmaERP.personnel
         string Cmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
-            int[] pagePermission = { 275 };
+       
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] pagePermission = { 275 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
