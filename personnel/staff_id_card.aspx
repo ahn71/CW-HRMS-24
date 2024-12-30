@@ -154,15 +154,17 @@
                             <div class="id_card_right EilistR">
                                 <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  ClientIDMode="Static" runat="server"></asp:ListBox>
                             </div>
+
+                            <asp:Button ID="btnpreview" style="margin-top: 124px;" CssClass="css_btn Ptbut" runat="server" ClientIDMode="Static" Text="Preview" OnClick="btnpreview_Click" />
                         </div>
                         <div class="punishment_button_area">
                             <table class="emp_button_table">
                                 <tbody>
                                     <tr>
                                         <th>
-                                            <asp:Button ID="btnpreview" CssClass="css_btn Ptbut" runat="server" ClientIDMode="Static" Text="Preview" OnClick="btnpreview_Click" /></th>
+                                            </th>
                                         <th>
-                                            <asp:Button ID="btnClose" CssClass="css_btn Ptbut" Text="Close" PostBackUrl="~/default.aspx" runat="server" /></th>
+                                          <%--  <asp:Button ID="btnClose" CssClass="css_btn Ptbut" Text="Close" PostBackUrl="~/default.aspx" runat="server" /></th>--%>
                                     </tr>
                                 </tbody>
                             </table>

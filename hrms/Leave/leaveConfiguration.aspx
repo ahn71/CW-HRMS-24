@@ -20,6 +20,28 @@
             text-align: left;
             padding-left: 3px;
         }
+
+        .uil-trash-alt{
+            color:red;
+            padding:5px;
+        }
+
+      .gridview-bordered tr {
+        border: 1px solid #ddd; /* Adjust color as needed */
+    }
+
+    .gridview-bordered th, 
+    .gridview-bordered td {
+        padding: 8px; /* Add padding for better readability */
+        text-align: left; /* Align text to the left */
+        border: 1px solid #ddd; /* Cell borders */
+    }
+
+    .gridview-bordered th {
+        background-color: #f4f4f4; /* Light header background */
+        font-weight: bold;
+    }
+
     </style>
 </asp:Content>
 
@@ -42,7 +64,7 @@
          <div class="crm mb-25">
             <div class="container-fulid">
                <div class="card card-Vertical card-default card-md mt-4 mb-4">
-
+                   <asp:HiddenField ID="hdLeaveId" ClientIDMode="Static" runat="server" Value="" />
                   <div class="card-header d-flex align-items-center">
                      <div class="card-title d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center gap-3">
@@ -115,20 +137,9 @@
 
                                                <asp:Button ID="btnSave"  ClientIDMode="Static" CssClass="btn btn-primary btn-default btn-squared px-30 m-2" runat="server" Text="Save" OnClick="btnSave_Click" />
                                                <asp:Button runat="server" ID="btnPreview" Text="Preview" CssClass="btn btn-primary btn-default btn-squared px-30" OnClick="btnPreview_Click" />
-
-
-
                                            </div>
-                                  
-
-
                                    </div>
-
                                </div>
-
-    
-
-             
                      </div>
                   </div>
                </div>
@@ -158,7 +169,7 @@
                                </div>
 
                         <div class="show_division_info">
-                         <asp:GridView ID="gvLeaveConfig" runat="server" DataKeyNames="LeaveId,CompanyId" AllowPaging="True" AutoGenerateColumns="False" Width="100%" HeaderStyle-ForeColor="White" OnRowCommand="gvLeaveConfig_RowCommand" OnRowDeleting="gvLeaveConfig_RowDeleting" OnRowDataBound="gvLeaveConfig_RowDataBound">
+                         <asp:GridView ID="gvLeaveConfig" runat="server" DataKeyNames="LeaveId,CompanyId" AllowPaging="True" AutoGenerateColumns="False" Width="100%" HeaderStyle-ForeColor="White" OnRowCommand="gvLeaveConfig_RowCommand" OnRowDeleting="gvLeaveConfig_RowDeleting" OnRowDataBound="gvLeaveConfig_RowDataBound" CssClass="gridview-bordered">
                                 
                                 <Columns>
                                     <asp:BoundField DataField="LeaveId" HeaderText="LeaveId" Visible="false" />
@@ -169,16 +180,33 @@
                                     <asp:BoundField DataField="LeaveNature" HeaderText="Nature" />
                                     <asp:BoundField DataField="IsDeductionAllowed" HeaderText="Deduction" Visible="false"/>
 
-                                     <asp:TemplateField HeaderText="Edit" ItemStyle-Width="100px">
-                                       <ItemTemplate  >
-                                            <asp:Button ID="btnAlter" runat="server" ControlStyle-CssClass="btnForAlterInGV"  Text="Edit" CommandName="Alter" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
-                                       </ItemTemplate>
-                                   </asp:TemplateField>
+                                     
                                     <%--<asp:ButtonField CommandName="Alter"   ControlStyle-CssClass="btnForAlterInGV"  HeaderText="Alter" ButtonType="Button" Text="Alter" ItemStyle-Width="80px"/>--%>
                                    
-                                    <asp:TemplateField HeaderText="Delete" ItemStyle-Width="100px">
+                                    <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px">
                                        <ItemTemplate  >
-                                            <asp:Button ID="btnDelete" runat="server" ControlStyle-CssClass="btnForDeleteInGV"  Text="Delete" CommandName="Delete" CommandArgument='<%# Eval("LeaveId")%>'  OnClientClick="return confirm('Are you sure to delete ?')" />
+                                           <%-- <asp:Button ID="btnDelete" runat="server" ControlStyle-CssClass="btnForDeleteInGV"  Text="Delete" CommandName="Delete" CommandArgument='<%# Eval("LeaveId")%>'  OnClientClick="return confirm('Are you sure to delete ?')" />--%>
+                                           <asp:LinkButton
+                                               ID="lnkAlter"
+                                               runat="server"
+                                               CssClass="edit-btn edit"
+                                               CommandName="Alter"
+                                               CommandArgument='<%# ((GridViewRow)Container).RowIndex %>'>
+                                         <i class="uil uil-edit"></i>
+                                           </asp:LinkButton>
+
+                                           <asp:LinkButton
+                                               ID="lnkDelete"
+                                               runat="server"
+                                               CssClass="delete-btn remove "
+                                               CommandName="Delete"
+                                               CommandArgument='<%# Eval("LeaveId")%>'
+                                               OnClientClick="return confirm('Are you sure to delete?')">
+                                             <i class="uil uil-trash-alt"></i>
+                                           </asp:LinkButton>
+
+
+
                                        </ItemTemplate>
                                    </asp:TemplateField>
                                      
@@ -217,33 +245,6 @@
 
 
 
-
-        <div class="main_box_body_leave Lbody">
-            <div class="main_box_content_leave" id="divElementContainer" runat="server">
-                <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-                    <Triggers>
-                      
-                    </Triggers>
-                    <ContentTemplate>
-                        <div class="input_division_info">
-                             <asp:HiddenField ID="hdLeaveId" ClientIDMode="Static" runat="server" Value="" />
-
-
-
-                           
-                        </div>
-
-                        <div >
-                         
-                               
-                           
-                        </div>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
-
-            </div>
-        </div>
-    </div>
 
     <script>
          function Cardbox() {

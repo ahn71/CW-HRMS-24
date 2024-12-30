@@ -325,17 +325,23 @@ label {
     }
 
 .EilistC {
-    width: 35px;
-    }
+    width: 74px;
+    margin: 0 auto;
+    text-align: center;
+}
 
 .EilistR {
   border: 0 solid red;
   float: right;
   margin-right: 5px;
-  width:45%;
+  width:42%;
 }
 
-.EilistCec{width:98%; height:150px !important;}
+.EilistCec {
+    width: 100%;
+    height: 250px !important;
+    /* BORDER: 1PX; */
+}
 
 .PtrowC{margin:0 auto !important;}
 

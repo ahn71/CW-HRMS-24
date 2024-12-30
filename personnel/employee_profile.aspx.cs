@@ -18,6 +18,7 @@ namespace SigmaERP.personnel
         int[] pagePermission = { 285 };
         DataTable dt;
         string CompanyID = "";
+        string query = "";
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
@@ -140,31 +141,27 @@ namespace SigmaERP.personnel
                         setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "'";
                     }
                 }
-                dt = new DataTable();
-                string emtypeContidion = "";
-                    if (rblEmpType.SelectedValue == "1")
-                 {
-                    string empType = rblEmpType.SelectedValue == "1" ? "Worker" : "Staff";
-                    emtypeContidion = " and EmpType = '" + empType + "'";
+                dt = new DataTable();            
+              
 
-                }
-
-                string kj = "Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " and  " + condition + "   " + emtypeContidion + "  order by DptCode,CustomOrdering";
-             
-                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " and  " + condition + " " + emtypeContidion + "   order by DptCode,CustomOrdering", dt);
+                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " and  " + condition + "  order by DptCode,CustomOrdering", dt);
                 Session["__EmployeeProfile__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + rblReportStructure.SelectedValue + "');", true);  //Open New Tab for Sever side code
             }
             else if (rdbindividual.Checked == true)
             {
-                string empTypes = rblEmpType.SelectedValue == "1" ? "Staff" : "Worker";
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 and "+ condition + "", dt);
+                //sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 "+ condition + "" , dt);
 
-                string kk = "Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 and " + condition + "";
-                Session["__EmployeeProfile__"] = dt;
+                query = "Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 and " + condition + "";
 
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-"+rblReportStructure.SelectedValue+"');", true);  //Open New Tab for Sever side code
+                if (DataFill(query))
+                {
+                    Session["__EmployeeProfile__"] = dt;
+
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + rblReportStructure.SelectedValue + "');", true);
+                }
+                     //Open New Tab for Sever side code
             }
            // ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile');", true);  //Open New Tab for Sever side code
         }
@@ -175,6 +172,18 @@ namespace SigmaERP.personnel
             divindivisual.Visible = false;
             rdbindividual.Checked = false;         
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);      
+        }
+
+        private bool DataFill(string query)
+        {
+            sqlDB.fillDataTable(query, dt = new DataTable());
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                lblMessage.InnerText = "warning->Data not found!";
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
+                return false;
+            }
+            return true;
         }
 
         protected void rdbindividual_CheckedChanged(object sender, EventArgs e)

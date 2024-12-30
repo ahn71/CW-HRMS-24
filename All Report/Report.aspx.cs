@@ -3487,7 +3487,7 @@ namespace SigmaERP.All_Report
             catch { }
         }
         private void LeaveYearlySummary(string Year, string EmpType)
-        {
+         {
             try
             {
                 dt = new DataTable();

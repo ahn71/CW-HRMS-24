@@ -74,6 +74,8 @@ namespace SigmaERP.classes
             }
             catch (Exception ex) { return null; }
         }
+
+
         public static DataTable ExecuteReturnDataTable(string sqlCmd,SqlConnection con )
         {
             try

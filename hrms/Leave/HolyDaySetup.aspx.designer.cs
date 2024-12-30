@@ -10,7 +10,7 @@
 namespace SigmaERP.hrms.Leave {
     
     
-    public partial class leaveConfiguration {
+    public partial class HolyDaySetup {
         
         /// <summary>
         /// ScriptManager1 control.
@@ -49,13 +49,13 @@ namespace SigmaERP.hrms.Leave {
         protected global::System.Web.UI.UpdatePanel UpdatePanel2;
         
         /// <summary>
-        /// hdLeaveId control.
+        /// divElementContainer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdLeaveId;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divElementContainer;
         
         /// <summary>
         /// ddlCompanyList control.
@@ -67,58 +67,40 @@ namespace SigmaERP.hrms.Leave {
         protected global::System.Web.UI.WebControls.DropDownList ddlCompanyList;
         
         /// <summary>
-        /// ddlLeaveTypes control.
+        /// txtDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlLeaveTypes;
+        protected global::System.Web.UI.WebControls.TextBox txtDate;
         
         /// <summary>
-        /// txtLeaveDays control.
+        /// CExtApplicationDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLeaveDays;
+        protected global::AjaxControlToolkit.CalendarExtender CExtApplicationDate;
         
         /// <summary>
-        /// RegularExpressionValidator1 control.
+        /// txtDescription control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
+        protected global::System.Web.UI.WebControls.TextBox txtDescription;
         
         /// <summary>
-        /// txtLeaveNature control.
+        /// RequiredFieldValidator1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLeaveNature;
-        
-        /// <summary>
-        /// RequiredFieldValidator3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
-        
-        /// <summary>
-        /// IsDeductionAllowed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox IsDeductionAllowed;
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
         
         /// <summary>
         /// btnSave control.
@@ -130,21 +112,21 @@ namespace SigmaERP.hrms.Leave {
         protected global::System.Web.UI.WebControls.Button btnSave;
         
         /// <summary>
-        /// btnPreview control.
+        /// Button3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPreview;
+        protected global::System.Web.UI.WebControls.Button Button3;
         
         /// <summary>
-        /// gvLeaveConfig control.
+        /// gvHoliday control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvLeaveConfig;
+        protected global::System.Web.UI.WebControls.GridView gvHoliday;
     }
 }

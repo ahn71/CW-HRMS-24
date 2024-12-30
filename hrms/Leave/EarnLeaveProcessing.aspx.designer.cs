@@ -10,7 +10,7 @@
 namespace SigmaERP.hrms.Leave {
     
     
-    public partial class leaveConfiguration {
+    public partial class EarnLeaveProcessing {
         
         /// <summary>
         /// ScriptManager1 control.
@@ -40,22 +40,22 @@ namespace SigmaERP.hrms.Leave {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblMessage;
         
         /// <summary>
-        /// UpdatePanel2 control.
+        /// up2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
+        protected global::System.Web.UI.UpdatePanel up2;
         
         /// <summary>
-        /// hdLeaveId control.
+        /// tblGenerateType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdLeaveId;
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblGenerateType;
         
         /// <summary>
         /// ddlCompanyList control.
@@ -67,84 +67,66 @@ namespace SigmaERP.hrms.Leave {
         protected global::System.Web.UI.WebControls.DropDownList ddlCompanyList;
         
         /// <summary>
-        /// ddlLeaveTypes control.
+        /// txtGenerateMonth control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlLeaveTypes;
+        protected global::System.Web.UI.WebControls.TextBox txtGenerateMonth;
         
         /// <summary>
-        /// txtLeaveDays control.
+        /// txtGenerateMonth_CalendarExtender control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLeaveDays;
+        protected global::AjaxControlToolkit.CalendarExtender txtGenerateMonth_CalendarExtender;
         
         /// <summary>
-        /// RegularExpressionValidator1 control.
+        /// txtEmpCardNo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator RegularExpressionValidator1;
+        protected global::System.Web.UI.WebControls.TextBox txtEmpCardNo;
         
         /// <summary>
-        /// txtLeaveNature control.
+        /// imgLoading control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtLeaveNature;
+        protected global::System.Web.UI.WebControls.Image imgLoading;
         
         /// <summary>
-        /// RequiredFieldValidator3 control.
+        /// btnGenerate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
+        protected global::System.Web.UI.WebControls.Button btnGenerate;
         
         /// <summary>
-        /// IsDeductionAllowed control.
+        /// lblErrorMsg control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox IsDeductionAllowed;
+        protected global::System.Web.UI.WebControls.Label lblErrorMsg;
         
         /// <summary>
-        /// btnSave control.
+        /// gvEarnLeaveGenerationList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSave;
-        
-        /// <summary>
-        /// btnPreview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPreview;
-        
-        /// <summary>
-        /// gvLeaveConfig control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvLeaveConfig;
+        protected global::System.Web.UI.WebControls.GridView gvEarnLeaveGenerationList;
     }
 }

@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SigmaERP.personnel {
+namespace SigmaERP.hrms.Leave {
     
     
-    public partial class staff_id_card {
+    public partial class EarnLeaveReport {
         
         /// <summary>
         /// ScriptManager1 control.
@@ -67,13 +67,31 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblGenerateType;
         
         /// <summary>
-        /// ddlBranch control.
+        /// trForCompanyList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlBranch;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trForCompanyList;
+        
+        /// <summary>
+        /// ddlCompanyName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCompanyName;
+        
+        /// <summary>
+        /// chkForAllCompany control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkForAllCompany;
         
         /// <summary>
         /// rblEmpType control.
@@ -85,76 +103,31 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.RadioButtonList rblEmpType;
         
         /// <summary>
-        /// rdbAll control.
+        /// ddlYear control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton rdbAll;
+        protected global::System.Web.UI.WebControls.DropDownList ddlYear;
         
         /// <summary>
-        /// rdbDeptWise control.
+        /// txtCardNo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton rdbDeptWise;
+        protected global::System.Web.UI.WebControls.TextBox txtCardNo;
         
         /// <summary>
-        /// rdbIndividual control.
+        /// lnkNew control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton rdbIndividual;
-        
-        /// <summary>
-        /// trddldepname control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trddldepname;
-        
-        /// <summary>
-        /// ddlDepName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlDepName;
-        
-        /// <summary>
-        /// trddlempcardno control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trddlempcardno;
-        
-        /// <summary>
-        /// ddlEmpCardNo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEmpCardNo;
-        
-        /// <summary>
-        /// rblreportview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblreportview;
+        protected global::System.Web.UI.WebControls.LinkButton lnkNew;
         
         /// <summary>
         /// workerlist control.
@@ -220,12 +193,21 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.ListBox lstSelected;
         
         /// <summary>
-        /// btnpreview control.
+        /// btnPreview control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnpreview;
+        protected global::System.Web.UI.WebControls.Button btnPreview;
+        
+        /// <summary>
+        /// UpdateProgress1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
     }
 }

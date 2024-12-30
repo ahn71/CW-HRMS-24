@@ -1835,7 +1835,7 @@
         };
         const getleaveApproaleUrl = `${rootUrl}/api/${action}?CompanyID=${CompanyID}`;
         console.loggetleaveApproaleUrl
-            ApiCallUpdate(getleaveApproaleUrl, token, updateData)
+            ApiCallUpdateNotification(getleaveApproaleUrl, token, updateData)
                 .then(function (response) {
                     $("#" + id).hide(); 
                     DecreaseNotification();
@@ -1881,7 +1881,7 @@
             });
         }
 
-     function ApiCallUpdate(url, token, updateData) {
+     function ApiCallUpdateNotification(url, token, updateData) {
             return new Promise(function (resolve, reject) {
                 $.ajax({
                     url:url,
