@@ -319,7 +319,7 @@
         
         
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
-         var getLeaveByIdUrl = rootUrl + '/api/Leave/lvApplication';
+         var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication/${userId}?CompanyId=${CompanyID}`;
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
@@ -1053,7 +1053,7 @@
 
 
         function FetchDataForView(Id) {
-            ApiCallByCompId(getLeaveByIdUrl, token, Id, CompanyID)
+            ApiCall(getLeaveByIdUrl, token)
                 .then(function (responseData) {
                     var data = responseData.data[0]; 
                     var leaveApplicationContent = `

@@ -24,8 +24,8 @@ namespace SigmaERP.hrms.UI.auth
         DataTable dt;
         ApiConnector apiConnector;
         protected void Page_Load(object sender, EventArgs e)
-        {           
-
+        {
+           
             if (!IsPostBack)
             {                
                 classes.commonTask.LoadBranch(ddlCompany);
@@ -152,8 +152,11 @@ namespace SigmaERP.hrms.UI.auth
             {
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 string CompanyId = getCookies["__CompanyId__"].ToString();
+                string query = "";
                 DataTable dtActive = new DataTable();
-                sqlDB.fillDataTable("select EmpSeparationId, convert(varchar(11),EffectiveDate,120) as EffectiveDate,EmpId,EmpStatus from v_Personnel_EmpSeparation where  CompanyId='" + CompanyId + "' and isActive='false'", dtActive);
+                //sqlDB.fillDataTable("select EmpSeparationId, convert(varchar(11),EffectiveDate,120) as EffectiveDate,EmpId,EmpStatus from v_Personnel_EmpSeparation where  CompanyId='" + CompanyId + "' and isActive='false'", dtActive);
+                query = "select EmpSeparationId, convert(varchar(11),EffectiveDate,120) as EffectiveDate,pes.EmpId,EmpStatus from Personnel_EmpSeparation as pes Inner join personnel_EmpCurrentStatus as pecs on pecs.EmpId=pes.EmpId where  pes.isActive=0 and pecs.CompanyId='" + CompanyId + "'";
+                sqlDB.fillDataTable(query, dtActive);
                 for (int i = 0; i < dtActive.Rows.Count; i++)
                 {
                     DateTime EffectiveDate = DateTime.Parse(dtActive.Rows[i]["EffectiveDate"].ToString());

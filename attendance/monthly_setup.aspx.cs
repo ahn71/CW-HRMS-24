@@ -311,7 +311,7 @@ namespace SigmaERP.attendance
                 if (e.CommandName == "Edit")
                 {
                    
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "CallBoxExpland", "BoxExpland();", true);
+                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "CallBoxExpland", "BoxExpland();", true);
 
                     if (!ViewState["__preRIndex__"].ToString().Equals("No")) gvMonthSetup.Rows[int.Parse(ViewState["__preRIndex__"].ToString())].BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
 

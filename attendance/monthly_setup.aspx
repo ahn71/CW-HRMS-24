@@ -64,7 +64,7 @@
      <div style="align-items:center; padding:25px 0" class="row align-items-center Rrow">
          <div class="col-md-6">
              <div class="title-header">
-                 <h2 style="margin:0" class="m-0">Attendance</h2>
+                 <h2 style="margin:0" class="m-0">Attendance Month Setup</h2>
              </div>
          </div>
         <div class="col-md-6 ds_nagevation_bar">
@@ -94,19 +94,20 @@
             <asp:AsyncPostBackTrigger ControlID="gvMonthSetup" />
             <asp:AsyncPostBackTrigger ControlID="btnClear" />
             <asp:AsyncPostBackTrigger ControlID="ddlCompanyList" />
+            <asp:AsyncPostBackTrigger ControlID="btnCalculation" />
         </Triggers>
         <ContentTemplate>
 
 
             <div class="main_box m-0 Mbox"  >
 
-                <div class="btn-wrapper mb-2">
+<%--                <div class="btn-wrapper mb-2">
                     <div class="dm-button-list d-flex flex-wrap justify-content-end">
                         <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-primary  btn-squared">Add New</button>
                     </div>
-                </div>
+                </div>--%>
 
-                <div class="main_box_body Mbody" style="display: none;" id="Cardbox">
+                <div class="main_box_body Mbody" <%--style="display: none;" --%>id="Cardbox">
                     <div class="main_box_content mb-5">
                       
                             <div class="row">
@@ -138,14 +139,18 @@
                             </div>
 
                             <div class="col-lg-3">
-                                <td>To Date<span class="requerd1">*</span>
-                                    <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+                                
+                                <div class="col-lg-9">
+                                    <p>To Date<span class="requerd1">*</span></p>
+                                    <asp:TextBox ID="txtToDate" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
                                        
                                         <asp:CalendarExtender ID="txtToDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtToDate">
                                         </asp:CalendarExtender>
-                                       <div style="transform: translate(-3px, -37px);" class="d-flex justify-content-end">
-                                           <asp:Button ID="btnCalculation" runat="server" CssClass="btn btn-success"  Text="Calculation" OnClick="btnCalculation_Click" />
-                                       </div>
+                                </div>
+                                  <p style="visibility:hidden">To Date<span class="requerd1">*</span></p>
+                                   <div class="d-flex justify-content-end">
+                                         <asp:Button ID="btnCalculation" style="display:inline" runat="server" CssClass="btn btn-success"  Text="Calculation" OnClick="btnCalculation_Click" />
+                                    </div>
                                         
                             </div>
 
@@ -168,7 +173,7 @@
                             </div>
 
 
-<div class="col-lg-3">
+                            <div class="col-lg-3">
                               <p>Expected Payment Date<span class="requerd1">*</span></p>  
                                 <asp:TextBox ID="txtExpectedPaymetnDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
                                        

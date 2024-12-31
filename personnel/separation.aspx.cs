@@ -433,13 +433,41 @@ namespace SigmaERP.personnel
                 string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 dt = new DataTable();
 
-                string query = "select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
-                    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
-                    "where IsActive='True' and  " + condition + "";
-
-                sqlDB.fillDataTable("select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
-                    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
-                    " where IsActive='True'  and  "+condition+" " ,dt);               
+                //string query = "select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
+                //    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
+                //    "where IsActive='True' and  " + condition + "";
+                string query = @"SELECT 
+                            pes.EmpId,
+                            SUBSTRING(pecs.EmpCardNo, 8, 10) AS EmpCardNo,
+                            pei.EmpName,
+                            CONVERT(VARCHAR, pes.EffectiveDate, 100) AS EffectiveDate,
+                            pecs.EmpStatus,
+                            es.EmpStatusName,
+                            Etyp.EmpType,
+                            pes.EmpTypeId,
+                            CONVERT(VARCHAR, pes.EntryDate, 100) AS EntryDate,
+                            pes.UserId,
+                            CASE 
+                                WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName)
+                                ELSE creator.EmpName
+                            END AS UserName,
+                            pes.Remarks
+                        FROM 
+                            Personnel_EmpSeparation AS pes
+                        INNER JOIN 
+                            Personnel_EmpCurrentStatus AS pecs ON pes.EmpId = pecs.EmpId
+                        LEFT JOIN 
+                            Users AS us ON pes.UserId = us.UserId
+                        INNER JOIN 
+                            Personnel_EmployeeInfo AS pei ON pes.EmpId = pei.EmpId
+                        INNER JOIN 
+                            HRD_EmployeeType AS Etyp ON pes.EmpTypeId = Etyp.EmpTypeId
+                        INNER JOIN 
+                            Hrd_EmpStatus AS es ON pecs.EmpStatus = es.EmpStatus
+                        LEFT JOIN 
+                            Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID 
+	                        where pes.IsActive=1 and pecs."+condition+"";
+                sqlDB.fillDataTable(query, dt);               
                 gvCurrentSeperationList.DataSource = dt;
                 gvCurrentSeperationList.DataBind();
             }
