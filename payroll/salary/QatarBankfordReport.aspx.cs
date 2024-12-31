@@ -41,7 +41,78 @@ namespace SigmaERP.payroll.salary
 
 
 
+
         private void ExportData()
+        {
+            string bankShortName = Session["__bankShortname__"]?.ToString() ?? "CBQ and QIB";
+            string jjj = ViewState["__Month__"]?.ToString();
+            string monthYear = jjj.Split('[')[0].Trim(); // "Nov-2024"
+
+            // Convert the month-year string to DateTime
+            DateTime result = DateTime.ParseExact(monthYear, "MMM-yyyy", CultureInfo.InvariantCulture);
+
+            string totalSalaryString = ViewState["__totalSalary__"]?.ToString();
+            string registrationID = ViewState["__registrationID__"]?.ToString();
+            string establishmentID = ViewState["__establishmentID__"]?.ToString();
+            string totalRows = ViewState["__totalRows__"]?.ToString() ?? "0";
+            string bankAcounnt = Session["__bankAcount__"]?.ToString();
+
+            var csvContent = new StringBuilder();
+
+            // Add the top header first
+            csvContent.AppendLine("Employer EID,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Payer IBAN,Salary Year and Month,Total Salaries,Total records");
+            csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{DateTime.Now:HH:mm},{establishmentID},,{bankShortName},{bankAcounnt},{result:yyyyMM},{totalSalaryString},{totalRows}");
+
+            // Add a blank line for separation (optional)
+            //csvContent.AppendLine();
+
+            // Add headers for GridView data
+            var headerValues = new List<string> { "Record ID" };
+            foreach (DataControlField header in gvBannFord.Columns)
+            {
+                headerValues.Add(header.HeaderText);
+            }
+            csvContent.AppendLine(string.Join(",", headerValues));
+
+            // Process each row in the GridView
+            decimal totalSalary = 0;
+            int totalRecord = 0;
+            foreach (GridViewRow row in gvBannFord.Rows)
+            {
+                if (row.RowType == DataControlRowType.DataRow)
+                {
+                    var cellValues = new List<string> { (row.RowIndex + 1).ToString() };
+                    for (int i = 0; i < row.Cells.Count; i++)
+                    {
+                        string cellText = CleanText(row.Cells[i].Text).Replace("&nbsp;", string.Empty);
+                        cellValues.Add(cellText);
+                    }
+                    csvContent.AppendLine(string.Join(",", cellValues));
+
+                    if (decimal.TryParse(cellValues[8], out decimal netAmount))
+                    {
+                        totalSalary += netAmount;
+                    }
+                    totalRecord++;
+                }
+            }
+
+            // Update total salary and total records in CSV content
+            //csvContent.Replace(totalSalaryString, totalSalary.ToString("F2"));
+            //csvContent.Replace(totalRows, totalRecord.ToString());
+
+            // Output CSV for download
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=banksheet.csv");
+            Response.ContentType = "text/csv";
+            Response.Write(csvContent.ToString());
+            Response.Flush();
+            Response.End();
+        }
+
+
+        private void _ExportData()
         {
             string bankShortName = Session["__bankShortname__"].ToString(); 
             // Get necessary session and view state values
@@ -66,7 +137,7 @@ namespace SigmaERP.payroll.salary
             var csvContent = new StringBuilder();
             string datecheck = DateTime.Now.ToString("HH:mm");
             csvContent.AppendLine("Employer EID,File Creation Date,File Creation Time,Payer EID,Payer QID,Payer Bank Short Name,Payer IBAN,Salary Year and Month,Total Salaries,Total records");
-            csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{datecheck},{establishmentID},{bankShortName},{bankAcounnt},{result:yyyyMM},{totalSalaryString},{totalRows}");
+            csvContent.AppendLine($"{registrationID},{DateTime.Today:yyyyMMdd},{datecheck},{establishmentID},,{bankShortName},{bankAcounnt},{result:yyyyMM},{totalSalaryString},{totalRows}");
 
             // Add headers to CSV
             var headerValues = new List<string> { "Record ID" };
@@ -121,7 +192,7 @@ namespace SigmaERP.payroll.salary
             Response.End();
         }
 
-        // Method to clean any HTML tags from text
+        //Method to clean any HTML tags from text
         private string CleanText(string input)
         {
             if (string.IsNullOrWhiteSpace(input))
@@ -153,20 +224,24 @@ namespace SigmaERP.payroll.salary
             ViewState["__registrationID__"] = dt.Rows[0]["RegistrationID"].ToString();
             ViewState["__establishmentID__"] = dt.Rows[0]["EstablishmentID"].ToString();
         }
-        private decimal totalSalary = 0; 
+        private decimal totalSalary = 0;
         private int totalRows = 0;
         protected void gvBannFord_RowDataBound(object sender, GridViewRowEventArgs e)
         {
+           
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                
-                decimal salary = Convert.ToDecimal(DataBinder.Eval(e.Row.DataItem, "TotalSalary"));
-
-              
-                totalSalary += salary;
 
            
-                totalRows++;
+                if (decimal.TryParse(DataBinder.Eval(e.Row.DataItem, "OrginalAmount").ToString(), out decimal orginalAmount))
+                {
+                    totalSalary += orginalAmount;
+                    totalRows++;
+                }
+
+             
+           
+              
             }
             ViewState["__totalSalary__"] = totalSalary;
             ViewState["__totalRows__"] = totalRows;

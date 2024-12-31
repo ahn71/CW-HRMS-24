@@ -35,7 +35,7 @@
                    <asp:BoundField DataField="SalaryFrequency" HeaderText="Salary Frequency" ItemStyle-Width="150" />
                    <asp:BoundField DataField="PayableDays" HeaderText="Number of Working Days" ItemStyle-Width="150" />
                    <asp:BoundField DataField="OrginalAmount" HeaderText="Net Salary" ItemStyle-Width="150" />
-                   <asp:BoundField DataField="EmpNetGross" HeaderText="Basic Salary" ItemStyle-Width="150" />
+                   <asp:BoundField DataField="BasicSalary" HeaderText="Basic Salary" ItemStyle-Width="150" />
                    <asp:BoundField DataField="ExtraOtHour" HeaderText="Extra hours" ItemStyle-Width="150" />
                    <asp:BoundField DataField="ExtraOtAmount" HeaderText="Extra Income" ItemStyle-Width="150" />
                    <asp:BoundField DataField="Deduction" HeaderText="Deductions" ItemStyle-Width="150" />

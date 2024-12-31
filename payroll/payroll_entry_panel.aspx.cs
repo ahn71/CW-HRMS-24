@@ -332,7 +332,7 @@ namespace SigmaERP.payroll
                     " PreBasicSalary=@PreBasicSalary, BasicSalary=@BasicSalary,PreMedicalAllownce=@PreMedicalAllownce,"+
                     " MedicalAllownce=@MedicalAllownce,PreFoodAllownce=@PreFoodAllownce, FoodAllownce=@FoodAllownce,"+
                     "PreConvenceAllownce=@PreConvenceAllownce, ConvenceAllownce=@ConvenceAllownce, PreHouseRent=@PreHouseRent,"+
-                    " HouseRent=@HouseRent,PreAttendanceBonus=@PreAttendanceBonus,AttendanceBonus=@AttendanceBonus,NightAllownce=@NightAllownce,OverTime=@OverTime,PreOthersAllownce=@PreOthersAllownce,OthersAllownce=@OthersAllownce,DormitoryRent=@DormitoryRent,IsSingleRateOT=@IsSingleRateOT,IncomeTax=@IncomeTax,PayerBankId=@PayerBankId,IsVacation=@isVacation where SN=@SN", sqlDB.connection);
+                    " HouseRent=@HouseRent,PreAttendanceBonus=@PreAttendanceBonus,AttendanceBonus=@AttendanceBonus,NightAllownce=@NightAllownce,OverTime=@OverTime,PreOthersAllownce=@PreOthersAllownce,OthersAllownce=@OthersAllownce,DormitoryRent=@DormitoryRent,IsSingleRateOT=@IsSingleRateOT,IncomeTax=@IncomeTax,PayerBankId=@PayerBankId,IsVacation=@isVacation,TechnicalAllownce=@TechnicalAllownce where SN=@SN", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@SN", ddlEmpCardNo.SelectedValue);
                 if (chkPaymentType.SelectedValue=="1")
@@ -374,6 +374,7 @@ namespace SigmaERP.payroll
                 cmd.Parameters.AddWithValue("@DormitoryRent", ddlDormitoryRent.SelectedValue);
                 cmd.Parameters.AddWithValue("@PayerBankId", ddlPayerBank.SelectedValue);
                 cmd.Parameters.AddWithValue("@isVacation", isVacation);
+                cmd.Parameters.AddWithValue("@TechnicalAllownce", txtTechnicalAllow.Text.Trim());
 
                 //if (chkPFMember.Checked)
                 //{
@@ -383,7 +384,7 @@ namespace SigmaERP.payroll
                 //{
                 //    cmd.Parameters.AddWithValue("@PfMember", 0);
                 //}
-                
+
                 //if (txtPFDate.Text.Length == 0) cmd.Parameters.AddWithValue("@PfDate", "");
                 //else cmd.Parameters.AddWithValue("@PfDate", convertDateTime.getCertainCulture(txtPFDate.Text.Trim()));
                 //if (txtPFAmount.Text.Length == 0)
