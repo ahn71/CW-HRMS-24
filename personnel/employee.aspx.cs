@@ -171,10 +171,10 @@ namespace SigmaERP.personnel
 
                 string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
                 //SetUserType();
                
             }
@@ -441,7 +441,10 @@ namespace SigmaERP.personnel
                         AllClear();
                         classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
                         ddlEmpCardNo.SelectedValue = "0";
-                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeeAddress.aspx');", true);
+                        string empId = ViewState["__EmpId__"]?.ToString();
+                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
+        $"goToNewTab('/personnel/EmployeeAddress.aspx?EmpId={empId}');", true);
+
                         //if (ViewState["__Username__"]!=null)
                         //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeePersonal.aspx?UserName=" + ViewState["__Username__"].ToString() + "&Password=" + ViewState["__Password__"] .ToString()+ "');", true);  //Open New Tab for Sever side code
                         //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeePersonal.aspx');", true);  //Open New Tab for Sever side code
@@ -1448,17 +1451,17 @@ namespace SigmaERP.personnel
                 HiddenField1.Value = "";
                 ddlGrouping.SelectedValue = "0";
                 // lblEmployeeMode.Text = "Add Mode";
-                if (ViewState["__WriteAction__"].ToString().Equals("0"))
-                {
+                //if (ViewState["__WriteAction__"].ToString().Equals("0"))
+                //{
 
-                    btnSave.CssClass = "";
-                    btnSave.Enabled = false;
-                }
-                else
-                {
-                    btnSave.CssClass = "css_btn Ptbut";
-                    btnSave.Enabled = true;
-                }
+                //    btnSave.CssClass = "";
+                //    btnSave.Enabled = false;
+                //}
+                //else
+                //{
+                //    btnSave.CssClass = "css_btn Ptbut";
+                //    btnSave.Enabled = true;
+                //}
                 hdfsaveupdatestatus.Value = "Save";
                 
                 //rblEmpType.SelectedValue = "2";
@@ -1546,17 +1549,17 @@ namespace SigmaERP.personnel
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 if (ddlEmpCardNo.SelectedValue != "0")
                 {
-                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
-                    {
+                    //if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                    //{
 
-                        btnSave.CssClass = "";
-                        btnSave.Enabled = false;
-                    }
-                    else
-                    {
-                        btnSave.CssClass = "css_btn Ptbut";
-                        btnSave.Enabled = true;
-                    }
+                    //    btnSave.CssClass = "";
+                    //    btnSave.Enabled = false;
+                    //}
+                    //else
+                    //{
+                    //    btnSave.CssClass = "css_btn Ptbut";
+                    //    btnSave.Enabled = true;
+                    //}
                     string[] EmpCardNowithName = ddlEmpCardNo.SelectedItem.Text.ToString().Split(' ');
 
                     txtEmpCardNo.Text = EmpCardNowithName[0];
