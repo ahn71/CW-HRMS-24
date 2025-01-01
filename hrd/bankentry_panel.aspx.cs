@@ -75,7 +75,7 @@ namespace SigmaERP.hrd
         private void updatebankInfo(string bankId)
         {
             int isPayer = chkIspayer.Checked ? 1 : 0;
-            string query = "UPDATE hrd_bankinfo SET BankName = '"+txtbankName.Text+"', BankShortName = '"+txtbankshortname.Text+"',BankAccount = '"+ txtBankacount.Text.Trim().ToString() + "', CompanyId = "+ddlCompany.SelectedValue+"," +
+            string query = "UPDATE hrd_bankinfo SET BankName = '"+txtbankName.Text+"', BankShortName = '"+txtbankshortname.Text+"',BankAccount = '"+ txtBankacount.Text.Trim().ToString() + "', CompanyId = "+ddlCompany.SelectedValue.ToString()+"," +
                 "IsPayer = "+ isPayer + " WHERE BankId ="+ bankId;
             CRUD.Execute(query);
 

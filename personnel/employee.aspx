@@ -743,27 +743,29 @@
         function previewFile() {
             try {
                 var preview = document.querySelector('#imgProfile');
-                var file = document.querySelector('#FileUpload1').files[0];
-               
+                var fileInput = document.querySelector('#FileUpload1');
+                var file = fileInput.files[0];
+
                 var reader = new FileReader();
 
                 reader.onloadend = function () {
                     preview.src = reader.result;
-                }
+                };
 
                 if (file) {
                     reader.readAsDataURL(file);
+                    // Extract only the file name
+                    var fileName = file.name;
+                    $('#HiddenField1').val(fileName);
                 } else {
                     preview.src = "";
+                    $('#HiddenField1').val(""); // Clear the hidden field if no file is selected
                 }
-                var imagename = $('#FileUpload1').val();
-                $('#HiddenField1').val(imagename);                
-            }
-            catch (exception) {
+            } catch (exception) {
                 lblMessage.innerText = exception;
             }
-
         }
+
         function previewFilesignature() {
             try {
                 var preview = document.querySelector('#imgSignature');
@@ -1145,7 +1147,7 @@
                     $('#txtExpireDate').val(date);
                    
                 }               
-        </script>
+    </script>
                 
           
 </asp:Content>              

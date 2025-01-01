@@ -580,10 +580,6 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", getDate);
                 }
                 else cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", convertDateTime.getCertainCulture(txtElStart.Text.Trim()));
-              
-
-
-
 
                 if (HiddenField1.Value.ToString().Length == 0)
                 {
@@ -593,6 +589,10 @@ namespace SigmaERP.personnel
                 {
                     cmd.Parameters.AddWithValue("@EmpPicture", txtEmpCardNo.Text.Trim() + HiddenField1.Value.ToString());
                 }
+
+
+
+
                 if (FileUpload2.HasFile == true)
                 {
                     cmd.Parameters.AddWithValue("@SignatureImage", txtEmpCardNo.Text + FileUpload2.FileName);
@@ -887,7 +887,7 @@ namespace SigmaERP.personnel
                 {
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        thumbnail.Save(Server.MapPath("/EmployeeImages/Images/" + txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
+                        thumbnail.Save(Server.MapPath("/EmployeeImages/Images/"+txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
                     }
                 }
 
