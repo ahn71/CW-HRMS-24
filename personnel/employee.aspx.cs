@@ -74,7 +74,7 @@ namespace SigmaERP.personnel
                         loadDepartMents();
                         //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
                     }
-                    classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
+                    classes.Employee.LoadEmpCardNoForEntry(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
                     FlatCustomOrdering();        
                     classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
                     if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
@@ -468,7 +468,7 @@ namespace SigmaERP.personnel
                             else
                             {
                                 Session["IsRedirect"] = "Yes";
-                                Response.Redirect("~/personnel/employee_list.aspx");
+                                Response.Redirect("~/hrms/employees/list");
                             }
                         }
                      }

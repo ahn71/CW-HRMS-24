@@ -146,6 +146,21 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadEmpCardNoForEntry(DropDownList dl, string EmpType, string CompanyId, string NewCardNo)
+        {
+            try
+            {
+                dt = new DataTable();
+                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and CompanyId='" + CompanyId + "' Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
+                dl.DataSource = dt;
+                dl.DataTextField = "EmpCardNo";
+                dl.DataValueField = "EmpId";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(NewCardNo, "0"));
+            }
+            catch { }
+        }
+
         public static void LoadEmpCardNo(DropDownList dl, string EmpType, string CompanyId, string NewCardNo)
         {
             try
