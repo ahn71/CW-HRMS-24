@@ -395,11 +395,11 @@ namespace SigmaERP.personnel
 
                 if (e.CommandName == "Edit")
                 {
-                    Response.Redirect("/personnel/employee.aspx?EmpId=" + getId + "&CompanyId=" + CompanyId + "&Edit=True &Transfer=False");
+                    Response.Redirect("~/hrms/employees/add?EmpId=" + getId + "&CompanyId=" + CompanyId + "&Edit=True &Transfer=False");
                 }
                 if (e.CommandName == "Transfer")
                 {
-                    Response.Redirect("/personnel/employee.aspx?EmpId=" + getId + "&CompanyId=" + CompanyId + "&Edit=False &Transfer=True");
+                    Response.Redirect("~/hrms/employees/add?EmpId=" + getId + "&CompanyId=" + CompanyId + "&Edit=False &Transfer=True");
                 }
                 else if (e.CommandName == "Remove")
                 {

@@ -74,7 +74,7 @@ namespace SigmaERP.personnel
                         loadDepartMents();
                         //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
                     }
-                    classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
+                    classes.Employee.LoadEmpCardNoForEntry(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
                     FlatCustomOrdering();        
                     classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
                     if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
@@ -468,7 +468,7 @@ namespace SigmaERP.personnel
                             else
                             {
                                 Session["IsRedirect"] = "Yes";
-                                Response.Redirect("~/personnel/employee_list.aspx");
+                                Response.Redirect("~/hrms/employees/list");
                             }
                         }
                      }
@@ -580,10 +580,6 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", getDate);
                 }
                 else cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", convertDateTime.getCertainCulture(txtElStart.Text.Trim()));
-              
-
-
-
 
                 if (HiddenField1.Value.ToString().Length == 0)
                 {
@@ -593,6 +589,10 @@ namespace SigmaERP.personnel
                 {
                     cmd.Parameters.AddWithValue("@EmpPicture", txtEmpCardNo.Text.Trim() + HiddenField1.Value.ToString());
                 }
+
+
+
+
                 if (FileUpload2.HasFile == true)
                 {
                     cmd.Parameters.AddWithValue("@SignatureImage", txtEmpCardNo.Text + FileUpload2.FileName);
@@ -887,7 +887,7 @@ namespace SigmaERP.personnel
                 {
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        thumbnail.Save(Server.MapPath("/EmployeeImages/Images/" + txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
+                        thumbnail.Save(Server.MapPath("/EmployeeImages/Images/"+txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
                     }
                 }
 

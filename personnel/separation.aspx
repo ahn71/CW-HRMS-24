@@ -258,7 +258,7 @@
 
               </asp:TabPanel>
              <asp:TabPanel ID="tabSeperationList" runat="server" TabIndex="1" >
-                 <HeaderTemplate>Current Seperation List</HeaderTemplate>
+                 <HeaderTemplate>Seperation List</HeaderTemplate>
                  <ContentTemplate>
                      <asp:UpdatePanel runat="server">
                           <Triggers>
@@ -274,7 +274,22 @@
                                     <td  style="font-size: 16px">
                                         <asp:DropDownList ID="ddlCompanyCurrentList" ClientIDMode="Static" CssClass="form-control" runat="server" AutoPostBack="True"  OnSelectedIndexChanged="ddlCompanyCurrentList_SelectedIndexChanged">
                                         </asp:DropDownList>
-                                    </td>                                 
+                                    </td>
+                                    <td>Card No
+                                    </td>
+                                    <td>:
+                                    </td>
+                                    <td>
+                                        <asp:TextBox runat="server" ID="txtCardNoSpFilter" CssClass="form-control">
+                                        </asp:TextBox>
+
+                                    </td>
+                                     <td>
+                                         <asp:Button runat="server" ID="btnSplSearch" ClientIDMode="Static" Text="Search" CssClass="css_btn Ptbut" OnClick="btnSplSearch_Click" />
+                                    </td>
+                   <%--                  <td>
+                                         <asp:Button runat="server" ID="splClear" ClientIDMode="Static" Text="Clear" CssClass="css_btn Ptbut" OnClientClick="return Clear()" />
+                                    </td>--%>
                                 </tr>
                                </table>
                                  <br />                          

@@ -436,6 +436,11 @@ namespace SigmaERP.personnel
                 //string query = "select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
                 //    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
                 //    "where IsActive='True' and  " + condition + "";
+                if (txtCardNoSpFilter.Text.Trim().Length > 0)
+                {
+                    condition += "and pecs.EmpCardNo like'%" + txtCardNoSpFilter.Text.Trim() + "'";
+                }
+
                 string query = @"SELECT 
                             pes.EmpId,
                             SUBSTRING(pecs.EmpCardNo, 8, 10) AS EmpCardNo,
@@ -515,21 +520,36 @@ namespace SigmaERP.personnel
                 string CompanyId = (ddlCompanyListActiveLog.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyListActiveLog.SelectedValue;
                 string condition = AccessControl.getDataAccessCondition(CompanyId, "0");
                 dt = new DataTable();
-                if (txtEmpCardNo.Text.Trim().Length == 0)
-                    sqlDB.fillDataTable(" select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate,"+
-                        "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
-                        "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount "+
-                        " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId "+
-                        "where v_EmployeeDetails." + condition + " " +
-                        "order by ActiveDate desc", dt);
-                else                    
-                        sqlDB.fillDataTable(" select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate," +
-                            "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
-                            "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount " +
-                            " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId " +
-                            "where  EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' and  " + condition + " " +
-                            "order by ActiveDate desc", dt);      
-                
+                if (txtCardnoActive.Text.Trim().Length == 0)
+                {
+                    //this query for testing 
+
+                    //query = "select SUBSTRING(v_EmployeeDetails.EmpCardNo,8,10) as EmpCardNo ,v_EmployeeDetails.EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join v_EmployeeDetails on psal.EmpId=v_EmployeeDetails.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID  where v_EmployeeDetails.CompanyId= " + condition + " order by ActiveDate desc";
+
+                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
+                      HRD_EmployeeType AS Etyp ON pei.EmpTypeId = Etyp.EmpTypeId
+				      Inner Join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId
+					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei."+ condition + " order by ActiveDate desc";
+
+                    sqlDB.fillDataTable(query, dt);
+                }
+                else
+                {
+                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
+                      HRD_EmployeeType AS Etyp ON pei.EmpTypeId = Etyp.EmpTypeId
+				      Inner Join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId
+					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei." + condition + " and pei.EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' order by ActiveDate desc";
+
+                    //query = "select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate," +
+                    //    "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
+                    //    "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount " +
+                    //    " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId " +
+                    //    "where  EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' and  " + condition + " " +
+                    //    "order by ActiveDate desc";
+                    sqlDB.fillDataTable(query, dt);
+
+                   
+                }
                 gvSeparationActivitionLog.DataSource = dt;
                 gvSeparationActivitionLog.DataBind();
             }
@@ -639,6 +659,8 @@ namespace SigmaERP.personnel
                 SqlCommand cmd2;
                 cmd = new SqlCommand("Update  Personnel_EmployeeInfo set EmpStatus=1 where EmpId='" + EmpId + "'", sqlDB.connection);
                 cmd2 = new SqlCommand("Update  Personnel_EmpCurrentStatus set EmpStatus=1 where SN= (select Max(SN) from Personnel_EmpCurrentStatus where EmpId='" + EmpId + "')", sqlDB.connection);
+                
+
                 if (int.Parse(cmd.ExecuteNonQuery().ToString()) == 1 && int.Parse(cmd2.ExecuteNonQuery().ToString())==1)
                     return true;
                 else
@@ -729,9 +751,11 @@ namespace SigmaERP.personnel
                 }
                 catch { }
             }
-        
-        
 
 
+        protected void btnSplSearch_Click(object sender, EventArgs e)
+        {
+            load_CurrentSeperationList();
+        }
     }
 }
