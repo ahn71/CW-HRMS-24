@@ -20,6 +20,21 @@
             color:red;
             padding:3px;
         }
+        .leve_loader_wrap {
+            position: absolute;
+            z-index: 3;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+             display: flex;
+    align-items: center;
+    justify-content: center;
+             width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius:4px;
+        }
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -37,6 +52,7 @@
 
                      </div>
 
+
                      <div class="btn-wrapper">
                         <div class="dm-button-list d-flex flex-wrap align-items-end">
                         <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>                          
@@ -47,7 +63,19 @@
                   <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
                      <div class="Vertical-form">
                            <div class="row">
+               
                                <div class="col-lg-12">
+                                   <div class="leve_loader_wrap loaderLeaveSave" style="display:none">
+                                   <div id="lvSaveLoader" class="loader-size py-5 text-center ">
+                                       <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
+                                           <span class="spin-dot badge-dot dot-primary"></span>
+                                           <span class="spin-dot badge-dot dot-primary"></span>
+                                           <span class="spin-dot badge-dot dot-primary"></span>
+                                           <span class="spin-dot badge-dot dot-primary"></span>
+                                       </div>
+                                   </div>
+
+                                   </div>
                                    <div class="row">
                                        <div class="col-lg-3 col-md-6 col-sm-12" id="ddlCompanySection" style="display:none">
                                            <div class="form-group">
@@ -219,8 +247,6 @@
                                                </div>
                                            </div>
                                        </div>
-
-
                                        <div class="col-lg-3  col-md-6 col-sm-12">
                                            <div class="form-group">
                                                <label style="opacity: 0;" for="formGroupExampleInput"
@@ -228,7 +254,7 @@
                                                    Name <span
                                                        class="text-danger"></span>
                                                </label>
-                                               <button type="button" id="btnSave" onclick="validateUser()"
+                                               <button type="button" style="cursor: pointer;" id="btnSave" onclick="validateUser()"
                                                    class="btn btn-primary btn-default btn-squared px-30">Save</button>
                                            </div>
                                        </div>
@@ -819,8 +845,11 @@
             };
 
             try {
+                 const loaderLeaveSave = $(".loaderLeaveSave"); // Use jQuery or 
+                loaderLeaveSave.show();
                 let response = await ApiCallPost(createLvUrl, token, postData);
                 if (response && response.statusCode === 200) {
+                    loaderLeaveSave.hide();
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
@@ -832,6 +861,7 @@
                     });
                     return true; 
                 } else if (response && response.statusCode === 400) {
+                      loaderLeaveSave.hide();
                     Swal.fire({
                         icon: 'error',
                         title: 'Validation Error',
@@ -839,6 +869,7 @@
                     });
                     return false; 
                 } else {
+                      loaderLeaveSave.hide();
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -847,6 +878,7 @@
                     return false; 
                 }
             } catch (error) {
+                  loaderLeaveSave.hide();
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
