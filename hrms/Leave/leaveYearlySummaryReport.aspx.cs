@@ -47,7 +47,7 @@ namespace SigmaERP.hrms.Leave
             {
                 DataTable dtYear = new DataTable();
                 companyId = (ddlCompanyName.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
-                sqlDB.fillDataTable(" select distinct Year(ToDate) as Year  from Leave_LeaveApplication   where CompanyId='" + companyId + "' order by Year(ToDate) desc", dtYear);
+                sqlDB.fillDataTable(" select distinct Year(LeaveStartDate) as Year  from Leave_LeaveApplications   where CompanyId='" + companyId + "' order by Year(LeaveStartDate) desc", dtYear);
                 ddlYear.DataTextField = "Year";
                 ddlYear.DataValueField = "Year";
                 ddlYear.DataSource = dtYear;
