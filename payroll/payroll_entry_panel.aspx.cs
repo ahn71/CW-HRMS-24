@@ -161,11 +161,11 @@ namespace SigmaERP.payroll
         {
             try
             {
-                string query= "select  SalaryCount, EmpAccountNo,BankId,PayerBankId,GrdName,EmpJoinigSalary,EmpPresentSalary,BasicSalary,MedicalAllownce,HouseRent,EmpTypeId,EmpType," +
+                string query= "select  SalaryCount, EmpAccountNo,BankId,PayerBankId,GrdName,EmpJoinigSalary,EmpPresentSalary,BasicSalary,MedicalAllownce,TechnicalAllownce,HouseRent,EmpTypeId,EmpType," +
                     "ConvenceAllownce,FoodAllownce,AttendanceBonus,PfMember,PfDate,PFAmount,HouseRent_Persent,Medical,PF_Persent,SalaryType,NightAllownce,OverTime,OthersAllownce,DormitoryRent,IsNull(IsSingleRateOT,0) as IsSingleRateOT,IncomeTax from v_EmployeeDetails where SN=" + ddlEmpCardNo.SelectedValue + "";
                 dt = new DataTable();
                 sqlDB.fillDataTable("select  SalaryCount, EmpAccountNo,BankId,PayerBankId,GrdName,EmpJoinigSalary,EmpPresentSalary,BasicSalary,MedicalAllownce,HouseRent,EmpTypeId,EmpType," +
-                    "ConvenceAllownce,FoodAllownce,AttendanceBonus,PfMember,PfDate,PFAmount,HouseRent_Persent,Medical,PF_Persent,SalaryType,NightAllownce,OverTime,OthersAllownce,DormitoryRent,IsNull(IsSingleRateOT,0) as IsSingleRateOT,IncomeTax from v_EmployeeDetails where SN=" + ddlEmpCardNo.SelectedValue + "", dt);
+                    "ConvenceAllownce,FoodAllownce,TechnicalAllownce,AttendanceBonus,PfMember,PfDate,PFAmount,HouseRent_Persent,Medical,PF_Persent,SalaryType,NightAllownce,OverTime,OthersAllownce,DormitoryRent,IsNull(IsSingleRateOT,0) as IsSingleRateOT,IncomeTax from v_EmployeeDetails where SN=" + ddlEmpCardNo.SelectedValue + "", dt);
                 if (dt.Rows.Count > 0)
                 {
                     lblEmpType.Text = dt.Rows[0]["EmpType"].ToString();
@@ -221,7 +221,6 @@ namespace SigmaERP.payroll
                         txtMedical.Text = "0";
                         lblHouseRent.Text = "0";
                         hfTotalHouseRent.Value = "0";
-
                         txtHouseRent.Text = "0";
                         txtConveyanceAllow.Text = "0";
                         txtFoodAllowance.Text = "0";
@@ -236,6 +235,7 @@ namespace SigmaERP.payroll
                         txtHouseRent.Text = dt.Rows[0]["HouseRent"].ToString();
                         txtConveyanceAllow.Text = dt.Rows[0]["ConvenceAllownce"].ToString();
                         txtFoodAllowance.Text = dt.Rows[0]["FoodAllownce"].ToString();
+                        txtTechnicalAllow.Text = dt.Rows[0]["TechnicalAllownce"].ToString();
                     }
                     
                     lblPF.Text = dt.Rows[0]["PF_Persent"].ToString();
@@ -509,12 +509,12 @@ namespace SigmaERP.payroll
             try
             {
                 string condition = AccessControl.getDataAccessCondition(companyId,"0");
-                string query = "select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent , FoodAllownce,ConvenceAllownce, EmpPresentSalary,CompanyId," +
-                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,BasicSalary,FoodAllownce,ConvenceAllownce,MedicalAllownce,HouseRent ," +
+                string query = "select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,TechnicalAllownce,HouseRent , FoodAllownce,ConvenceAllownce, EmpPresentSalary,CompanyId," +
+                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,BasicSalary,FoodAllownce,TechnicalAllownce,ConvenceAllownce,MedicalAllownce,HouseRent ," +
                     " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND " + condition + " order by SN";
 
-                SQLOperation.selectBySetCommandInDatatable("select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,HouseRent ,FoodAllownce,ConvenceAllownce,EmpPresentSalary,CompanyId," +
-                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,DptId,BasicSalary,FoodAllownce,ConvenceAllownce,MedicalAllownce,HouseRent ," +
+                SQLOperation.selectBySetCommandInDatatable("select distinct EmpCardNo,EmpName, max(SN) as SN,EmpType,EmpStatus,EmpTypeId,BasicSalary,MedicalAllownce,TechnicalAllownce,HouseRent ,FoodAllownce,ConvenceAllownce,EmpPresentSalary,CompanyId," +
+                    " ActiveSalary,IsActive,PFAmount,case when SalaryCount='False' Then 'Cash' Else case when SalaryCount='True' then 'Bank' else 'Check' End End As SalaryCount from v_Personnel_EmpCurrentStatus group by EmpCardNo,EmpName,EmpTypeId,EmpType,DptId,BasicSalary,FoodAllownce,ConvenceAllownce,TechnicalAllownce,MedicalAllownce,HouseRent ," +
                     " EmpPresentSalary,EmpStatus,CompanyId,ActiveSalary,IsActive,PFAmount,SalaryCount having EmpStatus in('1','8') AND ActiveSalary='true' AND IsActive='1' AND "+ condition+ " order by SN ", dt = new DataTable(), sqlDB.connection);
                 gvSalaryList.DataSource = dt;
                 gvSalaryList.DataBind();

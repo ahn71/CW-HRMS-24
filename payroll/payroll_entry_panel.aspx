@@ -559,9 +559,11 @@
                                                  <asp:BoundField DataField="BasicSalary" HeaderText="Basic" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="MedicalAllownce" HeaderText="Medical" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="HouseRent" HeaderText="House" ItemStyle-HorizontalAlign="Center"/>
+                
                                                  <asp:BoundField DataField="FoodAllownce" HeaderText="Food" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="ConvenceAllownce" HeaderText="Convence" ItemStyle-HorizontalAlign="Center"/>
-                                                 <asp:BoundField DataField="PFAmount" HeaderText="PF.Amount" ItemStyle-HorizontalAlign="Center"/>
+                                                <asp:BoundField DataField="TechnicalAllownce" HeaderText="Technical" ItemStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="PFAmount" HeaderText="PF.Amount" ItemStyle-HorizontalAlign="Center" />
                                                  <asp:BoundField DataField="EmpPresentSalary" HeaderText="Gross" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="SalaryCount" HeaderText="S.Count" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:TemplateField HeaderText="Change"  HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
