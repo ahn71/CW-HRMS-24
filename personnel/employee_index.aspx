@@ -143,7 +143,7 @@
 
             <div class=" col-lg-2 "></div>
             
-          <% if (IsRouteExists("employees/monthly-man-power-status"))
+<%--          <% if (IsRouteExists("employees/monthly-man-power-status"))
              { %>
              <div  runat="server" id="divMonthlyManPowerReport"  class=" col-lg-2 col-md-3 col-sm-6" title="Provident Fund Report">
 
@@ -151,7 +151,7 @@
                     <img class="image_width_for_module" src="/images/common/businesstype.ico" /><br />
                     Monthly Man Power Report</a>
             </div>
-            <% } %>
+            <% } %>--%>
           <% if (IsRouteExists("employees/contact-list"))
              { %>
             <div runat="server" id="divContactListReport" class=" col-lg-2 col-md-3 col-sm-6" title="Blood Group Report">

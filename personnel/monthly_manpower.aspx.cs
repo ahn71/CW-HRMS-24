@@ -129,7 +129,7 @@ namespace SigmaERP.personnel
                         if (dtTotal.Rows[0]["Female"].ToString() == "") PFemale = "0";
                         else PFemale = dtTotal.Rows[0]["Female"].ToString();
 
-
+                        string jjj = "Select Distinct Sum(Male) as Male,Sum(Female) as Female From v_ManpowerProcess where EmpJoiningDate between '" + FromDate[2] + "-" + FromDate[1] + "-" + FromDate[0] + "' and '" + TD + "'";
                     }
                     else
                     {

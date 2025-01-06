@@ -185,9 +185,18 @@
                      <a class="ds_Settings_Basic_Text" href="/hrd/others_settings.aspx"><img class="image_width_for_module" src="images/common/others.ico" /><br />Others</a> 
                  </div>--%>
                 <div class=" col-md-2"></div>
+
+
+                
+               
             </div>
 
+             <div class=" col-md-2  ">
+                    <a class="ds_Settings_Basic_Text" href="/settings/qualification">
+                        <img class="image_width_for_module" src="/images/common/qualification.ico" /><br />
+                        Bank Entry</a>
 
+                </div>
         </div>
         <%} %>
     </div>

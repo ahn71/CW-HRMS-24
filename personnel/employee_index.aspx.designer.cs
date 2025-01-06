@@ -112,15 +112,6 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divManPowerStatusReport;
         
         /// <summary>
-        /// divMonthlyManPowerReport control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divMonthlyManPowerReport;
-        
-        /// <summary>
         /// divContactListReport control.
         /// </summary>
         /// <remarks>
