@@ -7,9 +7,13 @@
         #ContentPlaceHolder1_MainContent_tblGenerateType td:nth-child(2), td:nth-child(4) {
             width:40%;
         }
-        .btnPreview{
-            margin: inherit;
-            margin-top: 30px !important;
+        .btnPreview {
+             margin-top:20px;
+          }
+
+        .buttonSection {
+            display: flex;
+            justify-content: center;
         }
     </style>
 </asp:Content>
@@ -104,8 +108,12 @@
                       <div class="id_card_right EilistR">
                           <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec" ClientIDMode="Static" runat="server"></asp:ListBox>
                       </div>
-                       <asp:Button ID="btnPreview" runat="server" CssClass="btn btn-primary btn-default btn-squared px-30 btnPreview" Text="Preview" OnClientClick="return InputValidationBasket();" OnClick="btnPreview_Click" />
+
+                      
                 </div>
+                       <div class="buttonSection">
+                          <asp:Button ID="btnPreview" runat="server" CssClass="btn btn-primary btn-default btn-squared px-30 btnPreview" Text="Preview" OnClientClick="return InputValidationBasket();" OnClick="btnPreview_Click" />
+                      </div>
                 <div class="payroll_generation_button">
                     <asp:UpdateProgress ID="UpdateProgress1" runat="server">
                                     <ProgressTemplate>

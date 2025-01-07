@@ -100,17 +100,18 @@
                                                        <asp:DropDownList ID="ddlLeaveTypes" runat="server" ClientIDMode="Static" CssClass="form-control" style="height: 48px;">
                                                        </asp:DropDownList>
                                                    </div>
+                                                   <span class="text-danger" id="leaveTypeError"></span>
+
                                                </div>
                                            </div>
                                        </div>
                                        <div class="col-lg-3 col-md-6 col-sm-12">
                                            <div class="form-group">
-                                               <label for="ddlLeaveType" class="color-dark fs-14 fw-500 align-center mb-10">Leave Days<span class="text-danger">*</span></label>
+                                               <label for="txtLeaveDays" class="color-dark fs-14 fw-500 align-center mb-10">Leave Days<span class="text-danger">*</span></label>
                                                <div class="support-form__input-id">
                                                  
                                                     <asp:TextBox ID="txtLeaveDays" runat="server" ClientIDMode="Static" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"  ></asp:TextBox>
-                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtLeaveDays"
-                                                ErrorMessage="Please Enter Only Numbers" ValidationExpression="^\d+$" ValidationGroup="save"></asp:RegularExpressionValidator>
+                                            <span class="text-danger" id="leaveDaysError"></span>
                                                  
                                                </div>
                                            </div>
@@ -121,7 +122,8 @@
                                                <div class="support-form__input-id">
                                            
                                                        <asp:TextBox ID="txtLeaveNature" runat="server" ClientIDMode="Static" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"></asp:TextBox>
-                                                       <asp:RequiredFieldValidator ForeColor="Red" ValidationGroup="save" ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtLeaveNature" ErrorMessage="*"></asp:RequiredFieldValidator>
+                                                                                                                                              <span class="text-danger" id="leaveNaturesError"></span>
+
                                                 
                                                </div>
                                            </div>
@@ -135,7 +137,7 @@
 
                                        <div class="col-lg-6 col-md-6 col-sm-12 d-flex">
 
-                                               <asp:Button ID="btnSave"  ClientIDMode="Static" CssClass="btn btn-primary btn-default btn-squared px-30 m-2" runat="server" Text="Save" OnClick="btnSave_Click" />
+                                               <asp:Button ID="btnSave"  ClientIDMode="Static" CssClass="btn btn-primary btn-default btn-squared px-30 m-2" runat="server" Text="Save" OnClick="btnSave_Click" OnClientClick="return validateForm();"/>
                                                <asp:Button runat="server" ID="btnPreview" Text="Preview" CssClass="btn btn-primary btn-default btn-squared px-30" OnClick="btnPreview_Click" />
                                            </div>
                                    </div>
@@ -247,6 +249,57 @@
 
 
     <script>
+        function validateForm() {
+            let isValid = true;
+
+            // Validate Company Dropdown
+            const companyList = $("#ddlCompanyList");
+            if (companyList.val() === null || companyList.val() === "0") {
+                alert("Please select a company.");
+                isValid = false;
+            }
+
+            // Validate Leave Type Dropdown
+            const leaveTypes = $("#ddlLeaveTypes");
+            const leaveTypeError = $("#leaveTypeError");
+            if (leaveTypes.val() === null || leaveTypes.val() === "0") {
+                leaveTypeError.text("Please Select Leave Type.");
+                isValid = false;
+            } else {
+                leaveTypeError.text("");
+            }
+
+            // Validate Leave Days
+            const leaveDays = $("#txtLeaveDays");
+            const leaveDaysError = $("#leaveDaysError");
+            if (!leaveDays.val() || isNaN(leaveDays.val()) || leaveDays.val() <= 0) {
+                leaveDaysError.text("Please enter valid leave days.");
+                isValid = false;
+            } else {
+                leaveDaysError.text("");
+            }
+
+            // Validate Leave Nature
+            const leaveNature = $("#txtLeaveNature");
+            const leaveNatureError = $("#leaveNaturesError");
+            if (!leaveNature.val().trim()) {
+                leaveNatureError.text("Please enter leave nature.");
+                isValid = false;
+            } else {
+                leaveNatureError.text("");
+            }
+
+            // Return validation result
+            return isValid;
+        }
+
+
+
+
+
+
+
+
          function Cardbox() {
              var CardboxElement = $("#Cardbox");
              var addnewElement = $("#addnew");
@@ -266,6 +319,8 @@
            window.open(url);
 
        }
+
+
 
     </script>
 </asp:Content>
