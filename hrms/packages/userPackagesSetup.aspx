@@ -11,32 +11,50 @@
                         <div id="Cardbox" class="card-body pb-md-30">
                             <div class="Vertical-form">
                                 <div class="row">
-
-                                    <div class="col-lg-3">
-                                      <div class="form-group">
-                                        <label id="lblHidenPksId" style="display:none"></label>
-                                       <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">Package <span
-                                          class="text-danger">*</span></label>
-                                       <div class="support-form__input-id">
-                                           <div class="dm-select ">
-                                               <select name="ddlPackages" id="ddlPackages" class="select-search form-control">
-                                                   <option value="0">---Select---</option>
-                                               </select>
-                                           </div>
-                                       </div>
-                                   </div>
-                                    </div>
-
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
                                         <div class="form-group">
-                                            <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                Ordering <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtOrdaring" placeholder="Type Ordering">
-                                            <span class="text-danger" id="orderingError"></span>
+                                            <label for="ddlCompany" class="color-dark fs-14 fw-500 align-center mb-10">Company<span
+                                                class="text-danger">*</span></label>
+                                            <div class="support-form__input-id">
+                                                <div class="dm-select ">
+                                                    <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control"></asp:DropDownList>
+
+                                                </div>
+                                                <span class="text-danger" id="ddlCompanyError"></span>
+                                            </div>
                                         </div>
                                     </div>
-                              <%--      <div class="col-lg-3">
+                               
+
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label id="lblHidenPksId" style="display: none"></label>
+                                        <label for="formGroupExampleInput" class="color-dark fs-14 fw-500 align-center mb-10">
+                                            Package <span
+                                                class="text-danger">*</span></label>
+                                        <div class="support-form__input-id">
+                                            <div class="dm-select ">
+                                                <select name="ddlPackages" id="ddlPackages" class="select-search form-control">
+                                                    <option value="0">---Select---</option>
+                                                </select>
+                                            </div>
+                                                                 <span class="text-danger" id="ddlPackagesError"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group">
+                                        <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
+                                            Ordering <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtOrdaring" placeholder="Type Ordering">
+                                        <span class="text-danger" id="orderingError"></span>
+                                    </div>
+                                </div>
+                                <%--      <div class="col-lg-3">
                                         <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
                                         <div class="form-group d-flex">
                                             <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
@@ -61,51 +79,53 @@
                                     </div>
                                     </div>--%>
 
-                                      <div class="col-lg-3 " style="display:flex; justify-content:space-between">
-                                           <div class="LeftSite">
-                                           <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
-                                           <div class="form-group d-flex">
-                                               <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
-                                                   Status <span class="text-danger"></span>
-                                               </label>
-                                               <div class="radio-horizontal-list d-flex">
-                                                   <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                                       <input type="checkbox" checked class="form-check-input" id="chkIsActive">
-                                                       <label class="form-check-label" for="chkIsActive"></label>
-                                                   </div>
-                                               </div>
-                                           </div>
-                                           </div>
-                                           <div class="rightSite">
-                                               <label style="opacity: 0;" for="formGroupExampleInput"
-                                                   class="color-dark fs-14 fw-500 align-center mb-10">
-                                                   Name <span
-                                                       class="text-danger"></span>
-                                               </label>
-                                               <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
-                                                   class="btn btn-primary btn-default btn-squared px-30">Save</button>
-                                           </div>
-
-                                       </div>
-                                    <div class="col-lg-4" id="treeSection">
-                                        <p>Select features and permission</p>
-                                        <div class="loader-size loaderPackages " style="display:none">
-                                            <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                                <span class="spin-dot badge-dot dot-primary"></span>
-                                            </div>
+                               
+                                <div class="col-lg-4" id="treeSection">
+                                    <p>Select features and permission</p>
+                                    <div class="loader-size loaderPackages " style="display: none">
+                                        <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
+                                            <span class="spin-dot badge-dot dot-primary"></span>
+                                            <span class="spin-dot badge-dot dot-primary"></span>
+                                            <span class="spin-dot badge-dot dot-primary"></span>
+                                            <span class="spin-dot badge-dot dot-primary"></span>
                                         </div>
-                                        <div id="treeContainer"></div>
                                     </div>
-                                    
+                                    <div id="treeContainer"></div>
                                 </div>
 
+                                 <div class="col-lg-3" style="display: flex; justify-content: space-between">
+                                    <div class="LeftSite">
+                                        <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
+                                        <div class="form-group d-flex">
+                                            <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
+                                                Status <span class="text-danger"></span>
+                                            </label>
+                                            <div class="radio-horizontal-list d-flex">
+                                                <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
+                                                    <input type="checkbox" checked class="form-check-input" id="chkIsActive">
+                                                    <label class="form-check-label" for="chkIsActive"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rightSite">
+                                        <label style="opacity: 0;" for="formGroupExampleInput"
+                                            class="color-dark fs-14 fw-500 align-center mb-10">
+                                            Name <span
+                                                class="text-danger"></span>
+                                        </label>
+                                        <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
+                                            class="btn btn-primary btn-default btn-squared px-30">Save</button>
+                                    </div>
 
+                                </div>
 
                             </div>
+
+
+
                         </div>
+                    </div>
                     </div>
                 </div>
 
@@ -148,6 +168,7 @@
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetPackageSetupsUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
         var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';//working
+        var GetDdlCompanyUrl = rootUrl + '/api/Company/GetDropdownCompanies';
 
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
         var DeleteUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/delete';
@@ -156,6 +177,7 @@
         //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
         $(document).ready(function () {
+
             $('#treeContainer').hide();
             $('#ddlPackages').change(function () {
                 var selectedValue = $(this).val();
@@ -163,9 +185,27 @@
                 FetchDataForEdit(selectedValue);
                 $('#treeContainer').show();
             });
+            GetCompanys();
             GetPackages();
             GetPackagesSetupList();
             GetModule();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const companyId = urlParams.get('companyId');
+
+            if (companyId) {
+                const $ddlCompany = $('#ddlCompany');
+
+                // Wait for dropdown to populate (if needed)
+                const interval = setInterval(function () {
+                    if ($ddlCompany.find(`option[value="${companyId}"]`).length) {
+                        $ddlCompany.val(companyId);
+                        $ddlCompany.trigger('change');
+                        clearInterval(interval); // Stop checking
+                    }
+                }, 100);
+            }
+
         });
 
                 function transformToJSTreeFormat(data) {
@@ -252,6 +292,22 @@
                 });
         }
 
+        function GetCompanys() {
+            ApiCall(GetDdlCompanyUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log('company Data',responseData);
+                        populateDropdownCompany(responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
 
         function populateDropdown(data) {
             const dropdown = document.getElementById('ddlPackages');
@@ -261,6 +317,18 @@
                 const option = document.createElement('option');
                 option.value = item.id;
                 option.textContent = item.packageName;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function populateDropdownCompany(data) {
+            const dropdown = document.getElementById('ddlCompany');
+            dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
+
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.companyId;
+                option.textContent = item.companyName;
                 dropdown.appendChild(option);
             });
         }
@@ -397,13 +465,22 @@
         }
         function ValidateAndPostModule() {
             var isValid = true;
-            if ($('#ddlPackages').val() <= 0) {
-                $('#PackagesNameError').html("Please select a package name.");
-                $("#txtPackagesName").focus();
+            if ($('#ddlCompany').val() =="0") {
+                $('#ddlCompanyError').html("Please select a company.");
+                $('#ddlCompany').focus(); // Set focus on the dropdown
                 isValid = false;
             } else {
-                $('#PackagesNameError').html("");
+                $('#ddlCompanyError').html(""); // Clear the error message
             }
+
+            if ($('#ddlPackages').val() == "0") {
+                $('#ddlPackagesError').html("Please select a package name.");
+                $("#ddlPackages").focus();
+                isValid = false;
+            } else {
+                $('#ddlPackagesError').html("");
+            }
+
             if (isValid) {
                 var addnewElement = $("#btnSave");
                 if (addnewElement.html() === "Save") {
@@ -473,7 +550,8 @@
 
             // Define the table columns
             const columns = [
-                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
+                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "companyName", "title": "Company Name", "className": "userDatatable-content" },
                 { "name": "packageName", "title": "Package Name", "className": "userDatatable-content" },
                 { "name": "features", "title": "Features", "className": "userDatatable-content" },
                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -524,6 +602,7 @@
 
         function PostModule() {
             var packageId = parseInt($('#ddlPackages').val(), 10);
+            var companyId = $('#ddlCompany').val();
             var isActive = $('#chkIsActive').is(':checked');
             var treeInstance = $('#treeContainer').jstree(true);
 
@@ -532,6 +611,7 @@
 
             var postData = {
                 packageId: packageId,
+                companyId: companyId,
                 features: jsonString,
                 isActive: isActive,
             };
@@ -594,6 +674,6 @@
         }
 
     </script>
-     <script src="assets/theme_assets/js/apiHelper.js"></script>
+     <script src="../assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>

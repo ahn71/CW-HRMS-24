@@ -305,24 +305,39 @@
                              <asp:BoundField DataField="BTypeName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderText="BusinessType" Visible="true" />
                               <asp:BoundField DataField="StartCardNo" HeaderText="S.Card No" ItemStyle-HorizontalAlign="Center" Visible="true" />
                              <%--<asp:ButtonField ButtonType="Button" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="btnForAlterInGV"    HeaderText="Edit" Text="Edit" CommandName="Alter" />--%>
+                                                              <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                        <HeaderTemplate>
+                                            Package Setup 
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <asp:Button ID="btnSrtupPackages" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Package Setup" CommandName="Setup"
+                                               
+                                                CommandArgument='<%# Container.DataItemIndex %>' />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                         <HeaderTemplate>
                                             Update
                                         </HeaderTemplate>
                                         <ItemTemplate>
-                                            <asp:Button ID="btnAlter" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Edit" CommandName="Alter"
+                                           <%-- <asp:Button ID="btnAlter" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Edit" CommandName="Alter"
                                                
                                                 CommandArgument='<%# Container.DataItemIndex %>' />
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                        <HeaderTemplate>
-                                            Delete
-                                        </HeaderTemplate>
-                                        <ItemTemplate>
                                             <asp:Button ID="btnDelete" runat="server"  ControlStyle-CssClass="btnForDeleteInGV"   Text="Delete" CommandName="Delete"
                                                 OnClientClick="return confirm('Are you sure, you want to delete the record?')"
-                                                CommandArgument='<%# Container.DataItemIndex %>' />
+                                                CommandArgument='<%# Container.DataItemIndex %>' />--%>
+
+                                            <asp:LinkButton ID="btnAlter" runat="server" CssClass="" CommandName="Alter"
+                                                CommandArgument='<%# Container.DataItemIndex %>'>
+    <i class="fa fa-edit"></i> <!-- Font Awesome edit icon -->
+                                            </asp:LinkButton>
+
+                                            <asp:LinkButton ID="btnDelete" runat="server" CssClass="" CommandName="Delete"
+                                                OnClientClick="return confirm('Are you sure, you want to delete the record?');"
+                                                CommandArgument='<%# Container.DataItemIndex %>'>
+    <i class="fa fa-trash"></i> <!-- Font Awesome delete icon -->
+                                            </asp:LinkButton>
+
                                         </ItemTemplate>
                                     </asp:TemplateField>
                           </Columns>                         

@@ -499,8 +499,8 @@
         });
 
     </script>
-    <script src="assets/theme_assets/js/RootUrl.js"></script>
-    <script src="assets/theme_assets/js/apiHelper.js"></script>
+    <script src="../assets/theme_assets/js/RootUrl.js"></script>
+    <script src="../assets/theme_assets/js/apiHelper.js"></script>
     <style>
         .jstree .jstree-loading {
     background: none !important;

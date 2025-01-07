@@ -623,5 +623,5 @@
     </script>
 
 
-    <script src="assets/theme_assets/js/apiHelper.js"></script>
+    <script src="../assets/theme_assets/js/apiHelper.js"></script>
 </asp:Content>

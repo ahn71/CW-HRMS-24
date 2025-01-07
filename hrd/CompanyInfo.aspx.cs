@@ -240,7 +240,10 @@ namespace SigmaERP.hrd
                 }
                 else
                 {
-                    sqlDB.fillDataTable("Select ID, CompanyId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BTypeName,  MultipleBranch,  Comments, CompanyLogo,StartCardNo,ComType,AttMachineName from v_HRD_CompanyInfo where CompanyId='" + ViewState["__CompanyId__"].ToString() + "' ", dt);
+                    sqlDB.fillDataTable("Select ID, CompanyId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BTypeName,  MultipleBranch,  Comments, CompanyLogo,StartCardNo,ComType,AttMachineName from v_HRD_CompanyInfo", dt);
+
+                    //sqlDB.fillDataTable("Select ID, CompanyId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BTypeName,  MultipleBranch,  Comments, CompanyLogo,StartCardNo,ComType,AttMachineName from v_HRD_CompanyInfo where CompanyId='" + ViewState["__CompanyId__"].ToString() + "' ", dt);
+
                 }
                 gvCompanyInfo.DataSource = dt;
                 gvCompanyInfo.DataBind();
@@ -620,6 +623,12 @@ namespace SigmaERP.hrd
                         lblMessage.InnerText = "error->Warning! Can't delete this Company.";
 
                    
+                }
+                else
+                {
+                    var companyId = gvCompanyInfo.DataKeys[index].Values[1].ToString();
+                    Response.Redirect("~/hrms/packages/userPackagesSetup.aspx?companyId=" + companyId);
+
                 }
             }
             catch { }

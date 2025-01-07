@@ -27,7 +27,7 @@
     <div class="row g-4">
       <!-- Module Card -->
       <div class="col-lg-3 col-md-6">
-        <a href="Modules.aspx" class="text-decoration-none">
+        <a href="packages/Modules.aspx" class="text-decoration-none">
           <div class="card h-100 shadow-sm">
           <%--  <img src="path-to-your-logo1.png" class="card-img-top" alt="Module Logo">--%>
               <i class="fas fa-th"></i>
@@ -40,7 +40,7 @@
       
       <!-- Permission Card -->
       <div class="col-lg-3 col-md-6">
-        <a href="userPermissions.aspx" class="text-decoration-none">
+        <a href="packages/userPermissions.aspx" class="text-decoration-none">
           <div class="card h-100 shadow-sm">
             <i class="fas fa-key"></i>
             <div class="card-body">
@@ -52,7 +52,7 @@
 
       <!-- User Packages Card -->
       <div class="col-lg-3 col-md-6">
-        <a href="userPackages.aspx" class="text-decoration-none">
+        <a href="packages/userPackages.aspx" class="text-decoration-none">
           <div class="card h-100 shadow-sm">
             <i class="fas fa-box-open"></i>
             <div class="card-body">
@@ -64,7 +64,7 @@
 
       <!-- Package Setup Card -->
       <div class="col-lg-3 col-md-6">
-        <a href="userPackagesSetup.aspx" class="text-decoration-none">
+        <a href="packages/userPackagesSetup.aspx" class="text-decoration-none">
           <div class="card h-100 shadow-sm">
            <i class="fas fa-tools"></i>
             <div class="card-body">

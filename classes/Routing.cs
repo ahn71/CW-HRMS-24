@@ -34,7 +34,7 @@ namespace SigmaERP.classes
 
         public static string appSettingsName = "appSettings";
         public static string appSettingsUrl = rootURL + "app-settings";
-        private static string appSettingsPhyLocation = "~/hrms/AppSettings.aspx";
+        private static string appSettingsPhyLocation = "~/hrms/packages/AppSettings.aspx";
 
         public static string profileRoutName = "Profile";
         public static string profileUrl = rootURL + "profile";

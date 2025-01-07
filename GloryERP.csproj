@@ -1124,7 +1124,7 @@
     <Content Include="hrd\SpecialTimeTable.aspx" />
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
-    <Content Include="hrms\AppSettings.aspx" />
+    <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
     <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
     <Content Include="hrms\assets\theme_assets\js\charts.js" />
@@ -1711,7 +1711,7 @@
     <Content Include="hrms\Leave\leaveConfiguration.aspx" />
     <Content Include="hrms\Leave\leaveYearlySummaryReport.aspx" />
     <Content Include="hrms\man.jpg" />
-    <Content Include="hrms\modules.aspx" />
+    <Content Include="hrms\packages\modules.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
     <Content Include="hrms\UI\access\UserCreate.aspx" />
@@ -1720,9 +1720,9 @@
     <Content Include="hrms\UI\auth\login.html" />
     <Content Include="hrms\UI\auth\logo.png" />
     <Content Include="hrms\user.aspx" />
-    <Content Include="hrms\userPackages.aspx" />
-    <Content Include="hrms\userPackagesSetup.aspx" />
-    <Content Include="hrms\userPermissions.aspx" />
+    <Content Include="hrms\packages\userPackages.aspx" />
+    <Content Include="hrms\packages\userPackagesSetup.aspx" />
+    <Content Include="hrms\packages\userPermissions.aspx" />
     <Content Include="hrms\userProfile.aspx" />
     <Content Include="hrms\userRoles.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
@@ -3629,11 +3629,11 @@
     <Compile Include="hrd_default.aspx.designer.cs">
       <DependentUpon>hrd_default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\AppSettings.aspx.cs">
+    <Compile Include="hrms\packages\AppSettings.aspx.cs">
       <DependentUpon>AppSettings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\AppSettings.aspx.designer.cs">
+    <Compile Include="hrms\packages\AppSettings.aspx.designer.cs">
       <DependentUpon>AppSettings.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\BLL\AccessControl.cs" />
@@ -3704,11 +3704,11 @@
     <Compile Include="hrms\Leave\leaveYearlySummaryReport.aspx.designer.cs">
       <DependentUpon>leaveYearlySummaryReport.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\modules.aspx.cs">
+    <Compile Include="hrms\packages\modules.aspx.cs">
       <DependentUpon>modules.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\modules.aspx.designer.cs">
+    <Compile Include="hrms\packages\modules.aspx.designer.cs">
       <DependentUpon>modules.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\repo\implementations\Zk.cs" />
@@ -3743,25 +3743,25 @@
     <Compile Include="hrms\user.aspx.designer.cs">
       <DependentUpon>user.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\userPackages.aspx.cs">
+    <Compile Include="hrms\packages\userPackages.aspx.cs">
       <DependentUpon>userPackages.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\userPackages.aspx.designer.cs">
+    <Compile Include="hrms\packages\userPackages.aspx.designer.cs">
       <DependentUpon>userPackages.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\userPackagesSetup.aspx.cs">
+    <Compile Include="hrms\packages\userPackagesSetup.aspx.cs">
       <DependentUpon>userPackagesSetup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\userPackagesSetup.aspx.designer.cs">
+    <Compile Include="hrms\packages\userPackagesSetup.aspx.designer.cs">
       <DependentUpon>userPackagesSetup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\userPermissions.aspx.cs">
+    <Compile Include="hrms\packages\userPermissions.aspx.cs">
       <DependentUpon>userPermissions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\userPermissions.aspx.designer.cs">
+    <Compile Include="hrms\packages\userPermissions.aspx.designer.cs">
       <DependentUpon>userPermissions.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\userProfile.aspx.cs">

@@ -264,6 +264,8 @@ function populateDropdown(data) {
     });
 }
 
+
+
 function PostModule() {
     // Capture form data
     var moduleName = $('#txtModuleName').val();
@@ -581,5 +583,5 @@ $(document).ready(function () {
 
 
    <%-- <script src="assets/theme_assets/js/module.js"></script>--%>
-    <script src="assets/theme_assets/js/apiHelper.js"></script>
+    <script src="../assets/theme_assets/js/apiHelper.js"></script>
 </asp:Content>
