@@ -221,7 +221,7 @@
                         <div class="form-group">
 
 
-                            <div class="password-wrapper input2 mb-3 d-flex">
+                <%--            <div class="password-wrapper input2 mb-3 d-flex">
                                 <div class="icon1">
                                     <i class="fa fa-home" aria-hidden="true"></i>
                                 </div>
@@ -230,9 +230,9 @@
                                     <option>Company 2</option>
                                     <option>Company 3</option>
                                 </select>--%>
-                                <asp:DropDownList ID="ddlCompany" runat="server" CssClass="select-input">
-                                                                </asp:DropDownList>
-                            </div>
+                                <%--<asp:DropDownList ID="ddlCompany" runat="server" CssClass="select-input">
+                                                                </asp:DropDownList>--%>
+                            <%--</div>--%>
                             <!-- <label for="username" class="label">Username</label> -->
                             <div class="password-wrapper input2 d-flex">
                                 <div class="icon1">

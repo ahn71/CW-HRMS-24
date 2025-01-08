@@ -175,8 +175,8 @@
 
         var rootUrl = '<%= Session["__RootUrl__"]%>';
         var CompanyID = '<%= Session["__GetCompanyId__"]%>';
-       <%-- var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';--%>
-        var IsAdministrator = false;
+        var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
+        //var IsAdministrator = false;
         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
         var postRolesUrl = rootUrl + '/api/UserRoles/create';
         var getRolesUrl = `${rootUrl}/api/UserRoles/userRoles?companyId=${CompanyID}&IsAdministrator=${IsAdministrator}`;

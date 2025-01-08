@@ -14,10 +14,10 @@ namespace SigmaERP.hrms.BLL
        //public static string RootUrl = "https://localhost:7220";
        public static string RootUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
 
-        public string Login(string url, string userName, string userPassword, string CompanyId)
+        public string Login(string url, string userName, string userPassword )
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string requestUrl = $"{RootUrl+url}?CompanyId={Uri.EscapeDataString(CompanyId)}";
+            string requestUrl = $"{RootUrl+url}";
 
             WebRequest webRequest = WebRequest.Create(requestUrl);
             webRequest.Method = "POST";

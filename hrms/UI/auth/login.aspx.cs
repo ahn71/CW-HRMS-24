@@ -25,11 +25,11 @@ namespace SigmaERP.hrms.UI.auth
         ApiConnector apiConnector;
         protected void Page_Load(object sender, EventArgs e)
         {
-           
-            if (!IsPostBack)
+
+            if (IsPostBack)
             {                
-                classes.commonTask.LoadBranch(ddlCompany);
-                ddlCompany.SelectedIndex = 1;
+                //classes.commonTask.LoadBranch(ddlCompany);
+                //ddlCompany.SelectedIndex = 1;
                 ViewState["__IsCompliance__"] = "False";
             }
         }
@@ -93,7 +93,7 @@ namespace SigmaERP.hrms.UI.auth
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 string CompanyId = getCookies["__CompanyId__"].ToString();
 
-                dt = CRUD.ExecuteReturnDataTable("select SN,EmpId from Personnel_EmpCurrentStatus  where ActiveSalary='false' AND CompanyId='" + ddlCompany.SelectedValue + "' AND  TypeOfChange='p' and    convert(Date, SUBSTRING(EffectiveMonth,4,4)+'-'+ SUBSTRING(EffectiveMonth,0,3)+'-01' )<='"+DateTime.Now.ToString("yyyy-MM-dd")+"'");
+                dt = CRUD.ExecuteReturnDataTable("select SN,EmpId from Personnel_EmpCurrentStatus  where ActiveSalary='false' AND CompanyId='" + CompanyId + "' AND  TypeOfChange='p' and    convert(Date, SUBSTRING(EffectiveMonth,4,4)+'-'+ SUBSTRING(EffectiveMonth,0,3)+'-01' )<='"+DateTime.Now.ToString("yyyy-MM-dd")+"'");
 
                 for (int r = 0; r < dt.Rows.Count; r++)
                 {
@@ -121,9 +121,10 @@ namespace SigmaERP.hrms.UI.auth
         {
             try
             {
+
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 string CompanyId = getCookies["__CompanyId__"].ToString();
-                SQLOperation.selectBySetCommandInDatatable("select SN,EmpId from Personnel_EmpCurrentStatus1  where ActiveSalary='false' AND CompanyId='" + ddlCompany.SelectedValue + "' AND  TypeOfChange='p' and convert(Date, SUBSTRING(EffectiveMonth,4,4)+'-'+ SUBSTRING(EffectiveMonth,0,3)+'-01' )<='" + DateTime.Now.ToString("yyyy-MM-dd") + "'", dt = new DataTable(), sqlDB.connection);
+                SQLOperation.selectBySetCommandInDatatable("select SN,EmpId from Personnel_EmpCurrentStatus1  where ActiveSalary='false' AND CompanyId='" + CompanyId + "' AND  TypeOfChange='p' and convert(Date, SUBSTRING(EffectiveMonth,4,4)+'-'+ SUBSTRING(EffectiveMonth,0,3)+'-01' )<='" + DateTime.Now.ToString("yyyy-MM-dd") + "'", dt = new DataTable(), sqlDB.connection);
                 for (int r = 0; r < dt.Rows.Count; r++)
                 {
                     SqlCommand upIsActive = new SqlCommand("Update Personnel_EmpCurrentStatus1 set IsActive=0 where EmpId='" + dt.Rows[r]["EmpId"].ToString() + "'", sqlDB.connection);
@@ -208,8 +209,10 @@ namespace SigmaERP.hrms.UI.auth
         {
             try
             {
+                HttpCookie getCookies = Request.Cookies["userInfo"];
+                string CompanyId = getCookies["__CompanyId__"].ToString();
                 dt = new DataTable();
-             dt= CRUD.ExecuteReturnDataTable("select SN,EmpId from Personnel_EmpCurrentStatus  where ActiveSalary='false' AND CompanyId='" + ddlCompany.SelectedValue + "' AND  TypeOfChange='i' and convert(Date, SUBSTRING(EffectiveMonth,4,4)+'-'+ SUBSTRING(EffectiveMonth,0,3)+'-01' )<='" + DateTime.Now.ToString("yyyy-MM-dd") + "'");
+             dt= CRUD.ExecuteReturnDataTable("select SN,EmpId from Personnel_EmpCurrentStatus  where ActiveSalary='false' AND CompanyId='" + CompanyId + "' AND  TypeOfChange='i' and convert(Date, SUBSTRING(EffectiveMonth,4,4)+'-'+ SUBSTRING(EffectiveMonth,0,3)+'-01' )<='" + DateTime.Now.ToString("yyyy-MM-dd") + "'");
                 // SQLOperation.selectBySetCommandInDatatable("select CommonIncId,EffectiveMonth   from Personnel_EmpCommonIncrement where IsActivated='false' AND EffectiveMonth='" + DateTime.Now.ToString("MM-yyyy") + "'", dt = new DataTable(), sqlDB.connection);
                 if (dt.Rows.Count > 0)
                 {
@@ -238,10 +241,10 @@ namespace SigmaERP.hrms.UI.auth
 
        
        // private static string LoginUrl = ApiConnector.RootUrl + "/api/LogIn/Login";
-        public string Login(string url, string userName, string userPassword, string CompanyId)
+        public string Login(string url, string userName, string userPassword)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            string requestUrl = $"{url}?CompanyId={Uri.EscapeDataString(CompanyId)}";
+            string requestUrl = $"{url}";
 
             WebRequest webRequest = WebRequest.Create(requestUrl);
             webRequest.Method = "POST";
@@ -292,11 +295,11 @@ namespace SigmaERP.hrms.UI.auth
                
                 string username = txtUsername.Text.Trim();
                 string password = txtPassword.Text.Trim();
-                string companyId = ddlCompany.SelectedValue;
+                //string companyId = ddlCompany.SelectedValue;
                // ApiConnector apiConnector = new ApiConnector();
                 if (apiConnector == null)
                     apiConnector = new ApiConnector();
-                string response = apiConnector.Login("/api/LogIn/Login", username, password, companyId);
+                string response = apiConnector.Login("/api/LogIn/Login", username, password);
                 var jsonResponse = JsonConvert.DeserializeObject<dynamic>(response);
 
            
@@ -330,7 +333,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__RootUrl__"] = ApiConnector.RootUrl;
                     Session["__UserDataAccessLevel__"] = userData.dataAccessLevel.ToString();
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
-                    Session["__GetISAdministetor__"] = true;
+                    Session["__GetISAdministetor__"] = userData.isAdministrator;
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
@@ -344,7 +347,7 @@ namespace SigmaERP.hrms.UI.auth
                         ["__getLastName__"] = userData.lastName.ToString(),
                         ["__getUserType__"] = userData.isGuestUser.ToString(),
                         ["__CompanyId__"] = userData.companyId, 
-                        ["__CompanyName__"] = ddlCompany.SelectedItem.Text,
+                        ["__CompanyName__"] = userData.companyName.ToString(),
                         ["__CShortName__"] = "",
                         ["__DptId__"] = userData.dptId.ToString(),
                         ["__isLvAuthority__"] = "0",
@@ -358,7 +361,7 @@ namespace SigmaERP.hrms.UI.auth
                     Response.Cookies.Add(setCookies);
                     ViewState["__IsCompliance__"] = "0";
                     ViewState["__CShortName__"] = "";
-                    ViewState["__CompanyId__"] = companyId.ToString();
+                    ViewState["__CompanyId__"] = userData.companyId.ToString();
 
                     Session["__dptId__"] = userData.dptId.ToString();
                     Session["__empId__"] = userData.empId.ToString();
@@ -493,8 +496,10 @@ namespace SigmaERP.hrms.UI.auth
             {
                 if (ViewState["__IsCompliance__"].ToString().Equals("True"))
                 {
+                    HttpCookie getCookies = Request.Cookies["userInfo"];
+                    string CompanyId = getCookies["__CompanyId__"].ToString();
                     checkForSeparationActiveCompliance();
-                    classes.Payroll.checkForActiveCommonIncrementCompliance(ddlCompany.SelectedValue);
+                 classes.Payroll.checkForActiveCommonIncrementCompliance(CompanyId);
                     checkForActivePromotion_SalaryIncrementCompliance();
                 }
                 else

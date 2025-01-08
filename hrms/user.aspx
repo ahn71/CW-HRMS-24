@@ -301,8 +301,8 @@
          //var rootUrl = 'https://localhost:7220';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
-         <%-- var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';--%>
-         var IsAdministrator = true;
+         var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
+         //var IsAdministrator = true;
          var getUsersUrl = rootUrl + `/api/User/users?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
          var getUsersByIdUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
