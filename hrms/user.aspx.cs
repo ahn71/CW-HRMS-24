@@ -28,8 +28,8 @@ namespace SigmaERP.hrms
                 string token = Session["__UserToken__"]?.ToString();
                 Console.WriteLine(token);
 
-                classes.commonTask.LoadBranch(ddlCompany);
-                ddlCompany.SelectedIndex = 1;
+                //classes.commonTask.LoadBranch(ddlCompany);
+                //ddlCompany.SelectedIndex = 1;
                 //ViewState["__IsCompliance__"] = "False";
             }
         }

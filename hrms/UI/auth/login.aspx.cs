@@ -306,7 +306,7 @@ namespace SigmaERP.hrms.UI.auth
                     var userData = jsonResponse.data;
                     var accessToken = jsonResponse.accessToken;
                     var permission = jsonResponse.permission;
-                    Session["__GetCompanyId__"] = companyId;
+                    Session["__GetCompanyId__"] = userData.companyId;
                     Session["__GetEmpId__"] = userData.empId;
                     Session["__GetUserId__"] = userData.userId;  
                     Session["__GetUserFullName__"] = userData.name;  
@@ -330,6 +330,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__RootUrl__"] = ApiConnector.RootUrl;
                     Session["__UserDataAccessLevel__"] = userData.dataAccessLevel.ToString();
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
+                    Session["__GetISAdministetor__"] = true;
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
@@ -342,7 +343,7 @@ namespace SigmaERP.hrms.UI.auth
                         ["__getFirstName__"] = userData.firstName.ToString(),
                         ["__getLastName__"] = userData.lastName.ToString(),
                         ["__getUserType__"] = userData.isGuestUser.ToString(),
-                        ["__CompanyId__"] = companyId, 
+                        ["__CompanyId__"] = userData.companyId, 
                         ["__CompanyName__"] = ddlCompany.SelectedItem.Text,
                         ["__CShortName__"] = "",
                         ["__DptId__"] = userData.dptId.ToString(),

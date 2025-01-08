@@ -106,7 +106,7 @@
                 <% if (IsRouteExists("salary-promotion/promotion-report"))
                     { %>
                 <div runat="server" id="divPromotionReport" class=" col-md-3" title="Employees Promotion Report">
-                    <a class="ds_Settings_Basic_Text " href="/hrms/salary/salary-promotion">
+                    <a class="ds_Settings_Basic_Text " href="/hrms/salary-promotion/promotion-report">
                         <i class="fas fa-chart-line iconStyle FsiconStyle"></i><br />
                         Promotion List Report</a>
 

@@ -26,6 +26,20 @@
                                     <div class="row">
                                      <div class="col-lg-8">
                                             <div class="row">
+                                                <div class="col-lg-4 col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="ddlCompany" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                            Company<span
+                                                                class="text-danger">*</span></label>
+                                                        <div class="support-form__input-id">
+                                                            <div class="dm-select ">
+                                                                <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control"></asp:DropDownList>
+
+                                                            </div>
+                                                            <span class="text-danger" id="ddlCompanyError"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         <div class="col-lg-4">
                                             <div class="form-group">
                                                 <label id="lblHidenRolesId" style="display: none"></label>
@@ -47,6 +61,24 @@
                                                 <span class="text-danger" id="orderingError"></span>
                                             </div>
                                         </div>
+                                                    <div class="col-lg-4" id="">
+                                            <div class="form-group">
+                                                <label for="ddlDataAccessLevel" class="color-dark fs-14 fw-500 align-center mb-10">Data Access Level <span class="text-danger">*</span></label>
+                                                <div class="support-form__input-id">
+                                                    <div class="dm-select ">
+                                                        <select name="ddlDataAccessLevel" id="ddlDataAccessLevel" class="select-search form-control">
+                                                            <option value="0">---Select---</option>
+                                                            <option value="3">All</option>
+                                                            <option value="2">Own Department</option>
+                                                            <option value="1">Only Me</option>
+                                                            <option value="4">Custom</option>
+                                                        </select>
+                                                    </div>
+                                                    <span class="text-danger" id="errorDataAccessLevel"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="col-lg-3 " style="display: flex; justify-content: space-between">
                                             <div class="LeftSite">
                                                 <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
@@ -74,23 +106,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="col-lg-4" id="">
-                                            <div class="form-group">
-                                                <label for="ddlDataAccessLevel" class="color-dark fs-14 fw-500 align-center mb-10">Data Access Level <span class="text-danger">*</span></label>
-                                                <div class="support-form__input-id">
-                                                    <div class="dm-select ">
-                                                        <select name="ddlDataAccessLevel" id="ddlDataAccessLevel" class="select-search form-control">
-                                                            <option value="0">---Select---</option>
-                                                            <option value="3">All</option>
-                                                            <option value="2">Own Department</option>
-                                                            <option value="1">Only Me</option>
-                                                            <option value="4">Custom</option>
-                                                        </select>
-                                                    </div>
-                                                    <span class="text-danger" id="errorDataAccessLevel"></span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    
                                        </div>
                                     </div>
 
@@ -158,13 +174,18 @@
         //var rootUrl = 'http://localhost:5081';
 
         var rootUrl = '<%= Session["__RootUrl__"]%>';
+        var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+       <%-- var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';--%>
+        var IsAdministrator = false;
         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
         var postRolesUrl = rootUrl + '/api/UserRoles/create';
-         var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
-         var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
-         var updateRolesUrl = rootUrl + '/api/UserRoles/update';
-         var DeleteRoleUrl = rootUrl + '/api/UserRoles/delete';
+        var getRolesUrl = `${rootUrl}/api/UserRoles/userRoles?companyId=${CompanyID}&IsAdministrator=${IsAdministrator}`;
+        var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
+        var updateRolesUrl = rootUrl + '/api/UserRoles/update';
+        var DeleteRoleUrl = rootUrl + '/api/UserRoles/delete';
         var getStpPkgFeaturesUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
+        var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
+
         var token = '<%= Session["__UserToken__"] %>';
         console.log('this is token you can use it :', token);
         //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
@@ -174,6 +195,7 @@
             //GetModule();
             GetStpPkgFeatures();
             GetRoles();
+            GetCompanys();
             //$('#ddlDataAccessLevel').change(function () {
             //    var selectedValue = $(this).val();
 
@@ -199,6 +221,8 @@
 
             }
         }
+
+
         function ClearTextBox() {
             $('#txtRole').val("");
             $('#txtOrdaring').val("");
@@ -207,7 +231,14 @@
         }
 
          function ValidateAndPostModule() {
-            var isValid = true;
+             var isValid = true;
+             if ($('#ddlCompany').val() == "0") {
+                 $('#ddlCompanyError').html("Please select a company.");
+                 $('#ddlCompany').focus(); // Set focus on the dropdown
+                 isValid = false;
+             } else {
+                 $('#ddlCompanyError').html(""); // Clear the error message
+             }
             if ($('#txtRole').val().trim() === "") {
                 $('#errortxtRole').html("Packages Name is required.");
                 $("#txtRole").focus();
@@ -243,10 +274,12 @@
                  }
              }
         }
+        
 
 
          function PostStpPkgFeatures() {
             var roleName = $('#txtRole').val();
+            var companyId = $('#ddlCompany').val();
              var ordering = parseInt($('#txtOrdaring').val());
             var dataAccessLevel = parseInt($('#ddlDataAccessLevel').val());
             var isActive = $('#chkIsActive').is(':checked');
@@ -255,7 +288,8 @@
             var jsonString = JSON.stringify(selectedPermissionIDs);
             console.log(jsonString);
 
-            var postData = {
+             var postData = {
+                companyId:companyId,
                 UserRole: roleName,
                 dataAccessLevel: dataAccessLevel,
                 Permissions: jsonString,
@@ -292,6 +326,7 @@
          function updateRoles() {
                 var roleId = $('#lblHidenRolesId').val();
                 var txtRole = $('#txtRole').val();
+                var companyId = $('#ddlCompany').val();
                 var dataAccessLevel = parseInt($('#ddlDataAccessLevel').val());
 
                 var ordering = parseInt($('#txtOrdaring').val());
@@ -303,6 +338,7 @@
 
                 var updateData = {
                     UserRole: txtRole,
+                    companyId:companyId,
                     dataAccessLevel: dataAccessLevel,
                     Permissions: jsonString,
                     Ordering: ordering,
@@ -439,7 +475,8 @@
 
             // Step 5: Define the columns for the table, including custom rendering logic for some columns
             const columns = [
-                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
+                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+               { "name": "companyName", "title": "Company Name", "className": "userDatatable-content" },
                 { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
                 { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
                 { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
@@ -596,6 +633,8 @@
                     $('#lblHidenRolesId').val(data.userRoleId);
                     $('#txtRole').val(data.userRoleName);
                     $('select[name="ddlDataAccessLevel"]').val(data.dataAccessLevel).change();
+                    //$('select[name="ddlCompany"]').val(data.companyId).change();
+                    $('#ddlCompany').val(data.companyId).change();
 
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
@@ -622,7 +661,7 @@
                             'plugins': ['checkbox', 'wholerow']
                         }).on('ready.jstree', function (e, data) {
                             selectedPermissionIDs.forEach(function (id) {
-                                console.log("id.toString()", id.toString())
+                                //console.log("id.toString()", id.toString())
                                 data.instance.select_node(id.toString());
                             });
                         }).on('changed.jstree', function (e, data) {
@@ -634,9 +673,9 @@
                                 if (node && node.children.length === 0) {
                                     selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
                                 }
-                                console.log('node:', node);
+                                //console.log('node:', node);
                             }
-                            console.log('petch Child Node IDs:', selectedPermissionIDsUpdate)
+                            //console.log('petch Child Node IDs:', selectedPermissionIDsUpdate)
                         });
                     } else {
                         console.error('responseData.features is not an array:', responseData.features);
@@ -677,7 +716,7 @@
     </script>
 
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
-
+    <script src="/hrms/assets/theme_assets/js/loadCompany.js"></script>
    <script src="/hrms/assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>

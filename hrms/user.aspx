@@ -301,8 +301,10 @@
          //var rootUrl = 'https://localhost:7220';
          var rootUrl = '<%= Session["__RootUrl__"]%>';
          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
-
-         var getUsersUrl = rootUrl + '/api/User/users';
+         <%-- var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';--%>
+         var IsAdministrator = true;
+         var getUsersUrl = rootUrl + `/api/User/users?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
+         var getUsersByIdUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesWithGuestUrl = rootUrl + '/api/UserRoles/userRolesWithGuestUser';
 
@@ -316,7 +318,7 @@
          var DeleteUserUrl = rootUrl + '/api/User/users/delete';
          var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
          var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
-
+         var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
 
 
          //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
@@ -328,6 +330,7 @@
              GetUsers();
              GetStpPkgFeatures();
              GetRolesFeatures();
+             GetCompanys();
              $('#chkIsGetUser').change(function () {
                  toggleReferenceEmp();
              });
@@ -697,9 +700,10 @@
              });
 
              const columns = [
-                 { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, // Serial number column
-                 { "name": "userImage", "title": "User", "className": "userDatatable-content" }, // Combined user image, name, and role column
-                 { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
+                 { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                 { "name": "userImage", "title": "User", "className": "userDatatable-content" },
+                  { "name": "companyName", "title": "Company", "className": "userDatatable-content" },
+                 { "name": "dataAccessLevel", "title": "Access Level", "className": "userDatatable-content" },
                  { "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isApprovingAuthority", "title": "Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -1394,7 +1398,7 @@
 
          function FetchDataForEdit(moduleId) {
              // Make API call to fetch user data based on moduleId
-             ApiCallById(getUsersUrl, token, moduleId)
+             ApiCallById(getUsersByIdUrl, token, moduleId)
                  .then(function (responseData) {
                      var data = responseData.data;
                      IsEditData = true; // Set edit mode
@@ -1608,7 +1612,7 @@
         
     </style>
 <%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
-
+    <script src="/hrms/assets/theme_assets/js/loadCompany.js"></script>
     <script src="/hrms/assets/theme_assets/js/apiHelper.js"></script>
 
 </asp:Content>

@@ -307,17 +307,17 @@
                              <%--<asp:ButtonField ButtonType="Button" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="btnForAlterInGV"    HeaderText="Edit" Text="Edit" CommandName="Alter" />--%>
                                                               <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                         <HeaderTemplate>
-                                            Package Setup 
+                                           Setup 
                                         </HeaderTemplate>
                                         <ItemTemplate>
-                                            <asp:Button ID="btnSrtupPackages" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Package Setup" CommandName="Setup"
+                                            <asp:Button ID="btnSrtupPackages" runat="server"  ControlStyle-CssClass="btn btn-primary"   Text="Package Set" style="margin: 5px;" CommandName="Setup"
                                                
                                                 CommandArgument='<%# Container.DataItemIndex %>' />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                         <HeaderTemplate>
-                                            Update
+                                            Action
                                         </HeaderTemplate>
                                         <ItemTemplate>
                                            <%-- <asp:Button ID="btnAlter" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Edit" CommandName="Alter"

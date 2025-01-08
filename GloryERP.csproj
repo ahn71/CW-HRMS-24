@@ -1124,6 +1124,7 @@
     <Content Include="hrd\SpecialTimeTable.aspx" />
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
+    <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
     <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
