@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="user.aspx.cs" Inherits="SigmaERP.hrms.user" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="user.aspx.cs" Inherits="SigmaERP.hrms.user" EnableEventValidation="false" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -306,7 +306,7 @@
          var getUsersUrl = rootUrl + `/api/User/users?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
          var getUsersByIdUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
-         var getRolesWithGuestUrl = rootUrl + '/api/UserRoles/userRolesWithGuestUser';
+         var getRolesWithGuestUrl = rootUrl + `/api/UserRoles/userRolesWithGuestUser`;
 
          var empUrl = '/api/Employee/EmployeeName';
          var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
@@ -320,12 +320,10 @@
          var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
          var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
 
-
          //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
          $(document).ready(function () {
              IsGuestUser();
-             GetRoles(false);
              GetEmployee();
              GetUsers();
              GetStpPkgFeatures();
@@ -334,7 +332,16 @@
              $('#chkIsGetUser').change(function () {
                  toggleReferenceEmp();
              });
+             GetRoles(false, CompanyID);
 
+             $('#ddlCompany').change(function () {
+                 var selectedCompanyId = $(this).val(); // Get selected value
+                 if (selectedCompanyId) {
+                     GetRoles(false, selectedCompanyId); // Pass to GetRoles
+                 } else {
+                     console.warn("No company selected.");
+                 }
+             });
 
          });
          function toggleReferenceEmp() {
@@ -467,27 +474,21 @@
                      } catch (error) {
                          console.error("An error occurred:", error);  // Handle any errors
                      } ; 
-
-
-
                  }
              }
          }
 
-
-
-
-
-         function IsGuestUser () {
-                $('#chkIsGetUser').change(function() {
-                if ($(this).is(':checked')) {
-                    $('#FirstName, #LastName').show();
-                    GetRoles(true);
-                } else {
-                    $('#FirstName, #LastName').hide();
-                    GetRoles(false);
-                }
-            });
+         function IsGuestUser() {
+             $('#chkIsGetUser').change(function () {
+                 var CompanyId = $('#ddlCompany').val(); // Get the latest value dynamically
+                 if ($(this).is(':checked')) {
+                     $('#FirstName, #LastName').show();
+                     GetRoles(true, CompanyId);
+                 } else {
+                     $('#FirstName, #LastName').hide();
+                     GetRoles(false, CompanyId);
+                 }
+             });
          }
 
          function GetRolesFeatures() {
@@ -546,9 +547,9 @@
          //        });
          //}
 
-         function GetRoles(IsGuestUser) {
+         function GetRoles(IsGuestUser,companyId) {
              return new Promise((resolve, reject) => {  // Ensure GetRoles returns a promise
-                 ApiCallByGuestUser(getRolesWithGuestUrl, token, IsGuestUser)
+                 ApiCallByGuestUser(getRolesWithGuestUrl, token, IsGuestUser,companyId)
                      .then(function (response) {
                          if (response.statusCode === 200) {
                              var responseData = response.data;
@@ -578,6 +579,7 @@
                  option.textContent = item.roleName; // Use roleName from the response
                  dropdown.appendChild(option);
              });
+            
          }
          function GetEmployee() {
              ApiCall(getEmployeeUrl, token)

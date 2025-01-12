@@ -59,7 +59,7 @@
         </Triggers>
 
          <ContentTemplate>
-                 <main class="main-content">
+      <main class="main-content">
       <div class="Dashbord">
          <div class="crm mb-25">
             <div class="container-fulid">

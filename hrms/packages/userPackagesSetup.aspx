@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userPackagesSetup.aspx.cs" Inherits="SigmaERP.hrms.userPackagesSetup" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userPackagesSetup.aspx.cs" Inherits="SigmaERP.hrms.userPackagesSetup" EnableEventValidation="false"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -151,25 +151,21 @@
                   </div>
                </div>
             </div>
-              
             </div>
         </div>
-
-
     </main>
-
-
-
     <script>
         //var rootUrl = 'http://localhost:5081';
         var rootUrl = '<%= Session["__RootUrl__"]%>';
+          var CompanyID = '<%= Session["__GetCompanyId__"]%>';
         var GetByIdPackagesUrl = rootUrl + '/api/UserPackages/packages';
+<%--        var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';--%>
+        var IsAdministrator = true;
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetPackageSetupsUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
-        var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';//working
-        var GetDdlCompanyUrl = rootUrl + '/api/Company/GetDropdownCompanies';
-
+        var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';
+         var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
         var DeleteUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/delete';
         var token = '<%= Session["__UserToken__"] %>';

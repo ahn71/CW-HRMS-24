@@ -1713,6 +1713,10 @@
     <Content Include="hrms\Leave\leaveYearlySummaryReport.aspx" />
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\packages\modules.aspx" />
+    <Content Include="hrms\settings\companySetup.aspx" />
+    <Content Include="hrms\settings\DesignationSetup.aspx" />
+    <Content Include="hrms\settings\gradeSetup.aspx" />
+    <Content Include="hrms\settings\shiftSetup.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
     <Content Include="hrms\UI\access\UserCreate.aspx" />
@@ -3716,6 +3720,34 @@
     <Compile Include="hrms\repo\implementations\ZkBiotime.cs" />
     <Compile Include="hrms\repo\repositories\IDevice.cs" />
     <Compile Include="hrms\repo\services\PunchService.cs" />
+    <Compile Include="hrms\settings\companySetup.aspx.cs">
+      <DependentUpon>companySetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\companySetup.aspx.designer.cs">
+      <DependentUpon>companySetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\DesignationSetup.aspx.cs">
+      <DependentUpon>DesignationSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\DesignationSetup.aspx.designer.cs">
+      <DependentUpon>DesignationSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\gradeSetup.aspx.cs">
+      <DependentUpon>gradeSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\gradeSetup.aspx.designer.cs">
+      <DependentUpon>gradeSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\shiftSetup.aspx.cs">
+      <DependentUpon>shiftSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\shiftSetup.aspx.designer.cs">
+      <DependentUpon>shiftSetup.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

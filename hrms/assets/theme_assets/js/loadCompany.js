@@ -35,6 +35,5 @@
                 option.textContent = item.text;
                 dropdown.appendChild(option);
             });
-         
         }
 

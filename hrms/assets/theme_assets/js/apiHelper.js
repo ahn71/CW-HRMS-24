@@ -156,8 +156,14 @@ function ApiCallByCompId(url, token, id, companyID) {
     });
 }
 
+function ApiCallByGuestUser(url, token, isGuestUser, companyId) {
+    if (!url) {
+        return Promise.reject("URL is required.");
+    }
+    if (!token) {
+        return Promise.reject("Authorization token is required.");
+    }
 
-function ApiCallByGuestUser(url, token, isGuestUser) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             url: url, // Base API URL
@@ -167,14 +173,19 @@ function ApiCallByGuestUser(url, token, isGuestUser) {
                 'Authorization': 'Bearer ' + token
             },
             data: {
-                IsGuestUser: isGuestUser // Pass only the IsGuestUser parameter
+                IsGuestUser: isGuestUser,
+                companyId: companyId
             },
             success: function (data) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
                 console.error('Error occurred while fetching data:', status, error);
-                reject(error);
+                reject({
+                    status: xhr.status,
+                    statusText: xhr.statusText,
+                    response: xhr.responseText || error
+                });
             }
         });
     });
