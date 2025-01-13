@@ -22,15 +22,6 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.ScriptManager ScriptManager1;
         
         /// <summary>
-        /// hdfID control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdfID;
-        
-        /// <summary>
         /// upSave control.
         /// </summary>
         /// <remarks>
@@ -76,15 +67,6 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divMsg;
         
         /// <summary>
-        /// hdLeaveId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdLeaveId;
-        
-        /// <summary>
         /// up1 control.
         /// </summary>
         /// <remarks>
@@ -92,6 +74,15 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel up1;
+        
+        /// <summary>
+        /// hdLeaveId control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdLeaveId;
         
         /// <summary>
         /// txtCompanyId control.
@@ -256,6 +247,51 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.WebControls.DropDownList ddlCardNoDigit;
         
         /// <summary>
+        /// ddlWeekend control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlWeekend;
+        
+        /// <summary>
+        /// ddlCmpStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCmpStatus;
+        
+        /// <summary>
+        /// ddlMachine control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlMachine;
+        
+        /// <summary>
+        /// txtCompanyEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCompanyEmail;
+        
+        /// <summary>
+        /// txtComments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtComments;
+        
+        /// <summary>
         /// rblCardNoType control.
         /// </summary>
         /// <remarks>
@@ -292,42 +328,6 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.WebControls.TextBox txtStartCardNo;
         
         /// <summary>
-        /// ddlWeekend control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlWeekend;
-        
-        /// <summary>
-        /// ddlCmpStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCmpStatus;
-        
-        /// <summary>
-        /// ddlMachine control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlMachine;
-        
-        /// <summary>
-        /// txtComments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtComments;
-        
-        /// <summary>
         /// imgProfile control.
         /// </summary>
         /// <remarks>
@@ -337,13 +337,13 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.WebControls.Image imgProfile;
         
         /// <summary>
-        /// FileUpload1 control.
+        /// FileUpload2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
+        protected global::System.Web.UI.WebControls.FileUpload FileUpload2;
         
         /// <summary>
         /// btnSave control.
@@ -353,6 +353,15 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSave;
+        
+        /// <summary>
+        /// UpdatePanel2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel2;
         
         /// <summary>
         /// gvCompanyInfo control.

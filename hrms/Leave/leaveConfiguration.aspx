@@ -174,6 +174,12 @@
                          <asp:GridView ID="gvLeaveConfig" runat="server" DataKeyNames="LeaveId,CompanyId" AllowPaging="True" AutoGenerateColumns="False" Width="100%" HeaderStyle-ForeColor="White" OnRowCommand="gvLeaveConfig_RowCommand" OnRowDeleting="gvLeaveConfig_RowDeleting" OnRowDataBound="gvLeaveConfig_RowDataBound" CssClass="gridview-bordered">
                                 
                                 <Columns>
+                                    <asp:TemplateField HeaderText="SL">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                        <ItemStyle HorizontalAlign="Center" />
+                                    </asp:TemplateField>
                                     <asp:BoundField DataField="LeaveId" HeaderText="LeaveId" Visible="false" />
 
                                     <asp:BoundField DataField="LeaveName" HeaderText="Name"  />

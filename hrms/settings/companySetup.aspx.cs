@@ -128,7 +128,7 @@ namespace SigmaERP.hrms.settings
             try
             {
                 DataTable dt = new DataTable();
-                sqlDB.fillDataTable("Select ID, CompanyId,CompanyType, CompanyName,HeadOfficeId, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName,RegistrationId,EstablishmentId from HRD_CompanyInfo where ID=" + ID + " ", dt);
+                sqlDB.fillDataTable("Select ID, CompanyId,CompanyType, CompanyName,HeadOfficeId, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName,RegistrationId,EstablishmentId,Status,Email from HRD_CompanyInfo where ID=" + ID + " ", dt);
                 if (dt.Rows.Count == 0)
                 {
                     if (upSave.Value == "0")
@@ -138,7 +138,8 @@ namespace SigmaERP.hrms.settings
                     }
                     return;
                 }
-                hdfID.Value = dt.Rows[0]["ID"].ToString();
+                ViewState["ID"] = dt.Rows[0]["ID"].ToString();
+
                 txtCompanyId.Text = dt.Rows[0]["CompanyId"].ToString();
                 // rblOfficeType.SelectedValue = dt.Rows[0]["CompanyType"].ToString();
                 if (dt.Rows[0]["CompanyType"].ToString() != "True") //for Branch
@@ -165,6 +166,8 @@ namespace SigmaERP.hrms.settings
                 imgProfile.ImageUrl = url;
                 txtShortName.Text = dt.Rows[0]["ShortName"].ToString();
                 ddlWeekend.Text = dt.Rows[0]["Weekend"].ToString();
+                ddlCmpStatus.SelectedValue = dt.Rows[0]["Status"].ToString();
+                txtCompanyEmail.Text = dt.Rows[0]["Email"].ToString();
                 ddlCardNoDigit.SelectedValue = dt.Rows[0]["CardNoDigits"].ToString();
                 txtStartCardNo.Text = dt.Rows[0]["StartCardNo"].ToString();
                 ddlMachine.SelectedValue = dt.Rows[0]["AttMachineName"].ToString();
@@ -238,13 +241,11 @@ namespace SigmaERP.hrms.settings
                 }
                 else
                 {
-                    sqlDB.fillDataTable(@"SELECT ID, CompanyId, CompanyName,  CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax,  DefaultCurrency,  Btype.BTypeName,   MultipleBranch,   Comments,  CompanyLogo,StartCardNo,cmptype.ComType,AttMachineName,Status  FROM 
+                    sqlDB.fillDataTable(@"SELECT ID, CompanyId, CompanyName,  CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax,  DefaultCurrency,  Btype.BTypeName,   MultipleBranch,   Comments,  CompanyLogo,StartCardNo,cmptype.ComType,AttMachineName,Status,Email  FROM 
                      Hrd_CompanyInfo AS cmpi 
-                     INNER JOIN 
-                     HRD_CompanyType AS cmptype ON cmpi.CompanyType = cmptype.ComTypeId 
-                     INNER JOIN 
-    HRD_BusinessType AS Btype ON cmpi.BusinessType = Btype.BId;
-", dt);
+                     LEFT JOIN 
+                     HRD_CompanyType AS cmptype ON cmpi.CompanyType = cmptype.ComTypeId LEFT JOIN 
+                     HRD_BusinessType AS Btype ON cmpi.BusinessType = Btype.BId", dt);
 
                     //sqlDB.fillDataTable("Select ID, CompanyId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BTypeName,  MultipleBranch,  Comments, CompanyLogo,StartCardNo,ComType,AttMachineName from v_HRD_CompanyInfo where CompanyId='" + ViewState["__CompanyId__"].ToString() + "' ", dt);
 
@@ -258,19 +259,19 @@ namespace SigmaERP.hrms.settings
                 lblMessage.InnerText = "error->" + ex.Message;
             }
         }
-
         private Boolean saveCompanyInfo()
         {
             try
             {
-                System.Data.SqlTypes.SqlDateTime getDate;
-                getDate = SqlDateTime.Null;
-                SqlCommand cmd = new SqlCommand("Insert into  HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,Status,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName,RegistrationId,EstablishmentId)  values (@CompanyId,@CompanyType,@HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType,  @MultipleBranch, @Comments, @CompanyLogo,@StartCardNo,@Weekend, @Status,@ShortName,@CardNoType,@FlatCode,@CardNoDigits,@AttMachineName,@RegistrationId,@EstablishmentId) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand(
+                    "INSERT INTO HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo, StartCardNo, Weekend, Status, ShortName, CardNoType, FlatCode, CardNoDigits, AttMachineName, RegistrationId, EstablishmentId) " +
+                    "VALUES (@CompanyId, @CompanyType, @HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType, @MultipleBranch, @Comments, @CompanyLogo, @StartCardNo, @Weekend, @Status, @ShortName, @CardNoType, @FlatCode, @CardNoDigits, @AttMachineName, @RegistrationId, @EstablishmentId)",
+                    sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
                 cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
-                HeadOfficeId = (rblOfficeType.SelectedValue != "0") ? txtCompanyId.Text.Trim() : ddlHeadOffice.SelectedValue;
-                cmd.Parameters.AddWithValue("@HeadOfficeId", HeadOfficeId.ToString());
+                string HeadOfficeId = (rblOfficeType.SelectedValue != "0") ? txtCompanyId.Text.Trim() : ddlHeadOffice.SelectedValue;
+                cmd.Parameters.AddWithValue("@HeadOfficeId", HeadOfficeId);
                 cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
                 cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
                 cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
@@ -280,39 +281,21 @@ namespace SigmaERP.hrms.settings
                 cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
                 cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.SelectedItem.Text);
                 cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());
-                if (ddlMultipleBranch.Text == "Yes")
-                {
-                    cmd.Parameters.AddWithValue("@MultipleBranch", 1);
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@MultipleBranch", 0);
-                }
+                cmd.Parameters.AddWithValue("@MultipleBranch", ddlMultipleBranch.Text == "Yes" ? 1 : 0);
                 cmd.Parameters.AddWithValue("@Comments", txtComments.Text.Trim());
-                if (FileUpload1.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@CompanyLogo", "logo" + txtCompanyId.Text.Trim() + ".PNG");
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@CompanyLogo", "");
-                }
+                cmd.Parameters.AddWithValue("@CompanyLogo", FileUpload2.HasFile ? "logo" + txtCompanyId.Text.Trim() + ".PNG" : "");
                 cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text);
                 cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text);
                 cmd.Parameters.AddWithValue("@Status", ddlCmpStatus.SelectedValue);
                 cmd.Parameters.AddWithValue("@ShortName", txtShortName.Text.ToUpper());
                 cmd.Parameters.AddWithValue("@CardNoType", rblCardNoType.SelectedValue);
-                if (rblCardNoType.SelectedValue == "0")
-                    cmd.Parameters.AddWithValue("@FlatCode", txtFladCode.Text.Trim());
-                else cmd.Parameters.AddWithValue("@FlatCode", 0);
+                cmd.Parameters.AddWithValue("@FlatCode", rblCardNoType.SelectedValue == "0" ? txtFladCode.Text.Trim() : "0");
                 cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
                 cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
                 cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
                 cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
 
-
-
-                int result = (int)cmd.ExecuteNonQuery();
+                int result = cmd.ExecuteNonQuery();
                 if (result > 0)
                 {
                     saveImg();
@@ -325,9 +308,6 @@ namespace SigmaERP.hrms.settings
                     divMsg.InnerText = "Unable to save";
                     return false;
                 }
-
-
-
             }
             catch (Exception ex)
             {
@@ -335,13 +315,91 @@ namespace SigmaERP.hrms.settings
                 return false;
             }
         }
+
+        //private Boolean saveCompanyInfo()
+        //{
+        //    try
+        //    {
+        //        System.Data.SqlTypes.SqlDateTime getDate;
+        //        getDate = SqlDateTime.Null;
+        //        SqlCommand cmd = new SqlCommand("Insert into  HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo,StartCardNo,Weekend,Status,ShortName,CardNoType,FlatCode,CardNoDigits,AttMachineName,RegistrationId,EstablishmentId)  values (@CompanyId,@CompanyType,@HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType,  @MultipleBranch, @Comments, @CompanyLogo,@StartCardNo,@Weekend, @Status,@Email ,@ShortName,@CardNoType,@FlatCode,@CardNoDigits,@AttMachineName,@RegistrationId,@EstablishmentId) ", sqlDB.connection);
+
+        //        cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
+        //        HeadOfficeId = (rblOfficeType.SelectedValue != "0") ? txtCompanyId.Text.Trim() : ddlHeadOffice.SelectedValue;
+        //        cmd.Parameters.AddWithValue("@HeadOfficeId", HeadOfficeId.ToString());
+        //        cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@AddressBangla", txtAddressBangla.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@Country", txtCountry.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@Telephone", txtTelephone.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.SelectedItem.Text);
+        //        cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());
+        //        if (ddlMultipleBranch.Text == "Yes")
+        //        {
+        //            cmd.Parameters.AddWithValue("@MultipleBranch", 1);
+        //        }
+        //        else
+        //        {
+        //            cmd.Parameters.AddWithValue("@MultipleBranch", 0);
+        //        }
+        //        cmd.Parameters.AddWithValue("@Comments", txtComments.Text.Trim());
+        //        if (FileUpload1.HasFile == true)
+        //        {
+        //            cmd.Parameters.AddWithValue("@CompanyLogo", "logo" + txtCompanyId.Text.Trim() + ".PNG");
+        //        }
+        //        else
+        //        {
+        //            cmd.Parameters.AddWithValue("@CompanyLogo", "");
+        //        }
+        //        cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text);
+        //        cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text);
+        //        cmd.Parameters.AddWithValue("@Status", ddlCmpStatus.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@Email", txtCompanyEmail.Text);
+        //        cmd.Parameters.AddWithValue("@ShortName", txtShortName.Text.ToUpper());
+        //        cmd.Parameters.AddWithValue("@CardNoType", rblCardNoType.SelectedValue);
+        //        if (rblCardNoType.SelectedValue == "0")
+        //            cmd.Parameters.AddWithValue("@FlatCode", txtFladCode.Text.Trim());
+        //        else cmd.Parameters.AddWithValue("@FlatCode", 0);
+        //        cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
+        //        cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
+
+
+
+        //        int result = (int)cmd.ExecuteNonQuery();
+        //        if (result > 0)
+        //        {
+        //            saveImg();
+        //            AllClear();
+        //            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "Success();", true);
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            divMsg.InnerText = "Unable to save";
+        //            return false;
+        //        }
+
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        divMsg.InnerText = "error->" + ex.Message;
+        //        return false;
+        //    }
+        //}
         private void saveImg()
         {
             try
             {
 
                 string filename = "logo" + txtCompanyId.Text.Trim() + ".PNG";
-                FileUpload1.SaveAs(Server.MapPath("/EmployeeImages/CompanyLogo/" + filename));
+                FileUpload2.SaveAs(Server.MapPath("/EmployeeImages/CompanyLogo/" + filename));
 
 
 
@@ -352,221 +410,98 @@ namespace SigmaERP.hrms.settings
         {
             try
             {
-                System.Data.SqlTypes.SqlDateTime getDate;
-                getDate = SqlDateTime.Null;
-                if (FileUpload1.HasFile == true)
+                string logoFileName = string.Empty;
+                if (FileUpload2.HasFile)
                 {
-                    SqlCommand cmd = new SqlCommand(" update HRD_CompanyInfo  Set CompanyId=@CompanyId, CompanyType=@CompanyType, HeadOfficeId=@HeadOfficeId, CompanyName=@CompanyName, CompanyNameBangla=@CompanyNameBangla, Address=@Address, AddressBangla=@AddressBangla, Country=@Country, Telephone=@Telephone, Fax=@Fax, DefaultCurrency=@DefaultCurrency, BusinessType=@BusinessType, MultipleBranch=@MultipleBranch, Comments=@Comments, CompanyLogo=@CompanyLogo,StartCardNo=@StartCardNo,Weekend=@Weekend,Status=@Status,ShortName=@ShortName,CardNoType=@CardNoType,FlatCode=@FlatCode,CardNoDigits=@CardNoDigits,AttMachineName=@AttMachineName,RegistrationId=@RegistrationId,EstablishmentId=@EstablishmentId where ID=@ID ", sqlDB.connection);
-                    cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
-                    cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
-                    HeadOfficeId = (rblOfficeType.SelectedValue != "0") ? txtCompanyId.Text.Trim() : ddlHeadOffice.SelectedValue;
-                    cmd.Parameters.AddWithValue("@HeadOfficeId", HeadOfficeId.ToString());
-                    cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
-                    cmd.Parameters.AddWithValue("@AddressBangla", txtAddressBangla.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Country", txtCountry.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Telephone", txtTelephone.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.SelectedItem.Text);
-                    cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());
-                    if (ddlMultipleBranch.Text == "Yes")
+                    logoFileName = "logo" + txtCompanyId.Text.Trim() + ".PNG";
+                    string savePath = Server.MapPath("/EmployeeImages/CompanyLogo/") + logoFileName;
+                    if (File.Exists(savePath))
                     {
-                        cmd.Parameters.AddWithValue("@MultipleBranch", 1);
+                        File.Delete(savePath);
                     }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@MultipleBranch", 0);
-                    }
-                    cmd.Parameters.AddWithValue("@Comments", txtComments.Text.Trim());
-                    if (FileUpload1.HasFile == true)
-                    {
-                        cmd.Parameters.AddWithValue("@CompanyLogo", "logo" + txtCompanyId.Text.Trim() + ".PNG");
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@CompanyLogo", "");
-                    }
-                    cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text);
-                    cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text);
-                    cmd.Parameters.AddWithValue("@Status", ddlCmpStatus.SelectedValue);
-                    cmd.Parameters.AddWithValue("@ShortName", txtShortName.Text.ToUpper());
-                    cmd.Parameters.AddWithValue("@CardNoType", rblCardNoType.SelectedValue);
-                    if (rblCardNoType.SelectedValue == "0")
-                        cmd.Parameters.AddWithValue("@FlatCode", txtFladCode.Text.Trim());
-                    else cmd.Parameters.AddWithValue("@FlatCode", 0);
-
-                    cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
-                    cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
-                    cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
-                    cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
-
-                    /* cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
-                     cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
-                     cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
-                     cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
-                     cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
-                     cmd.Parameters.AddWithValue("@AddressBangla", txtAddressBangla.Text.Trim());
-                     cmd.Parameters.AddWithValue("@Country", txtCountry.Text.Trim());
-                     cmd.Parameters.AddWithValue("@Telephone", txtTelephone.Text.Trim());
-                     cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
-                     cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.Text.Trim());
-                     cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());
-                     //if (txtFinancialYearForm.Text.ToString().Length == 0)
-                     //{
-                     //    cmd.Parameters.AddWithValue("@FinancialYearForm", getDate);
-                     //}
-                     //else
-                     //{
-                     //    cmd.Parameters.AddWithValue("@FinancialYearForm", convertDateTime.getCertainCulture(txtFinancialYearForm.Text.Trim()));
-                     //}
-                     //if (txtFinancialYearTo.Text.ToString().Length == 0)
-                     //{
-                     //    cmd.Parameters.AddWithValue("@FinancialYearTo", getDate);
-                     //}
-                     //else cmd.Parameters.AddWithValue("@FinancialYearTo", convertDateTime.getCertainCulture(txtFinancialYearTo.Text.Trim()));
-                     if (ddlMultipleBranch.Text == "Yes")
-                     {
-                         cmd.Parameters.AddWithValue("@MultipleBranch", 1);
-                     }
-                     else
-                     {
-                         cmd.Parameters.AddWithValue("@MultipleBranch", 0);
-                     }
-                     //if (ddlUserAccessControl.Text == "Yes")
-                     //{
-                     //    cmd.Parameters.AddWithValue("@UserAccessControl", 1);
-                     //}
-                     //else
-                     //{
-                     //    cmd.Parameters.AddWithValue("@UserAccessControl", 0);
-                     //}
-                     cmd.Parameters.AddWithValue("@Comments", txtComments.Text.Trim());
-
-                     cmd.Parameters.AddWithValue("@CompanyLogo", FileUpload1.FileName);
-                     cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text);
-                     cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text);
-                     cmd.Parameters.AddWithValue("@ShortName",txtShortName.Text);
-                     */
-
-                    int result = (int)cmd.ExecuteNonQuery();
-
-                    if (result > 0)
-                    {
-                        if (imageName != "")
-                        {
-                            System.IO.File.Delete(Request.PhysicalApplicationPath + "/EmployeeImages/CompanyLogo/" + "logo" + txtCompanyId.Text.Trim() + ".PNG");
-                        }
-                        //string filename = Path.GetFileName(FileUpload1.PostedFile.FileName)+txtCompanyId.Text.Trim();
-                        string filename = "logo" + txtCompanyId.Text.Trim() + ".PNG";
-                        FileUpload1.SaveAs(Server.MapPath("/EmployeeImages/CompanyLogo/" + filename));
-
-                        //string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
-                        //FileUpload1.SaveAs(Server.MapPath("/EmployeeImages/CompanyLogo/" + filename));    //Save images into Images folder
-                        loadCompanyInfoInfo();
-                        AllClear();
-
-                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "updSuccess();", true);
-                        return true;
-                    }
-                    else
-                    {
-                        lblMessage.InnerText = "error->Unable to save";
-                        return false;
-                    }
-
+                    FileUpload2.SaveAs(savePath);
                 }
-                else if (FileUpload1.HasFile == false)
+                else
                 {
-                    SqlCommand cmd = new SqlCommand("  update HRD_CompanyInfo  Set CompanyId=@CompanyId, CompanyType=@CompanyType, HeadOfficeId=@HeadOfficeId, CompanyName=@CompanyName, CompanyNameBangla=@CompanyNameBangla, Address=@Address, AddressBangla=@AddressBangla, Country=@Country, Telephone=@Telephone, Fax=@Fax, DefaultCurrency=@DefaultCurrency, BusinessType=@BusinessType, MultipleBranch=@MultipleBranch, Comments=@Comments, StartCardNo=@StartCardNo,Weekend=@Weekend,Status=@Status,ShortName=@ShortName,CardNoType=@CardNoType,FlatCode=@FlatCode,CardNoDigits=@CardNoDigits,AttMachineName=@AttMachineName,RegistrationId=@RegistrationId,EstablishmentId=@EstablishmentId where ID=@ID  ", sqlDB.connection);
-                    cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
-                    cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
-                    HeadOfficeId = (rblOfficeType.SelectedValue != "0") ? txtCompanyId.Text.Trim() : ddlHeadOffice.SelectedValue;
-                    cmd.Parameters.AddWithValue("@HeadOfficeId", HeadOfficeId.ToString());
-                    cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
-                    cmd.Parameters.AddWithValue("@AddressBangla", txtAddressBangla.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Country", txtCountry.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Telephone", txtTelephone.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.SelectedItem.Text);
-                    cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());
-
-
-                    /*  cmd.Parameters.AddWithValue("@ID", hdfID.Value.ToString());
-                      cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
-                      cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
-                      cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
-                      cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
-                      cmd.Parameters.AddWithValue("@AddressBangla", txtAddressBangla.Text.Trim());
-                      cmd.Parameters.AddWithValue("@Country", txtCountry.Text.Trim());
-                      cmd.Parameters.AddWithValue("@Telephone", txtTelephone.Text.Trim());
-                      cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
-                      cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.SelectedItem.Text.Trim());
-                      cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());  */
-                    //if (txtFinancialYearForm.Text.ToString().Length == 0)
-                    //{
-                    //    cmd.Parameters.AddWithValue("@FinancialYearForm", getDate);
-                    //}
-                    //else
-                    //{
-                    //    cmd.Parameters.AddWithValue("@FinancialYearForm", convertDateTime.getCertainCulture(txtFinancialYearForm.Text.Trim()));
-                    //}
-                    //if (txtFinancialYearTo.Text.ToString().Length == 0)
-                    //{
-                    //    cmd.Parameters.AddWithValue("@FinancialYearTo", getDate);
-                    //}
-                    //else cmd.Parameters.AddWithValue("@FinancialYearTo", convertDateTime.getCertainCulture(txtFinancialYearTo.Text.Trim()));
-                    if (ddlMultipleBranch.Text == "Yes")
-                    {
-                        cmd.Parameters.AddWithValue("@MultipleBranch", 1);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@MultipleBranch", 0);
-                    }
-                    //if (ddlUserAccessControl.Text == "Yes")
-                    //{
-                    //    cmd.Parameters.AddWithValue("@UserAccessControl", 1);
-                    //}
-                    //else
-                    //{
-                    //    cmd.Parameters.AddWithValue("@UserAccessControl", 0);
-                    //}
-                    cmd.Parameters.AddWithValue("@Comments", txtComments.Text.Trim());
-                    cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text);
-                    cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text);
-                    cmd.Parameters.AddWithValue("@Status", ddlCmpStatus.SelectedValue);
-                    cmd.Parameters.AddWithValue("@ShortName", txtShortName.Text.ToUpper());
-
-                    cmd.Parameters.AddWithValue("@CardNoType", rblCardNoType.SelectedValue);
-                    if (rblCardNoType.SelectedValue == "0")
-                        cmd.Parameters.AddWithValue("@FlatCode", txtFladCode.Text.Trim());
-                    else cmd.Parameters.AddWithValue("@FlatCode", 0);
-                    cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
-                    cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
-                    cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
-                    cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
-                    int result = (int)cmd.ExecuteNonQuery();
-
-                    if (result > 0)
-                    {
-                        loadCompanyInfoInfo();
-                        AllClear();
-                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "updSuccess();", true);
-                        return true;
-                    }
-                    else
-                    {
-                        divMsg.InnerText = "error->Unable to save";
-                        return false;
-                    }
+                    logoFileName = GetExistingLogoFileName(txtCompanyId.Text.Trim());
                 }
-                return true;
 
+
+                SqlCommand cmd = new SqlCommand(@"
+            UPDATE HRD_CompanyInfo 
+            SET 
+                CompanyId = @CompanyId,
+                CompanyType = @CompanyType,
+                HeadOfficeId = @HeadOfficeId,
+                CompanyName = @CompanyName,
+                CompanyNameBangla = @CompanyNameBangla,
+                Address = @Address,
+                AddressBangla = @AddressBangla,
+                Country = @Country,
+                Telephone = @Telephone,
+                Fax = @Fax,
+                DefaultCurrency = @DefaultCurrency,
+                BusinessType = @BusinessType,
+                MultipleBranch = @MultipleBranch,
+                Comments = @Comments,
+                CompanyLogo = @CompanyLogo, -- Include the logo
+                StartCardNo = @StartCardNo,
+                Weekend = @Weekend,
+                Status = @Status,
+                Email = @Email,
+                ShortName = @ShortName,
+                CardNoType = @CardNoType,
+                FlatCode = @FlatCode,
+                CardNoDigits = @CardNoDigits,
+                AttMachineName = @AttMachineName,
+                RegistrationId = @RegistrationId,
+                EstablishmentId = @EstablishmentId
+            WHERE ID = @ID", sqlDB.connection);
+
+                string id = ViewState["ID"] != null ? ViewState["ID"].ToString() : string.Empty;
+                cmd.Parameters.AddWithValue("@ID", id);
+                cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
+                cmd.Parameters.AddWithValue("@CompanyType", rblOfficeType.SelectedValue);
+                string headOfficeId = (rblOfficeType.SelectedValue != "0") ? txtCompanyId.Text.Trim() : ddlHeadOffice.SelectedValue;
+                cmd.Parameters.AddWithValue("@HeadOfficeId", headOfficeId);
+                cmd.Parameters.AddWithValue("@CompanyName", txtCompanyName.Text.Trim());
+                cmd.Parameters.AddWithValue("@CompanyNameBangla", txtCompanyNameBangla.Text.Trim());
+                cmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim());
+                cmd.Parameters.AddWithValue("@AddressBangla", txtAddressBangla.Text.Trim());
+                cmd.Parameters.AddWithValue("@Country", txtCountry.Text.Trim());
+                cmd.Parameters.AddWithValue("@Telephone", txtTelephone.Text.Trim());
+                cmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim());
+                cmd.Parameters.AddWithValue("@DefaultCurrency", ddlDefaultCurrency.SelectedItem.Text);
+                cmd.Parameters.AddWithValue("@BusinessType", ddlBusinessType.Text.Trim());
+                cmd.Parameters.AddWithValue("@MultipleBranch", ddlMultipleBranch.Text == "Yes" ? 1 : 0);
+                cmd.Parameters.AddWithValue("@Comments", txtComments.Text.Trim());
+                cmd.Parameters.AddWithValue("@CompanyLogo", logoFileName); // Set the logo file name
+                cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text.Trim());
+                cmd.Parameters.AddWithValue("@Status", ddlCmpStatus.SelectedValue);
+                cmd.Parameters.AddWithValue("@Email", txtCompanyEmail.Text.Trim());
+                cmd.Parameters.AddWithValue("@ShortName", txtShortName.Text.ToUpper());
+                cmd.Parameters.AddWithValue("@CardNoType", rblCardNoType.SelectedValue);
+                cmd.Parameters.AddWithValue("@FlatCode", rblCardNoType.SelectedValue == "0" ? txtFladCode.Text.Trim() : "0");
+                cmd.Parameters.AddWithValue("@CardNoDigits", ddlCardNoDigit.SelectedValue);
+                cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
+                cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
+                cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
+
+                int result = cmd.ExecuteNonQuery();
+
+                if (result > 0)
+                {
+                    loadCompanyInfoInfo();
+                    AllClear();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "updSuccess();", true);
+                    return true;
+                }
+                else
+                {
+                    divMsg.InnerText = "error->Unable to save";
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -575,6 +510,28 @@ namespace SigmaERP.hrms.settings
                 return false;
             }
         }
+
+        // Helper method to fetch existing logo file name
+        private string GetExistingLogoFileName(string id)
+        {
+            string logoFileName = string.Empty;
+
+            using (SqlCommand cmd = new SqlCommand("SELECT CompanyLogo FROM HRD_CompanyInfo WHERE ID = @ID", sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@ID", id);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        logoFileName = reader["CompanyLogo"].ToString();
+                    }
+                }
+            }
+
+            return logoFileName;
+        }
+
+
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
