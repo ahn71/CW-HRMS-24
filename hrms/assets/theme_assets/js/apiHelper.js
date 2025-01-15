@@ -4,7 +4,7 @@ function ApiCall(url, token) {
         $.ajax({
             url: url,
             type: 'GET',
-            dataType: 'json',
+       
             headers: {
                 'Authorization': 'Bearer ' + token
             },
@@ -12,7 +12,15 @@ function ApiCall(url, token) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
+                console.log(status);
+                var message = xhr.responseJSON.message
+                console.log('Error occurred while fetching data:', status, error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+
                 reject(error);
             }
         });
@@ -34,7 +42,7 @@ function ApiCallWithPeram(baseUrl, token, userId, companyId) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
+                console.log('Error occurred while fetching data:', status, error);
                 reject(error);
             }
         });
@@ -57,7 +65,7 @@ function ApiCallwithCompanyId(baseUrl, token, companyId) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
+                console.log('Error occurred while fetching data:', status, error);
                 reject(error);
             }
         });
@@ -79,7 +87,7 @@ function ApiCallwithEmp(baseUrl, token, companyId, EmpId) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
+                console.log('Error occurred while fetching data:', status, error);
                 reject(error);
             }
         });
@@ -102,7 +110,7 @@ function ApiCallAuthority(baseUrl, token, companyId, UserId) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
+                console.log('Error occurred while fetching data:', status, error);
                 reject(error);
             }
         });
@@ -125,7 +133,7 @@ function ApiCallById(url, token, id) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
+                console.log('Error occurred while fetching data:', status, error);
                 reject(error);
             }
         });

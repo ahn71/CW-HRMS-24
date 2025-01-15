@@ -48,7 +48,7 @@ namespace SigmaERP.hrms.settings
                     if (gvCompanyInfo.Rows.Count > 0)
                     {
                         btnSave.Enabled = false;
-                        btnSave.CssClass = "";
+                      
                     }
                     rblOfficeType.Enabled = false;
                 }
@@ -167,6 +167,7 @@ namespace SigmaERP.hrms.settings
                 txtShortName.Text = dt.Rows[0]["ShortName"].ToString();
                 ddlWeekend.Text = dt.Rows[0]["Weekend"].ToString();
                 ddlCmpStatus.SelectedValue = dt.Rows[0]["Status"].ToString();
+                ViewState["OldStatus"] = dt.Rows[0]["Status"].ToString();
                 txtCompanyEmail.Text = dt.Rows[0]["Email"].ToString();
                 ddlCardNoDigit.SelectedValue = dt.Rows[0]["CardNoDigits"].ToString();
                 txtStartCardNo.Text = dt.Rows[0]["StartCardNo"].ToString();
@@ -179,7 +180,7 @@ namespace SigmaERP.hrms.settings
                     txtFladCode.Text = "99";
                     txtFladCode.Visible = false;
                     txtStartCardNo.Style.Add("Width", "97%");
-                    tdFladCode.InnerText = "Start Card No";
+                    lblFladCode.InnerText = "Start Card No";
                 }
                 else
                 {
@@ -188,18 +189,18 @@ namespace SigmaERP.hrms.settings
                     txtFladCode.Text = dt.Rows[0]["FlatCode"].ToString().Equals("") ? "99" : dt.Rows[0]["FlatCode"].ToString();
                     txtFladCode.Visible = true;
                     txtStartCardNo.Style.Add("Width", "71%");
-                    tdFladCode.InnerText = "Flat Code";
+                    lblFladCode.InnerText = "Flat Code";
                 }
                 if (upupdate.Value == "0")
                 {
                     btnSave.Text = "Update";
-                    btnSave.CssClass = "";
+                
                     btnSave.Enabled = false;
                 }
                 else
                 {
                     btnSave.Text = "Update";
-                    btnSave.CssClass = "Rbutton";
+
                     btnSave.Enabled = true;
                 }
 
@@ -315,6 +316,10 @@ namespace SigmaERP.hrms.settings
                 return false;
             }
         }
+
+        
+
+
 
         //private Boolean saveCompanyInfo()
         //{
@@ -487,11 +492,15 @@ namespace SigmaERP.hrms.settings
                 cmd.Parameters.AddWithValue("@AttMachineName", ddlMachine.SelectedValue);
                 cmd.Parameters.AddWithValue("@RegistrationId", txtRegistrationInfos.Text.Trim());
                 cmd.Parameters.AddWithValue("@EstablishmentId", txtEstablesed.Text.Trim());
-
                 int result = cmd.ExecuteNonQuery();
 
                 if (result > 0)
                 {
+                    string oldStatus = ViewState["OldStatus"] != null ? ViewState["OldStatus"].ToString() : "0";
+                    if (ddlCmpStatus.SelectedValue != oldStatus)
+                    {
+                        SaveCompanyStatusLog();
+                    }  
                     loadCompanyInfoInfo();
                     AllClear();
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "updSuccess();", true);
@@ -511,14 +520,61 @@ namespace SigmaERP.hrms.settings
             }
         }
 
-        // Helper method to fetch existing logo file name
-        private string GetExistingLogoFileName(string id)
+        private bool SaveCompanyStatusLog()
+        {
+            try
+            {
+                // Retrieve the old status or default to "0"
+                string oldStatus = ViewState["OldStatus"] != null ? ViewState["OldStatus"].ToString() : "0";
+
+                // Parse old and new status safely
+                if (!byte.TryParse(oldStatus, out byte oldStatusByte)) oldStatusByte = 0;
+                if (!byte.TryParse(ddlCmpStatus.SelectedValue, out byte newStatusByte)) return false;
+
+                // Proceed only if the status has changed
+                if (newStatusByte != oldStatusByte)
+                {
+                    using (SqlCommand cmd = new SqlCommand(
+                        "INSERT INTO HRDCompanyStatusLogs (CompanyId, OldStatus, NewStatus, ChangedBy, ChangedAt, Remarks) " +
+                        "VALUES (@CompanyId, @OldStatus, @NewStatus, @ChangedBy, @ChangedAt, @Remarks)",
+                        sqlDB.connection))
+                    {
+                        int changedBy = int.Parse(Session["__GetUserId__"].ToString());
+
+                        // Add parameters to the SQL command
+                        cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
+                        cmd.Parameters.AddWithValue("@OldStatus", oldStatusByte);
+                        cmd.Parameters.AddWithValue("@NewStatus", newStatusByte);
+                        cmd.Parameters.AddWithValue("@ChangedBy", changedBy);
+                        cmd.Parameters.AddWithValue("@ChangedAt", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@Remarks",
+                            string.IsNullOrWhiteSpace(txtComments.Text.Trim()) ? DBNull.Value : (object)txtComments.Text.Trim());
+
+                        // Execute the command and check the result
+                        return cmd.ExecuteNonQuery() > 0;
+                    }
+                }
+
+                // If no change in status, return false
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return false; // Return false on error
+            }
+        }
+        private string GetExistingLogoFileName(string companyId)
         {
             string logoFileName = string.Empty;
 
-            using (SqlCommand cmd = new SqlCommand("SELECT CompanyLogo FROM HRD_CompanyInfo WHERE ID = @ID", sqlDB.connection))
+            string query = "SELECT CompanyLogo FROM HRD_CompanyInfo WHERE CompanyId = @CompanyId";
+
+            using (SqlCommand cmd = new SqlCommand(query, sqlDB.connection))
             {
-                cmd.Parameters.AddWithValue("@ID", id);
+                cmd.Parameters.AddWithValue("@CompanyId", companyId);
+
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     if (reader.Read())
@@ -533,70 +589,27 @@ namespace SigmaERP.hrms.settings
 
 
 
+
+
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            if (btnSave.Text == "Save")
-            {
-                saveCompanyInfo();
-            }
-            else
-            {
-                updateCompanyInfo();
-            }
-            loadCompanyInfoInfo();
-        }
-
-        protected void gvCompanyInfo_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            try
-            {
-
-                //GridViewRow gvrow 
-
-                int index = Convert.ToInt32(e.CommandArgument);
-                if (e.CommandName == "Alter")
+            
+                if (btnSave.Text == "Save")
                 {
-
-
-                    string ID = gvCompanyInfo.DataKeys[index].Values[0].ToString();
-                    AlterCompanyInfo(int.Parse(ID));
-                    if (deleteValidation(gvCompanyInfo.DataKeys[index].Values[1].ToString()))
-                    {
-
-                        rblCardNoType.Enabled = true;
-                        ddlCardNoDigit.Enabled = true;
-                        txtStartCardNo.Enabled = true;
-                    }
-                    else
-                    {
-                        rblCardNoType.Enabled = false;
-                        ddlCardNoDigit.Enabled = false;
-                        txtStartCardNo.Enabled = false;
-                    }
-
-
-                }
-                else if (e.CommandName == "Delete")
-                {
-
-                    if (deleteValidation(gvCompanyInfo.DataKeys[index].Values[1].ToString()))
-                    {
-                        Delete(Convert.ToInt32(gvCompanyInfo.DataKeys[index].Values[0].ToString()));
-                    }
-                    else
-                        lblMessage.InnerText = "error->Warning! Can't delete this Company.";
-
-
+                    saveCompanyInfo();
                 }
                 else
                 {
-                    var companyId = gvCompanyInfo.DataKeys[index].Values[1].ToString();
-                    Response.Redirect("~/hrms/packages/userPackagesSetup.aspx?companyId=" + companyId);
-
+                    updateCompanyInfo();
                 }
-            }
-            catch { }
+
+                // Refresh data after saving or updating
+                loadCompanyInfoInfo();
+            
         }
+
+    
+
         private void Delete(int ID)
         {
             try
@@ -610,7 +623,12 @@ namespace SigmaERP.hrms.settings
 
 
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine("An error occurred: " + ex.Message);
+
+            }
         }
         private void AllClear()
         {
@@ -704,10 +722,7 @@ namespace SigmaERP.hrms.settings
             AllClear();
         }
 
-        protected void gvCompanyInfo_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            loadCompanyInfoInfo();
-        }
+
 
         protected void rblOfficeType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -722,13 +737,16 @@ namespace SigmaERP.hrms.settings
             {
                 txtFladCode.Visible = false;
                 txtStartCardNo.Style.Add("Width", "97%");
-                tdFladCode.InnerText = "Start Card No";
+                lblFladCode.InnerText = "Start Card No";
+                txtStartCardNo.Visible = true;
             }
             else
             {
                 txtFladCode.Visible = true;
+
                 txtStartCardNo.Style.Add("Width", "71%");
-                tdFladCode.InnerText = "Flat Code";
+                lblFladCode.InnerText = "Flat Code";
+                txtStartCardNo.Visible = true;
             }
         }
         private bool deleteValidation(string CompanyId)
@@ -754,6 +772,63 @@ namespace SigmaERP.hrms.settings
             }
 
 
+        }
+
+        protected void gvCompanyInfo_RowCommand1(object sender, GridViewCommandEventArgs e)
+        {
+            try
+            {
+
+                //GridViewRow gvrow 
+
+
+                int index = Convert.ToInt32(e.CommandArgument);
+                if (e.CommandName == "Alter")
+                {
+
+                    string ID = gvCompanyInfo.DataKeys[index].Values[0].ToString();
+                    AlterCompanyInfo(int.Parse(ID));
+                    if (deleteValidation(gvCompanyInfo.DataKeys[index].Values[1].ToString()))
+                    {
+
+                        rblCardNoType.Enabled = true;
+                        ddlCardNoDigit.Enabled = true;
+                        txtStartCardNo.Enabled = true;
+                    }
+                    else
+                    {
+                        rblCardNoType.Enabled = false;
+                        ddlCardNoDigit.Enabled = false;
+                        txtStartCardNo.Enabled = false;
+                    }
+                   
+
+                }
+                else if (e.CommandName == "Remove")
+                {
+                    string value = gvCompanyInfo.DataKeys[index].Values[1].ToString();
+                    if (deleteValidation(gvCompanyInfo.DataKeys[index].Values[1].ToString()))
+                    {
+                        Delete(Convert.ToInt32(gvCompanyInfo.DataKeys[index].Values[0].ToString()));
+                    }
+                    else
+                        lblMessage.InnerText = "error->Warning! Can't delete this Company.";
+
+
+                }
+                else if (e.CommandName == "Setup")
+                {
+                    var companyId = gvCompanyInfo.DataKeys[index].Values[1].ToString();
+                    Response.Redirect("~/hrms/packages/userPackagesSetup.aspx?companyId=" + companyId);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine("An error occurred: " + ex.Message);
+
+            }
         }
     }
 }

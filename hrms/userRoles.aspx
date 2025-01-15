@@ -33,7 +33,7 @@
                                                                 class="text-danger">*</span></label>
                                                         <div class="support-form__input-id">
                                                             <div class="dm-select ">
-                                                                <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control"></asp:DropDownList>
+                                                                <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control" onchange="getCompanypackage(this.value)"></asp:DropDownList>
 
                                                             </div>
                                                             <span class="text-danger" id="ddlCompanyError"></span>
@@ -193,7 +193,7 @@
         $(document).ready(function () {
            
             //GetModule();
-            GetStpPkgFeatures();
+            GetStpPkgFeatures(CompanyID);
             GetRoles();
             GetCompanys();
             //$('#ddlDataAccessLevel').change(function () {
@@ -206,6 +206,11 @@
             //});
             
         });
+
+        function getCompanypackage(compayId) {
+            var companyId = compayId;
+             GetStpPkgFeatures(companyId);
+        }
 
         function Cardbox() {
             var CardboxElement = $("#Cardbox");
@@ -326,7 +331,7 @@
          function updateRoles() {
                 var roleId = $('#lblHidenRolesId').val();
                 var txtRole = $('#txtRole').val();
-                var companyId = $('#ddlCompany').val();
+                //var companyId = $('#ddlCompany').val();
                 var dataAccessLevel = parseInt($('#ddlDataAccessLevel').val());
 
                 var ordering = parseInt($('#txtOrdaring').val());
@@ -540,16 +545,22 @@
 
 
  
+        
         var selectedPermissionIDs = [];
         var responseData = null;
-        function GetStpPkgFeatures() {
+        function GetStpPkgFeatures(companyId) {
             console.log('Calling GetModule');
             $('.loaderPackages').show();
-            ApiCall(getStpPkgFeaturesWithParentUrl, token)
+            
+            ApiCall(getStpPkgFeaturesWithParentUrl + '?CompanyId=' + companyId, token)
                 .then(function (response) {
                     if (response.statusCode === 200) {
+                     
                         responseData = response.data;
                         var treeData = transformToJSTreeFormat(responseData);
+                        if ($.jstree.reference('#treeContainer')) {
+                            $('#treeContainer').jstree('destroy').empty();
+                        }
                         console.log("TreeData :", treeData)
                         $('#treeContainer').jstree({
                             'core': {
@@ -579,15 +590,22 @@
                             }
                             console.log('Child Node IDs:', selectedPermissionIDs);
 
-                        });
+                            });
+                        $('#treeSection').show();
+                        $('.loaderPackages').show();
                         $('.loaderPackages').hide();
                     } else {
-                        console.error('Error occurred while fetching data:', response.message);
+
+                        $('#treeSection').hide();
+                        $('.loaderPackages').hide();
+                        
                     }
                 })
-                .catch(function (error) {
-                    console.error('Error occurred while fetching data:', error.message || error);
-                });
+              .catch(function (error) {
+            $('#treeSection').hide(); 
+            $('.loaderPackages').hide();
+            console.log('Error occurred while fetching data:', error);
+        });
         }
          function transformToJSTreeFormat(data) {
             return data.map(function (item) {
@@ -634,8 +652,7 @@
                     $('#txtRole').val(data.userRoleName);
                     $('select[name="ddlDataAccessLevel"]').val(data.dataAccessLevel).change();
                     //$('select[name="ddlCompany"]').val(data.companyId).change();
-                    $('#ddlCompany').val(data.companyId).change();
-
+                    $('#ddlCompany').prop('disabled', true);
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');

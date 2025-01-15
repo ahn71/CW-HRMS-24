@@ -6,68 +6,9 @@
             }*/
 
            
-
-            .uil-trash-alt {
-                color: red;
-                padding: 5px;
+            .uil-edit{
+                cursor:pointer;
             }
-
-            /*.gridview-bordered tr {
-                border: 1px solid #ddd; 
-            }*/
-
-
-
-            .gridview-bordered th,
-            .gridview-bordered td {
-                padding: 8px; /* Add padding for better readability */
-                text-align: left; /* Align text to the left */
-                /*border: 1px solid #ddd;*/ /* Cell borders */
-            }
-
-            .gridview-bordered th {
-                background-color: #f4f4f4; /* Light header background */
-                font-weight: bold;
-                color:#404040;
-              
-            }
-
-            .address-header {
-                width: 300px;
-                text-align: left;
-            }
-
-            .address-item {
-                width: 300px;
-                white-space: normal; /* Allows text to wrap */
-                word-wrap: break-word; /* Ensures long words break properly */
-            }
-            .userDatatable table td{
-                white-space:unset !important;
-            }
-            .logo-defult-iamge{
-                width:100px;
-                height:100px;
-            }
-            .gridview-bordered{
-                color:#0A0A0A;
-               
-
-
-            }
-            .gridview-bordered tr:hover{
-                background-color:#f4f4f4 !important;
-            }
-            .gridview-bordered .email {
-                font-size:14px;
-                font-style:italic;
-            }
-            
-
-            .gridview-bordered tr{
-                padding: 20px;
-            }
-
 
     </style>
 </asp:Content>
@@ -92,7 +33,7 @@
                      <asp:UpdatePanel ID="up1" runat="server" UpdateMode="Conditional">
                             <Triggers>
                                 <asp:AsyncPostBackTrigger ControlID="rblOfficeType" />
-                                <asp:AsyncPostBackTrigger ControlID="rblCardNoType" />                               
+                                <asp:AsyncPostBackTrigger ControlID="rblCardNoType" />                             
                                 <asp:AsyncPostBackTrigger ControlID="gvCompanyInfo" />
                               
                             </Triggers>
@@ -107,6 +48,13 @@
                                 </div>
 
                             </div>
+                            
+                            <%--<div class="btn-wrapper">
+                                <div class="dm-button-list d-flex flex-wrap align-items-end">
+                                    <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New +</button>
+                                    
+                                </div>
+                            </div>--%>
                         </div>
                        
                                 <div id="Cardbox" class="card-body pb-md-30">
@@ -153,6 +101,7 @@
                                                         <div class="form-group">
                                                             <label for="txtCompanyName" class="color-dark fs-14 fw-500 align-center mb-10">Company Name <span class="text-danger">*</span></label>
                                                             <asp:TextBox ID="txtCompanyName" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"></asp:TextBox>
+                                                            <span class="text-danger" id="txtCompanyNameError"></span>
                                                         </div>
                                                     </div>
 
@@ -161,6 +110,7 @@
                                                         <div class="form-group">
                                                             <label for="txtShortName" class="color-dark fs-14 fw-500 align-center mb-10">Short Name <span class="text-danger">*</span></label>
                                                             <asp:TextBox ID="txtShortName" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15" Style="text-transform: uppercase;" MaxLength="3"></asp:TextBox>
+                                                            <span class="text-danger" id="txtShortNameError"></span>
                                                         </div>
                                                     </div>
 
@@ -176,7 +126,10 @@
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                                                         <div class="form-group">
                                                             <label for="txtAddress" class="color-dark fs-14 fw-500 align-center mb-10">Address</label>
-                                                            <asp:TextBox ID="txtAddress" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15" TextMode="MultiLine"></asp:TextBox>
+                                                            <asp:TextBox ID="txtAddress" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15" TextMode="MultiLine">
+
+                                                            </asp:TextBox>
+                                                            <span class="text-danger" id="txtAddressError"></span>
                                                         </div>
                                                     </div>
 
@@ -191,6 +144,7 @@
                                                         <div class="form-group">
                                                             <label for="txtCountry" class="color-dark fs-14 fw-500 align-center mb-10">Country</label>
                                                             <asp:TextBox ID="txtCountry" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"></asp:TextBox>
+                                                            <span class="text-danger" id="txtCountryError"></span>
                                                         </div>
                                                     </div>
 
@@ -199,6 +153,8 @@
                                                         <div class="form-group">
                                                             <label for="txtTelephone" class="color-dark fs-14 fw-500 align-center mb-10">Phone</label>
                                                             <asp:TextBox ID="txtTelephone" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"></asp:TextBox>
+                                                             <span class="text-danger" id="txtTelephoneError"></span>
+
                                                         </div>
                                                     </div>
 
@@ -308,6 +264,7 @@
                                                                 <div class="form-group">
                                                                     <label for="txtCompanyEmail" class="color-dark fs-14 fw-500 align-center mb-10">Email</label>
                                                                     <asp:TextBox ID="txtCompanyEmail" TextMode="Email" placeholder="company@gmail.com" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width"></asp:TextBox>
+                                                                    <span class="text-danger" id="txtCompanyEmailErrpr"></span>
                                                                 </div>
                                                             </div>
                                                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
@@ -325,11 +282,13 @@
                                                                     </asp:RadioButtonList>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" runat="server" id="tdFladCode">
+                                                            <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" runat="server">
                                                             <div class="form-group">
-                                                            <label for="txtFladCode" class="color-dark fs-14 fw-500 align-center mb-10">Flat Code</label>
+                                                            <label for="txtFladCode" runat="server" id="lblFladCode" class="color-dark fs-14 fw-500 align-center mb-10">Flat Code</label>
                                                             <asp:TextBox ID="txtFladCode" Font-Bold="true" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width" Style="width: 25%; float: left; color: red;" MaxLength="2">99</asp:TextBox>
-                                                            <asp:TextBox ID="txtStartCardNo" ClientIDMode="Static" Font-Bold="true" placeholder="Start Card No" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width" Width="71%" MaxLength="5"></asp:TextBox>
+                                                                 <span class="text-danger" id="txtFladCodeError"></span>
+                                                            <asp:TextBox ID="txtStartCardNo" ClientIDMode="Static" Font-Bold="true" placeholder="Start Card No" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width" Width="71%"></asp:TextBox>
+                                                                <span class="text-danger" id="txtStartCardNoError"></span>
                                                             </div>
                                                             </div>
                                                      <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
@@ -339,9 +298,17 @@
                                                         </div>
 
                                                     </div>    
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" style="margin-top: -35px;">
+                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                                                         <div>
-                                                                <asp:Button ID="btnSave" ClientIDMode="Static" OnClientClick="return InputValidation();" runat="server" Text="Save" OnClick="btnSave_Click" />
+                                                            <asp:Button
+                                                                ID="btnSave"
+                                                                ClientIDMode="Static"
+                                                                OnClientClick="return validateCompany();"
+                                                                runat="server"
+                                                                Text="Save"
+                                                                OnClick="btnSave_Click"/>
+
+
                                                         </div>
 
                                                     </div>
@@ -390,7 +357,7 @@
                                    </div>
                                </div>
 
-                               <asp:GridView ID="gvCompanyInfo" runat="server" AutoGenerateColumns="False" Width="100%" AllowPaging="True" PageSize="5" DataKeyNames="ID,CompanyId" OnPageIndexChanging="gvCompanyInfo_PageIndexChanging" OnRowCommand="gvCompanyInfo_RowCommand" OnRowDataBound="gvCompanyInfo_RowDataBound" OnRowDeleting="gvCompanyInfo_RowDeleting" CssClass="gridview-bordered">
+                               <asp:GridView ID="gvCompanyInfo" runat="server" AutoGenerateColumns="False" Width="100%" AllowPaging="True" PageSize="5" DataKeyNames="ID,CompanyId" OnPageIndexChanging="gvCompanyInfo_PageIndexChanging" OnRowCommand="gvCompanyInfo_RowCommand1" OnRowDataBound="gvCompanyInfo_RowDataBound"  CssClass="gridview-bordered">
 
                                    <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                                    <Columns>
@@ -451,17 +418,15 @@
                                                    CommandArgument='<%# Container.DataItemIndex %>'>
                                                   <i  class="uil uil-edit"></i> 
                                                </asp:LinkButton>
-                                               <asp:LinkButton ID="btnDelete" runat="server" CssClass="" CommandName="Delete"
+                                              <%-- <asp:LinkButton ID="btnRemove" runat="server" CssClass="" CommandName="Remove"
                                                    OnClientClick="return confirm('Are you sure, you want to delete the record?');"
                                                    CommandArgument='<%# Container.DataItemIndex %>'>
                                                  <i class="uil uil-trash-alt"></i>
-                                               </asp:LinkButton>
+                                               </asp:LinkButton>--%>
                                            </ItemTemplate>
                                        </asp:TemplateField>
                                           <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                           <HeaderTemplate>
-                                                
-                                           </HeaderTemplate>
+                                           
                                            <ItemTemplate>
                                                <asp:Button ID="btnSrtupPackages" runat="server" ControlStyle-CssClass="btn btn-primary btn-sm" Text="Package" CommandName="Setup"
                                                    CommandArgument='<%# Container.DataItemIndex %>' />
@@ -486,6 +451,30 @@
      
 
      <script type="text/javascript">
+
+             function Cardbox() {
+             var CardboxElement = $("#Cardbox");
+             var addnewElement = $("#addnew");
+
+             if (addnewElement.html() === "Add New +") {
+                 CardboxElement.show();
+                 addnewElement.text("Close");
+             } else {
+                 /*ClearTextBox()*/;
+                
+                 CardboxElement.hide();
+                 addnewElement.html("Add New +");
+                
+             }
+         }
+         function showLoader() {
+             document.querySelector('.loaderModulesList').style.display = 'block';
+         }
+
+         function hideLoader() {
+             document.querySelector('.loaderModulesList').style.display = 'none';
+         }
+
         function previewFile() {
             try {
                 var preview = document.querySelector('#imgProfile');
@@ -509,13 +498,131 @@
                 lblMessage.innerText = exception;
             }
 
-        }
+         }
+         function validateCompany() {
+             try {
+                 let isValid = true;
+
+                 const alphabeticPattern = /^[a-zA-Z]+( [a-zA-Z]+)*$/;
+                 const uppercasePattern = /^[A-Z]+$/;
+                 const digitPattern = /^\d+$/;
+                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+                 
+                 $('#txtShortNameError, #txtCompanyNameError, #txtStartCardNoError, #txtCompanyEmailErrpr','#txtTelephoneError','txtAddressError','txtCountryError').html("");
+
+                 
+                 const companyName = $('#txtCompanyName').val().trim();
+                 if (companyName === "") {
+                     $('#txtCompanyNameError').html("Company Name is required.");
+                     if (isValid) $("#txtCompanyName").focus();
+                     isValid = false;
+                 } else if (!alphabeticPattern.test(companyName)) {
+                     $('#txtCompanyNameError').html("Company Name must contain only alphabetic characters.");
+                     if (isValid) $("#txtCompanyName").focus();
+                     isValid = false;
+                 }
+                 else {
+                      $('#txtCompanyNameError').html("");
+                 }
+
+                 // Validate Short Name
+                 const shortName = $('#txtShortName').val().trim();
+                 if (shortName === "") {
+                     $('#txtShortNameError').html("Short Name is required.");
+                     if (isValid) $("#txtShortName").focus();
+                     isValid = false;
+                 } else if (!uppercasePattern.test(shortName)) {
+                     $('#txtShortNameError').html("Short Name must contain only uppercase alphabetic characters.");
+                     if (isValid) $("#txtShortName").focus();
+                     isValid = false;
+                 }
+                  else {
+                      $('#txtShortNameError').html("");
+                 }
+                  const address = $('#txtAddress').val().trim();
+                 if (address === "") {
+                     $('#txtAddressError').html("Address is required.");
+                     if (isValid) $("#txtAddress").focus();
+                     isValid = false;
+                 } 
+                 else {
+                      $('#txtAddressError').html("");
+                 }
+                  const country = $('#txtCountry').val().trim();
+                 if (country === "") {
+                     $('#txtCountryError').html("Country is required.");
+                     if (isValid) $("#txtAddtxtCountryress").focus();
+                     isValid = false;
+                 } 
+                 else {
+                      $('#txtCountryError').html("");
+                 }
+                 const Phone = $('#txtTelephone').val().trim();
+                 if (Phone === "") {
+                     $('#txtTelephoneError').html("Phone Name is required.");
+                     if (isValid) $("#txtTelephone").focus();
+                     isValid = false;
+                 } 
+                 else {
+                      $('#txtTelephoneError').html("");
+                 }
+                
+                 
+                 const Email = $('#txtCompanyEmail').val().trim();
+                 if (Email === "") {
+                     $('#txtCompanyEmailErrpr').html("Email is required.");
+                     if (isValid) $("#txtCompanyEmail").focus();
+                     isValid = false;
+                 } else if (!emailPattern.test(Email)) {
+                     $('#txtCompanyEmailErrpr').html("Invalid email format.");
+                     if (isValid) $("#txtCompanyEmail").focus();
+                     isValid = false;
+                 } else {
+                      $('#txtCompanyEmailErrpr').html("");
+                 }
+                
+
+                 
+                 if (!$('#txtStartCardNo').prop("disabled")) {
+                     const startCardNo = $('#txtStartCardNo').val().trim();
+                     const selectedDigit = $('#ddlCardNoDigit').val(); // Get the selected value from the dropdown
+                     const maxLength = parseInt(selectedDigit, 10); // Convert to an integer
+
+                     if (maxLength === 3 || maxLength === 4|| maxLength === 5) {
+                         if (startCardNo.length !== maxLength) {
+                             $('#txtStartCardNoError').html(`Start Card No must be exactly ${maxLength} digits.`);
+                             if (isValid) $("#txtStartCardNo").focus();
+                             isValid = false;
+                         } else if (!digitPattern.test(startCardNo)) {
+                             $('#txtStartCardNoError').html("Start Card No must contain only digits.");
+                             if (isValid) $("#txtStartCardNo").focus();
+                             isValid = false;
+                         }
+                         else {
+                             $('#txtStartCardNoError').html("");
+                         }
+
+                     } else {
+                         $('#txtStartCardNoError').html("Invalid card digit selection.");
+                         isValid = false;
+                     }
+                 }
+
+                 return isValid;
+             } catch (error) {
+                 alert(error);
+                 return false;
+             }
+         }
+
+
         function InputValidation() {
             var value = $('select#ddlCardNoDigit option:selected').val();
             if (validateText('txtCompanyName', 1, 100, "Please Enter Company Name") == false) return false;
             if (validateText('txtShortName', 3, 10, "Please Enter Sort Name of Company (Must be 3 Character)") == false) return false;
             //if (validateText('txtCompanyNameBangla', 1, 100, "Please Enter Company Name in Bangla") == false) return false;
             if (validateText('txtAddress', 1, 300, "Please Enter Company Address") == false) return false;
+            if (validateText('txtCompanyEmail', 1, 300, "Please Enter Company valid Email") == false) return false;
             //if (validateText('txtAddressBangla', 1, 100, "Please Enter Company Addrerss in Bangla") == false) return false;
             if (validateText('txtStartCardNo', value, value, "Enter Start Card Number (Must be " + value + " Character)") == false) return false;
             
@@ -562,7 +669,9 @@
             element.style.backgroundColor = oldgridcolor;
             // element.style.textDecoration = 'none';
 
-        }
-    </script>
+         }
+
+      
+     </script>
 
 </asp:Content>

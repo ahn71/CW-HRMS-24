@@ -36398,4 +36398,64 @@ body:after {
     color:#00AAFF !important;
 }
 
+.uil-trash-alt {
+    color: red;
+    padding: 5px;
+}
 
+/*.gridview-bordered tr {
+                border: 1px solid #ddd; 
+            }*/
+
+
+
+.gridview-bordered th,
+.gridview-bordered td {
+    padding: 8px; /* Add padding for better readability */
+    text-align: left; /* Align text to the left */
+    /*border: 1px solid #ddd;*/ /* Cell borders */
+}
+
+.gridview-bordered th {
+    background-color: #f4f4f4; /* Light header background */
+    font-weight: bold;
+    color: #404040;
+}
+
+.address-header {
+    width: 300px;
+    text-align: left;
+}
+
+.address-item {
+    width: 300px;
+    white-space: normal; /* Allows text to wrap */
+    word-wrap: break-word; /* Ensures long words break properly */
+}
+
+.userDatatable table td {
+    white-space: unset !important;
+}
+
+.logo-defult-iamge {
+    width: 100px;
+    height: 100px;
+}
+
+.gridview-bordered {
+    color: #0A0A0A;
+}
+
+    .gridview-bordered tr:hover {
+        background-color: #f4f4f4 !important;
+    }
+
+    .gridview-bordered .email {
+        font-size: 14px;
+        font-style: italic;
+    }
+
+
+    .gridview-bordered tr {
+        padding: 20px;
+    }

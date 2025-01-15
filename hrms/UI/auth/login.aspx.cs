@@ -372,6 +372,16 @@ namespace SigmaERP.hrms.UI.auth
                 }
                 else
                 {
+                  
+                    string message = jsonResponse.message; 
+                    ScriptManager.RegisterStartupScript(
+                        this,
+                        this.GetType(),
+                        "swalAlert",
+                        $"Swal.fire({{ title: 'Login Failed', text: '{message}', icon: 'error', confirmButtonText: 'OK' }});",
+                        true
+                    );
+
                     Session["__getUserId__"] = "0";
                     return false;
                 }

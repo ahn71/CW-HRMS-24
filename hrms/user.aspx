@@ -316,7 +316,7 @@
          var createUserUrl = rootUrl + '/api/User/users/create';
          var updateUserUrl = rootUrl + '/api/User/users/update';
          var DeleteUserUrl = rootUrl + '/api/User/users/delete';
-         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
+         var getStpPkgFeaturesWithParentUrl = rootUrl + `/api/UserPackagesSetup/SetupedPackagesWithParent?CompanyId=${CompanyID}`;
          var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
          var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
 
@@ -1416,8 +1416,9 @@
                      $('#chkIsGetUser').prop('checked', data.isGuestUser);
                      $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
                      $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
-                     $('#ddlCompany').val(data.companyId).change();
 
+                     //$('#ddlCompany').val(data.companyId).change();
+                     $('#ddlCompany').prop('disabled', true);
                      // Handle permissions and roles
                      additionalPermissions = [];
                      removedPermissions = [];
