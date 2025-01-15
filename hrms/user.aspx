@@ -1417,8 +1417,8 @@
                      $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
                      $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
 
-                     //$('#ddlCompany').val(data.companyId).change();
-                     $('#ddlCompany').prop('disabled', true);
+                     $('#ddlCompany').val(data.companyId).change();
+                     //$('#ddlCompany').prop('disabled', true);
                      // Handle permissions and roles
                      additionalPermissions = [];
                      removedPermissions = [];
@@ -1443,8 +1443,9 @@
                          $('#FirstName, #LastName').show(); // Show first name and last name fields
 
                          // Fetch roles and set the user role after fetching
-                         GetRoles(true).then(() => {
+                         GetRoles(true,CompanyID).then(() => {
                              $('select[name="ddlUserRole"]').val(data.userRoleID).change(); // Set the user's role
+                             //$('#ddlUserRole').val(data.userRoleID).change();
                          }).catch(error => {
                              console.error('Failed to fetch roles:', error); // Handle role fetching errors
                          });
@@ -1457,8 +1458,9 @@
                          $('#FirstName, #LastName').hide(); // Hide first name and last name fields
 
                          // Fetch roles and set the user role after fetching
-                         GetRoles(false).then(() => {
+                         GetRoles(false,CompanyID).then(() => {
                              $('select[name="ddlUserRole"]').val(data.userRoleID).change(); // Set the user's role
+                             //$('#ddlUserRole').val(data.userRoleID).change();
                          }).catch(error => {
                              console.error('Failed to fetch roles:', error); // Handle role fetching errors
                          });

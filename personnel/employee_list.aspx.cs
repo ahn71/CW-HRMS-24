@@ -42,12 +42,16 @@ namespace SigmaERP.personnel
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
-                classes.commonTask.LoadBranch(ddlCompanyList);
+                HttpCookie getCookies = Request.Cookies["userInfo"];
+                ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+
+                string CompanyId = ViewState["__CompanyId__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
                 loadYear();
                 setPrivilege(userPagePermition);
-                HttpCookie getCookies = Request.Cookies["userInfo"];
-                ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+
                // SearchingInEmployeeList();
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
