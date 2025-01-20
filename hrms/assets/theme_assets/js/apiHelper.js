@@ -306,8 +306,17 @@ function ApiCallPost(url, token, postData) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.error('Error occurred while fetching data:', status, error);
-                reject(error);
+                //console.error('Error occurred while fetching data:', status, error);
+                var message = xhr.responseText;
+                console.log(message)
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+
+                //reject(error);
             }
         });
     });

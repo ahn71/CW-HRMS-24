@@ -53,7 +53,7 @@
                                           <%--             <select name="ddlCompany" runat="server" id="ddlCompany" class="select-search form-control">
                                                            <option value="0">---Select---</option>
                                                        </select>--%>
-                                                        <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control"></asp:DropDownList>
+                                                        <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control" onchange="getCompanypackage(this.value)"></asp:DropDownList>
 
                                                    </div>
                                                    <span class="text-danger" id="ddlcompanyError"></span>
@@ -146,7 +146,7 @@
                                        </div>--%>
 
 
-                                       <div class="col-lg-4 " style="display: flex; justify-content: space-between">
+                                       <div class="col-lg-5 " style="display: flex; justify-content: space-between">
                                            <div class="LeftSite">
                                                <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
                                                <div class="form-group d-flex">
@@ -307,16 +307,16 @@
          var getUsersByIdUrl = rootUrl + '/api/User/users';
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesWithGuestUrl = rootUrl + `/api/UserRoles/userRolesWithGuestUser`;
-
+         var getInfoViewUrl = rootUrl + '/api/User/users';
          var empUrl = '/api/Employee/EmployeeName';
-         var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
+         var getEmployeeUrl = `${rootUrl}${empUrl}`;
 
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
          var createUserUrl = rootUrl + '/api/User/users/create';
          var updateUserUrl = rootUrl + '/api/User/users/update';
          var DeleteUserUrl = rootUrl + '/api/User/users/delete';
-         var getStpPkgFeaturesWithParentUrl = rootUrl + `/api/UserPackagesSetup/SetupedPackagesWithParent?CompanyId=${CompanyID}`;
+         var getStpPkgFeaturesWithParentUrl = rootUrl + '/api/UserPackagesSetup/SetupedPackagesWithParent';
          var getUserDepartmentUrl = rootUrl + '/api/UserRoles/UserDepartment';
          var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
 
@@ -324,26 +324,39 @@
 
          $(document).ready(function () {
              IsGuestUser();
-             GetEmployee();
+             GetEmployee(CompanyID);
              GetUsers();
-             GetStpPkgFeatures();
-             GetRolesFeatures();
+          
              GetCompanys();
+             GetStpPkgFeatures(CompanyID);
              $('#chkIsGetUser').change(function () {
                  toggleReferenceEmp();
              });
+             //GetRoles(false, CompanyID);
+             GetRolesFeatures();
+
              GetRoles(false, CompanyID);
 
-             $('#ddlCompany').change(function () {
-                 var selectedCompanyId = $(this).val(); // Get selected value
-                 if (selectedCompanyId) {
-                     GetRoles(false, selectedCompanyId); // Pass to GetRoles
-                 } else {
-                     console.warn("No company selected.");
-                 }
-             });
-
          });
+         //$('#ddlCompany').change(function () {
+         //    var selectedCompanyId = $(this).val();
+         //    if (selectedCompanyId) {
+         //        GetRoles(false, selectedCompanyId);
+
+         //        console.log('Get Roles ', +selectedCompanyId);
+         //    } else {
+         //        console.warn("No company selected.");
+         //    }
+         //});
+
+
+
+
+        function getCompanypackage(compayId) {
+            var companyId = compayId;
+                (companyId);
+        }
+
          function toggleReferenceEmp() {
              if ($('#chkIsGetUser').is(':checked')) {
                  $('#ddlReference').hide("");
@@ -493,16 +506,30 @@
 
          function GetRolesFeatures() {
              $('#ddlUserRole').change(function () {
-                 var selectedValue = $(this).val();
-                 console.log("Selected value: " + selectedValue);
+                 var selectedRoleId = $(this).val();
+                 console.log("Selected role ID: " + selectedRoleId);
 
-                 
-                 FetchDataRolesWise(selectedValue);
-                 //GetDataAccessLevel(selectedValue);
-
-
+                 if (selectedRoleId) {
+                     // Fetch and display permissions for the selected role
+                     FetchDataRolesWise(selectedRoleId, false);
+                     //LoadPermissionsByRole(selectedRoleId);
+                 } else {
+                     console.warn("No role selected.");
+                 }
              });
          }
+         //function GetRolesFeatures() {
+         //    $('#ddlUserRole').change(function () {
+         //        var selectedValue = $(this).val();
+         //        console.log("Selected value: " + selectedValue);
+
+                 
+         //        FetchDataRolesWise(selectedValue);
+         //        //GetDataAccessLevel(selectedValue);
+
+
+         //    });
+         //}
 
 
 
@@ -551,10 +578,12 @@
              return new Promise((resolve, reject) => {  // Ensure GetRoles returns a promise
                  ApiCallByGuestUser(getRolesWithGuestUrl, token, IsGuestUser,companyId)
                      .then(function (response) {
+                         console.log('GetRoles Response',response);
                          if (response.statusCode === 200) {
                              var responseData = response.data;
                              console.log('this from dropdown:', responseData);
                              RolesPopulateDropdown(responseData);
+                             console.log('Roles dropdown bind done');
                              resolve();  // Resolve the promise once roles are populated
                          } else {
                              console.error('Error occurred while fetching data:', response.message);
@@ -581,8 +610,8 @@
              });
             
          }
-         function GetEmployee() {
-             ApiCall(getEmployeeUrl, token)
+         function GetEmployee(companyId) {
+             ApiCall(getEmployeeUrl+ '?CompanyId=' + companyId, token)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;
@@ -771,15 +800,19 @@
        
          var selectedPermissionIDs = [];
          var responseData = null;
-         function GetStpPkgFeatures() {
+         function GetStpPkgFeatures(companyId) {
              console.log('Calling GetModule');
              $('.loaderPackages').show();
-             ApiCall(getStpPkgFeaturesWithParentUrl, token)
+             ApiCall(getStpPkgFeaturesWithParentUrl +'?CompanyId=' + companyId, token)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          responseData = response.data;
                          var treeData = transformToJSTreeFormat(responseData);
+                         if ($.jstree.reference('#treeContainer')) {
+                            $('#treeContainer').jstree('destroy').empty();
+                        }
                          console.log("TreeData :", treeData)
+
                          $('#treeContainer').jstree({
                              'core': {
                                  'data': treeData,
@@ -808,12 +841,18 @@
                              console.log('Child Node IDs:', selectedPermissionIDs);
 
                          });
-                         $('.loaderPackages').hide();
+
+                        $('#treeContainer').show();
+                        $('.loaderPackages').hide();
                      } else {
+                          $('#treeContainer').hide();
+                        $('.loaderPackages').hide();
                          console.error('Error occurred while fetching data:', response.message);
                      }
                  })
                  .catch(function (error) {
+                     $('#treeContainer').hide();
+                        $('.loaderPackages').hide();
                      console.error('Error occurred while fetching data:', error.message || error);
                  });
          }
@@ -984,15 +1023,16 @@
          var selectedPermissionIDsUpdate = [];
          var selectedPermissionIDsRolesWise = [];
          var PreviusPermissionsID = [];
-         var isEdit;
-         function FetchDataRolesWise(moduleID) {
+         //var isEdit;
+         function FetchDataRolesWise(moduleID ,isEdit) {
              ApiCallById(getRolesByIdUrl, token, moduleID)
                  .then(function (response) {
                      var data = response.data;
                      $('#lblHidenRolesId').val(data.userRoleId);
                      if (data.dataAccessLevel == 4) {
                          //var isEdit = true;
-                         if (IsEditData == true) {
+                         console.log('This is Edit Data IsEditData',isEdit);
+                         if (isEdit == true) {
 
                              GetUserDepartment(selectedIds, 'update');
 
@@ -1032,7 +1072,7 @@
                      PreviusPermissionsID = JSON.parse(data.permissions);
 
 
-                     if (IsEditData) {
+                     if (isEdit) {
                          if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
                              // Remove permissions from selectedPermissionIDsRolesWise
                              selectedPermissionIDsRolesWise = selectedPermissionIDsRolesWise.filter(id => !removedPermissions.includes(id));
@@ -1050,7 +1090,7 @@
                          }
 
                          // Set IsEditData to false
-                         IsEditData = false;
+                         //IsEditData = false;
                      }
 
                      if (Array.isArray(selectedPermissionIDsRolesWise)) {
@@ -1095,96 +1135,7 @@
                  });
          }
 
-         
 
-         //var selectedPermissionIDsUpdate = []
-         //var selectedPermissionIDsRolesWise = []
-
-         //function FetchDataRolesWise(moduleID) {
-         //    ApiCallById(getRolesByIdUrl, token, moduleID)
-         //        .then(function (response) {
-         //            console.log('Data:', response);
-         //            var data = response.data;
-         //            $('#lblHidenRolesId').val(data.userRoleId);
-         //            //BoxExpland();
-         //            selectedPermissionIDs = [];
-         //            selectedPermissionIDs = JSON.parse(data.permissions);
-         //            console.log('additionalPermissions:',additionalPermissions);
-         //            console.log('removedPermissions:', removedPermissions);
-
-         //            if (IsEditData) {
-         //                if (removedPermissions.length > 0 || additionalPermissions.length > 0) {
-         //                    // Remove permissions from selectedPermissionIDs
-         //                    selectedPermissionIDs = selectedPermissionIDs.filter(id => !removedPermissions.includes(id));
-
-         //                    // Add new permissions to selectedPermissionIDs
-         //                    additionalPermissions.forEach(id => {
-         //                        if (!selectedPermissionIDs.includes(id)) {
-         //                            selectedPermissionIDs.push(id);
-         //                        }
-         //                    });
-
-         //                    console.log('After update - selectedPermissionIDs:', selectedPermissionIDs);
-         //                } else {
-         //                    // If no removed or additional permissions, update selectedPermissionIDs with existing permissions
-         //                    console.log('Only roles data:', selectedPermissionIDs);
-         //                    selectedPermissionIDs = JSON.parse(data.permissions);
-         //                }
-
-         //                // Set IsEditData to false
-         //                IsEditData = false;
-         //            }
-
-
-
-
-
-         //            console.log('Roles data:',selectedPermissionIDs);
-         //            if (Array.isArray(selectedPermissionIDs)) {
-         //                var treeData = transformToJSTreeFormats(responseData);
-         //                $('#treeContainer').jstree("destroy").empty();
-         //                $('#treeContainer').jstree({
-         //                    'core': {
-         //                        'data': treeData,
-         //                        'themes': {
-         //                            'dots': true
-         //                        },
-         //                        'multiple': true,
-         //                        'animation': true,
-         //                        'check_callback': true
-         //                    },
-         //                    'checkbox': {
-         //                        'keep_selected_style': false,
-         //                        'tie_selection': true
-         //                    },
-         //                    'plugins': ['checkbox', 'wholerow']
-         //                }).on('ready.jstree', function (e, data) {
-                          
-         //                    selectedPermissionIDs.forEach(function (id) {
-         //                        console.log("id.toString()", id.toString())
-         //                        data.instance.select_node(id.toString());
-         //                    });
-         //                }).on('changed.jstree', function (e, data) {
-         //                    selectedPermissionIDsUpdate = [];
-
-         //                    for (i = 0, j = data.selected.length; i < j; i++) {
-
-         //                        var node = data.instance.get_node(data.selected[i]);
-         //                        if (node && node.children.length === 0) {
-         //                            selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
-         //                        }
-         //                        //console.log('node:', node);
-         //                    }
-         //                    console.log('roles Data and Additional Data :', selectedPermissionIDsUpdate)
-         //                });
-         //            } else {
-         //                console.error('responseData.features is not an array:', responseData.features);
-         //            }
-         //        })
-         //        .catch(function (error) {
-         //            console.error('Error:', error);
-         //        });
-         //}
          function transformToJSTreeFormats(data) {
              return data.map(function (item) {
 
@@ -1396,93 +1347,79 @@
          var additionalPermissions = [];
          var removedPermissions = [];
 
-         var IsEditData =false;
+        // var IsEditData =false;
+         async function FetchDataForEdit(moduleId) {
+             try {
+                 const responseData = await ApiCallById(getUsersByIdUrl, token, moduleId);
+                 const data = responseData.data;
+                 //IsEditData = true; // Set edit mode
 
-         function FetchDataForEdit(moduleId) {
-             // Make API call to fetch user data based on moduleId
-             ApiCallById(getUsersByIdUrl, token, moduleId)
-                 .then(function (responseData) {
-                     var data = responseData.data;
-                     IsEditData = true; // Set edit mode
+                 // Populate form fields
+                 $('#ddlCompany').val(data.companyId).change();
+                 $('#lblHidenUserId').val(data.userId).data('role-id', data.userRoleID);
 
-                     // Populate form fields with fetched data
-                     $('#lblHidenUserId').val(data.userId);
-                     $('#txtFirstName').val(data.firstName);
-                     $('#txtLastName').val(data.lastName);
-                     $('#txtUserName').val(data.userName);
-                     $('#txtUserPassword').val(data.userPassword);
-                     $('#txtUserEmail').val(data.email);
-                     $('#chkIsActive').prop('checked', data.isActive);
-                     $('#chkIsGetUser').prop('checked', data.isGuestUser);
-                     $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
-                     $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
+                 $('#txtFirstName').val(data.firstName);
+                 $('#txtLastName').val(data.lastName);
+                 $('#txtUserName').val(data.userName);
+                 $('#txtUserPassword').val(data.userPassword);
+                 $('#txtUserEmail').val(data.email);
+                 $('#chkIsActive').prop('checked', data.isActive);
+                 $('#chkIsGetUser').prop('checked', data.isGuestUser);
+                 $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
+                 $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
 
-                     $('#ddlCompany').val(data.companyId).change();
-                     //$('#ddlCompany').prop('disabled', true);
-                     // Handle permissions and roles
-                     additionalPermissions = [];
-                     removedPermissions = [];
-                     selectedIds = JSON.parse(data.dataAccessPermission);
+                 // Handle additional/removed permissions
+                 additionalPermissions = data.additionalPermissions ? JSON.parse(data.additionalPermissions) : [];
+                 removedPermissions = data.removedPermissions ? JSON.parse(data.removedPermissions) : [];
+                 selectedIds = JSON.parse(data.dataAccessPermission);
 
-                     if (data.additionalPermissions.length > 0) {
-                         additionalPermissions = JSON.parse(data.additionalPermissions);
-                     }
+                 const GuestUser = data.isGuestUser;
+                 $('#chkIsGetUser').prop('checked', GuestUser);
 
-                     if (data.removedPermissions.length > 0) {
-                         removedPermissions = JSON.parse(data.removedPermissions);
-                     }
+                 if (GuestUser) {
+                     $('#FirstName, #LastName').show();
+                     $('#ddlReference').hide();
+                 } else {
+                     $('#FirstName, #LastName').hide();
+                     $('#ddlReference').show();
+                 }
 
-                     const GuestUser = data.isGuestUser;
-                     const isChecked = $('#chkIsGetUser').is(':checked');
-
-                     // Handle GuestUser specific logic
-                     if (GuestUser) {
-                         if (!isChecked) {
-                             $('#chkIsGetUser').prop('checked', true);
-                         }
-                         $('#FirstName, #LastName').show(); // Show first name and last name fields
-
-                         // Fetch roles and set the user role after fetching
-                         GetRoles(true,CompanyID).then(() => {
-                             $('select[name="ddlUserRole"]').val(data.userRoleID).change(); // Set the user's role
-                             //$('#ddlUserRole').val(data.userRoleID).change();
-                         }).catch(error => {
-                             console.error('Failed to fetch roles:', error); // Handle role fetching errors
-                         });
-
-                         $('#ddlReference').hide(); // Hide reference field
-                     } else {
-                         if (isChecked) {
-                             $('#chkIsGetUser').prop('checked', false);
-                         }
-                         $('#FirstName, #LastName').hide(); // Hide first name and last name fields
-
-                         // Fetch roles and set the user role after fetching
-                         GetRoles(false,CompanyID).then(() => {
-                             $('select[name="ddlUserRole"]').val(data.userRoleID).change(); // Set the user's role
-                             //$('#ddlUserRole').val(data.userRoleID).change();
-                         }).catch(error => {
-                             console.error('Failed to fetch roles:', error); // Handle role fetching errors
-                         });
-
-                         $('#ddlReference').show(); // Show reference field
-                     }
-
-                     console.log(GuestUser);
-
-                     // Change the button label to 'Update'
-                     $('#btnSave').html('Update');
-
-                     BoxExpland(); // Additional UI logic if needed
-                 })
-                 .catch(function (error) {
-                     console.error('Error:', error); // Handle API errors
-                 });
+                 // Change button label
+                 $('#btnSave').html('Update');
+                 BoxExpland();
+                 console.log("User data fetched successfully:", data);
+             } catch (error) {
+                 console.error('Error while fetching user data:', error);
+             }
          }
+
+         $('#ddlCompany').change(async function () {
+             const selectedCompanyId = $(this).val();
+
+             if (selectedCompanyId) {
+                 try {
+
+                     if (IsAdministrator == true) {
+                          await GetEmployee(selectedCompanyId);
+                          await GetStpPkgFeatures(selectedCompanyId);
+                     }
+                     await GetRoles(false, selectedCompanyId);
+                     const userRoleId = $('#lblHidenUserId').data('role-id');
+                     $('select[name="ddlUserRole"]').val(userRoleId).change();
+
+                     await FetchDataRolesWise(userRoleId, true);
+                 } catch (error) {
+                     console.error("Error occurred during company change operations:", error);
+                 }
+             } else {
+                 console.warn("No company selected.");
+             }
+         });
+
 
 
          function FetchDataForView(moduleId) {
-             ApiCallById(getUsersUrl, token, moduleId)
+             ApiCallById(getInfoViewUrl, token, moduleId)
                  .then(function (responseData) {
                      var data = responseData.data;
                      Swal.fire({

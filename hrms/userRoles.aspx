@@ -33,7 +33,7 @@
                                                                 class="text-danger">*</span></label>
                                                         <div class="support-form__input-id">
                                                             <div class="dm-select ">
-                                                                <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control" onchange="getCompanypackage(this.value)"></asp:DropDownList>
+                                                                <asp:DropDownList runat="server" ID="ddlCompany" ClientIDMode="Static" class="select-search form-control"></asp:DropDownList>
 
                                                             </div>
                                                             <span class="text-danger" id="ddlCompanyError"></span>
@@ -207,10 +207,10 @@
             
         });
 
-        function getCompanypackage(compayId) {
-            var companyId = compayId;
-             GetStpPkgFeatures(companyId);
-        }
+        //function getCompanypackage(compayId) {
+        //    var companyId = compayId;
+        //     GetStpPkgFeatures(companyId);
+        //}
 
         function Cardbox() {
             var CardboxElement = $("#Cardbox");
@@ -331,7 +331,7 @@
          function updateRoles() {
                 var roleId = $('#lblHidenRolesId').val();
                 var txtRole = $('#txtRole').val();
-                //var companyId = $('#ddlCompany').val();
+                var companyId = $('#ddlCompany').val();
                 var dataAccessLevel = parseInt($('#ddlDataAccessLevel').val());
 
                 var ordering = parseInt($('#txtOrdaring').val());
@@ -446,16 +446,12 @@
                 row.serialNo = index + 1;
 
                 // Create the HTML for userRoleName column including actions (View, Edit, Delete)
-                row.userRoleName = `
-            <div class="permission-name-container">
-                ${row.userRoleName}
-                <div class="actions-container">
-                    <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                        <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userRoleId}"><i class="uil uil-eye"></i></a></li>
-                        <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
-                        <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li>
-                    </ul>
-                </div>
+                 row.action = `
+            <div class="actions">
+                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                    <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.userRoleId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li> 
+                </ul>
             </div>
         `;
 
@@ -484,9 +480,10 @@
                { "name": "companyName", "title": "Company Name", "className": "userDatatable-content" },
                 { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
                 { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
-                { "name": "dataAccessLevel", "title": "Data Access Level", "className": "userDatatable-content" },
+                { "name": "dataAccessLevel", "title": "Access Level", "className": "userDatatable-content" },
                 { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                 { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
+                  { "name": "action", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" },
             ];
 
             // Step 6: Initialize Footable with the columns and data, enable filtering
@@ -527,11 +524,11 @@
             });
 
             // Clear and re-attach the view button click event
-            $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
-                const userRoleId = $(this).data('id');
-                console.log('View button clicked for userRoleId:', userRoleId);
-                // You can add your view logic here
-            });
+            //$('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+            //    const userRoleId = $(this).data('id');
+            //    console.log('View button clicked for userRoleId:', userRoleId);
+            //    // You can add your view logic here
+            //});
 
             // Clear and re-attach the feature button click event
             $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
@@ -643,26 +640,34 @@
 
         var selectedPermissionIDsUpdate = []
 
-        function FetchDataForEdit(moduleID) {
+        async function FetchDataForEdit(moduleID) {
             ApiCallById(getRolesByIdUrl, token, moduleID)
                 .then(function (response) {
                     console.log('Data:', response);
                     var data = response.data;
+                    $('#ddlCompany').val(data.companyId).change();
                     $('#lblHidenRolesId').val(data.userRoleId);
                     $('#txtRole').val(data.userRoleName);
                     $('select[name="ddlDataAccessLevel"]').val(data.dataAccessLevel).change();
                     //$('select[name="ddlCompany"]').val(data.companyId).change();
-                    $('#ddlCompany').prop('disabled', true);
+
+        
+                    //$('#ddlCompany').prop('disabled', true);
+          
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');
                     BoxExpland();
                     var selectedPermissionIDs = JSON.parse(data.permissions);
+                       
                     if (Array.isArray(selectedPermissionIDs)) {
+                           setTimeout(function () {
                         var treeData = transformToJSTreeFormats(responseData);
+
                         $('#treeContainer').jstree("destroy").empty();
+
                         $('#treeContainer').jstree({
-                            'core': {
+                            'core': {   
                                 'data': treeData,
                                 'themes': {
                                     'dots': true
@@ -677,6 +682,7 @@
                             },
                             'plugins': ['checkbox', 'wholerow']
                         }).on('ready.jstree', function (e, data) {
+                            console.log('selected Roles PermissionIDs', selectedPermissionIDs);
                             selectedPermissionIDs.forEach(function (id) {
                                 //console.log("id.toString()", id.toString())
                                 data.instance.select_node(id.toString());
@@ -693,7 +699,10 @@
                                 //console.log('node:', node);
                             }
                             //console.log('petch Child Node IDs:', selectedPermissionIDsUpdate)
-                        });
+                                   });
+
+                               }, 1500); 
+
                     } else {
                         console.error('responseData.features is not an array:', responseData.features);
                     }
@@ -724,7 +733,23 @@
             });
         }
 
-      
+
+         $('#ddlCompany').change(async function () {
+             const selectedCompanyId = $(this).val();
+
+             if (selectedCompanyId) {
+                 try {
+
+                   GetStpPkgFeatures(selectedCompanyId);
+
+                 } catch (error) {
+                     console.error("Error occurred during company change operations:", error);
+                 }
+             } else {
+                 console.warn("No company selected.");
+             }
+         });
+
 
 
 

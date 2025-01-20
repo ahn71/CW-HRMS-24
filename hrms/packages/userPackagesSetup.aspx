@@ -164,8 +164,9 @@
         var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
         var GetPackagesUrl = rootUrl + '/api/UserPackages/packages';
         var GetPackageSetupsUrl = rootUrl + '/api/UserPackagesSetup/SetupPackage';
+        var GetSetupPackageByIdUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup';
         var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';
-         var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
+        var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
         var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
         var DeleteUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/delete';
         var token = '<%= Session["__UserToken__"] %>';
@@ -381,16 +382,17 @@
           var responseData = null;
         var selectedPermissionIDsUpdate = [];
         function FetchDataForEdit(moduleID) {
-            ApiCallById(GetByIdPackagesUrl, token, moduleID)
+            ApiCallById(GetSetupPackageByIdUrl, token, moduleID)
                 .then(function (response) {
                     console.log('Data:', response);
                     $('#loaderPackages').show();
                     var data = response.data;
-                    $('#lblHidenPksId').val(data.id);
-                    //$('#txtPackagesName').val(data.packageName);
-                    //$('#txtOrdaring').val(data.ordering);
-                    //$('#chkIsActive').prop('checked', data.isActive);
-                    //$('#btnSave').html('Update');
+                    $('#lblHidenPksId').val(data.psid);
+                    $('#ddlCompany').val(data.companyId).change();
+                    $('#ddlPackages').val(data.packageId).change();
+                    $('#txtOrdaring').val(data.ordering);
+                    $('#chkIsActive').prop('checked', data.isActive);
+                    $('#btnSave').html('Update');
                     //BoxExpland();
                     var selectedPermissionIDs = JSON.parse(data.features);
                     if (Array.isArray(selectedPermissionIDs)) {
@@ -413,7 +415,6 @@
                             'plugins': ['checkbox', 'wholerow']
                         }).on('ready.jstree', function (e, data) {
                             selectedPermissionIDs.forEach(function (id) {
-                                console.log("id.toString()", id.toString())
                                 data.instance.select_node(id.toString());
                             });
                         }).on('changed.jstree', function (e, data) {
@@ -425,9 +426,7 @@
                                 if (node && node.children.length === 0) {
                                     selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
                                 }
-                                console.log('node:', node);
                             }
-                            console.log('petch Child Node IDs:', selectedPermissionIDsUpdate)
                             });
                         $('#loaderPackages').hide();
                     } else {
@@ -459,6 +458,50 @@
                 };
             });
         }
+
+        function updateSetupPackages() {
+            var PsgSetupId = parseInt($('#lblHidenPksId').val(), 10);
+
+            var packageId = parseInt($('#ddlPackages').val(), 10);
+            var companyId = $('#ddlCompany').val();
+            var isActive = $('#chkIsActive').is(':checked');
+            var treeInstance = $('#treeContainer').jstree(true);
+
+            var jsonString = JSON.stringify(selectedPermissionIDsUpdate);
+            console.log(jsonString);
+
+            var updateData = {
+                packageId: packageId,
+                companyId: companyId,
+                features: jsonString,
+                isActive: isActive,
+            };
+
+            ApiCallUpdate(updatePackagesUrl, token, updateData, PsgSetupId)
+                .then(function (response) {
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Data updated successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            GetModule();
+                            GetPackages();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        }
+
+
         function ValidateAndPostModule() {
             var isValid = true;
             if ($('#ddlCompany').val() =="0") {
@@ -484,11 +527,12 @@
                     //ClearTextBox();
                 }
                 else {
-                    //updatePackages();
+                    updateSetupPackages();
                     //ClearTextBox();
                 }
             }
         }
+
         function GetPackagesSetupList() {
             ApiCall(GetPackageSetupsUrl, token)
                 .then(function (response) {
