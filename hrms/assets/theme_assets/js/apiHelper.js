@@ -12,16 +12,12 @@ function ApiCall(url, token) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                console.log(status);
-                var message = xhr.responseJSON.message
-                console.log('Error occurred while fetching data:', status, error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: message
-                });
-
-                reject(error);
+                //console.log(status);
+                //var message = xhr.responseJSON.message
+                //console.log('Error occurred while fetching data:', message);
+                var message = xhr.responseJSON.message;
+                console.error('Error occurred while fetching data:', message);
+                reject({ message: message, status: status, error: error });
             }
         });
     });

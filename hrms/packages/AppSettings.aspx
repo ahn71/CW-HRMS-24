@@ -73,7 +73,16 @@
           </div>
         </a>
       </div>
-
+        <div class="col-lg-3 col-md-6">
+            <a href="/hrms/settings/companySetup.aspx" class="text-decoration-none">
+                <div class="card h-100 shadow-sm">
+                    <i class="fas fa-tools"></i>
+                    <div class="card-body">
+                        <h5 class="card-title">Company Setup</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
   </div>
 

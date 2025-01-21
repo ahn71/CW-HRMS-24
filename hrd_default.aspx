@@ -23,10 +23,9 @@
         <% if (IsRouteExists("settings"))
             { %>
 
-        <div class="col-lg-12" style="margin-top: 10%">
+        <div class="col-lg-12" style="margin-top: 20px">
             <div class="row">
 
-                <div class=" col-md-2"></div>
                 <% if (IsRouteExists("settings/department"))
                     { %>
                 <div class="col-md-2">
@@ -62,13 +61,7 @@
                 </div>
                 <%} %>
 
-
-                <div class=" col-md-2"></div>
-            </div>
-
-            <div class="row">
-
-              <div class=" col-md-2"></div>
+           
 
                 <% if (IsRouteExists("settings/religion"))
                     { %>
@@ -89,15 +82,9 @@
                         District</a>
                 </div>
                 <%} %>
-                <div class=" col-md-2"></div>
-            </div>
-
-            <div class="row">
-
-                <div class=" col-md-2"></div>
                 <% if (IsRouteExists("settings/thana"))
                     { %>
-                <div class=" col-md-2  ">
+                <div class=" col-md-2">
 
                     <a class="ds_Settings_Basic_Text" href="/settings/thana">
                         <img class="image_width_for_module" src="/images/common/thana add.ico" /><br />
@@ -123,25 +110,8 @@
                         Line/Group</a>
                 </div>
                 <%} %>
-                <% if (IsRouteExists("settings/company"))
-                    { %>
-                <div class=" col-md-2  ">
-
-                    <a class="ds_Settings_Basic_Text" href="/settings/company">
-                        <img class="image_width_for_module" src="/images/common/company.ico" /><br />
-                        Company</a>
-                </div>
-                <%} %>
-                <div class=" col-md-2"></div>
-            </div>
-
-
-            <div class="row">
-
                 <% if (IsRouteExists("settings/others"))
                     { %>
-                <div class=" col-md-2"></div>
-
                 <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/others">
                         <img class="image_width_for_module" src="/images/common/others.ico" /><br />
@@ -176,20 +146,7 @@
 
                 </div>
                 <%} %>
-                <%-- <div class=" col-md-2  ">
 
-                      <a class="ds_Settings_Basic_Text" href="/hrd/CompanyInfo.aspx"><img class="image_width_for_module" src="images/common/company.ico" /><br />Company</a> 
-                 </div>
-                   <div class=" col-md-2  ">
-
-                     <a class="ds_Settings_Basic_Text" href="/hrd/others_settings.aspx"><img class="image_width_for_module" src="images/common/others.ico" /><br />Others</a> 
-                 </div>--%>
-                <div class=" col-md-2"></div>
-
-
-                
-               
-            </div>
 
              <div class=" col-md-2  ">
                     <a class="ds_Settings_Basic_Text" href="/settings/qualification">
@@ -197,7 +154,8 @@
                         Bank Entry</a>
 
                 </div>
-        </div>
+           </div>
+        
         <%} %>
     </div>
 </asp:Content>

@@ -94,11 +94,24 @@
                                            </div>
                                        </div>
                                        <div class="col-lg-4">
+                                           <div class="form-group">
+                                               <label for="ddlUserRole" class="color-dark fs-14 fw-500 align-center mb-10">User Role<span class="text-danger">*</span></label>
+                                               <div class="support-form__input-id">
+                                                   <div class="dm-select ">
+                                                       <select name="ddlUserRole" id="ddlUserRole" class="select-search form-control">
+                                                           <option value="0">---Select---</option>
+                                                       </select>
+                                                   </div>
+                                                   <span class="text-danger" id="roleError"></span>
+                                               </div>
+                                           </div>
+                                       </div>
+                                       <div class="col-lg-4">
                                    <div class="form-group">
                                        <label for="txtUserName" class="color-dark fs-14 fw-500 align-center mb-10">
-                                           User Name <span class="text-danger">*</span>
+                                           Username (Email) <span class="text-danger">*</span>
                                        </label>
-                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtUserName" placeholder="Type User Name">
+                                       <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtUserName" placeholder="user@example.com">
                                        <span class="text-danger" id="userNameError"></span>
                                    </div>
                                </div>
@@ -111,7 +124,7 @@
                                        <span class="text-danger" id="userPasswordError"></span>
                                    </div>
                                </div>
-                               <div class="col-lg-4">
+<%--                               <div class="col-lg-4">
                                    <div class="form-group">
                                        <label for="txtUserEmail" class="color-dark fs-14 fw-500 align-center mb-10">
                                            User Email <span class="text-danger">*</span>
@@ -119,20 +132,8 @@
                                        <input type="email" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtUserEmail" placeholder="Type User Email">
                                        <span class="text-danger" id="userEmailError"></span>
                                    </div>
-                               </div>
-                               <div class="col-lg-4">
-                                 <div class="form-group">
-                                     <label for="ddlUserRole" class="color-dark fs-14 fw-500 align-center mb-10">User Role<span class="text-danger">*</span></label>
-                                     <div class="support-form__input-id">
-                                         <div class="dm-select ">
-                                             <select name="ddlUserRole" id="ddlUserRole" class="select-search form-control">
-                                                 <option value="0">---Select---</option>
-                                             </select>
-                                         </div>
-                                           <span class="text-danger" id="roleError"></span>
-                                     </div>
-                                 </div>
-                              </div>
+                               </div>--%>
+                      
 
 <%--                                       <div class="col-lg-4 " id="departmentcheck">
                                            <div class="form-group">
@@ -169,7 +170,7 @@
                                                    </label>
                                                    <div class="radio-horizontal-list d-flex">
                                                        <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                                           <input type="checkbox" checked class="form-check-input" id="chkIsAuthPerm">
+                                                           <input type="checkbox" class="form-check-input" id="chkIsAuthPerm">
                                                            <label class="form-check-label" for="chkIsAuthPerm"></label>
                                                        </div>
                                                    </div>
@@ -413,17 +414,32 @@
                  $('#lastNameError').html("");
              }
 
-             if ($('#txtUserName').val().trim() === "") {
-                 $('#userNameError').html("User Name is required.");
+             //if ($('#txtUserName').val().trim() === "") {
+             //    $('#userNameError').html("User Name is required.");
+             //    $("#txtUserName").focus();
+             //    isValid = false;
+             //} else if ($('#txtUserName').val().trim().length < 6) {
+             //    $('#userNameError').html("User Name must be at least 6 characters.");
+             //    $("#txtUserName").focus();
+             //    isValid = false;
+             //} else {
+             //    $('#userNameError').html("");
+             //}
+
+             let userEmail = $('#txtUserName').val().trim();
+             if (userEmail === "") {
+                 $('#userNameError').html("User Email is required.");
                  $("#txtUserName").focus();
                  isValid = false;
-             } else if ($('#txtUserName').val().trim().length < 6) {
-                 $('#userNameError').html("User Name must be at least 6 characters.");
+             } else if (!emailPattern.test(userEmail)) {
+                 $('#userNameError').html("Please enter a valid email address.");
                  $("#txtUserName").focus();
                  isValid = false;
              } else {
                  $('#userNameError').html("");
              }
+
+
 
              if ($('#txtUserPassword').val().trim() === "") {
                  $('#userPasswordError').html("Password is required.");
@@ -437,18 +453,6 @@
                  $('#userPasswordError').html("");
              }
 
-             let userEmail = $('#txtUserEmail').val().trim();
-             if (userEmail === "") {
-                 $('#userEmailError').html("Email is required.");
-                 $("#txtUserEmail").focus();
-                 isValid = false;
-             } else if (!emailPattern.test(userEmail)) {
-                 $('#userEmailError').html("Please enter a valid email address.");
-                 $("#txtUserEmail").focus();
-                 isValid = false;
-             } else {
-                 $('#userEmailError').html("");
-             }
 
              let selectedRole = $('#ddlUserRole').val();
              if (selectedRole == "0") {
@@ -457,6 +461,15 @@
                  isValid = false;
              } else {
                  $('#roleError').html("");
+             }
+             if ($('#treeContainer').is(':hidden')) {
+                 isValid = false;
+                 Swal.fire({
+                     icon: 'warning',
+                     title: 'Setup Required',
+                     text: 'Please set up the package before creating the role.',
+                     confirmButtonText: 'OK'
+                 });
              }
 
              // If validation passes, proceed with save or update
@@ -611,18 +624,24 @@
             
          }
          function GetEmployee(companyId) {
-             ApiCall(getEmployeeUrl+ '?CompanyId=' + companyId, token)
+             ApiCall(getEmployeeUrl + '?CompanyId=' + companyId, token)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;
                          EmployeePopulateDropdown(responseData)
                      } else {
                          console.error('Error occurred while fetching data:', response.message);
+                         const dropdown = document.getElementById('ddlReferenceEmp');
+                         dropdown.innerHTML = '<option value="0">---Select---</option>';
                      }
                  })
                  .catch(function (error) {
                      $('.loaderCosting').hide();
                      console.error('Error occurred while fetching data:', error);
+                     const dropdown = document.getElementById('ddlReferenceEmp');
+                     dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear dropdown
+                     console.error('Error occurred while fetching data:', error);
+
                  });
          }
          function EmployeePopulateDropdown(data) {
@@ -735,7 +754,7 @@
                  { "name": "userImage", "title": "User", "className": "userDatatable-content" },
                   { "name": "companyName", "title": "Company", "className": "userDatatable-content" },
                  { "name": "dataAccessLevel", "title": "Access Level", "className": "userDatatable-content" },
-                 { "name": "email", "title": "Email", "className": "userDatatable-content" },
+                 //{ "name": "email", "title": "Email", "className": "userDatatable-content" },
                  { "name": "isGuestUser", "title": "Guest User", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isApprovingAuthority", "title": "Authority", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                  { "name": "isActive", "title": "Status", "sortable": false, "filterable": false, "className": "userDatatable-content" },
@@ -854,6 +873,14 @@
                      $('#treeContainer').hide();
                         $('.loaderPackages').hide();
                      console.error('Error occurred while fetching data:', error.message || error);
+                    
+                     Swal.fire({
+                          icon: 'warning',
+                          title: 'Warning',
+                         text: error.message || 'An unexpected error occurred.'
+                     });
+
+
                  });
          }
           function transformToJSTreeFormat(data) {
@@ -1166,7 +1193,7 @@
              var lastName = $('#txtLastName').val().trim();
              var userName = $('#txtUserName').val().trim();
              var userPassword = $('#txtUserPassword').val().trim();
-             var userEmail = $('#txtUserEmail').val().trim();
+             var userEmail = $('#txtUserName').val().trim();
              var userRole = parseInt($('#ddlUserRole').val());
              var isActive = $('#chkIsActive').is(':checked');
              var isGuest = $('#chkIsGetUser').is(':checked');
@@ -1254,7 +1281,7 @@
                  var lastName = $('#txtLastName').val().trim();
                  var userName = $('#txtUserName').val().trim();
                  var userPassword = $('#txtUserPassword').val().trim();
-                 var userEmail = $('#txtUserEmail').val().trim();
+                 var userEmail = $('#txtUserName').val().trim();
                  var userRole = parseInt($('#ddlUserRole').val());
                  var isActive = $('#chkIsActive').is(':checked');
                  var isGuest = $('#chkIsGetUser').is(':checked');
@@ -1362,7 +1389,7 @@
                  $('#txtLastName').val(data.lastName);
                  $('#txtUserName').val(data.userName);
                  $('#txtUserPassword').val(data.userPassword);
-                 $('#txtUserEmail').val(data.email);
+                 //$('#txtUserEmail').val(data.email);
                  $('#chkIsActive').prop('checked', data.isActive);
                  $('#chkIsGetUser').prop('checked', data.isGuestUser);
                  $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
@@ -1399,10 +1426,10 @@
              if (selectedCompanyId) {
                  try {
 
-                     if (IsAdministrator == true) {
-                          await GetEmployee(selectedCompanyId);
-                          await GetStpPkgFeatures(selectedCompanyId);
-                     }
+                    
+                     await GetEmployee(selectedCompanyId);
+                     await GetStpPkgFeatures(selectedCompanyId);
+
                      await GetRoles(false, selectedCompanyId);
                      const userRoleId = $('#lblHidenUserId').data('role-id');
                      $('select[name="ddlUserRole"]').val(userRoleId).change();
@@ -1516,7 +1543,7 @@
              $('#txtLastName').val("");
              $('#txtUserName').val("");
              $('#txtUserPassword').val("");
-             $('#txtUserEmail').val("");
+             //$('#txtUserEmail').val("");
              $('select[name="ddlUserRole"]').val('0').change();
              $('select[name="ddlReferenceEmp"]').val('0').change();
              $('#txtPermissionName').val("");

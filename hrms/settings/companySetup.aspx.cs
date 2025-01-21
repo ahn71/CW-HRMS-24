@@ -265,8 +265,8 @@ namespace SigmaERP.hrms.settings
             try
             {
                 SqlCommand cmd = new SqlCommand(
-                    "INSERT INTO HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo, StartCardNo, Weekend, Status, ShortName, CardNoType, FlatCode, CardNoDigits, AttMachineName, RegistrationId, EstablishmentId) " +
-                    "VALUES (@CompanyId, @CompanyType, @HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType, @MultipleBranch, @Comments, @CompanyLogo, @StartCardNo, @Weekend, @Status, @ShortName, @CardNoType, @FlatCode, @CardNoDigits, @AttMachineName, @RegistrationId, @EstablishmentId)",
+                    "INSERT INTO HRD_CompanyInfo (CompanyId, CompanyType, HeadOfficeId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BusinessType, MultipleBranch, Comments, CompanyLogo, StartCardNo, Weekend, Status,Email, ShortName, CardNoType, FlatCode, CardNoDigits, AttMachineName, RegistrationId, EstablishmentId) " +
+                    "VALUES (@CompanyId, @CompanyType, @HeadOfficeId, @CompanyName, @CompanyNameBangla, @Address, @AddressBangla, @Country, @Telephone, @Fax, @DefaultCurrency, @BusinessType, @MultipleBranch, @Comments, @CompanyLogo, @StartCardNo, @Weekend, @Status,@Email, @ShortName, @CardNoType, @FlatCode, @CardNoDigits, @AttMachineName, @RegistrationId, @EstablishmentId)",
                     sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@CompanyId", txtCompanyId.Text.Trim());
@@ -288,6 +288,7 @@ namespace SigmaERP.hrms.settings
                 cmd.Parameters.AddWithValue("@StartCardNo", txtStartCardNo.Text);
                 cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedItem.Text);
                 cmd.Parameters.AddWithValue("@Status", ddlCmpStatus.SelectedValue);
+                cmd.Parameters.AddWithValue("@Email", txtCompanyEmail.Text.Trim());
                 cmd.Parameters.AddWithValue("@ShortName", txtShortName.Text.ToUpper());
                 cmd.Parameters.AddWithValue("@CardNoType", rblCardNoType.SelectedValue);
                 cmd.Parameters.AddWithValue("@FlatCode", rblCardNoType.SelectedValue == "0" ? txtFladCode.Text.Trim() : "0");

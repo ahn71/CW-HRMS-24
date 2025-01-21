@@ -125,7 +125,7 @@
                                                     <!-- Address -->
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                                                         <div class="form-group">
-                                                            <label for="txtAddress" class="color-dark fs-14 fw-500 align-center mb-10">Address</label>
+                                                            <label for="txtAddress" class="color-dark fs-14 fw-500 align-center mb-10">Address<span class="text-danger">*</span></label>
                                                             <asp:TextBox ID="txtAddress" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15" TextMode="MultiLine">
 
                                                             </asp:TextBox>
@@ -142,7 +142,7 @@
                                                     </div>
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                                                         <div class="form-group">
-                                                            <label for="txtCountry" class="color-dark fs-14 fw-500 align-center mb-10">Country</label>
+                                                            <label for="txtCountry" class="color-dark fs-14 fw-500 align-center mb-10">Country<span class="text-danger">*</span></label>
                                                             <asp:TextBox ID="txtCountry" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"></asp:TextBox>
                                                             <span class="text-danger" id="txtCountryError"></span>
                                                         </div>
@@ -151,7 +151,7 @@
                                                     <!-- Telephone -->
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                                                         <div class="form-group">
-                                                            <label for="txtTelephone" class="color-dark fs-14 fw-500 align-center mb-10">Phone</label>
+                                                            <label for="txtTelephone" class="color-dark fs-14 fw-500 align-center mb-10">Phone<span class="text-danger">*</span></label>
                                                             <asp:TextBox ID="txtTelephone" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15"></asp:TextBox>
                                                              <span class="text-danger" id="txtTelephoneError"></span>
 
@@ -262,7 +262,7 @@
                                                             </div>
                                                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                                                                 <div class="form-group">
-                                                                    <label for="txtCompanyEmail" class="color-dark fs-14 fw-500 align-center mb-10">Email</label>
+                                                                    <label for="txtCompanyEmail" class="color-dark fs-14 fw-500 align-center mb-10">Email<span class="text-danger">*</span></label>
                                                                     <asp:TextBox ID="txtCompanyEmail" TextMode="Email" placeholder="company@gmail.com" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width"></asp:TextBox>
                                                                     <span class="text-danger" id="txtCompanyEmailErrpr"></span>
                                                                 </div>
@@ -284,7 +284,7 @@
                                                             </div>
                                                             <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12" runat="server">
                                                             <div class="form-group">
-                                                            <label for="txtFladCode" runat="server" id="lblFladCode" class="color-dark fs-14 fw-500 align-center mb-10">Flat Code</label>
+                                                            <label for="txtFladCode" runat="server" id="lblFladCode" class="color-dark fs-14 fw-500 align-center mb-10">Flat Code<span class="text-danger">*</span></label>
                                                             <asp:TextBox ID="txtFladCode" Font-Bold="true" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width" Style="width: 25%; float: left; color: red;" MaxLength="2">99</asp:TextBox>
                                                                  <span class="text-danger" id="txtFladCodeError"></span>
                                                             <asp:TextBox ID="txtStartCardNo" ClientIDMode="Static" Font-Bold="true" placeholder="Start Card No" runat="server" CssClass="form-control ih-medium ip-light radius-xs b-light px-15 text_box_width" Width="71%"></asp:TextBox>

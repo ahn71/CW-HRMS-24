@@ -1,5 +1,10 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userPackagesSetup.aspx.cs" Inherits="SigmaERP.hrms.userPackagesSetup" EnableEventValidation="false"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+        <style>
+        td{
+            text-align:left;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
      <main class="main-content">
@@ -36,7 +41,7 @@
                                                 class="text-danger">*</span></label>
                                         <div class="support-form__input-id">
                                             <div class="dm-select ">
-                                                <select name="ddlPackages" id="ddlPackages" class="select-search form-control">
+                                                <select name="ddlPackages" id="ddlPackages" class="select-search form-control"  onchange="handlePackageChange(false, this.value)">
                                                     <option value="0">---Select---</option>
                                                 </select>
                                             </div>
@@ -44,42 +49,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-lg-2">
-                                    <div class="form-group">
-                                        <label for="txtOrdaring" class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Ordering <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtOrdaring" placeholder="Type Ordering">
-                                        <span class="text-danger" id="orderingError"></span>
-                                    </div>
-                                </div>
-                                <%--      <div class="col-lg-3">
-                                        <input style="opacity: 0" type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="">
-                                        <div class="form-group d-flex">
-                                            <label for="chkIsActive" class="color-dark fs-14 fw-500 align-center">
-                                                Status <span class="text-danger"></span>
-                                            </label>
-                                            <div class="radio-horizontal-list d-flex">
-                                                <div class="form-check form-switch form-switch-primary form-switch-sm mx-3">
-                                                    <input type="checkbox" checked class="form-check-input" id="chkIsActive">
-                                                    <label class="form-check-label" for="chkIsActive"></label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-1">
-                                        <label style="opacity: 0;" for="formGroupExampleInput"
-                                            class="color-dark fs-14 fw-500 align-center mb-10">
-                                            Name <span
-                                                class="text-danger"></span>
-                                        </label>
-                                        <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
-                                            class="btn btn-primary btn-default btn-squared px-30">Save</button>
-                                    </div>
-                                    </div>--%>
-
-                               
                                 <div class="col-lg-4" id="treeSection">
                                     <p>Select features and permission</p>
                                     <div class="loader-size loaderPackages " style="display: none">
@@ -167,7 +136,7 @@
         var GetSetupPackageByIdUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup';
         var PostPackagesSetUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/create';
         var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=${IsAdministrator}&companyId=${CompanyID}`;
-        var updatePackagesUrl = rootUrl + '/api/UserPackages/Packages/update';
+        var updatePackagesUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/update';
         var DeleteUrl = rootUrl + '/api/UserPackagesSetup/packagesSetup/delete';
         var token = '<%= Session["__UserToken__"] %>';
         console.log('this is token you can use it :', token);
@@ -176,12 +145,7 @@
         $(document).ready(function () {
 
             $('#treeContainer').hide();
-            $('#ddlPackages').change(function () {
-                var selectedValue = $(this).val();
-              
-                FetchDataForEdit(selectedValue);
-                $('#treeContainer').show();
-            });
+
             GetCompanys();
             GetPackages();
             GetPackagesSetupList();
@@ -203,7 +167,43 @@
                 }, 100);
             }
 
+
+
+            if (!$('#ddlPackages').data('change-bound')) {
+                $('#ddlPackages').on('change', function (event, customParam) {
+                    customParam = customParam === undefined ? false : customParam;
+                    if (customParam != true) {
+                        const selectedPackageId = $(this).val();
+                        GetPackagesFeatures(selectedPackageId);
+                    }
+                });
+                $('#ddlPackages').data('change-bound', true);
+            }
+
         });
+
+        function handlePackageChange(isEditMode, packageId) {
+            console.log('Update mode: Package selected - ' + packageId);
+            if (!$('#ddlPackages').data('change-bound')) {
+                $('#ddlPackages').on('change', function (event, customParam) {
+                    customParam = customParam === undefined ? false : customParam;
+
+                    if (customParam === true) {
+                        console.log('Change event triggered with true');
+                    } else {
+                        const selectedPackageId = $(this).val();
+                        GetPackagesFeatures(selectedPackageId);
+                    }
+                });
+                $('#ddlPackages').data('change-bound', true);
+            }
+            $('#treeContainer').show();
+        }
+
+
+
+
+
 
                 function transformToJSTreeFormat(data) {
             return data.map(function (item) {
@@ -388,8 +388,15 @@
                     $('#loaderPackages').show();
                     var data = response.data;
                     $('#lblHidenPksId').val(data.psid);
-                    $('#ddlCompany').val(data.companyId).change();
-                    $('#ddlPackages').val(data.packageId).change();
+                    //$('#ddlCompany').val(data.companyId).change();
+                    $('#ddlCompany').val(data.companyId).change().prop('disabled', true);
+                    $('#ddlPackages')
+                        .val(data.packageId)
+                        .trigger('change', true);
+
+                    //handlePackageChange(true, data.packageId);
+                    //GetPackagesFeatures(data.packageId);
+                    $('#treeContainer').show();
                     $('#txtOrdaring').val(data.ordering);
                     $('#chkIsActive').prop('checked', data.isActive);
                     $('#btnSave').html('Update');
@@ -459,6 +466,64 @@
             });
         }
 
+        function GetPackagesFeatures(moduleID) {
+            ApiCallById(GetPackagesUrl, token, moduleID)
+                .then(function (response) {
+                    console.log('Data:', response);
+                    $('#loaderPackages').show();
+                    var data = response.data;
+                    //$('#lblHidenPksId').val(data.psid);
+                    //$('#ddlCompany').val(data.companyId).change();
+                    //$('#ddlCompany').val(data.companyId).change().prop('disabled', true);
+                    //$('#ddlPackages').val(data.packageId).change();
+                    //$('#txtOrdaring').val(data.ordering);
+                    //$('#chkIsActive').prop('checked', data.isActive);
+                    //$('#btnSave').html('Update');
+                    //BoxExpland();
+                    var selectedPermissionIDs = JSON.parse(data.features);
+                    if (Array.isArray(selectedPermissionIDs)) {
+                        var treeData = transformToJSTreeFormats(responseData);
+                        $('#treeContainer').jstree("destroy").empty();
+                        $('#treeContainer').jstree({
+                            'core': {
+                                'data': treeData,
+                                'themes': {
+                                    'dots': true
+                                },
+                                'multiple': true,
+                                'animation': true,
+                                'check_callback': true
+                            },
+                            'checkbox': {
+                                'keep_selected_style': false,
+                                'tie_selection': true
+                            },
+                            'plugins': ['checkbox', 'wholerow']
+                        }).on('ready.jstree', function (e, data) {
+                            selectedPermissionIDs.forEach(function (id) {
+                                data.instance.select_node(id.toString());
+                            });
+                        }).on('changed.jstree', function (e, data) {
+                            selectedPermissionIDsUpdate = [];
+
+                            for (i = 0, j = data.selected.length; i < j; i++) {
+
+                                var node = data.instance.get_node(data.selected[i]);
+                                if (node && node.children.length === 0) {
+                                    selectedPermissionIDsUpdate.push(parseInt(node.id, 10));
+                                }
+                            }
+                            });
+                        $('#loaderPackages').hide();
+                    } else {
+                        console.error('responseData.features is not an array:', responseData.features);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
         function updateSetupPackages() {
             var PsgSetupId = parseInt($('#lblHidenPksId').val(), 10);
 
@@ -471,10 +536,12 @@
             console.log(jsonString);
 
             var updateData = {
-                packageId: packageId,
                 companyId: companyId,
                 features: jsonString,
                 isActive: isActive,
+                packageId: packageId,
+               
+                
             };
 
             ApiCallUpdate(updatePackagesUrl, token, updateData, PsgSetupId)
@@ -486,8 +553,8 @@
                         text: 'Data updated successfully!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            GetModule();
-                            GetPackages();
+                            //GetModule();
+                            //GetPackages();
                         }
                     });
                 })

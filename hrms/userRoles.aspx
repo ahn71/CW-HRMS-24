@@ -1,5 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userRoles.aspx.cs" Inherits="SigmaERP.hrms.userRoles" EnableEventValidation="false" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+ <style>
+     td{
+         text-align:left;
+     }
+ </style>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main class="main-content">
@@ -268,6 +274,18 @@
                  $('#errorDataAccessLevel').html("");
              }
 
+             if ($('#treeContainer').is(':hidden')) {
+                 isValid = false;
+                 Swal.fire({
+                     icon: 'warning',
+                     title: 'Setup Required',
+                     text: 'Please set up the package before creating the role.',
+                     confirmButtonText: 'OK'
+                 });
+             }
+
+   
+        
              if (isValid) {
                  var addnewElement = $("#btnSave").text().trim();
                  if (addnewElement === "Save") {
@@ -481,7 +499,7 @@
                 { "name": "userRoleName", "title": "Role Name", "className": "userDatatable-content" },
                 { "name": "permissions", "title": "Permissions", "className": "userDatatable-content" },
                 { "name": "dataAccessLevel", "title": "Access Level", "className": "userDatatable-content" },
-                { "name": "isActive", "title": "Is Active", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+                { "name": "isActive", "title": "Status", "sortable": false, "filterable": false, "className": "userDatatable-content" },
                 { "name": "ordering", "title": "Ordering", "type": "number", "className": "userDatatable-content" },
                   { "name": "action", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" },
             ];
@@ -601,7 +619,12 @@
               .catch(function (error) {
             $('#treeSection').hide(); 
             $('.loaderPackages').hide();
-            console.log('Error occurred while fetching data:', error);
+                  console.log('Error occurred while fetching data:', error);
+               Swal.fire({
+                  icon: 'warning',
+                  title: 'Warning',
+                  text: error.message || 'An unexpected error occurred.'
+                });
         });
         }
          function transformToJSTreeFormat(data) {
