@@ -1,10 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="companySetup.aspx.cs" Inherits="SigmaERP.hrms.settings.companySetup" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
         <style>
-            /*#ContentPlaceHolder1_MainContent_gvLeaveConfig td, th {
-                text-align: center;
-            }*/
-
+            
            
             .uil-edit{
                 cursor:pointer;
@@ -306,7 +303,9 @@
                                                                 OnClientClick="return validateCompany();"
                                                                 runat="server"
                                                                 Text="Save"
-                                                                OnClick="btnSave_Click"/>
+                                                                OnClick="btnSave_Click"
+                                                                cssClass="btn btn-primary"
+                                                                />
 
 
                                                         </div>
