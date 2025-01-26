@@ -48,8 +48,8 @@
     <Reference Include="AdviitRuntimeScripting">
       <HintPath>Assemblies\AdviitRuntimeScripting.dll</HintPath>
     </Reference>
-    <Reference Include="AjaxControlToolkit">
-      <HintPath>Assemblies\AjaxControlToolkit.dll</HintPath>
+    <Reference Include="AjaxControlToolkit, Version=20.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>packages\AjaxControlToolkit.20.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
     </Reference>
     <Reference Include="BusinessLogicLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -1713,10 +1713,20 @@
     <Content Include="hrms\Leave\leaveYearlySummaryReport.aspx" />
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\packages\modules.aspx" />
+    <Content Include="hrms\settings\bankEntryPanelSetup.aspx" />
+    <Content Include="hrms\settings\businessTypeSetup.aspx" />
     <Content Include="hrms\settings\companySetup.aspx" />
-    <Content Include="hrms\settings\DesignationSetup.aspx" />
+    <Content Include="hrms\settings\departmentSetup.aspx" />
+    <Content Include="hrms\settings\designationSetup.aspx" />
+    <Content Include="hrms\settings\districtSetup.aspx" />
+    <Content Include="hrms\settings\floorSetup.aspx" />
     <Content Include="hrms\settings\gradeSetup.aspx" />
+    <Content Include="hrms\settings\lineGroup.aspx" />
+    <Content Include="hrms\settings\othersSetup.aspx" />
+    <Content Include="hrms\settings\qualificationSetup.aspx" />
+    <Content Include="hrms\settings\religionSetup.aspx" />
     <Content Include="hrms\settings\shiftSetup.aspx" />
+    <Content Include="hrms\settings\thanaSetup.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
     <Content Include="hrms\UI\access\UserCreate.aspx" />
@@ -3720,6 +3730,20 @@
     <Compile Include="hrms\repo\implementations\ZkBiotime.cs" />
     <Compile Include="hrms\repo\repositories\IDevice.cs" />
     <Compile Include="hrms\repo\services\PunchService.cs" />
+    <Compile Include="hrms\settings\bankEntryPanelSetup.aspx.cs">
+      <DependentUpon>bankEntryPanelSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\bankEntryPanelSetup.aspx.designer.cs">
+      <DependentUpon>bankEntryPanelSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\businessTypeSetup.aspx.cs">
+      <DependentUpon>businessTypeSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\businessTypeSetup.aspx.designer.cs">
+      <DependentUpon>businessTypeSetup.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\settings\companySetup.aspx.cs">
       <DependentUpon>companySetup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3727,12 +3751,33 @@
     <Compile Include="hrms\settings\companySetup.aspx.designer.cs">
       <DependentUpon>companySetup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\settings\DesignationSetup.aspx.cs">
-      <DependentUpon>DesignationSetup.aspx</DependentUpon>
+    <Compile Include="hrms\settings\departmentSetup.aspx.cs">
+      <DependentUpon>departmentSetup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\settings\DesignationSetup.aspx.designer.cs">
-      <DependentUpon>DesignationSetup.aspx</DependentUpon>
+    <Compile Include="hrms\settings\departmentSetup.aspx.designer.cs">
+      <DependentUpon>departmentSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\designationSetup.aspx.cs">
+      <DependentUpon>designationSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\designationSetup.aspx.designer.cs">
+      <DependentUpon>designationSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\districtSetup.aspx.cs">
+      <DependentUpon>districtSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\districtSetup.aspx.designer.cs">
+      <DependentUpon>districtSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\floorSetup.aspx.cs">
+      <DependentUpon>floorSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\floorSetup.aspx.designer.cs">
+      <DependentUpon>floorSetup.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\settings\gradeSetup.aspx.cs">
       <DependentUpon>gradeSetup.aspx</DependentUpon>
@@ -3741,12 +3786,47 @@
     <Compile Include="hrms\settings\gradeSetup.aspx.designer.cs">
       <DependentUpon>gradeSetup.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\settings\lineGroup.aspx.cs">
+      <DependentUpon>lineGroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\lineGroup.aspx.designer.cs">
+      <DependentUpon>lineGroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\othersSetup.aspx.cs">
+      <DependentUpon>othersSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\othersSetup.aspx.designer.cs">
+      <DependentUpon>othersSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\qualificationSetup.aspx.cs">
+      <DependentUpon>qualificationSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\qualificationSetup.aspx.designer.cs">
+      <DependentUpon>qualificationSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\religionSetup.aspx.cs">
+      <DependentUpon>religionSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\religionSetup.aspx.designer.cs">
+      <DependentUpon>religionSetup.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\settings\shiftSetup.aspx.cs">
       <DependentUpon>shiftSetup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="hrms\settings\shiftSetup.aspx.designer.cs">
       <DependentUpon>shiftSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\thanaSetup.aspx.cs">
+      <DependentUpon>thanaSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\thanaSetup.aspx.designer.cs">
+      <DependentUpon>thanaSetup.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>

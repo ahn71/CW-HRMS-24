@@ -215,14 +215,14 @@ namespace SigmaERP.classes
             RegisterInitialRoutes(routes);
             foreach (RouteDTO moduleRoute in moduleRoutes)
             {
-                //if (moduleRoute.PhysicalLocation == "~/hrms/user.aspx")
+                //if (moduleRoute.PhysicalLocation == "~/hrd_default.aspx")
                 //{
-                //    //routes.MapPageRoute(moduleRoute.ModuleName, rootURL + moduleRoute.Url, moduleRoute.PhysicalLocation);
+                //    routes.MapPageRoute(moduleRoute.ModuleName, rootURL + moduleRoute.Url, moduleRoute.PhysicalLocation);
 
                 //}
-                
-                
-                 routes.MapPageRoute(moduleRoute.ModuleName, rootURL + moduleRoute.Url, moduleRoute.PhysicalLocation);
+
+
+                routes.MapPageRoute(moduleRoute.ModuleName, rootURL + moduleRoute.Url, moduleRoute.PhysicalLocation);
                 
                
             }

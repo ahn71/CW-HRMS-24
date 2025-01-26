@@ -25,7 +25,7 @@ namespace SigmaERP.hrd
         {
             try
             {
-
+                string test = Session["__topMenuforSettings__"].ToString();
 
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();

@@ -28,17 +28,21 @@ namespace SigmaERP.hrms.settings
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                ViewState["__ReadAction__"] = "0";
-                ViewState["__WriteAction__"] = "0";
-                ViewState["__UpdateAction__"] = "0";
-                ViewState["__DeletAction__"] = "0";
+                //ViewState["__ReadAction__"] = "0";
+                //ViewState["__WriteAction__"] = "0";
+                //ViewState["__UpdateAction__"] = "0";
+                //ViewState["__DeletAction__"] = "0";
 
-                int[] pagePermission = { 235, 236, 237, 238 };
-                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
-                if (!userPagePermition.Any())
-                    Response.Redirect(Routing.defualtUrl);
-
-                setPrivilege(userPagePermition);
+                //int[] pagePermission = { 235, 236, 237, 238 };
+                //int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                //if (!userPagePermition.Any())
+                //    Response.Redirect(Routing.defualtUrl);
+                HttpCookie getCookies = Request.Cookies["userInfo"];
+                string getUserId = getCookies["__getUserId__"].ToString();
+                ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+                ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                //ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "CompanyInfo.aspx", gvCompanyInfo, btnSave);
+                //setPrivilege(userPagePermition);
                 loadCompanyInfoInfo();
                 LoadCompanyId();
                 LoadBusinessType();
@@ -48,7 +52,7 @@ namespace SigmaERP.hrms.settings
                     if (gvCompanyInfo.Rows.Count > 0)
                     {
                         btnSave.Enabled = false;
-                      
+
                     }
                     rblOfficeType.Enabled = false;
                 }
@@ -82,21 +86,21 @@ namespace SigmaERP.hrms.settings
                 //ViewState["__DeletAction__"] = "1";
                 //ViewState["__ReadAction__"] = "1";
                 //ViewState["__UpdateAction__"] = "1";
-                HttpCookie getCookies = Request.Cookies["userInfo"];
-                string getUserId = getCookies["__getUserId__"].ToString();
-                ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                //HttpCookie getCookies = Request.Cookies["userInfo"];
+                //string getUserId = getCookies["__getUserId__"].ToString();
+                //ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+                //ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "CompanyInfo.aspx", gvCompanyInfo, btnSave);
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "CompanyInfo.aspx", gvCompanyInfo, btnSave);
 
-                if (permission.Contains(235))
-                    ViewState["__ReadAction__"] = "1";
-                if (permission.Contains(236))
-                    ViewState["__WriteAction__"] = "1";
-                if (permission.Contains(237))
-                    ViewState["__UpdateAction__"] = "1";
-                if (permission.Contains(238))
-                    ViewState["__DeletAction__"] = "1";
+                //if (permission.Contains(235))
+                //    ViewState["__ReadAction__"] = "1";
+                //if (permission.Contains(236))
+                //    ViewState["__WriteAction__"] = "1";
+                //if (permission.Contains(237))
+                //    ViewState["__UpdateAction__"] = "1";
+                //if (permission.Contains(238))
+                //    ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
 
 

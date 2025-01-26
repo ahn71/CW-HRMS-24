@@ -33,7 +33,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li> <a href="#">/</a></li>
-                         <li><a href="<%= Session["__topMenuforSettings__"] %>">Settings</a></li>
+                         <li><a href="~/hrms/settings" runat="server">Settings</a></li>
                        <li> <a href="#">/</a></li>
                        <li> <a href="#" class="ds_negevation_inactive Ractive">Designation</a></li>
                    </ul>               
@@ -237,7 +237,7 @@
             </div>
         </div>
     </div>
-     <script type="text/javascript">
+    <script type="text/javascript">
 
          //$('#btnNew').click(function () {
          //    clear();

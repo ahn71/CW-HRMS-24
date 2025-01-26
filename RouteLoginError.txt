@@ -167,3 +167,14 @@ Parameter name: virtualPath
 [2025-01-19 10:06:10] Object reference not set to an instance of an object.
 [2025-01-20 10:13:49] Object reference not set to an instance of an object.
 [2025-01-21 10:54:13] Object reference not set to an instance of an object.
+[2025-01-21 17:59:17] A route named 'Settings' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-01-21 17:59:34] A route named 'Settings' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-01-21 18:00:14] A route named 'Settings' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-01-21 18:02:21] A route named 'Settings' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-01-21 18:02:56] A route named 'Settings' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-01-22 13:02:44] Object reference not set to an instance of an object.
