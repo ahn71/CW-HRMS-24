@@ -1,208 +1,472 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="qualificationSetup.aspx.cs" Inherits="SigmaERP.hrms.settings.qualificationSetup" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-       <script src="../scripts/jquery-1.8.2.js"></script>
-        <script type="text/javascript">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
 
-            var oldgridcolor;
-            function SetMouseOver(element) {
-                oldgridcolor = element.style.backgroundColor;
-                element.style.backgroundColor = '#ffeb95';
-                element.style.cursor = 'pointer';
-                // element.style.textDecoration = 'underline';
-            }
-            function SetMouseOut(element) {
-                element.style.backgroundColor = oldgridcolor;
-                // element.style.textDecoration = 'none';
-
-            }
-
-     </script>
     <style>
-        #ContentPlaceHolder1_MainContent_gvQualificationList th:nth-child(4), th:nth-child(3) {
-            text-align:center;
+        td{
+            text-align:left;
+
         }
-        #ContentPlaceHolder1_MainContent_gvQualificationList th:nth-child(1),td:nth-child(1),th:nth-child(2),td:nth-child(2){
-            padding-left:3px;
+
+        @font-face {
+            font-family: 'SutonnyMJ';
+            src: url('https://cdn.example.com/fonts/SutonnyMJ.ttf') format('truetype');
         }
+
+        .sutonny-font {
+            font-family: 'SutonnyMJ', sans-serif;
+        }
+
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <main class="main-content">
+        <div class="Dashbord">
+            <div class="crm mb-25">
+                <div class="container-fulid">
+                    <div class="card card-Vertical card-default card-md mt-4 mb-4">
+                        <div class="card-header d-flex align-items-center">
+                            <div class="card-title d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center gap-3">
+                                    <h4>Add Qualification</h4>
+                                </div>
+                            </div>
 
-    <asp:ScriptManager ID="ScriptManager1" runat="server"></asp:ScriptManager>
-<asp:UpdatePanel ID="uplMessage" runat="server" >
-    <ContentTemplate><p class="message"  id="lblMessage" clientidmode="Static" runat="server"></p></ContentTemplate>
-</asp:UpdatePanel>
-    <asp:HiddenField ID="hdnUpdate" runat="server" ClientIDMode="Static" />
-   
-     <asp:HiddenField ID="upSave" runat="server" ClientIDMode="Static" />
-    <asp:HiddenField ID="upupdate" runat="server" ClientIDMode="Static" />
-    <asp:HiddenField ID="updelete" runat="server" ClientIDMode="Static" />
-    <div class="main_box RBox">
-    	<div class="main_box_header RBoxheader">
-            <h2>Qualification Panel</h2>
-        </div>
-    	<div class="main_box_body Rbody">
-        	<div class="main_box_content">
-                 <asp:UpdatePanel ID="UpdatePanel2" runat="server" UpdateMode="Conditional">
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="btnSave" />
-                                <asp:AsyncPostBackTrigger ControlID="gvQualificationList" />
-                                <asp:AsyncPostBackTrigger ControlID="btnNew" />
-                            </Triggers>
-                            <ContentTemplate>
-                <div class="input_division_info">
-                    <table class="division_table">
-                        <tr>
-                            <td>
-                                Qualification <span class="requerd1">*</span>
-                            </td>
-                            <td>
-                                :
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtQualification" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                বাংলায়
-                            </td>
-                            <td>
-                                :
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtQualificationBn" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width fontF"></asp:TextBox>
-                            </td>
-                        </tr>
-                    </table>
+                            <div class="btn-wrapper">
+                                <div class="dm-button-list d-flex flex-wrap align-items-end">
+                                    <button type="button" id="addnew" onclick="Cardbox();" class="btn btn-secondary btn-default btn-squared">Add New</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: none;" id="Cardbox" class="card-body pb-md-30">
+                            <div class="Vertical-form">
+                                    
+                                    <div class="row">
+                                  
+                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label id="lblHidenId" style="display: none"></label>
+
+                                                <label for="txtQName" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    Qualification Name <span class="text-danger">*</span>
+                                                </label>
+                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light px-15" id="txtQName" placeholder="Type Grade Name">
+                                                <span class="text-danger" id="txtQNameError"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="txtQBangla" class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    বাংলায় <span class="text-danger"></span>
+                                                </label>
+                                               
+
+                                                <asp:TextBox ID="txtQBangla" ClientIDMode="Static" runat="server" CssClass="form-control ih-medium ip-gray radius-xs b-light px-15" Font-Names="SutonnyMJ"></asp:TextBox>
+                                            </div>
+                                        </div>   
+                                        <div class="col-lg-4 col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                             <label style="opacity: 0;" for="formGroupExampleInput"
+                                                    class="color-dark fs-14 fw-500 align-center mb-10">
+                                                    Name <span
+                                                        class="text-danger"></span>
+                                                </label>
+                                                <button type="button" id="btnSave" onclick="ValidateAndPostModule()"
+                                                    class="btn btn-primary btn-default btn-squared px-30">
+                                                    Save</button>
+                                            </div>
+                                        </div>
+
+                                  
+                                    </div>
+
+
+
+
+                         
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                 <div class="button_area Rbutton_area">
-                    <a href="#" onclick="window.history.back()" class="Rbutton">Back</a>
-                    <asp:Button ID="btnNew" ClientIDMode="Static" CssClass="Rbutton"  runat="server" Text="New" OnClick="btnNew_Click"/>
-                    <asp:Button ID="btnSave" ClientIDMode="Static" CssClass="Rbutton"  runat="server" Text="Save" OnClientClick="return validateInputs();" OnClick="btnSave_Click"/>
-                    <asp:Button ID="btnClose" ClientIDMode="Static" CssClass="Rbutton" PostBackUrl="~/hrd_default.aspx"  runat="server" Text="Close" />
-                </div>
-             </ContentTemplate>
-                        </asp:UpdatePanel>
-				 <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
-                    <Triggers>
-                        <asp:AsyncPostBackTrigger ControlID="btnSave" />
-                        <asp:AsyncPostBackTrigger ControlID="gvQualificationList" />
-                    </Triggers>
-                    <ContentTemplate>
-                         <asp:HiddenField ID="hdnbtnStage" runat="server" ClientIDMode="Static" />
-                <div class="show_division_info">
-                     <%--<div id="divQualification" class="datatables_wrapper" runat="server" style="width:100%; height:auto; max-height:500px;overflow:auto;overflow-x:hidden;">--%>
-                         <asp:GridView ID="gvQualificationList" runat="server" DataKeyNames="QId" AllowPaging="True" PageSize="15"  AutoGenerateColumns="False" Width="100%" HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="White" OnPageIndexChanging="gvQualificationList_PageIndexChanging" OnRowDataBound="gvQualificationList_RowDataBound" OnRowCommand="gvQualificationList_RowCommand" OnRowDeleting="gvQualificationList_RowDeleting"  >
-                             <RowStyle HorizontalAlign="Center" />
-                              <PagerStyle CssClass="gridview Sgridview" Height="40px" />
-                             <Columns>
-                                 <asp:BoundField DataField="QName" HeaderText="Qualification" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" />
-                                 <asp:BoundField DataField="QNameBn" HeaderText="বাংলায়" HeaderStyle-HorizontalAlign="Left" ItemStyle-HorizontalAlign="Left" ItemStyle-CssClass="fontF" />
+                    <div class="row">
+               <div class="col-lg-12">
+                  <div class="card ">
+                     <div class="card-body">
 
+                        <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
+                           <div class="table-responsive">
+                              <div class="ad-table-table__header d-flex justify-content-between">
+                                  <h4 style="margin-top: 13px;">Qualification </h4>
+                              <div id="filter-form-container">
 
+                              </div>
+                              </div>
+                               <table class="table mb-0 packagesTable table-borderless adv-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                               </table>
+                           </div>
+                        </div>
 
-                                 <asp:TemplateField HeaderText="Edit" ItemStyle-Width="100px">
-                                     <ItemTemplate>
-                                         <asp:Button ID="btnAlter" runat="server" ControlStyle-CssClass="btnForAlterInGV" Text="Edit" CommandName="Alter" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
-                                     </ItemTemplate>
-                                 </asp:TemplateField>
-                                 <%--<asp:ButtonField CommandName="Alter"   ControlStyle-CssClass="btnForAlterInGV"  HeaderText="Alter" ButtonType="Button" Text="Alter" ItemStyle-Width="80px"/>--%>
-
-                                 <asp:TemplateField HeaderText="Delete" ItemStyle-Width="100px">
-                                     <ItemTemplate>
-                                         <asp:Button ID="btnDelete" runat="server" ControlStyle-CssClass="btnForDeleteInGV" Text="Delete" CommandName="Delete" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' OnClientClick="return confirm('Are you sure to delete ?')" />
-                                     </ItemTemplate>
-                                 </asp:TemplateField>
-
-                             </Columns>
-                             <HeaderStyle BackColor="#0057AE" Height="28px" />
-                         </asp:GridView>
-                    <%-- </div>--%>
-                </div>
-                        </ContentTemplate>
-                </asp:UpdatePanel>				
-            </div>				
+                     </div>
+                  </div>
+               </div>
+            </div>
+              
             </div>
         </div>
-     <script type="text/javascript">
-
-         //$('#dlDivision').change(function () {
 
 
+    </main>
 
-         $('#btnNew').click(function () {
-             clear();
-         });
-         function validateInputs() {
-             if (validateText('txtQualification', 1, 60, 'Enter Qualification') == false) return false;
-             return true;
-         }
 
-         function editQualification(id) {
-             var divsn = $('#r_' + id + ' td:first').html();
 
-             $('#txtQualification').val(divsn);
-             if ($('#updelete').val() == '1') {
-                 $('#btnDelete').addClass('css_btn');
-                 $('#btnDelete').removeAttr('disabled');
+     <script>
+        //var rootUrl = 'http://localhost:5081';
+
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
+        var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+        var postUrl = rootUrl + '/api/Qualification/qualifications/create';
+        var getByIdUrl = rootUrl + '/api/Qualification/qualifications';
+        var getAllUrl = rootUrl + `/api/Qualification/qualifications?CompanyId=${CompanyID}`;
+        var updateUrl = rootUrl + '/api/Qualification/qualifications/update';
+        var DeleteUrl = rootUrl + '/api/Qualification/qualifications/delete';
+        var GetDdlCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?CompanyId=${CompanyID}`;
+
+        var token = '<%= Session["__UserToken__"] %>';
+        console.log('this is token you can use it :', token);
+        //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+
+        $(document).ready(function () {
+           
+        
+            //GetCompanys();
+            GetAllQualification();
+            
+        });
+
+        //function getCompanypackage(compayId) {
+        //    var companyId = compayId;
+        //     GetStpPkgFeatures(companyId);
+        //}
+
+        function Cardbox() {
+            var CardboxElement = $("#Cardbox");
+            var addnewElement = $("#addnew");
+
+            if (addnewElement.html() === "Add New") {
+                CardboxElement.show();
+                addnewElement.text("Close");
+            } else {
+                ClearTextBox();
+                CardboxElement.hide();
+                addnewElement.html("Add New");
+
+            }
+        }
+
+
+        function ClearTextBox() {
+            $('#txtRole').val("");
+            $('#txtOrdaring').val("");
+            $('#chkIsActive').prop('checked', true);
+            $('#btnSave').text("Save");
+        }
+
+         function ValidateAndPostModule() {
+             var isValid = true;
+            if ($('#txtQName').val().trim() === "") {
+                $('#txtQNameError').html("Qualification Name is required.");
+                $("#txtQName").focus();
+                isValid = false;
+            } else {
+                $('#txtQNameError').html("");
+            }
+
+             if (isValid) {
+                 var addnewElement = $("#btnSave").text().trim();
+                 if (addnewElement === "Save") {
+                     PostQualification();
+                 }
+                 else {
+                     updateQualification(); 
+
+                 }
              }
-             if ($('#upupdate').val() == '1') {
-                 $('#btnSave').val('Update');
-                 $('#btnSave').addClass('css_btn');
-                 $('#btnSave').removeAttr('disabled');
-             }
-             else {
-                 $('#btnSave').val('Update');
-                 $('#btnSave').removeClass('css_btn');
-                 $('#btnSave').attr('disabled', 'disabled');
-             }
-             $('#hdnbtnStage').val(1);
-             $('#hdnUpdate').val(id);
-         }
-
-         //function deleteSuccess() {
-         //    showMessage('Deleted successfully', 'success');
-         //    $('#btnSave').val('Save');
-         //    $('#hdnbtnStage').val("");
-         //    $('#hdnUpdate').val("");
-         //    clear();
-         //}
-         //function UpdateSuccess() {
-         //    showMessage('Updated successfully', 'success');
-         //    $('#btnSave').val('Save');
-         //    $('#hdnbtnStage').val("");
-         //    $('#hdnUpdate').val("");
-         //    clear();
-         //}
-         //function SaveSuccess() {
-         //    showMessage('Save successfully', 'success');
-         //    $('#btnSave').val('Save');
-         //    $('#hdnbtnStage').val("");
-         //    $('#hdnUpdate').val("");
-         //    clear();
-         //}
+        }
+        
 
 
-         function clear() {
-             if ($('#upSave').val() == '0') {
+         function PostQualification() {
+            var CompanyId = CompanyID;
+            var qname = $('#txtQName').val();
+            var qnameBn = $('#txtQBangla').val();
+             var postData = {
+                companyId:CompanyId,
+                qname: qname,
+                qnameBn: qnameBn,
 
-                 $('#btnSave').removeClass('css_btn');
-                 $('#btnSave').attr('disabled', 'disabled');
-             }
-             else {
-                 $('#btnSave').addClass('css_btn');
-                 $('#btnSave').removeAttr('disabled');
-             }
+            };
 
-             $('#txtQualification').val('');
-             $('#btnSave').val('Save');
-             $('#hdnbtnStage').val("");
-             $('#hdnUpdate').val("");
-             $('#btnDelete').removeClass('css_btn');
-             $('#btnDelete').attr('disabled', 'disabled');
-         }
+            ApiCallPost(postUrl, token, postData)
+                .then(function (response) {
+                    console.log('Data saved successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Data saved successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            //GetModule();
+                            GetAllQualification();
+                            //GetPackages();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error saving data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to save data. Please try again.'
+                    });
+                });
+        }
+
+         function updateQualification() {
+                var Id = $('#lblHidenId').val();
+                var Qname = $('#txtQName').val();
+                var QnameBn = $('#txtQBangla').val();
+
+             var updateData = {
+                 companyId: CompanyID,
+                qname: Qname,
+                qnameBn: QnameBn,
+                };
+
+            ApiCallUpdate(updateUrl, token, updateData, Id)
+                .then(function (response) {
+                    console.log('Data updated successfully:', response);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Data updated successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            GetAllQualification();
+                            //GetPackages();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error('Error updating data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update data. Please try again.'
+                    });
+                });
+        }
+        function Delete(id) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Grade?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    ApiDeleteById(DeleteUrl, token, id)
+                        .then(function (response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Grade deleted successfully.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                GetAllQualification();
+                            });
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'An error occurred while deleting the module.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
+
+
+
+
+
+        function GetAllQualification() {
+            ApiCall(getAllUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log(responseData);
+                        $('.footable-loader').show();
+                        bindTableData(responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
+
+        function bindTableData(data) {
+
+            // Step 1: Destroy any existing Footable instance to avoid conflicts when reinitializing
+            if ($('.adv-table').data('footable')) {
+                $('.adv-table').data('footable').destroy();
+            }
+
+            // Step 2: Clear the HTML content of the table and filter container
+            $('.adv-table').html('');
+            $('#filter-form-container').empty();
+
+            // Step 3: Loop through the data array and modify the rows for display
+            data.forEach((row, index) => {
+                // Assign a serial number based on the loop index
+                row.serialNo = index + 1;
+
+                // Create the HTML for userRoleName column including actions (View, Edit, Delete)
+                row.action = `
+            <div class="actions">
+                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                    <li>
+                        <a href="javascript:void(0)" data-id="${row.qid}" class="edit-btn edit">
+                            <i class="uil uil-edit"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" data-id="${row.qid}" class="delete-btn remove">
+                            <i class="uil uil-trash-alt"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>`;
+
+                // Create the HTML for isActive column with a toggle switch
+           
+            });
+
+            // Step 5: Define the columns for the table, including custom rendering logic for some columns
+            const columns = [
+                { "name": "serialNo", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" },
+                { "name": "qname", "title": "Grade Name", "className": "userDatatable-content" },
+                { "name": "qnameBn", "title": "বাংলায়", "className": "userDatatable-content sutonny-font" },
+                { "name": "action", "title": "Action", "sortable": false, "filterable": false, "className": "userDatatable-content" },
+            ];
+
+            // Step 6: Initialize Footable with the columns and data, enable filtering
+            try {
+                $('.adv-table').footable({
+                    "columns": columns,
+                    "rows": data,
+                    "filtering": {
+                        "enabled": true,
+                        "placeholder": "Search...",
+                        "dropdownTitle": "Search in:",
+                        "position": "left",
+                        "containers": "#filter-form-container",
+                        "space": true
+                    }
+                }).on('postinit.ft.table', function () {
+                    // Hide loader after table initialization
+                    $('.footable-loader').hide();
+                });
+            } catch (error) {
+                console.error("Error initializing Footable:", error);
+            }
+
+            // Step 7: Attach event listeners for actions (Edit, Delete, View, Feature)
+
+            // Clear and re-attach the edit button click event
+            $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                const userRoleId = $(this).data('id');
+                console.log('Edit button clicked for userRoleId:', userRoleId);
+                 FetchDataForEdit(userRoleId); // Custom function to handle edit logic
+            });
+
+            // Clear and re-attach the delete button click event
+            $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                const userRoleId = $(this).data('id');
+                console.log('Delete button clicked for userRoleId:', userRoleId);
+                Delete(userRoleId); 
+            });
+
+            // Clear and re-attach the feature button click event
+            $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
+                const userRoleId = $(this).data('id');
+                console.log('Feature button clicked for userRoleId:', userRoleId);
+                // Add logic for feature handling
+            });
+        }
+
+ 
+        
+
+
+       
+
+        function BoxExpland() {
+            var scrollTop = $(window).scrollTop();
+
+            $("#Cardbox").show();
+            $("#addnew").text("Close");
+            $(window).scrollTop(scrollTop);
+        }
+
+
+
+        
+        function FetchDataForEdit(moduleID) {
+            ApiCallById(getByIdUrl, token, moduleID)
+                .then(function (response) {
+                    console.log('Data:', response);
+                    var data = response.data;
+                    $('#lblHidenId').val(data.qid);
+                    $('#txtQName').val(data.qname);
+                    $('#txtQBangla').val(data.qnameBn);
+               
+                    $('#btnSave').html('Update');
+                    BoxExpland();
+                      
+                 
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+
+
+
+
+
 
     </script>
+
+<%--    <script src="assets/theme_assets/js/TreeViewHepler.js"></script>--%>
+
+    <script src="../assets/theme_assets/js/apiHelper.js"></script>
+    <script src="../assets/theme_assets/js/loadCompany.js"></script>
+
 </asp:Content>
