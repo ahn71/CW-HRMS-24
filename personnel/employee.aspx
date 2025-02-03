@@ -898,17 +898,110 @@
                     $('#txtExpireDate').focus();
                     return false;
                 }
-
-                           
-               
                 return true;
-              
+
+             
 
             }
             catch (exception) {
 
             }
         }
+
+        var token = '<%= Session["__UserToken__"] %>';
+
+        //var rootUrl = 'https://localhost:7220';
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
+        var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+  
+        var createEmpUrl = rootUrl + '/api/Employee/employees/create';
+
+        async function handleFileUpload(fileInputId) {
+            var fileInput = document.getElementById(fileInputId);
+            if (fileInput.files.length > 0) {
+                var file = fileInput.files[0];
+                return new Promise((resolve, reject) => {
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
+                        resolve(reader.result.split(',')[1]); // Get base64 without prefix
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+            return null; // Return null if no file is selected
+        }
+
+        async function PostDocument(empId) {
+            var empId = empId;
+            var company = $('#ddlCompany').val();
+            var company = '0001';
+
+            var empImagebase64Files = await handleFileUpload('FileUpload1');
+            var signaturebase64Files = await handleFileUpload('FileUpload2');
+
+            var postData = {
+                empId: empId,
+                companyId: company,
+                employeeImageBase64: empImagebase64Files,
+                signatureImageBase64: signaturebase64Files,
+            };
+
+            try {
+                let response = await ApiCallPost(createEmpUrl, token, postData);
+                if (response && response.statusCode === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Employee Document saved successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                        }
+                    });
+                    return true;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred. Please try again.'
+                    });
+                    return false;
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to save the document. Please try again.'
+                });
+                console.error("API Error:", error);
+                return false;
+            }
+        }
+
+
+
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (error) => reject(error);
+            });
+        }
+
+        async function handleFileUpload() {
+            const base64Files = [];
+            for (const file of allFiles) {
+                const base64File = await getBase64(file);
+                base64Files.push(base64File);
+            }
+
+            return base64Files;
+        }
+
+
+
+
 
         function divEmpInfoHide() {
            
@@ -1149,5 +1242,5 @@
                 }               
     </script>
                 
-          
+    <script src="../hrms/assets/theme_assets/js/charts.js"></script> 
 </asp:Content>              
