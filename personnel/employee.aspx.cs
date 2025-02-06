@@ -518,12 +518,11 @@ namespace SigmaERP.personnel
                             saveEmpAddress();//only mobile no
                         AllClear();
                         classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
-                        ddlEmpCardNo.SelectedValue = "0";
+                        //ddlEmpCardNo.SelectedValue = "0";
                         string empId = ViewState["__EmpId__"]?.ToString();
 
-                        string rootUrl = Session["__RootUrl__"]?.ToString() ?? "https://localhost:7220";
+                        string rootUrl = Session["__RootUrl__"]?.ToString();
                         string apiUrl = rootUrl + "/api/Employee/employees/create";
-                        string companyId = Session["__GetCompanyId__"].ToString();
 
 
                         string token = Session["__UserToken__"]?.ToString();
@@ -531,7 +530,7 @@ namespace SigmaERP.personnel
                         List<string> empImageBase64 = ConvertFilesToBase64(FileUpload1);
                         List<string> signatureImageBase64 = ConvertFilesToBase64(FileUpload2);
 
-                        string response = PostDocument(apiUrl, empId, companyId, empImageBase64, signatureImageBase64, token);
+                        string response = PostDocument(apiUrl, empId, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
 
                   
                         //                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
@@ -550,17 +549,14 @@ namespace SigmaERP.personnel
                         if (UpdateCardValidation() == false) return;                        
                         if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true)
                         {
-                        string rootUrl = Session["__RootUrl__"]?.ToString() ?? "https://localhost:7220";
+                        string rootUrl = Session["__RootUrl__"]?.ToString();
                         string apiUrl = rootUrl + "/api/Employee/employees/create";
-                        string companyId = Session["__GetCompanyId__"].ToString();
-
-
                         string token = Session["__UserToken__"]?.ToString();
 
                         List<string> empImageBase64 = ConvertFilesToBase64(FileUpload1);
                         List<string> signatureImageBase64 = ConvertFilesToBase64(FileUpload2);
 
-                        string response = PostDocument(apiUrl, EmpId, companyId, empImageBase64, signatureImageBase64, token);
+                        string response = PostDocument(apiUrl, ddlEmpCardNo.SelectedValue, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
 
 
                         if (updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)

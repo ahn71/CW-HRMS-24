@@ -1671,8 +1671,9 @@
             var userImage = '<%= Session["__UserImageLink__"] %>';
 
             if (userImage) {
-                $('#UserProfileImageMenu').attr('src', userImage);
-                $('#userProfileImage').attr('src', userImage); 
+                $('#UserProfileImageMenu').attr('src',rootUrl + '/' + companyId + '/' + 'UserImage' + '/' + userImage);
+                $('#userProfileImage').attr('src',rootUrl + '/' + companyId + '/' + 'UserImage' + '/' + userImage);
+
             } else {
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');

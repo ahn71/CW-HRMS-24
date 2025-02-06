@@ -56,7 +56,7 @@ namespace SigmaERP.personnel
                 setPrivilege(userPagePermition);               
                 classes.commonTask.loadEmpTye(ddlEmpType);
                 classes.commonTask.loadEmpTye(ddlNewEmpType);
-                classes.commonTask.LoadGrade(ddlNewGrade);               
+                classes.commonTask.LoadGrade(ddlNewGrade, ViewState["__CompanyId__"].ToString());               
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;
             }
@@ -102,7 +102,7 @@ namespace SigmaERP.personnel
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
                     classes.Employee.LoadEmpCardNoForPayroll(ddlEmpCardNo, ViewState["__CompanyId__"].ToString());
                     classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), ddlNewDepartment);
-                    classes.commonTask.LoadGrade(ddlNewGrade);
+                    classes.commonTask.LoadGrade(ddlNewGrade, ViewState["__CompanyId__"].ToString());
                     loadSalaryInfo();
 
                     dt = new DataTable();
