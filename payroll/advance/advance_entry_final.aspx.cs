@@ -23,7 +23,6 @@ namespace SigmaERP.payroll.advance
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                classes.commonTask.LoadBranch(ddlCompanyList);
                 btnRefundWaive.Visible = false;
                 pnlRefundWaive.Visible = false;
                 clearLoanDetailsDatatable();
@@ -99,6 +98,7 @@ namespace SigmaERP.payroll.advance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserId__"] = getCookies["__getUserId__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
                 if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
                 {
