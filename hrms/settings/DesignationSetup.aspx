@@ -138,15 +138,7 @@
                                                </label>
                                                  <asp:TextBox ID="txtOrderNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
                                            </div>
-                                       </div>           
-                               <div class="col-lg-4">
-                                           <div class="form-group">
-                                               <label for="dlStatus" class="color-dark fs-14 fw-500 align-center mb-10">
-                                                        Designation Code  <span class="text-danger">*</span>
-                                               </label>
-                                            <asp:TextBox ID="txtDesignationCode" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
-                                           </div>
-                                       </div>        
+                                       </div>                  
                                <div class="col-lg-4">
                                            <div class="form-group">
                                                <label for="dlStatus" class="color-dark fs-14 fw-500 align-center mb-10">

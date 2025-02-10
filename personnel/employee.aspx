@@ -598,6 +598,7 @@
                             </Triggers>
                             <ContentTemplate>
                                 <div>
+                                    <small style="color:darkred">Maximum image size: 2 MB. Supported formats: JPG, JPEG, and PNG.</small>
                                     <asp:Image ID="imgProfile" class="profileImage" ClientIDMode="Static" runat="server" ImageUrl="~/images/profileImages/noProfileImage.jpg" />
                                     <asp:FileUpload ID="FileUpload1" Style="margin-top: 20px;" runat="server" onchange="previewFile()" ClientIDMode="Static" />
                                 </div>
@@ -740,55 +741,173 @@
         function load() {
             $("#ddlEmpCardNo").select2();
         }
+
+        //function previewFile() {
+        //    try {
+        //        var preview = document.querySelector('#imgProfile');
+        //        var fileInput = document.querySelector('#FileUpload1');
+        //        var file = fileInput.files[0];
+
+        //        var reader = new FileReader();
+
+        //        reader.onloadend = function () {
+        //            preview.src = reader.result;
+        //        };
+
+        //        if (file) {
+        //            reader.readAsDataURL(file);
+        //            // Extract only the file name
+        //            var fileName = file.name;
+        //            $('#HiddenField1').val(fileName);
+        //        } else {
+        //            preview.src = "";
+        //            $('#HiddenField1').val(""); // Clear the hidden field if no file is selected
+        //        }
+        //    } catch (exception) {
+        //        lblMessage.innerText = exception;
+        //    }
+        //}
+
         function previewFile() {
             try {
                 var preview = document.querySelector('#imgProfile');
                 var fileInput = document.querySelector('#FileUpload1');
                 var file = fileInput.files[0];
-
-                var reader = new FileReader();
-
-                reader.onloadend = function () {
-                    preview.src = reader.result;
-                };
+                var hiddenField = document.querySelector('#HiddenField1');
 
                 if (file) {
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    var allowedExtensions = ["jpg", "jpeg", "png"];
+                    var fileSize = file.size;
+                    var fileName = file.name.toLowerCase();
+                    var fileExtension = fileName.split('.').pop();
+
+                    // Validate file size
+                    if (fileSize > maxSize) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Size",
+                            text: "File size must be less than 2 MB.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Validate file format
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Format",
+                            text: "Only JPG, JPEG, and PNG formats are allowed.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Preview the image if valid
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
+                        preview.src = reader.result;
+                    };
                     reader.readAsDataURL(file);
-                    // Extract only the file name
-                    var fileName = file.name;
-                    $('#HiddenField1').val(fileName);
+
+                    // Set the file name in the hidden field
+                    hiddenField.value = fileName;
                 } else {
                     preview.src = "";
-                    $('#HiddenField1').val(""); // Clear the hidden field if no file is selected
+                    hiddenField.value = ""; // Clear hidden field if no file selected
                 }
             } catch (exception) {
-                lblMessage.innerText = exception;
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred: " + exception.message,
+                    confirmButtonColor: "#d33"
+                });
             }
         }
 
         function previewFilesignature() {
             try {
                 var preview = document.querySelector('#imgSignature');
-                var file = document.querySelector('#FileUpload2').files[0];
-
-                var reader = new FileReader();
-
-                reader.onloadend = function () {
-                    preview.src = reader.result;
-                }
+                var fileInput = document.querySelector('#FileUpload2');
+                var file = fileInput.files[0];
 
                 if (file) {
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    var allowedExtensions = ["jpg", "jpeg", "png"];
+                    var fileSize = file.size;
+                    var fileName = file.name.toLowerCase();
+                    var fileExtension = fileName.split('.').pop();
+
+                    // Validate file size
+                    if (fileSize > maxSize) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Size",
+                            text: "File size must be less than 2 MB.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Validate file format
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Format",
+                            text: "Only JPG, JPEG, and PNG formats are allowed.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Preview the image if valid
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
+                        preview.src = reader.result;
+                    };
                     reader.readAsDataURL(file);
                 } else {
                     preview.src = "";
                 }
-               
+            } catch (exception) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred: " + exception.message,
+                    confirmButtonColor: "#d33"
+                });
             }
-            catch (exception) {
-                lblMessage.innerText = exception;
-            }
-
         }
+
+        //function previewFilesignature() {
+        //    try {
+        //        var preview = document.querySelector('#imgSignature');
+        //        var file = document.querySelector('#FileUpload2').files[0];
+
+        //        var reader = new FileReader();
+
+        //        reader.onloadend = function () {
+        //            preview.src = reader.result;
+        //        }
+
+        //        if (file) {
+        //            reader.readAsDataURL(file);
+        //        } else {
+        //            preview.src = "";
+        //        }
+               
+        //    }
+        //    catch (exception) {
+        //        lblMessage.innerText = exception;
+        //    }
+
+        //}
         //function EmpType() {
             
         //    if ($('#rblEmpType').select().text == "Worker") {
@@ -898,17 +1017,22 @@
                     $('#txtExpireDate').focus();
                     return false;
                 }
-
-                           
-               
                 return true;
-              
+
+             
 
             }
             catch (exception) {
 
             }
         }
+
+     
+     
+
+
+
+
 
         function divEmpInfoHide() {
            
@@ -1149,5 +1273,7 @@
                 }               
     </script>
                 
-          
+    <script src="../hrms/assets/theme_assets/js/charts.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </asp:Content>              

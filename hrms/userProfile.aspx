@@ -331,20 +331,87 @@
         }
 
 
-        function previewAndUploadImage(input) {
-            const file = input.files[0]; // Get the selected file
+        //function previewAndUploadImage(input) {
+        //    const file = input.files[0]; // Get the selected file
+
+        //    if (file) {
+        //        // Preview the selected image
+        //        const reader = new FileReader();
+        //        reader.onload = function (e) {
+        //            $('#UserProfileImages').attr('src', e.target.result); // Set the preview image source
+        //        };
+        //        reader.readAsDataURL(file); // Read the image file as a Data URL
+
+        //        // Prepare form data for the API call
+        //        const formData = new FormData();
+        //        formData.append('file', file); 
+
+        //        if (userIdUrl == null || userIdUrl === "") {
+
+        //            userId = userId;
+        //        }
+        //        else {
+
+        //            userId = new URLSearchParams(window.location.search).get('userId');
+        //        }
+
+        //        // Make an API call to upload and update the image
+        //        ApiCallImageUpdate(updateUserImageUrl, token, formData, userId)
+        //            .then(function (response) {
+        //                const successMessage = response.message || 'Data updated successfully';
+        //                const statusCode = response.statusCode;
+
+        //                // Handle the response based on the status code
+        //                if (statusCode === 400) {
+        //                    Swal.fire({
+        //                        icon: 'error',
+        //                        title: 'Error',
+        //                        text: successMessage
+        //                    }).then((result) => {
+        //                        if (result.isConfirmed) {
+        //                            //GetUserData(userId); // Reload user data if error occurred
+
+                                   
+        //                             GetUserProfileData(userId,companyId);
+        //                        }
+        //                    });
+        //                } else {
+        //                    Swal.fire({
+        //                        icon: 'success',
+        //                        title: 'Success',
+        //                        text: successMessage
+        //                    }).then((result) => {
+        //                        if (result.isConfirmed) {
+        //                         GetUserProfileData(userId,companyId);
+
+        //                        }
+        //                    });
+        //                }
+        //            })
+        //            .catch(function (error) {
+        //                console.error('Error updating data:', error);
+
+        //                let errorMessage = 'Failed to update the data. Please try again.';
+
+        //                if (error.response && error.response.data && error.response.data.message) {
+        //                    errorMessage = error.response.data.message;
+        //                }
+
+        //                Swal.fire({
+        //                    icon: 'error',
+        //                    title: 'Error',
+        //                    text: errorMessage
+        //                });
+        //            });
+        //    }
+        //}
+
+        async function previewAndUploadImage(input) {
+            const file = input.files[0]; 
 
             if (file) {
-                // Preview the selected image
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#UserProfileImages').attr('src', e.target.result); // Set the preview image source
-                };
-                reader.readAsDataURL(file); // Read the image file as a Data URL
-
-                // Prepare form data for the API call
-                const formData = new FormData();
-                formData.append('file', file); // Append the selected file to the form data
+                const base64File = await getBase64(file);
+                $('#UserProfileImages').attr('src', base64File);
 
                 if (userIdUrl == null || userIdUrl === "") {
 
@@ -354,56 +421,52 @@
 
                     userId = new URLSearchParams(window.location.search).get('userId');
                 }
+                const imageUpdateDTO = {
+                    ID: userId,
+                    CompanyId: companyId, 
+                    ImageBase64: [base64File] 
+                };
 
-                // Make an API call to upload and update the image
-                ApiCallImageUpdate(updateUserImageUrl, token, formData, userId)
-                    .then(function (response) {
-                        const successMessage = response.message || 'Data updated successfully';
-                        const statusCode = response.statusCode;
+                try {
+                    const response = await ApiCallPost(updateUserImageUrl, token, imageUpdateDTO);
+                    const successMessage = response.message || 'Image updated successfully';
 
-                        // Handle the response based on the status code
-                        if (statusCode === 400) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: successMessage
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    //GetUserData(userId); // Reload user data if error occurred
-
-                                   
-                                     GetUserProfileData(userId,companyId);
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success',
-                                text: successMessage
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                 GetUserProfileData(userId,companyId);
-
-                                }
-                            });
-                        }
-                    })
-                    .catch(function (error) {
-                        console.error('Error updating data:', error);
-
-                        let errorMessage = 'Failed to update the data. Please try again.';
-
-                        if (error.response && error.response.data && error.response.data.message) {
-                            errorMessage = error.response.data.message;
-                        }
-
+                    if (response.statusCode === 400) {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: errorMessage
+                            text: successMessage
+                        }).then(() => {
+                            GetUserProfileData(userId, companyId);
                         });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: successMessage
+                        }).then(() => {
+                            GetUserProfileData(userId, companyId);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error updating image:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to update the image. Please try again.'
                     });
+                }
             }
+        }
+
+        // Function to convert image to Base64 (keeps full base64 string)
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result); // Full Base64 string including "data:image/png;base64,"
+                reader.onerror = (error) => reject(error);
+            });
         }
 
 
@@ -485,7 +548,7 @@
                     $('#txtuserDataAccessLevel').text(data.dataAccessPermission);
                     console.log('This Data Permission test :',data.dataAccessPermission);
                     if (data.userImage) {
-                        $('#UserProfileImages').attr('src', data.userImage);
+                        $('#UserProfileImages').attr('src',rootUrl + '/' + companyId + '/' + 'UserImage' + '/' + data.UserImage);
                     } else {
                        
                         $('#UserProfileImages').attr('src', 'user_img_default.jpg');

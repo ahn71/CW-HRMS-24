@@ -1,5 +1,6 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using Newtonsoft.Json;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
 using System;
@@ -10,6 +11,7 @@ using System.Data.SqlTypes;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -166,7 +168,12 @@ namespace SigmaERP.hrms.settings
                 ddlMultipleBranch.Text = dt.Rows[0]["MultipleBranch"].ToString();
                 txtComments.Text = dt.Rows[0]["Comments"].ToString();
                 imageName = dt.Rows[0]["CompanyLogo"].ToString();
-                string url = @"/EmployeeImages/CompanyLogo/" + Path.GetFileName(dt.Rows[0]["CompanyLogo"].ToString());
+
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string companyId = Session["__GetCompanyId__"].ToString();
+                string url = rootUrl + "/" + dt.Rows[0]["CompanyId"].ToString() + "/" + "CompanyLogo" + "/" + Path.GetFileName(dt.Rows[0]["CompanyLogo"].ToString());
+
+                //string url = @"/EmployeeImages/CompanyLogo/" + Path.GetFileName(dt.Rows[0]["CompanyLogo"].ToString());
                 imgProfile.ImageUrl = url;
                 txtShortName.Text = dt.Rows[0]["ShortName"].ToString();
                 ddlWeekend.Text = dt.Rows[0]["Weekend"].ToString();
@@ -255,6 +262,7 @@ namespace SigmaERP.hrms.settings
                     //sqlDB.fillDataTable("Select ID, CompanyId, CompanyName, CompanyNameBangla, Address, AddressBangla, Country, Telephone, Fax, DefaultCurrency, BTypeName,  MultipleBranch,  Comments, CompanyLogo,StartCardNo,ComType,AttMachineName from v_HRD_CompanyInfo where CompanyId='" + ViewState["__CompanyId__"].ToString() + "' ", dt);
 
                 }
+
                 gvCompanyInfo.DataSource = dt;
                 gvCompanyInfo.DataBind();
 
@@ -304,7 +312,19 @@ namespace SigmaERP.hrms.settings
                 int result = cmd.ExecuteNonQuery();
                 if (result > 0)
                 {
-                    saveImg();
+
+                    string rootUrl = Session["__RootUrl__"]?.ToString();
+                    string apiUrl = rootUrl + "/api/Company/company/create";
+
+
+                    string token = Session["__UserToken__"]?.ToString();
+
+                    List<string> empImageBase64 = commonTask.ConvertFilesToBase64(FileUpload2);
+
+                    string response = commonTask.PostDocument(apiUrl, "logo", txtCompanyId.Text.Trim(), empImageBase64, token);
+
+
+                    //saveImg();
                     AllClear();
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "Success();", true);
                     return true;
@@ -416,27 +436,29 @@ namespace SigmaERP.hrms.settings
             }
             catch { }
         }
+
+    
+
         private Boolean updateCompanyInfo()
         {
             try
             {
                 string logoFileName = string.Empty;
-                if (FileUpload2.HasFile)
-                {
-                    logoFileName = "logo" + txtCompanyId.Text.Trim() + ".PNG";
-                    string savePath = Server.MapPath("/EmployeeImages/CompanyLogo/") + logoFileName;
-                    if (File.Exists(savePath))
-                    {
-                        File.Delete(savePath);
-                    }
-                    FileUpload2.SaveAs(savePath);
-                }
-                else
-                {
-                    logoFileName = GetExistingLogoFileName(txtCompanyId.Text.Trim());
-                }
-
-
+                ////if (FileUpload2.HasFile)
+                ////{
+                ////    logoFileName = "logo" + txtCompanyId.Text.Trim() + ".PNG";
+                ////    string savePath = Server.MapPath("/EmployeeImages/CompanyLogo/") + logoFileName;
+                ////    if (File.Exists(savePath))
+                ////    {
+                ////        File.Delete(savePath);
+                ////    }
+                ////    FileUpload2.SaveAs(savePath);
+                ////}
+                ////else
+                ////{
+                ////    logoFileName = GetExistingLogoFileName(txtCompanyId.Text.Trim());
+                ////}
+         
                 SqlCommand cmd = new SqlCommand(@"
             UPDATE HRD_CompanyInfo 
             SET 
@@ -501,6 +523,18 @@ namespace SigmaERP.hrms.settings
 
                 if (result > 0)
                 {
+
+                    string rootUrl = Session["__RootUrl__"]?.ToString();
+                    string apiCompanyUrl = rootUrl + "/api/Company/company/create";
+
+
+                    string token = Session["__UserToken__"]?.ToString();
+
+                    List<string> empImageBase64 = commonTask.ConvertFilesToBase64(FileUpload2);
+
+                    string response = commonTask.PostDocument(apiCompanyUrl, "logo", txtCompanyId.Text.Trim(), empImageBase64, token);
+
+
                     string oldStatus = ViewState["OldStatus"] != null ? ViewState["OldStatus"].ToString() : "0";
                     if (ddlCmpStatus.SelectedValue != oldStatus)
                     {
@@ -784,30 +818,36 @@ namespace SigmaERP.hrms.settings
             try
             {
 
-                //GridViewRow gvrow 
 
+                GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
 
-                int index = Convert.ToInt32(e.CommandArgument);
+                int index = row.RowIndex;
                 if (e.CommandName == "Alter")
                 {
+                    // Corrected: Gets the index relative to the current page
 
-                    string ID = gvCompanyInfo.DataKeys[index].Values[0].ToString();
-                    AlterCompanyInfo(int.Parse(ID));
-                    if (deleteValidation(gvCompanyInfo.DataKeys[index].Values[1].ToString()))
+                    // Ensure the DataKeys exist
+                    if (gvCompanyInfo.DataKeys.Count > index)
                     {
+                        string ID = gvCompanyInfo.DataKeys[index].Values["ID"].ToString();
+                        string CompanyId = gvCompanyInfo.DataKeys[index].Values["CompanyId"].ToString();
 
-                        rblCardNoType.Enabled = true;
-                        ddlCardNoDigit.Enabled = true;
-                        txtStartCardNo.Enabled = true;
-                    }
-                    else
-                    {
-                        rblCardNoType.Enabled = false;
-                        ddlCardNoDigit.Enabled = false;
-                        txtStartCardNo.Enabled = false;
-                    }
-                   
+                        // Call your method with the correct ID
+                        AlterCompanyInfo(int.Parse(ID));
 
+                        if (deleteValidation(CompanyId))
+                        {
+                            rblCardNoType.Enabled = true;
+                            ddlCardNoDigit.Enabled = true;
+                            txtStartCardNo.Enabled = true;
+                        }
+                        else
+                        {
+                            rblCardNoType.Enabled = false;
+                            ddlCardNoDigit.Enabled = false;
+                            txtStartCardNo.Enabled = false;
+                        }
+                    }
                 }
                 else if (e.CommandName == "Remove")
                 {

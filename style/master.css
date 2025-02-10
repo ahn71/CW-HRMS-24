@@ -159,7 +159,8 @@ element.style {
 }
 
 .profileImage {
-    height:145px;
+    height: 145px;
+    width: 130px !important;
 }
 .profileImage3 {
     height:118px;

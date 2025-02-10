@@ -56,7 +56,7 @@ namespace SigmaERP.personnel
                 setPrivilege(userPagePermition);               
                 classes.commonTask.loadEmpTye(ddlEmpType);
                 classes.commonTask.loadEmpTye(ddlNewEmpType);
-                classes.commonTask.LoadGrade(ddlNewGrade);               
+                classes.commonTask.LoadGrade(ddlNewGrade, ViewState["__CompanyId__"].ToString());               
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;
             }
@@ -102,7 +102,7 @@ namespace SigmaERP.personnel
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
                     classes.Employee.LoadEmpCardNoForPayroll(ddlEmpCardNo, ViewState["__CompanyId__"].ToString());
                     classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), ddlNewDepartment);
-                    classes.commonTask.LoadGrade(ddlNewGrade);
+                    classes.commonTask.LoadGrade(ddlNewGrade, ViewState["__CompanyId__"].ToString());
                     loadSalaryInfo();
 
                     dt = new DataTable();
@@ -283,7 +283,7 @@ namespace SigmaERP.personnel
                     double getIncrementAmount = 0, getMedicalAllownce = 0, getConvence = 0, getBasic = 0, getPresentSalary = 0, getHouseRent=0,getfood=0,getOthers=0,getPFAmount=0;
                      
                     DataTable dtPreStatus = new DataTable();
-                    sqlDB.fillDataTable("Select CompanyId,EmpTypeId,SalaryType,EmpPresentSalary,IncrementAmount,BasicSalary,MedicalAllownce,ConvenceAllownce,HouseRent,PreTechnicalAllownce,TechnicalAllownce,DptId,DsgId,EmpStatus,GrdName,OthersAllownce,convert(varchar(10),EarnLeaveDate,120) as EarnLeaveDate,convert(varchar(10), PreShiftTransferDate, 120) as PreShiftTransferDate,convert(varchar(10), ShiftTransferDate, 120) as ShiftTransferDate,convert(varchar(10), ShiftTransferToDate, 120) as ShiftTransferToDate,SftId,GId,PreGId,SalaryCount,BankId,EmpAccountNo,PfMember,convert(varchar(10), PfDate, 120) as PfDate,PFAmount,CustomOrdering,OverTime,PreEmpDutyType,EmpDutyType,DormitoryRent,PreIncomeTax,IncomeTax From Personnel_EmpCurrentStatus where SN='" + ddlEmpCardNo.SelectedValue + "'", dtPreStatus);
+                    sqlDB.fillDataTable("Select CompanyId,EmpTypeId,SalaryType,EmpPresentSalary,IncrementAmount,BasicSalary,MedicalAllownce,ConvenceAllownce,HouseRent,PreTechnicalAllownce,TechnicalAllownce,DptId,DsgId,EmpStatus,GrdId,OthersAllownce,convert(varchar(10),EarnLeaveDate,120) as EarnLeaveDate,convert(varchar(10), PreShiftTransferDate, 120) as PreShiftTransferDate,convert(varchar(10), ShiftTransferDate, 120) as ShiftTransferDate,convert(varchar(10), ShiftTransferToDate, 120) as ShiftTransferToDate,SftId,GId,PreGId,SalaryCount,BankId,EmpAccountNo,PfMember,convert(varchar(10), PfDate, 120) as PfDate,PFAmount,CustomOrdering,OverTime,PreEmpDutyType,EmpDutyType,DormitoryRent,PreIncomeTax,IncomeTax From Personnel_EmpCurrentStatus where SN='" + ddlEmpCardNo.SelectedValue + "'", dtPreStatus);
                 string getEmpType = (!ddlNewEmpType.SelectedItem.Text.Trim().Equals("Select Type")) ? ddlNewEmpType.SelectedValue : ddlEmpType.SelectedValue;
                 LoadAllownceSetting(dtPreStatus.Rows[0]["SalaryType"].ToString(), getEmpType);
                    getIncrementAmount = (txtIncrementAmount.Text.Trim().Length == 0) ? 0 : double.Parse(txtIncrementAmount.Text.Trim());
@@ -472,7 +472,7 @@ namespace SigmaERP.personnel
                 string getDepartmentId = (ddlNewDepartment.Text.ToString().Equals("")) ? ViewState["__DptId__"].ToString() : ddlNewDepartment.SelectedValue.ToString();
                 string getDesignationId = (ddlNewDesignation.Text.ToString().Equals("")) ?ViewState["__DsgId__"].ToString(): ddlNewDesignation.SelectedValue.ToString() ;
                 //  string get = ViewState["__GrdId__"].ToString();
-                string getGradeName = (!ddlNewGrade.Text.ToString().Equals("0")) ? ddlNewGrade.SelectedItem.ToString() : ViewState["__GrdName__"].ToString();
+                string getGradeName = (!ddlNewGrade.Text.ToString().Equals("0")) ? ddlNewGrade.SelectedValue.ToString() : ViewState["__GrdName__"].ToString();
 
               
 
@@ -483,7 +483,7 @@ namespace SigmaERP.personnel
                 string getChangeOfType = "p";
                 string date = DateTime.Now.ToString("dd-MM-yyyy");
 
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpCurrentStatus (EmpId, PreCompanyId, CompanyId, EmpCardNo, PreEmpTypeId, EmpTypeId, PreSalaryType, SalaryType, PreEmpSalary, EmpPresentSalary, PreIncrementAmount, IncrementAmount, PreBasicSalary, BasicSalary,PreMedicalAllownce, MedicalAllownce,PreFoodAllownce, FoodAllownce,PreConvenceAllownce, ConvenceAllownce, PreHouseRent, HouseRent,PreTechnicalAllownce,TechnicalAllownce, PreDptId, DptId, PreDsgId, DsgId, PreEmpStatus, EmpStatus, PreGrdName, GrdName, PreOthersAllownce, OthersAllownce, HolidayAllownce, TiffinAllownce, NightAllownce, AttendanceBonus, LunchAllownce, LunchCount, DateofUpdate, TypeOfChange, EffectiveMonth, OrderRefNo, OrderRefDate, Remarks, ActiveSalary, EarnLeaveDate, IsActive,PreShiftTransferDate,ShiftTransferDate,ShiftTransferToDate,SftId,GId,PreGId,SalaryCount,BankId,EmpAccountNo,PfMember,PfDate,PFAmount,CustomOrdering,OverTime,PreEmpDutyType,EmpDutyType,DormitoryRent,PreIncomeTax,IncomeTax)  values (@EmpId, @PreCompanyId, @CompanyId, @EmpCardNo, @PreEmpTypeId, @EmpTypeId, @PreSalaryType, @SalaryType, @PreEmpSalary, @EmpPresentSalary, @PreIncrementAmount, @IncrementAmount, @PreBasicSalary, @BasicSalary,@PreMedicalAllownce, @MedicalAllownce,@PreFoodAllownce,@FoodAllownce,@PreConvenceAllownce, @ConvenceAllownce, @PreHouseRent, @HouseRent,@PreTechnicalAllownce,@TechnicalAllownce, @PreDptId, @DptId, @PreDsgId, @DsgId, @PreEmpStatus, @EmpStatus, @PreGrdName, @GrdName, @PreOthersAllownce, @OthersAllownce, @HolidayAllownce, @TiffinAllownce, @NightAllownce, @AttendanceBonus, @LunchAllownce, @LunchCount, @DateofUpdate, @TypeOfChange, @EffectiveMonth, @OrderRefNo, @OrderRefDate, @Remarks, @ActiveSalary, @EarnLeaveDate, @IsActive,@PreShiftTransferDate,@ShiftTransferDate,@ShiftTransferToDate,@SftId,@GId,@PreGId,@SalaryCount,@BankId,@EmpAccountNo,@PfMember,@PfDate,@PFAmount,@CustomOrdering,@OverTime,@PreEmpDutyType,@EmpDutyType,@DormitoryRent,@PreIncomeTax,@IncomeTax) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpCurrentStatus (EmpId, PreCompanyId, CompanyId, EmpCardNo, PreEmpTypeId, EmpTypeId, PreSalaryType, SalaryType, PreEmpSalary, EmpPresentSalary, PreIncrementAmount, IncrementAmount, PreBasicSalary, BasicSalary,PreMedicalAllownce, MedicalAllownce,PreFoodAllownce, FoodAllownce,PreConvenceAllownce, ConvenceAllownce, PreHouseRent, HouseRent,PreTechnicalAllownce,TechnicalAllownce, PreDptId, DptId, PreDsgId, DsgId, PreEmpStatus, EmpStatus, PreGrdId, GrdId, PreOthersAllownce, OthersAllownce, HolidayAllownce, TiffinAllownce, NightAllownce, AttendanceBonus, LunchAllownce, LunchCount, DateofUpdate, TypeOfChange, EffectiveMonth, OrderRefNo, OrderRefDate, Remarks, ActiveSalary, EarnLeaveDate, IsActive,PreShiftTransferDate,ShiftTransferDate,ShiftTransferToDate,SftId,GId,PreGId,SalaryCount,BankId,EmpAccountNo,PfMember,PfDate,PFAmount,CustomOrdering,OverTime,PreEmpDutyType,EmpDutyType,DormitoryRent,PreIncomeTax,IncomeTax)  values (@EmpId, @PreCompanyId, @CompanyId, @EmpCardNo, @PreEmpTypeId, @EmpTypeId, @PreSalaryType, @SalaryType, @PreEmpSalary, @EmpPresentSalary, @PreIncrementAmount, @IncrementAmount, @PreBasicSalary, @BasicSalary,@PreMedicalAllownce, @MedicalAllownce,@PreFoodAllownce,@FoodAllownce,@PreConvenceAllownce, @ConvenceAllownce, @PreHouseRent, @HouseRent,@PreTechnicalAllownce,@TechnicalAllownce, @PreDptId, @DptId, @PreDsgId, @DsgId, @PreEmpStatus, @EmpStatus, @PreGrdId, @GrdId, @PreOthersAllownce, @OthersAllownce, @HolidayAllownce, @TiffinAllownce, @NightAllownce, @AttendanceBonus, @LunchAllownce, @LunchCount, @DateofUpdate, @TypeOfChange, @EffectiveMonth, @OrderRefNo, @OrderRefDate, @Remarks, @ActiveSalary, @EarnLeaveDate, @IsActive,@PreShiftTransferDate,@ShiftTransferDate,@ShiftTransferToDate,@SftId,@GId,@PreGId,@SalaryCount,@BankId,@EmpAccountNo,@PfMember,@PfDate,@PFAmount,@CustomOrdering,@OverTime,@PreEmpDutyType,@EmpDutyType,@DormitoryRent,@PreIncomeTax,@IncomeTax) ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__getEmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@PreCompanyId", dtPreStatus.Rows[0]["CompanyId"].ToString());
                 if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
@@ -516,8 +516,8 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@DsgId", getDesignationId);
                 cmd.Parameters.AddWithValue("@PreEmpStatus", dtPreStatus.Rows[0]["EmpStatus"].ToString());
                 cmd.Parameters.AddWithValue("@EmpStatus", "1");
-                cmd.Parameters.AddWithValue("@PreGrdName", dtPreStatus.Rows[0]["GrdName"].ToString());
-                cmd.Parameters.AddWithValue("@GrdName", getGradeName);
+                cmd.Parameters.AddWithValue("@PreGrdId", dtPreStatus.Rows[0]["GrdId"].ToString());
+                cmd.Parameters.AddWithValue("@GrdId", getGradeName);
                 cmd.Parameters.AddWithValue("@PreOthersAllownce", dtPreStatus.Rows[0]["OthersAllownce"].ToString());
                 cmd.Parameters.AddWithValue("@OthersAllownce","0");
                 cmd.Parameters.AddWithValue("@HolidayAllownce","0");

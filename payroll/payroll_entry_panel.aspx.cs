@@ -107,7 +107,7 @@ namespace SigmaERP.payroll
                 //    return;
                 //}
                 classes.Employee.LoadEmpCardNoForPayroll(ddlEmpCardNo, ddlCompanyList.SelectedValue);
-                classes.commonTask.LoadGrade(ddlGrade);
+                classes.commonTask.LoadGrade(ddlGrade, ViewState["__CompanyId__"].ToString());
                 LoadAllownceSetting();
                 trBank.Visible = false;
                 trAccount.Visible = false;
@@ -328,7 +328,7 @@ namespace SigmaERP.payroll
             try {
                 int isVacation = (chkIsvacation.Checked) ? 1 : 0;
                 SqlCommand cmd = new SqlCommand("update Personnel_EmpCurrentStatus  Set SalaryCount=@SalaryCount,BankId=@BankId," +
-                    "EmpAccountNo=@EmpAccountNo,GrdName=@GrdName,EmpJoinigSalary=@EmpJoinigSalary, PreEmpSalary=@PreEmpSalary, EmpPresentSalary=@EmpPresentSalary, " +
+                    "EmpAccountNo=@EmpAccountNo,GrdId=@GrdId,EmpJoinigSalary=@EmpJoinigSalary, PreEmpSalary=@PreEmpSalary, EmpPresentSalary=@EmpPresentSalary, " +
                     " PreBasicSalary=@PreBasicSalary, BasicSalary=@BasicSalary,PreMedicalAllownce=@PreMedicalAllownce,"+
                     " MedicalAllownce=@MedicalAllownce,PreFoodAllownce=@PreFoodAllownce, FoodAllownce=@FoodAllownce,"+
                     "PreConvenceAllownce=@PreConvenceAllownce, ConvenceAllownce=@ConvenceAllownce, PreHouseRent=@PreHouseRent,"+
@@ -350,7 +350,7 @@ namespace SigmaERP.payroll
                             
                 cmd.Parameters.AddWithValue("@BankId", ddlBankList.SelectedValue);
                 cmd.Parameters.AddWithValue("@EmpAccountNo", txtEmpAccNo.Text);
-                cmd.Parameters.AddWithValue("@GrdName", ddlGrade.SelectedItem.Text);
+                cmd.Parameters.AddWithValue("@GrdId", ddlGrade.SelectedValue);
                 cmd.Parameters.AddWithValue("@EmpJoinigSalary", txtJoiningSalary.Text);
                 cmd.Parameters.AddWithValue("@PreEmpSalary", txtPresentSalary.Text.Trim());
                 cmd.Parameters.AddWithValue("@EmpPresentSalary", txtPresentSalary.Text.Trim());

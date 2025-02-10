@@ -157,15 +157,6 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.WebControls.TextBox txtOrderNo;
         
         /// <summary>
-        /// txtDesignationCode control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDesignationCode;
-        
-        /// <summary>
         /// dlStatus control.
         /// </summary>
         /// <remarks>

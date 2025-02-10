@@ -9,6 +9,9 @@ using System.Data.SqlClient;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.hrms.BLL;
+using System.Net;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace SigmaERP.classes
 {
@@ -17,6 +20,81 @@ namespace SigmaERP.classes
         public static DataTable dt;
         public static SqlDataAdapter da;
         public static string sqlCmd = "";
+
+
+        public static string PostDocument(string url, string Id, string companyId, List<string> ImageBase64, string token)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string requestUrl = $"{url}";
+
+            WebRequest webRequest = WebRequest.Create(requestUrl);
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json";
+            webRequest.Headers["Authorization"] = "Bearer " + token; // Add Authorization header
+
+            var requestBody = new
+            {
+                Id = Id,
+                companyId = companyId,
+                imageBase64 = ImageBase64,
+            };
+
+            string json = JsonConvert.SerializeObject(requestBody);
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+                using (Stream stream = httpWebResponse.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    string response = sr.ReadToEnd();
+                    sr.Close();
+                    return response;
+                }
+            }
+            catch (WebException ex)
+            {
+                using (Stream stream = ex.Response?.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
+        public static List<string> ConvertFilesToBase64(System.Web.UI.WebControls.FileUpload fileUpload)
+        {
+            List<string> base64Files = new List<string>();
+
+            if (fileUpload.HasFile)
+            {
+                foreach (var file in fileUpload.PostedFiles)
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        file.InputStream.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+
+                        string fileExtension = Path.GetExtension(file.FileName).ToLower().TrimStart('.');
+                        string mimeType = fileExtension == "jpg" ? "jpeg" : fileExtension; // Adjust for JPEG
+
+                        string base64String = $"data:image/{mimeType};base64,{Convert.ToBase64String(fileBytes)}";
+                        base64Files.Add(base64String);
+                    }
+                }
+            }
+            return base64Files;
+        }
+
 
         public static string ddMMyyyyTo_yyyyMMdd(string date)
         {
@@ -150,6 +228,22 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static string RootUrl
+        {
+            get => HttpContext.Current.Session["__RootUrl__"]?.ToString() ?? "https://localhost:7220";
+        }
+
+        public static string EmpCreateApiURL
+        {
+            get => RootUrl + "/api/Employee/employees/create";
+        }
+
+        public static string UserToken
+        {
+            get => HttpContext.Current.Session["__UserToken__"]?.ToString();
+        }
+
 
         public static bool GroupORLineDependency()
         {
@@ -856,6 +950,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadGrade(DropDownList dl, string companyId)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select GradeID,GrdName From HrdGrade where CompanyId=" + companyId+" and GrdStatus='True'", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "GradeID";
+                dl.DataTextField = "GrdName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
 
         public static void loadEmpCardNo(DropDownList dl, string empId)
         {
@@ -1252,12 +1360,29 @@ namespace SigmaERP.classes
         }
         //-------------------------------------------------------------------------
         //-------------------------------For Promotion-----------------------------------------
+        //public static void LoadMonthForPromotion(DropDownList dl, string CompanyId)
+        //{
+        //    try
+        //    {
+        //        sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
+        //                   " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='p' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+        //        sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
+        //        dl.DataSource = dt;
+        //        dl.DataTextField = "MonthName";
+        //        dl.DataValueField = "EffectiveMonth";
+        //        dl.DataBind();
+        //        dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+        //    }
+        //    catch { }
+        //}
         public static void LoadMonthForPromotion(DropDownList dl, string CompanyId)
         {
             try
             {
-                sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
-                           " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='p' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+
+                sqlCmd = @"SELECT DISTINCT CASE 
+        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'p' AND CompanyId = '"+CompanyId+"' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";
@@ -1289,7 +1414,9 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlCmd = "select distinct FORMAT( CAST(RIGHT(EffectiveMonth, 4)+'-'+ LEFT(EffectiveMonth, 2) + '-01' AS DATETIME),'MMM-yyyy') as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+                sqlCmd = @"SELECT DISTINCT CASE 
+        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'i' AND CompanyId = '" + CompanyId + "' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";
@@ -2478,6 +2605,9 @@ namespace SigmaERP.classes
 
 
         }
+
+
+
 
     }
 }

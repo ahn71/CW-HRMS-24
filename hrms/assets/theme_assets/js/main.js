@@ -824,18 +824,23 @@
     imageUpload.addEventListener("change", uploadfile, false);
   }
 
-  /* Time Picker */
-  $("#time-picker,#time-picker2").wickedpicker();
+    // Initialize Wickedpicker on all targeted elements
+    $("#time-picker, #time-picker2").wickedpicker();
 
-  /* Slider Basic */
-  let initialValue = 20;
-  let sliderTooltip = function (event, ui) {
-    var curValue = ui.value || initialValue;
-    var target = ui.handle || $(".ui-slider-handle");
-    var tooltip = `<span class="tooltip-text">${curValue}</span>`;
+    // Initialize Slider with Tooltip
+    let initialValue = 20;
 
-    $(target).html(tooltip);
-  };
+    // Function to display a tooltip on the slider handle
+    let sliderTooltip = function (event, ui) {
+        var curValue = ui.value || initialValue; // Use `ui.value` if available, otherwise use `initialValue`
+        var target = ui.handle || $(".ui-slider-handle"); // Target the slider handle
+        var tooltip = `<span class="tooltip-text">${curValue}</span>`;
+
+        $(target).html(tooltip); // Append tooltip to the handle
+    };
+
+
+
 
   /* Slider Controls */
   $("#switch-slider").on("change", function () {

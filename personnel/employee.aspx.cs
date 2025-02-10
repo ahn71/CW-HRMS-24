@@ -20,6 +20,8 @@ using SigmaERP.classes;
 
 using IronXL;
 using SigmaERP.hrms.BLL;
+using System.Net;
+using Newtonsoft.Json;
 
 namespace SigmaERP.personnel
 {
@@ -421,6 +423,82 @@ namespace SigmaERP.personnel
                 
         }
 
+
+        public string PostDocument(string url, string empId, string companyId, List<string> empImageBase64, List<string> signatureImageBase64, string token)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string requestUrl = $"{url}";
+
+            WebRequest webRequest = WebRequest.Create(requestUrl);
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json";
+            webRequest.Headers["Authorization"] = "Bearer " + token; // Add Authorization header
+
+            var requestBody = new
+            {
+                empId = empId,
+                companyId = companyId,
+                employeeImageBase64 = empImageBase64,
+                signatureImageeBase64 = signatureImageBase64
+            };
+
+            string json = JsonConvert.SerializeObject(requestBody);
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+                using (Stream stream = httpWebResponse.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    string response = sr.ReadToEnd();
+                    sr.Close();
+                    return response;
+                }
+            }
+            catch (WebException ex)
+            {
+                using (Stream stream = ex.Response?.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
+        private List<string> ConvertFilesToBase64(System.Web.UI.WebControls.FileUpload fileUpload)
+        {
+            List<string> base64Files = new List<string>();
+
+            if (fileUpload.HasFile)
+            {
+                foreach (var file in fileUpload.PostedFiles)
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        file.InputStream.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+
+                        string fileExtension = Path.GetExtension(file.FileName).ToLower().TrimStart('.');
+                        string mimeType = fileExtension == "jpg" ? "jpeg" : fileExtension; // Adjust for JPEG
+
+                        string base64String = $"data:image/{mimeType};base64,{Convert.ToBase64String(fileBytes)}";
+                        base64Files.Add(base64String);
+                    }
+                }
+            }
+            return base64Files;
+        }
+
+
         protected void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -440,10 +518,23 @@ namespace SigmaERP.personnel
                             saveEmpAddress();//only mobile no
                         AllClear();
                         classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
-                        ddlEmpCardNo.SelectedValue = "0";
+                        //ddlEmpCardNo.SelectedValue = "0";
                         string empId = ViewState["__EmpId__"]?.ToString();
-                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
-        $"goToNewTab('/personnel/EmployeeAddress.aspx?EmpId={empId}');", true);
+
+                        string rootUrl = Session["__RootUrl__"]?.ToString();
+                        string apiUrl = rootUrl + "/api/Employee/employees/create";
+
+
+                        string token = Session["__UserToken__"]?.ToString();
+
+                        List<string> empImageBase64 = ConvertFilesToBase64(FileUpload1);
+                        List<string> signatureImageBase64 = ConvertFilesToBase64(FileUpload2);
+
+                        string response = PostDocument(apiUrl, empId, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
+
+                  
+                        //                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
+                        //$"goToNewTab('/personnel/EmployeeAddress.aspx?EmpId={empId}');", true);
 
                         //if (ViewState["__Username__"]!=null)
                         //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeePersonal.aspx?UserName=" + ViewState["__Username__"].ToString() + "&Password=" + ViewState["__Password__"] .ToString()+ "');", true);  //Open New Tab for Sever side code
@@ -458,8 +549,18 @@ namespace SigmaERP.personnel
                         if (UpdateCardValidation() == false) return;                        
                         if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true)
                         {
+                        string rootUrl = Session["__RootUrl__"]?.ToString();
+                        string apiUrl = rootUrl + "/api/Employee/employees/create";
+                        string token = Session["__UserToken__"]?.ToString();
+
+                        List<string> empImageBase64 = ConvertFilesToBase64(FileUpload1);
+                        List<string> signatureImageBase64 = ConvertFilesToBase64(FileUpload2);
+
+                        string response = PostDocument(apiUrl, ddlEmpCardNo.SelectedValue, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
+
+
                         if (updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
-                        {
+                          {
                             if (txtMobileNo.Text.Trim().Length > 0)
                                 updateEmpAddress(EmpId);
                             AllClear();
@@ -470,7 +571,7 @@ namespace SigmaERP.personnel
                                 Session["IsRedirect"] = "Yes";
                                 Response.Redirect("~/hrms/employees/list");
                             }
-                        }
+                          }
                      }
                         
                         else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableUpdate();", true);
@@ -581,27 +682,16 @@ namespace SigmaERP.personnel
                 }
                 else cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", convertDateTime.getCertainCulture(txtElStart.Text.Trim()));
 
-                if (HiddenField1.Value.ToString().Length == 0)
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", "");
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", txtEmpCardNo.Text.Trim() + HiddenField1.Value.ToString());
-                }
-
-
-
-
-                if (FileUpload2.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", txtEmpCardNo.Text + FileUpload2.FileName);
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", "");
-                }
              
+                  cmd.Parameters.AddWithValue("@EmpPicture", "");
+                
+           
+
+
+
+                cmd.Parameters.AddWithValue("@SignatureImage", "");
+                
+
                 cmd.Parameters.AddWithValue("@Type", ddlType.SelectedItem.Text);
 
 
@@ -686,15 +776,15 @@ namespace SigmaERP.personnel
                         Session["_EmpId_"] = dtEmpId.Rows[0]["EmpId"].ToString();
                         Session["_EmpStatus_"] = dtEmpId.Rows[0]["EmpId"].ToString();
                     }
-                    if (HiddenField1.Value.ToString().Length != 0)
-                    {
-                        saveImg();
-                    }
-                    if (FileUpload2.HasFile == true)
-                    {
-                        SaveSignature();
-                    }
-                    SaveAttachFile();
+                    //if (HiddenField1.Value.ToString().Length != 0)
+                    //{
+                    //    saveImg();
+                    //}
+                    //if (FileUpload2.HasFile == true)
+                    //{
+                    //    SaveSignature();
+                    //}
+                    //SaveAttachFile();
                     //rblEmpType.SelectedValue = "2"; // Replace Selected index to Selected Value.
                     //fs.Visible = true; 
                     //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "SaveSuccess();", true);   
@@ -1021,45 +1111,17 @@ namespace SigmaERP.personnel
 
 
 
-                if (FileUpload1.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", txtEmpCardNo.Text.Trim() + FileUpload1.FileName);
-                    if (imageName != "")
-                    {
-                        System.IO.File.Delete(Request.PhysicalApplicationPath + "/EmployeeImages/Images/" + imageName);
-                    }
-                    string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
+       
+               cmd.Parameters.AddWithValue("@EmpPicture", "");
+                
+          
+               cmd.Parameters.AddWithValue("@SignatureImage", "");
 
-                    System.Drawing.Image image = System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream);
-                    int width = 100;
-                    int height = 100;
-                    using (System.Drawing.Image thumbnail = image.GetThumbnailImage(width, height, new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback), IntPtr.Zero))
-                    {
-                        using (MemoryStream memoryStream = new MemoryStream())
-                        {
-                            thumbnail.Save(Server.MapPath("/EmployeeImages/Images/" + txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
-                        }
-                    }
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", "");
-                }
-                if (FileUpload2.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", txtEmpCardNo.Text.Trim() + FileUpload2.FileName);
-                    if (SignatureImage != "")
-                    {
-                        System.IO.File.Delete(Request.PhysicalApplicationPath + "/EmployeeImages/Signature/" + SignatureImage);
-                    }
-                    string filename = Path.GetFileName(FileUpload2.PostedFile.FileName);
-                    FileUpload2.SaveAs(Server.MapPath("/EmployeeImages/Signature/" + txtEmpCardNo.Text + filename));    //Save images into Images folder
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", "");
-                }
-             
+
+
+      
+
+
                 cmd.Parameters.AddWithValue("@Type", ddlType.SelectedItem.Text);
 
                 cmd.Parameters.AddWithValue("@ExpireDate", convertDateTime.getCertainCulture(txtExpireDate.Text.Trim()));
@@ -1717,13 +1779,18 @@ namespace SigmaERP.personnel
                 {
                     txtElStart.Text = Convert.ToDateTime(dtall.Rows[0]["EarnedLeaveEffectedFrom"].ToString()).ToString("d-M-yyyy");
                 }
-                
+
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string apiUrl = rootUrl + "/api/Employee/employees/create";
+                string companyId = Session["__GetCompanyId__"].ToString();
+
+
                 Session["_EmppictureName_"] = dtall.Rows[0]["EmpPicture"].ToString();
                 imageName = dtall.Rows[0]["EmpPicture"].ToString();
-                string url = @"/EmployeeImages/Images/" + Path.GetFileName(dtall.Rows[0]["EmpPicture"].ToString());
+                string url = rootUrl+"/"+companyId+"/"+ "EmployeeImage"+"/" + Path.GetFileName(dtall.Rows[0]["EmpPicture"].ToString());
                 imgProfile.ImageUrl = url;
                 SignatureImage = dtall.Rows[0]["SignatureImage"].ToString();
-                string url2 = @"/EmployeeImages/Signature/" + Path.GetFileName(dtall.Rows[0]["SignatureImage"].ToString());
+                string url2 = rootUrl + "/" + companyId + "/" + "EmployeeSignature" + "/" + Path.GetFileName(dtall.Rows[0]["SignatureImage"].ToString());
                 imgSignature.ImageUrl = url2;
                 txtMobileNo.Text= dtall.Rows[0]["MobileNo"].ToString();
             }

@@ -370,16 +370,18 @@
                                        <asp:TemplateField HeaderText="Company">
                                            <ItemTemplate>
                                                <div style="display: flex; align-items: center;">
-                                                   <img src='<%# "/EmployeeImages/CompanyLogo/" + Eval("CompanyLogo") %>'
-                                                       alt="Logo" style="width: 40px; height: 40px; margin-right: 10px;" />
+                                                       <img src='<%# Eval("CompanyLogo") == DBNull.Value ? "default-logo.png" : Session["__RootUrl__"].ToString() + "/" + Eval("CompanyId").ToString() + "/CompanyLogo/" + Eval("CompanyLogo").ToString() %>'
+                alt="Logo" style="width: 40px; height: 40px; margin-right: 10px;" />
                                                    <div>
-                                                    <span><%# Eval("CompanyName") %></span><br />
-                                                   <span class="email"><%# Eval("Email") %></span>
+                                                       <span><%# Eval("CompanyName") %></span><br />
+                                                       <span class="email"><%# Eval("Email") %></span>
                                                    </div>
-                                                  
                                                </div>
+                                             
                                            </ItemTemplate>
                                        </asp:TemplateField>
+
+
                                        <asp:BoundField
                                            DataField="Address"
                                            HeaderText="Address"
@@ -450,6 +452,8 @@
      
 
      <script type="text/javascript">
+         
+
 
              function Cardbox() {
              var CardboxElement = $("#Cardbox");
