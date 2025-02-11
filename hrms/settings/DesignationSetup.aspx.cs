@@ -173,7 +173,7 @@ namespace SigmaERP.hrms.settings
             txtDesignation.Text = "";
             txtDesignationBn.Text = "";
             txtDesignationShortName.Text = "";
-            txtDesignationCode.Text = "";
+           // txtDesignationCode.Text = "";
             txtOrderNo.Text = "";
             dlStatus.Text = "-select-";
             hdnbtnStage.Value = "";
