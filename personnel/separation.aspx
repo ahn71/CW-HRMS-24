@@ -227,8 +227,8 @@
                                         <asp:BoundField DataField="EmpTypeId" HeaderText="EmpTypeId" Visible="false" />
 
                                         <asp:BoundField DataField="EmpCardNo" HeaderText="Code" Visible="true" />
-                                        <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true" ItemStyle-Width="90%" />
-                                        <asp:BoundField DataField="EmpType" HeaderText="Type" Visible="true" ItemStyle-Width="20%" />
+                                        <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true"  />
+                                        <asp:BoundField DataField="EmpType" HeaderText="Type" Visible="true"/>
 
                                         <asp:BoundField DataField="EffectiveDate" HeaderText="Effective Date" Visible="true" />
                                         <asp:BoundField DataField="EmpStatusName" HeaderText="Sep.Type" Visible="true" />
