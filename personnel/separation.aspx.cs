@@ -151,6 +151,9 @@ namespace SigmaERP.personnel
                 ViewState["__G_EmpId__"] = EmpCards[0];
                 ViewState["__G_EmpCardNo__"] = EmpCards[1];
                 ViewState["__G_EmpTypeId__"] = EmpCards[2];
+
+                string test = ViewState["__G_EmpTypeId__"].ToString();
+
                 saveEmpSeparation();
             }               
             else updateEmpSeparation();
@@ -259,7 +262,11 @@ namespace SigmaERP.personnel
         {
             try
             {
-                SQLOperation.selectBySetCommandInDatatable("select EmpSeparationId,EmpId,EmpCardNo,EmpName,EmpTypeId,convert(varchar(11),EffectiveDate,105) as EffectiveDate,EmpStatusName,EmpType,convert(varchar(11),EntryDate,105) as EntryDate,Remarks  from v_Personnel_EmpSeparation where IsActive='false' ", dt = new DataTable(), sqlDB.connection);
+                SQLOperation.selectBySetCommandInDatatable("select pes.EmpSeparationId,pes.EmpId,pes.EmpCardNo,pei.EmpName,pes.EmpTypeId,convert(varchar(11),pes.EffectiveDate,105) as EffectiveDate,empSts.EmpStatusName,empt.EmpType,convert(varchar(11),pes.EntryDate,105) as EntryDate,pes.Remarks  from Personnel_EmpSeparation as pes inner join Personnel_EmployeeInfo as pei on pes.EmpId=pei.Empid inner join Hrd_EmployeeType as Empt on empt.EmpTypeId=pes.EmpTypeId INNER JOIN Personnel_EmpCurrentStatus AS pecs ON pes.EmpId = pecs.EmpId inner join  Hrd_EmpStatus as empSts on  empSts.EmpStatus = pecs.EmpStatus where pecs.CompanyId='" + ViewState["__CompanyId__"].ToString() + "' and pes.IsActive=0", dt = new DataTable(), sqlDB.connection);
+
+
+
+
                 string nnn = "select EmpSeparationId,EmpId,EmpCardNo,EmpName,EmpTypeId,convert(varchar(11),EffectiveDate,105) as EffectiveDate,EmpStatusName,EmpType,convert(varchar(11),EntryDate,105) as EntryDate,Remarks  from v_Personnel_EmpSeparation where IsActive='false'";
                 gvSeparationList.DataSource = dt;
                 gvSeparationList.DataBind();
@@ -519,6 +526,8 @@ namespace SigmaERP.personnel
             {
                 string CompanyId = (ddlCompanyListActiveLog.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyListActiveLog.SelectedValue;
                 string condition = AccessControl.getDataAccessCondition(CompanyId, "0");
+                if (condition.Contains("DptId"))
+                    condition = condition.Replace("DptId", "pecs.DptId");
                 dt = new DataTable();
                 if (txtCardnoActive.Text.Trim().Length == 0)
                 {
