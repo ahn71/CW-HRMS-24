@@ -32,8 +32,7 @@
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <Triggers>
-           <asp:AsyncPostBackTrigger ControlID="ddlCompany" />
-           <asp:AsyncPostBackTrigger ControlID="ddlShiftList" />  
+           <asp:AsyncPostBackTrigger ControlID="ddlCompany" /> 
             <asp:AsyncPostBackTrigger ControlID="rblReportType" />         
         </Triggers>
         <ContentTemplate>
@@ -57,17 +56,7 @@
                                  <asp:DropDownList ID="ddlCompany" runat="server"  AutoPostBack="true" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"  >
                                 </asp:DropDownList>                           
                             </td>
-                           </tr>
-                         <tr>
-                            <td>
-                                Shift
-                            </td>
-                            <td>:</td>
-                            <td class="tdWidth">
-                                <asp:DropDownList ID="ddlShiftList" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                </asp:DropDownList>  
-                            </td>  
-                        </tr>   
+                           </tr> 
                          <tr>
                             <td>Employee Type</td>
                             <td>:</td>
