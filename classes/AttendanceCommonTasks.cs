@@ -196,10 +196,14 @@ namespace SigmaERP.classes
             {
                 dt = new DataTable();
                 string[] Leave_Info = new string[2];
-                dt = CRUD.ExecuteReturnDataTable("select ApplicationId,LeaveName from v_Leave_LeaveApplicationDetails where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
+                //dt = CRUD.ExecuteReturnDataTable("select ApplicationId,LeaveName from v_Leave_LeaveApplicationDetails where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
+
+                dt = CRUD.ExecuteReturnDataTable("select lva.ID,LeaveName,LeaveDate from Leave_LeaveApplications  as lva inner join tblLeaveConfig as tlvc on tlvc.LeaveId = lva.LeaveTypeId inner join Leave_LeaveApplicationDetails as lvad on LeaveApplicationID = lva.ID inner join Personnel_EmpCurrentStatus as pecs on pecs.EmpId = lva.EmpId and pecs.IsActive = 1 where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND lva.EmpId='" + EmpId + "'");
+
+
                 if (dt.Rows.Count > 0)
                 {
-                    Leave_Info[0] = dt.Rows[0]["LACode"].ToString();
+                    Leave_Info[0] = dt.Rows[0]["ID"].ToString();
                     Leave_Info[1] = dt.Rows[0]["LeaveName"].ToString();
                 }
                 else Leave_Info[0] = "0";
