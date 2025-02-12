@@ -85,15 +85,6 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.DropDownList ddlCompany;
         
         /// <summary>
-        /// ddlShiftList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlShiftList;
-        
-        /// <summary>
         /// rblEmpType control.
         /// </summary>
         /// <remarks>

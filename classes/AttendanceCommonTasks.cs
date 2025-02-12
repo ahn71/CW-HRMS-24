@@ -196,10 +196,14 @@ namespace SigmaERP.classes
             {
                 dt = new DataTable();
                 string[] Leave_Info = new string[2];
-                dt = CRUD.ExecuteReturnDataTable("select ApplicationId,LeaveName from v_Leave_LeaveApplicationDetails where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
+                //dt = CRUD.ExecuteReturnDataTable("select ApplicationId,LeaveName from v_Leave_LeaveApplicationDetails where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
+
+                dt = CRUD.ExecuteReturnDataTable("select lva.ID,LeaveName,LeaveDate from Leave_LeaveApplications  as lva inner join tblLeaveConfig as tlvc on tlvc.LeaveId = lva.LeaveTypeId inner join Leave_LeaveApplicationDetails as lvad on LeaveApplicationID = lva.ID inner join Personnel_EmpCurrentStatus as pecs on pecs.EmpId = lva.EmpId and pecs.IsActive = 1 where ApprovalStatus=1 and LeaveDate='" + SelectedDate + "' AND lva.EmpId='" + EmpId + "'");
+
+
                 if (dt.Rows.Count > 0)
                 {
-                    Leave_Info[0] = dt.Rows[0]["LACode"].ToString();
+                    Leave_Info[0] = dt.Rows[0]["ID"].ToString();
                     Leave_Info[1] = dt.Rows[0]["LeaveName"].ToString();
                 }
                 else Leave_Info[0] = "0";
@@ -235,7 +239,7 @@ namespace SigmaERP.classes
                     if (dt == null || dt.Rows.Count == 0)
                     {
                         dt = new DataTable();
-                        dt = CRUD.ExecuteReturnDataTable("select SftOverTime,SftId,SftStartTimeIndicator,SftEndTimeIndicator,SftStartTime,SftEndTime,SftAcceptableLate,AcceptableTimeAsOT,StartPunchCountTime,EndPunchCountTime,format(Cast(BreakStartTime as datetime),'HH:mm:ss') as BreakStartTime,Format(Cast(BreakEndTime as datetime),'HH:mm:ss') as BreakEndTime,IsNight  from HRD_Shift where SftId ='" + ShiftId + "'");
+                        dt = CRUD.ExecuteReturnDataTable("select SftOverTime,SftId,SftStartTime,SftEndTime,SftAcceptableLate,StartingIN,EndingOUT,IsNight from HRD_Shift where SftId ='" + ShiftId + "'");
                     }
                     else
                     {
@@ -246,9 +250,9 @@ namespace SigmaERP.classes
                 else
                 {
                     dt = new DataTable();
-                    dt = CRUD.ExecuteReturnDataTable("select SftOverTime,SftId,SftStartTimeIndicator,SftEndTimeIndicator,SftStartTime,SftEndTime,SftAcceptableLate,AcceptableTimeAsOT,StartPunchCountTime,EndPunchCountTime,IsWeekend,Format(Cast(BreakStartTime as datetime),'HH:mm:ss') as BreakStartTime,Format(Cast(BreakEndTime as datetime),'HH:mm:ss') as BreakEndTime,IsNight  from v_ShiftTransferInfoDetails where SDate ='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
+                    dt = CRUD.ExecuteReturnDataTable("select SftOverTime,SftId,SftStartTime,SftEndTime,SftAcceptableLate,StartingIN,EndingIN,SftEndTime,StartingOUT,EndingOUT,IsWeekend,IsNight  from v_ShiftTransferInfoDetails where SDate ='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
                 }
-                string hh = "select SftOverTime,SftId,SftStartTimeIndicator,SftEndTimeIndicator,SftStartTime,SftEndTime,SftAcceptableLate,AcceptableTimeAsOT,StartPunchCountTime,EndPunchCountTime,IsWeekend,Format(Cast(BreakStartTime as datetime),'HH:mm:ss') as BreakStartTime,Format(Cast(BreakEndTime as datetime),'HH:mm:ss') as BreakEndTime,IsNight  from v_ShiftTransferInfoDetails where SDate ='" + SelectedDate + "' AND EmpId='" + EmpId + "'";
+            
                 Gt_RosterInfo[0] = (dt.Rows.Count > 0) ? dt.Rows[0]["SftId"].ToString() : "0";
 
 
@@ -260,15 +264,16 @@ namespace SigmaERP.classes
                 else
                     Gt_RosterInfo[2] = SelectedDate + " " + dt.Rows[0]["SftEndTime"].ToString();
 
-                TimeSpan StartPunchCountTime = TimeSpan.Parse(dt.Rows[0]["StartPunchCountTime"].ToString());
-                TimeSpan EndPunchCountTime = TimeSpan.Parse(dt.Rows[0]["EndPunchCountTime"].ToString());
-                Gt_RosterInfo[3] = SelectedDate + " " + dt.Rows[0]["StartPunchCountTime"].ToString();
+                TimeSpan StartPunchCountTime = TimeSpan.Parse(dt.Rows[0]["StartingIN"].ToString());
+                TimeSpan EndPunchCountTime = TimeSpan.Parse(dt.Rows[0]["EndingOUT"].ToString());
+                Gt_RosterInfo[3] = SelectedDate + " " + dt.Rows[0]["StartingIN"].ToString();
                 if (StartPunchCountTime > EndPunchCountTime)
-                    Gt_RosterInfo[4] = DateTime.Parse(SelectedDate).AddDays(1).ToString("yyyy-MM-dd") + " " + dt.Rows[0]["EndPunchCountTime"].ToString();
+                    Gt_RosterInfo[4] = DateTime.Parse(SelectedDate).AddDays(1).ToString("yyyy-MM-dd") + " " + dt.Rows[0]["EndingOUT"].ToString();
                 else
-                    Gt_RosterInfo[4] = SelectedDate + " " + dt.Rows[0]["EndPunchCountTime"].ToString();
+                    Gt_RosterInfo[4] = SelectedDate + " " + dt.Rows[0]["EndingOUT"].ToString();
                 try {  } catch (Exception ex) { Gt_RosterInfo[5] = "0"; }
                 
+
                 Gt_RosterInfo[6] = dt.Rows[0]["SftAcceptableLate"].ToString();
                 if (DutyType == "Regular")
                 {
@@ -278,7 +283,7 @@ namespace SigmaERP.classes
                 }
                 else
                 {
-                    Gt_RosterInfo[5] = dt.Rows[0]["AcceptableTimeAsOT"].ToString();
+                    Gt_RosterInfo[5] = "0";
                     Gt_RosterInfo[8] =  dt.Rows[0]["IsWeekend"].ToString();
                     Gt_RosterInfo[9] = dt.Rows[0]["IsNight"].ToString();
 
