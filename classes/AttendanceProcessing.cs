@@ -284,6 +284,7 @@ namespace SigmaERP.classes
                 if (dtEmpInfo != null && dtEmpInfo.Rows.Count > 0)
                 {
                     // file upload
+                    bool isHalfDay = false;
                     string fileName = "sql";
                     if (db=="access")
                         fileName=_attCommon.fileUpload(FileUploader, CompanyId);
@@ -360,11 +361,17 @@ namespace SigmaERP.classes
                                         _attRecord.SftId = rosterInfo[0];
                                         //end check roster 
                                         string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-                                         dd"),_attRecord.EmpId);
-                                        
-                                        if (Leave_Info[0] != "0")// leave
+
+                                        string specialCaseType = _attCommon.checkSpecialCase(SelectedDate.ToString("yyyy-MM-                                         dd"), _attRecord.EmpId);
+                                        if (Leave_Info[0] != "0" && Leave_Info[2] != "0.5")// leave  but no halfday leave
                                         {
                                             _attRecord.AttStatus = "Lv";
                                             _attRecord.StateStatus = Leave_Info[1];
+                                        }
+                                        else if (specialCaseType == "3")
+                                        {
+                                            _attRecord.AttStatus = "P";
+                                            _attRecord.StateStatus ="Present";
                                         }
                                         else // not  Leave (W/H/P/A/L)
                                         {
@@ -397,15 +404,31 @@ namespace SigmaERP.classes
                                             _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
                                             DataTable dtPunch = new DataTable();
                                            dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+
                                            
 
                                             if (dtPunch != null && dtPunch.Rows.Count > 0)
                                             { bool OnePunchPresent = Glory.getDBName()== "cw_hrms_tmc_hospital"?true:false;
-                                                
-                                                _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()),rosterInfo , TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString());
+                                                dtPunch = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+
+                                                DataView dv = dtPunch.DefaultView;
+                                                dv.Sort = "PunchTime ASC";
+
+                                                dtPunch = new DataTable();
+                                                dtPunch = dv.ToTable();
+                                                isHalfDay = false;
+
+                                                if (Leave_Info[0].ToString() != "0")
+                                                {
+                                                     isHalfDay = true;
+                                                    _attRecord.AttStatus = "LV";
+                                                    _attRecord.StateStatus = Leave_Info[1];
+                                                }
+                                                _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()),rosterInfo , TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(),specialCaseType,);
 
                                                 if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
                                                     _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], true, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()));
+
                                             }
                                             else
                                             {
