@@ -27,6 +27,14 @@ namespace SigmaERP.ControlPanel
                 ViewState["__DeletAction__"] = "0";
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 createBlankdt();
+                if (Request.Url.AbsoluteUri.ToLower().Contains("out-duty-authority"))
+                {
+                    rblAutoritySetupType.SelectedValue = "OD";
+                }
+                else
+                {
+                    rblAutoritySetupType.SelectedValue = "Lv";
+                }
                 setPrivilege();
             }
         }

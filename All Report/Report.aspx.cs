@@ -1250,6 +1250,12 @@ namespace SigmaERP.All_Report
             try
             {
                 rpd = new ReportDocument();
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string companyId = Session["__GetCompanyId__"].ToString();
+                string url = rootUrl + "//" + companyId + "//" + "EmployeeImage" + "//";
+        
+
+
                 if (IsDefault == "0")
                 {
                     rpd.Load(Server.MapPath("//All Report//Personnel//EmployeeBioData.rpt"));
@@ -1261,7 +1267,7 @@ namespace SigmaERP.All_Report
                     rpd.SetParameterValue(0, dtcompany.Rows[0]["CompanyName"].ToString());
                     rpd.SetParameterValue(1, dtcompany.Rows[0]["Address"].ToString());
                     rpd.SetParameterValue(2, dtcompany.Rows[0]["Telephone"].ToString());
-                    rpd.SetParameterValue(3, Server.MapPath("//EmployeeImages//Images//"));
+                    rpd.SetParameterValue(3, Server.MapPath(url));
                 }
                 else
                 {
@@ -1270,7 +1276,7 @@ namespace SigmaERP.All_Report
                     dt = new DataTable();
                     dt = (DataTable)Session["__EmployeeProfile__"];
                     rpd.SetDataSource(dt);
-                    rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+                    rpd.SetParameterValue(0, Server.MapPath(url));
                 }
 
 
