@@ -404,12 +404,12 @@ namespace SigmaERP.classes
                                             _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
                                             DataTable dtPunch = new DataTable();
                                            dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                            dtPunch = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
 
-                                           
 
                                             if (dtPunch != null && dtPunch.Rows.Count > 0)
                                             { bool OnePunchPresent = Glory.getDBName()== "cw_hrms_tmc_hospital"?true:false;
-                                                dtPunch = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                                
 
                                                 DataView dv = dtPunch.DefaultView;
                                                 dv.Sort = "PunchTime ASC";

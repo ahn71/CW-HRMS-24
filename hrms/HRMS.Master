@@ -1283,7 +1283,7 @@
                             
                             <div class="dropdown-parent-wrapper">
                                 <div class="dropdown-wrapper">
-                                    <h2 class="dropdown-wrapper__title">Notifications <span class="badge-circle badge-warning ms-1 count-number">1</span><span class="badge-circle badge-warning ms-1 d-none normal">1</span></h2>
+                                    <h2 class="dropdown-wrapper__title">Notifications <span></span><span class="badge-circle badge-warning ms-1 d-none normal">1</span></h2>
                                     <ul class="nav-notification-list">
                                         <!-- Notifications will be dynamically added here -->
 
