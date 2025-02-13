@@ -540,7 +540,7 @@ namespace SigmaERP.classes
             //}
             return _attRecord;
         }
-        public AttendanceRecord GetAttStatus(AttendanceRecord _attRecord, DateTime LogInTime, DateTime LogOutTime,string [] rosterInfo, TimeSpan MinWorkingTime, TimeSpan MinOverTime, bool OnePunchPresent, string DutyType)
+        public AttendanceRecord GetAttStatus(AttendanceRecord _attRecord, DateTime LogInTime, DateTime LogOutTime,string [] rosterInfo, TimeSpan MinWorkingTime, TimeSpan MinOverTime, bool OnePunchPresent, string DutyType,string specialcase,bool halfDayLeave)
             {
             DateTime RosterStartTime = DateTime.Parse(rosterInfo[1]); 
             DateTime RosterEndTime = DateTime.Parse(rosterInfo[2]);
@@ -676,6 +676,11 @@ namespace SigmaERP.classes
                     }
                 }
 
+            if (specialcase != null)
+            {
+                _attRecord.SpecialCase = specialcase;
+            }
+            _attRecord.isHalfday = halfDayLeave;
                 return _attRecord;
             }
             public AttendanceRecord CheckOutDuty(AttendanceRecord _attRecord, string minimumWorkingTime, bool hasPunch, DateTime rosterStartTime, DateTime rosterEndTime, DateTime inTime, DateTime outTime)
