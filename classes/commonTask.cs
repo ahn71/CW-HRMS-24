@@ -1844,7 +1844,8 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where IsInitial='false' and CompanyId='" + CompanyId + "' AND DptId='" + dptId + "' order by sftName ", dt = new DataTable());
+                sqlCmd = "SELECT SftId, SftName FROM HRD_Shift WHERE CompanyId='" + CompanyId + "' AND (DptId='" + dptId + "' OR DptId='0') ORDER BY SftName";
+                sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
@@ -1859,7 +1860,8 @@ namespace SigmaERP.classes
             try
             {
                 string condition = AccessControl.loadDepartmetCondition(CompanyId);
-                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where IsInitial='false' and " + condition + " order by sftName ", dt = new DataTable());
+                sqlCmd = "Select SftId,SftName From HRD_Shift where " + condition + " or DptId='0' order by sftName ";
+                sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
