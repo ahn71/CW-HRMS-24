@@ -1664,7 +1664,7 @@
          var sftId = '<%=  Session["__SftId__"]%>';--%>
         //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
         //var getLeavesNotificationUrl = rootUrl + '/api/Notification/notification';
-        var getLeavesNotificationUrl =rootUrl + '/api/Notification/notification';
+        var getLeavesNotificationUrl = rootUrl + `/api/Notification/notification?userId=${userId}&CompanyId=${CompanyID}`;
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         $(document).ready(function () {
@@ -1701,8 +1701,8 @@
 });
 
 
-    function GetLeavesNotification() {
-            ApiCallByCompId(getLeavesNotificationUrl, token, userId)
+        function GetLeavesNotification() {
+            ApiCallForNotification(getLeavesNotificationUrl, token)
                 .then(function (response) {
                     // Check if the response status is valid and contains data
                     if (response.status === "200") {
@@ -2055,7 +2055,30 @@
 }
 
 
+        // apiHelper.js
+function ApiCallForNotification(url, token) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'GET',
 
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                //console.log(status);
+                //var message = xhr.responseJSON.message
+                //console.log('Error occurred while fetching data:', message);
+                var message = xhr.responseJSON.message;
+                console.error('Error occurred while fetching data:', message);
+                reject({ message: message, status: status, error: error });
+            }
+        });
+    });
+}
         
 
     </script>
