@@ -22,6 +22,7 @@ using IronXL;
 using SigmaERP.hrms.BLL;
 using System.Net;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 
 namespace SigmaERP.personnel
 {
@@ -806,6 +807,9 @@ namespace SigmaERP.personnel
         {
             try
             {
+                
+ 
+
                 System.Data.SqlTypes.SqlDateTime getDate;
                 getDate = SqlDateTime.Null;
                 string EmpId = LoadEmpId();                
@@ -816,7 +820,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@EmpTypeId", ViewState["__EmpTypeID__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpName", ViewState["__Name__"].ToString());
                 cmd.Parameters.AddWithValue("@NickName", ViewState["__Name__"].ToString());
-                cmd.Parameters.AddWithValue("@EmpNameBn", txtNameBangla.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpNameBn", txtNameBangla.Text.Trim()); // add kora lagbe
                 cmd.Parameters.AddWithValue("@EmpCardNo", ViewState["__txtEmpCardNo__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpProximityNo", ViewState["__RegID__"].ToString());                
                 cmd.Parameters.AddWithValue("@PunchType", rblPunchType.SelectedValue);
@@ -2544,9 +2548,51 @@ namespace SigmaERP.personnel
 
         }
 
+        private DataTable ReadExcel(string filePath)
+        {
+            DataTable dt = new DataTable();
+
+            // Enable EPPlus license (required in newer versions)
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int rowCount = worksheet.Dimension.Rows;
+                int colCount = worksheet.Dimension.Columns;
+
+                if (rowCount < 2) return dt;
+
+          
+                for (int col = 1; col <= colCount; col++)
+                {
+                    dt.Columns.Add(worksheet.Cells[1, col].Text.Trim()); 
+                }
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    DataRow dr = dt.NewRow();
+                    for (int col = 1; col <= colCount; col++)
+                    {
+                        dr[col - 1] = worksheet.Cells[row, col].Text.Trim(); 
+                    }
+                    dt.Rows.Add(dr);
+                }
+            }
+            return dt;
+        }
+
         protected void btnImport_Click(object sender, EventArgs e)
         {
-            if(fuEmployeesData.HasFile)
+            if (fuEmployeesData.HasFile)
+            {
+                
+                    string filePath = Server.MapPath("~/AccessFile/") + fuEmployeesData.FileName;
+                    fuEmployeesData.SaveAs(filePath);
+  
+                    DataTable dt = ReadExcel(filePath);
+                
+            }
                 ReadXL(fileUpload(fuEmployeesData, ddlBranch.SelectedValue), ddlBranch.SelectedValue);
         }
 

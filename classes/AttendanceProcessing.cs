@@ -355,14 +355,14 @@ namespace SigmaERP.classes
                                         string[] rosterInfo = _attCommon.GetRosterInfo(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), dtEmpInfo.Rows[i]["SftID"].ToString(), dtEmpInfo.Rows[i]["EmpTypeId"].ToString());
                                         if (rosterInfo == null || rosterInfo[0] == "0")
                                         {
-                                            _attCommon.NotCountableAttendanceLog(_attRecord.EmpId, "Roster                                                      Missing", SelectedDate.ToString("yyyy-MM-dd"));
+                                            _attCommon.NotCountableAttendanceLog(_attRecord.EmpId, "Roster  Missing", SelectedDate.ToString("yyyy-MM-dd"));
                                             continue;
                                         }
                                         _attRecord.SftId = rosterInfo[0];
                                         //end check roster 
                                         string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-                                         dd"),_attRecord.EmpId);
 
-                                        string specialCaseType = _attCommon.checkSpecialCase(SelectedDate.ToString("yyyy-MM-                                         dd"), _attRecord.EmpId);
+                                        string specialCaseType = _attCommon.checkSpecialCase(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId);
                                         if (Leave_Info[0] != "0" && Leave_Info[2] != "0.5")// leave  but no halfday leave
                                         {
                                             _attRecord.AttStatus = "Lv";

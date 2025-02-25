@@ -165,7 +165,7 @@
             <div class="employee_box_content">
                 <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Always" runat="server">
                     <Triggers>
-                        <%-- <asp:AsyncPostBackTrigger ControlID="btnImport" />--%>
+                         <asp:PostBackTrigger ControlID="btnImport" />
                         <asp:AsyncPostBackTrigger ControlID="gvAttendance" />
                         <asp:AsyncPostBackTrigger ControlID="ddlCompanyList" />
                         <asp:AsyncPostBackTrigger ControlID="ddlDepartmentList" />
@@ -175,6 +175,40 @@
                     </Triggers>
                     <ContentTemplate>
 
+                        <div class="row">
+                                <div class="col-lg-6" style="display: flex; justify-content: flex-start" runat="server" id="trImportFrom">
+
+                                  <label class="form-label ">Import From:</label>
+                                <div class="" style="display: flex; justify-content: flex-start">
+                                      <asp:RadioButtonList  ForeColor="blue" Style="font-size:13px" Font-Bold="true" ID="rblImportFrom" runat="server" ClientIDMode="Static" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblImportFrom_SelectedIndexChanged" >
+                                        <asp:ListItem  Value="sql">Sql DB</asp:ListItem>
+                                        <asp:ListItem Value="access" Selected="True">Access DB</asp:ListItem>
+                                    </asp:RadioButtonList> 
+                                   
+                              
+                                </div>
+                           
+
+
+                        </div>
+                             <div class="col-lg-6">
+                                         <div runat="server" id="Div1">
+                      
+                        
+                                  
+                                        <label id="tdSelectFile" runat="server" visible="true">Select File<span class="requerd1">*</span>
+                                        </label>
+                                        <div id="tdFileUpload" runat="server" visible="true">
+                                            <asp:FileUpload ID="FileUpload1" runat="server" CssClass="fileUpload" />
+                                        </div>
+                                   
+                          
+
+                           
+                        </div>
+                            </div>
+
+                        </div>
                         <div class="row">
                             <div class="col-lg-6" style="display: flex; justify-content: flex-start">
                                 <label class="form-label ">Process Type:</label>
@@ -190,6 +224,8 @@
                                 </div>
 
                             </div>
+
+                         
                             <div class="col-lg-6 " style="display: flex; justify-content: flex-start">
                                 
                                     <label class="form-label" for="rblEmpType">Employee Type:</label>
@@ -252,6 +288,9 @@
                                 <asp:CalendarExtender ID="CalendarExtender1" runat="server" Enabled="True" Format="dd-MM-yyyy" PopupButtonID="imgAttendanceDate" TargetControlID="txtFullToDate">
                                 </asp:CalendarExtender>
                                 </div>
+
+                
+                              
                             </div>
 
                             <div class="row" runat="server" id="partialSection" visible="false">
@@ -282,7 +321,7 @@
                                     </div>
 
 
-                                    <div style="display: none">
+                                    <div>
                                         <asp:CalendarExtender ID="txtPartialAttDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtPartialAttDate">
                                         </asp:CalendarExtender>
 
@@ -309,45 +348,9 @@
                         <p>
                         </p>
 
-                        <div>
-                            <center>
-                                    <table>
-
-
-                                            <tr runat="server" id="trImportFrom">
-                                            <td class="caption">Import From </td>
-                                            <td class="caption">:</td>
-                                            <td>
-                                      <asp:RadioButtonList  ForeColor="blue" Style="font-size:13px" Font-Bold="true" ID="rblImportFrom" runat="server" ClientIDMode="Static" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblImportFrom_SelectedIndexChanged" >
-                                        <asp:ListItem Selected="True" Value="sql">Sql DB</asp:ListItem>
-                                        <asp:ListItem Value="access">Access DB</asp:ListItem>
-                                    </asp:RadioButtonList> 
-                                            </td>
-                                         
-                                        </tr>
-                                    </table>
-                                      
-                                    
-                                    
-                                                            
-                                </center>
-
-                        </div>
+                       
                         <br />
-                        <div class="import_data_header" style="display:none">
-                            <div style="width: 80%; margin: 0px auto">
-                                <table class="selectionBox">
-                                    <tr>
-                                        <td id="tdSelectFile" runat="server" visible="true">Select File<span class="requerd1">*</span>
-                                        </td>
-                                        <td id="tdFileUpload" runat="server" visible="true">
-                                            <asp:FileUpload ID="FileUpload1" runat="server" CssClass="fileUpload" />
-                                        </td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                        </div>
+             
 
                            <div class="dataTables_wrapper">
                     <asp:GridView ID="gvAttendance" runat="server" AllowPaging="True" Style="font-size: 13px" AutoGenerateColumns="False" DataKeyNames="EmpCardNo" CellPadding="4" ForeColor="#333333" Height="13px" PageSize="1500" Width="100%" OnPageIndexChanging="gvAttendance_PageIndexChanging" OnRowDataBound="gvAttendance_RowDataBound">

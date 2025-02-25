@@ -79,14 +79,23 @@ namespace SigmaERP.attendance
                 {                    
                     trImportFrom.Visible = true;
                 }
+                else if (ViewState["__AttMachineName__"].ToString().Equals("zk(access)"))
+                {
+                    trImportFrom.Visible = true;
+                   
+
+                    tdFileUpload.Visible = true;
+                    tdSelectFile.Visible = true;
+                }
                 else
                 {
-                    trImportFrom.Visible = false;                    
+                    trImportFrom.Visible = false; 
+                    
+                tdFileUpload.Visible = false;
+                tdSelectFile.Visible = false;
                 }
                
 
-                tdFileUpload.Visible = false;
-                tdSelectFile.Visible = false;
             }
             catch { }
         }

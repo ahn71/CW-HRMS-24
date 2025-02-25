@@ -62,7 +62,7 @@ namespace SigmaERP.classes
         {
             try
             {
-                return true;
+                //return true;
 
                 string _ProxymityNo = "";
                 string table = (db == "access") ? " tEnter" : " UNIS.dbo.tEnter";
