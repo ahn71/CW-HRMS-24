@@ -2495,7 +2495,57 @@ namespace SigmaERP.personnel
 
         }
 
-        public void ReadXL(string filename,string companyId)
+
+        public void ReadXL(DataTable dtExcel)
+        {
+            try
+            {
+             
+                foreach (DataRow row in dtExcel.Rows)
+                {
+                    string RegID = row["RegId"].ToString();
+                    if (RegID.Trim().Length > 0)
+                    {
+                        try { int a = int.Parse(RegID); } catch (Exception ex) { continue; }
+                    }
+                    string Name = row["Name"].ToString();
+                    string Department = row["Department"].ToString();
+                    string Group = Department;
+                    string Designation = row["Designation"].ToString();
+                    string EmpType = row["EmpType"].ToString();
+                    string JoiningDate = row["JoiningDate"].ToString();
+                    string Gender = row["Gender"].ToString();
+                    AutoGenerateEmpId();
+                    if (RegID == "")
+                        ViewState["__RegID__"] = ViewState["__txtRegistrationId__"].ToString();
+                    else
+                        ViewState["__RegID__"] = RegID;
+                    ViewState["__Name__"] = Name;
+
+                    ViewState["__DptID__"] = getDptID(Department);
+                    ViewState["__DsgID__"] = getDsgID(ViewState["__DptID__"].ToString(), Designation);
+                    ViewState["__GID__"] = getGID(ViewState["__DptID__"].ToString(), Group);
+                    ViewState["__EmpTypeID__"] = (EmpType.ToLower() == "worker") ? "1" : "2";
+                    ViewState["__Gender__"] = Gender;
+                    if (JoiningDate == "")
+                        ViewState["__JoiningDate__"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    else
+                        ViewState["__JoiningDate__"] = commonTask.ddMMyyyyTo_yyyyMMdd(JoiningDate);
+
+
+                    ImportEmployeeInfo();
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+        }
+        public void _ReadXL(string filename,string companyId)
         {
             try
             {
@@ -2591,9 +2641,10 @@ namespace SigmaERP.personnel
                     fuEmployeesData.SaveAs(filePath);
   
                     DataTable dt = ReadExcel(filePath);
-                
+                    ReadXL(dt);
             }
-                ReadXL(fileUpload(fuEmployeesData, ddlBranch.SelectedValue), ddlBranch.SelectedValue);
+                //_ReadXL(fileUpload(fuEmployeesData, ddlBranch.SelectedValue), ddlBranch.SelectedValue);
+     
         }
 
         private string getDptID(string DptName)
