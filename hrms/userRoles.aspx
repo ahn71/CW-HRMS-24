@@ -5,7 +5,6 @@
          text-align:left;
      }
  </style>
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <main class="main-content">
@@ -331,8 +330,10 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             //GetModule();
+                            console.log('Before GetRoles api call');
                             GetRoles();
                             //GetPackages();
+                           console.log('After  GetRoles api call');
                         }
                     });
                 })
@@ -434,9 +435,11 @@
                 .then(function (response) {
                     if (response.statusCode === 200) {
                         var responseData = response.data;
-                        console.log(responseData);
+                        console.log('Before table Data Bind', responseData);
                         $('.footable-loader').show();
                         bindTableData(responseData);
+
+                        console.log('after Table Data Bind ', responseData);
                     } else {
                         console.error('Error occurred while fetching data:', response.message);
                     }

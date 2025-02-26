@@ -29,9 +29,12 @@ namespace SigmaERP.personnel
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
+
                 setPrivilege();
-                divindivisual.Visible = false;
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
+                classes.commonTask.LoadEmpCardNoByEmpTypeForProfile(ddlCardNo, ddlBranch.SelectedValue, rblEmpType.SelectedValue);
+                if (ddlCardNo != null)
+                    ddlCardNo.Items.Insert(0, new ListItem("Select For Individual", "0"));
                 if (!classes.commonTask.HasBranch())
                     ddlBranch.Enabled = false;
                 
@@ -52,125 +55,68 @@ namespace SigmaERP.personnel
                 classes.commonTask.LoadBranch(ddlBranch,ViewState["__CompanyId__"].ToString());
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "employee_profile.aspx", ddlBranch, WarningMessage, tblGenerateType, btnPrintpreview);
-              
-               
+
+          
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ddlBranch.SelectedValue = ViewState["__CompanyId__"].ToString();
-                //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-                //{
-                //    //For supper admin & Master admin
-                //    tblGenerateType.Visible = true;
-                //    classes.commonTask.LoadBranch(ddlBranch);
-                //    ddlBranch.SelectedValue = ViewState["__CompanyId__"].ToString();
-                //    ViewState["__IsUserType__"] = "1";
-                //    return;
-                //}
-                //else
-                //{
-                //    ViewState["__IsUserType__"] = "0";
-                //    upSuperAdmin.Value = "0";
-                //    DataTable dtSetPrivilege = new DataTable();
-                //    sqlDB.fillDataTable("select * from UserPrivilege where PageName='employee_profile.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                //    //if (dt.Rows.Count > 0)
-                //    //{
-                //    //    if (bool.Parse(dt.Rows[0]["GenerateAction"].ToString()).Equals(false))
-                //    //    {
-                //    //        btnPrintpreview.CssClass = "";
-                //    //        btnPrintpreview.Enabled = false;
-                //    //    }
-                //    //}
-                //    if (dtSetPrivilege.Rows.Count > 0)
-                //    {
-                //        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                //        {
-                //            btnPrintpreview.CssClass = "css_btn Ptbut"; btnPrintpreview.Enabled = true; 
-                //        }
-                //        else
-                //        {
-                //            tblGenerateType.Visible = false;
-                //            WarningMessage.Visible = true;
-                //            btnPrintpreview.CssClass = ""; btnPrintpreview.Enabled = false;
-                            
-                //            // mainDiv.Style.Add("Pointer-event", "none");
-                //        }
+                classes.commonTask.LoadDepartment(ddlBranch.SelectedValue, lstAll);
 
-                //    }
-                //    else
-                //    {
-                //        tblGenerateType.Visible = false;
-                //        WarningMessage.Visible = true;
-                //        btnPrintpreview.CssClass = ""; btnPrintpreview.Enabled = false;                       
-                //        // mainDiv.Style.Add("Pointer-event", "none");
-                //    }
-                //}
-
+         
             }
             catch { }
 
         }
+        protected void btnAddItem_Click(object sender, EventArgs e)
+        {
+            classes.commonTask.AddRemoveItem(lstAll, lstSelected);
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true); 
+        }
+
+        protected void btnAddAllItem_Click(object sender, EventArgs e)
+        {
+            classes.commonTask.AddRemoveAll(lstAll, lstSelected);
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true); 
+        }
+
+        protected void btnRemoveItem_Click(object sender, EventArgs e)
+        {
+            classes.commonTask.AddRemoveItem(lstSelected, lstAll);
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true); 
+        }
+        protected void btnRemoveAllItem_Click(object sender, EventArgs e)
+        {
+            classes.commonTask.AddRemoveAll(lstSelected, lstAll);
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
+        }
 
         protected void btnPrintpreview_Click(object sender, EventArgs e)
         {
-            string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"0");
-            if (rdball.Checked == true)
+            string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(), "0");
+            string DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+
+            if (ddlCardNo.SelectedValue != "0")
             {
-              
-                    sqlDB.fillDataTable("Select Max(SN) as SN,EmpId From  v_EmployeeProfile where  EmpStatus in ('1','8') and IsActive=1 and CompanyId='"+ddlBranch.SelectedValue+"' Group by EmpId", dt=new DataTable());
-              
-                string setSn = "", setEmpId = "";
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    if (i == 0 && i == dt.Rows.Count - 1)
-                    {
-                        setSn = "in('" + dt.Rows[i].ItemArray[0].ToString() + "')";
-                        setEmpId = "in('" + dt.Rows[i].ItemArray[1].ToString() + "')";
-                    }
-                    else if (i == 0 && i != dt.Rows.Count - 1)
-                    {
-                        setSn += "in ('" + dt.Rows[i].ItemArray[0].ToString() + "'";
-                        setEmpId += "in ('" + dt.Rows[i].ItemArray[1].ToString() + "'";
-                    }
-                    else if (i != 0 && i == dt.Rows.Count - 1)
-                    {
-                        setSn += ",'" + dt.Rows[i].ItemArray[0].ToString() + "')";
-                        setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "')";
-                    }
-                    else
-                    {
-                        setSn += ",'" + dt.Rows[i].ItemArray[0].ToString() + "'";
-                        setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "'";
-                    }
-                }
-                dt = new DataTable();            
-              
-
-                sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary  From v_EmployeeProfile where SN " + setSn + " and  " + condition + "  order by DptCode,CustomOrdering", dt);
-                Session["__EmployeeProfile__"] = dt;
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + rblReportStructure.SelectedValue + "');", true);  //Open New Tab for Sever side code
+                Response.Redirect("~/personnel/employee_profileview.aspx?Id=" + ddlCardNo.SelectedValue);
             }
-            else if (rdbindividual.Checked == true)
+            else
             {
-                dt = new DataTable();
-                //sqlDB.fillDataTable("Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 "+ condition + "" , dt);
+                // Remove "in (" and ")" from the string and format correctly
+                string cleanedList = DepartmentList.Replace("in (", "").Replace(")", "").Trim();
 
-                query = "Select  EmpId, CompanyId,FatherName,MotherName,EmpCompanyName,Address,Telephone,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,BasicSalary,Format(DateOfBirth,'dd-MM-yyyy') as DateOfBirth,Age,Sex,RName,NationIDCardNo,EmpAccountNo,SalaryCount,GrdName,Type,WagesType,BankName,EmpType,SftName,PreCity,PrePostBox,PerCity,MobileNo,Email,ContactName,EmpRelation,JobDescription,Gender,FamilyAge,BloodGroup,EmpPicture,Nationality,MaritialStatus,PresentAd,PermanentAd,MobileNo,EmpPresentSalary   From v_EmployeeProfile where SN=" + ddlCardNo.SelectedValue + " and IsActive=1 and " + condition + "";
+                // Wrap values properly
+                string formattedDepartmentList = "['" + cleanedList.Replace("''", "','") + "']";
 
-                if (DataFill(query))
-                {
-                    Session["__EmployeeProfile__"] = dt;
-
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + rblReportStructure.SelectedValue + "');", true);
-                }
-                     //Open New Tab for Sever side code
+                Response.Redirect("~/personnel/employee_profileview.aspx?Id=" + formattedDepartmentList);
             }
-           // ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile');", true);  //Open New Tab for Sever side code
         }
+
+
 
         protected void rdball_CheckedChanged(object sender, EventArgs e)
         {
            
             divindivisual.Visible = false;
-            rdbindividual.Checked = false;         
+                
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);      
         }
 
@@ -186,74 +132,29 @@ namespace SigmaERP.personnel
             return true;
         }
 
-        protected void rdbindividual_CheckedChanged(object sender, EventArgs e)
-        {            
-            rdball.Checked = false;
-            divindivisual.Visible = true;
-            CompanyID = (ddlBranch.SelectedValue.Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
-            classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, CompanyID, rblEmpType.SelectedValue);
-            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
-        }       
+        //protected void rdbindividual_CheckedChanged(object sender, EventArgs e)
+        //{            
+        //    rdball.Checked = false;
+        //    divindivisual.Visible = true;
+        //    CompanyID = (ddlBranch.SelectedValue.Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
+        //    classes.commonTask.LoadEmpCardNoByEmpTypeForProfile(ddlCardNo, CompanyID, rblEmpType.SelectedValue);
+        //    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
+        //}       
 
-        protected void btnOldProfile_Click(object sender, EventArgs e)
-        {           
-            if (rdball.Checked == true)
-            {
-                dt = new DataTable();
-             
-                    sqlDB.fillDataTable("Select Min(SN) as SN,EmpId From  v_EmployeeProfile where  EmpStatus in ('1','8') and IsActive='1' and CompanyId='" + ddlBranch.SelectedValue + "' Group by EmpId", dt=new DataTable());
-
-                string setSn = "", setEmpId = "";
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    if (i == 0 && i == dt.Rows.Count - 1)
-                    {
-                        setSn = "in('" + dt.Rows[i].ItemArray[0].ToString() + "')";
-                        setEmpId = "in('" + dt.Rows[i].ItemArray[1].ToString() + "')";
-                    }
-                    else if (i == 0 && i != dt.Rows.Count - 1)
-                    {
-                        setSn += "in ('" + dt.Rows[i].ItemArray[0].ToString() + "'";
-                        setEmpId += "in ('" + dt.Rows[i].ItemArray[1].ToString() + "'";
-                    }
-                    else if (i != 0 && i == dt.Rows.Count - 1)
-                    {
-                        setSn += ",'" + dt.Rows[i].ItemArray[0].ToString() + "')";
-                        setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "')";
-                    }
-                    else
-                    {
-                        setSn += ",'" + dt.Rows[i].ItemArray[0].ToString() + "'";
-                        setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "'";
-                    }
-                }
-                dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpPresentSalary, EmpId,EmpCardNo,EmpName,DsgName,DptName,convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,BasicSalary,PresentAd,PresentZipCode,PermanentAd,PermanentDistrict,PermanentZipCode,convert(varchar(11),DateOfBirth,106) as DateOfBirth,Age,Sex,MaritialStatus,Weight,Height,Religion,Nationality,NationIDCardNo,EmpAccountNo,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,OthersAllownce,EmpTypeId,NumberofChild,SalaryCount,EmpPicture,DstName,PerDstName From v_EmployeeProfile where SN " + setSn + " order by EmpCardNo", dt);
-                Session["__EmployeeProfile__"] = dt;
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + upSuperAdmin.Value + "');", true);  //Open New Tab for Sever side code
-            }
-            else if (rdbindividual.Checked == true)
-            {               
-                dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpPresentSalary, EmpId,EmpCardNo,EmpName,DsgName,DptName,convert(varchar(11),EmpJoiningDate,106) as EmpJoiningDate,BasicSalary,PresentAd,PresentZipCode,PermanentAd,PermanentDistrict,PermanentZipCode,convert(varchar(11),DateOfBirth,106) as DateOfBirth,Age,Sex,MaritialStatus,Weight,Height,Religion,Nationality,NationIDCardNo,EmpAccountNo,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,OthersAllownce,EmpTypeId,NumberofChild,SalaryCount,EmpPicture,DstName,PerDstName From v_EmployeeProfile where SN=(Select MIN(SN) as SN From v_EmployeeProfile where EmpCardNo='" + ddlCardNo.SelectedItem.Text + "') and ActiveSalary='True'", dt);
-                Session["__EmployeeProfile__"] = dt;
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeProfile-" + upSuperAdmin.Value + "');", true);  //Open New Tab for Sever side code
-            }
-
-        }
-
+    
         protected void ddlBranch_SelectedIndexChanged(object sender, EventArgs e)
         {
-            rdball.Checked = true;           
-            divindivisual.Visible = false;
-            rdbindividual.Checked = false;           
+               
+            divindivisual.Visible = false;    
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
         }
 
         protected void rblEmpType_SelectedIndexChanged(object sender, EventArgs e)
         {
             CompanyID = (ddlBranch.SelectedValue.Equals("0000")) ? ViewState["__CompanyId__"].ToString(): ddlBranch.SelectedValue;
-            classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, CompanyID, rblEmpType.SelectedValue);
+            classes.commonTask.LoadEmpCardNoByEmpTypeForProfile(ddlCardNo, ddlBranch.SelectedValue, rblEmpType.SelectedValue);
+            if (ddlCardNo != null)
+                ddlCardNo.Items.Insert(0, new ListItem("Select For Individual", "0"));
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
         }
 

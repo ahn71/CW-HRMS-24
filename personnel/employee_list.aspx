@@ -193,6 +193,17 @@
                                  <asp:BoundField DataField="EmpType" HeaderText="Type" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="EmpDutyType" HeaderText="Duty Type" ItemStyle-HorizontalAlign="Center" />   
                               <asp:BoundField DataField="WeekendType" HeaderText="Weekend Type" ItemStyle-HorizontalAlign="Center" />
+                              <asp:TemplateField HeaderText="Profile" HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
+                                  <ItemTemplate>
+                                      <asp:LinkButton ID="lnkProfile" runat="server"
+                                          CommandName="Profile"
+                                          CommandArgument='<%#((GridViewRow)Container).RowIndex%>'
+                                          Font-Bold="true" ForeColor="Green">
+                                          <i class="fa fa-user"></i> 
+                                      </asp:LinkButton>
+
+                                  </ItemTemplate>
+                              </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Change"  HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
                                   <ItemTemplate >
                                       <asp:Button ID="btnEdit" runat="server" CommandName="Edit" Width="55px" Height="30px" Font-Bold="true" ForeColor="green" Text="Edit" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
@@ -230,6 +241,10 @@
 
                });
            });
+           function goToNewTabandWindow(url) {
+               window.open(url);
+               loadcardNo();
+           }
            function loadEmpInfo(e) {              
                if (e.keyCode == 13) {                   
                    //jQuery.ajax({
@@ -279,5 +294,5 @@
                    // return false;
                }
            }
-    </script>
+       </script>
 </asp:Content>

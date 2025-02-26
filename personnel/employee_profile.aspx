@@ -30,11 +30,11 @@
     <asp:UpdatePanel ID="uplMessage" runat="server" >
     <ContentTemplate><p class="message"  id="lblMessage" clientidmode="Static" runat="server"></p></ContentTemplate>
 </asp:UpdatePanel>
+
     <asp:HiddenField ID="upSuperAdmin" runat="server" ClientIDMode="Static" />
     <asp:UpdatePanel ID="UpdatePanel3" runat="server" UpdateMode="Conditional">
           <Triggers>
-              <asp:AsyncPostBackTrigger ControlID="rdball" />
-              <asp:AsyncPostBackTrigger ControlID="rdbindividual" />
+             
               <asp:AsyncPostBackTrigger ControlID="rblEmpType" />             
               <asp:AsyncPostBackTrigger ControlID="ddlBranch" />
           </Triggers>
@@ -45,7 +45,7 @@
             <h2>Employee Profile Report</h2>
         </div>
         <div class="employee_box_body">
-            <div class="employee_box_content" style="height:290px;">
+            <div class="employee_box_content">
 
                 <div class="punishment_against">
                     <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
@@ -61,16 +61,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Structure</td>
-                            <td>:</td>
-                            <td class="tdWidth">
-                                <asp:RadioButtonList runat="server" ID="rblReportStructure" RepeatDirection="Horizontal">
-                                    <asp:ListItem Selected="True" Value="1" Text="Custom Report"></asp:ListItem>
-                                    <asp:ListItem Value="0" Text="Default Report"></asp:ListItem>
-                                </asp:RadioButtonList>
-                            </td>
-                        </tr>                        
-                        <tr>
                             <td>Employee Type</td>
                             <td>:</td>
                             <td class="tdWidth">
@@ -78,14 +68,7 @@
                                 </asp:RadioButtonList>
                             </td>
                         </tr>
-                        <tr>
-                            <td>Report Type</td>
-                            <td>:</td>
-                            <td class="tdWidth">
-                                <asp:RadioButton ID="rdball" Class="" ClientIDMode="Static" AutoPostBack="true" Checked="true" runat="server" Text="All" OnCheckedChanged="rdball_CheckedChanged" />
-                                <asp:RadioButton ID="rdbindividual" ClientIDMode="Static" AutoPostBack="true" runat="server" Text="Individual" OnCheckedChanged="rdbindividual_CheckedChanged" />
-                            </td>
-                        </tr>
+
                         <tr runat="server" id="divindivisual">
                             <td>Card No / Name
                             </td>
@@ -95,13 +78,45 @@
                             </td>
                         </tr>
                     </table>
-                </div>            
+                </div> 
+                
+                                     <div id="divDepartmentList" runat="server" class="id_card" style="background-color:white; width:61%;">
+                            <div class="id_card_left EilistL">
+                                <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" SelectionMode="Multiple"></asp:ListBox>
+                            </div>
+                            <div class="id_card_center EilistC">
+                                <table style="margin-top:0px;" class="employee_table">                  
+                              <tr>
+                                    <td >
+                                        <asp:Button ID="btnAddItem" Class="arrow_button" runat="server" Text=">" OnClick="btnAddItem_Click" />
+                                    </td>
+                               </tr>
+                            <tr>
+                                    <td>
+                                        <asp:Button ID="btnAddAllItem" Class="arrow_button" runat="server" Text=">>" OnClick="btnAddAllItem_Click"  />
+                                    </td>
+                               </tr>
+                            <tr>
+                                    <td>
+                                        <asp:Button ID="btnRemoveItem" Class="arrow_button" runat="server" Text="<" OnClick="btnRemoveItem_Click"   />
+                                    </td>
+                               </tr>
+                            <tr>
+                                    <td>
+                                        <asp:Button ID="btnRemoveAllItem" Class="arrow_button" runat="server" Text="<<" OnClick="btnRemoveAllItem_Click"  />
+                                    </td>
+                               </tr>
+                        </table>
+                    </div>
+                     <div class="id_card_right EilistR">
+                                <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  ClientIDMode="Static" runat="server"></asp:ListBox>
+                            </div>
+                </div>
                 <div class="punishment_button_area">
                     <table class="emp_button_table">
                         <tbody>
                             <tr>
                                 <th><asp:Button ID="btnPrintpreview" runat="server" CssClass="css_btn Ptbut" ClientIDMode="Static" Text="Profile" OnClick="btnPrintpreview_Click" /></th>
-                                <th><asp:Button ID="btnOldProfile" Visible="false" runat="server" CssClass="back_button Ptbut" ClientIDMode="Static" Text="Previous Profile" OnClick="btnOldProfile_Click"  /></th>
                                 <th><asp:Button ID="btnClose" PostBackUrl="~/personnel_defult.aspx" Text="Close" runat="server" CssClass="css_btn Ptbut" /></th>                                   
                          </tr>
                     </tbody>
