@@ -238,7 +238,7 @@ namespace SigmaERP.hrms.Leave
                     //sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                     dt = new DataTable();
                     dt = CRUD.ExecuteReturnDataTable(sqlCmd);
-                    if (dt == null || dt.Rows.Count == 0)
+                    if (dt == null || dt.Rows.Count == 0) 
                     {
                         lblMessage.InnerText = "warning->Data not found."; return;
                     }
