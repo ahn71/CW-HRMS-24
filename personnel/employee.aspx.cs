@@ -807,8 +807,13 @@ namespace SigmaERP.personnel
         {
             try
             {
-                
- 
+
+
+         
+
+          
+
+
 
                 System.Data.SqlTypes.SqlDateTime getDate;
                 getDate = SqlDateTime.Null;
@@ -819,14 +824,14 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@CompanyId", ddlBranch.SelectedValue);
                 cmd.Parameters.AddWithValue("@EmpTypeId", ViewState["__EmpTypeID__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpName", ViewState["__Name__"].ToString());
-                cmd.Parameters.AddWithValue("@NickName", ViewState["__Name__"].ToString());
-                cmd.Parameters.AddWithValue("@EmpNameBn", txtNameBangla.Text.Trim()); // add kora lagbe
+                cmd.Parameters.AddWithValue("@NickName", ViewState["__Name__"].ToString());            
+                cmd.Parameters.AddWithValue("@EmpNameBn", ViewState["__NameBn__"].ToString()); // add kora lagbe
                 cmd.Parameters.AddWithValue("@EmpCardNo", ViewState["__txtEmpCardNo__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpProximityNo", ViewState["__RegID__"].ToString());                
                 cmd.Parameters.AddWithValue("@PunchType", rblPunchType.SelectedValue);
                 cmd.Parameters.AddWithValue("@RealProximityNo", ViewState["__RegID__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpStatus", ddlEmpStatus.SelectedValue);
-                cmd.Parameters.AddWithValue("@SftId", "0");
+                cmd.Parameters.AddWithValue("@SftId", ViewState["__shift__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", ViewState["__JoiningDate__"].ToString());
                 cmd.Parameters.AddWithValue("@ShiftTransferDate", ViewState["__JoiningDate__"].ToString());
                 cmd.Parameters.AddWithValue("@EarnedLeave", txtEarnedLeave.Text);
@@ -888,19 +893,28 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@CustomOrdering", txtDptWise.Text.Trim());
 
                 cmd.Parameters.AddWithValue("@TIN", txtTIN.Text.Trim());
-                cmd.Parameters.AddWithValue("@PreSalaryType", rblSalaryType.SelectedValue);
-                cmd.Parameters.AddWithValue("@SalaryType", rblSalaryType.SelectedValue);
+                cmd.Parameters.AddWithValue("@PreSalaryType", ViewState["__salaryType__"].ToString());
+                cmd.Parameters.AddWithValue("@SalaryType", ViewState["__salaryType__"].ToString());
 
-                cmd.Parameters.AddWithValue("@PreEmpDutyType", rblDutyType.SelectedValue);
-                cmd.Parameters.AddWithValue("@EmpDutyType", rblDutyType.SelectedValue);
+                cmd.Parameters.AddWithValue("@PreEmpDutyType", ViewState["__dutyType__"].ToString());
+                cmd.Parameters.AddWithValue("@EmpDutyType", ViewState["__dutyType__"].ToString());
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);
-                cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
+                cmd.Parameters.AddWithValue("@WeekendType", ViewState["__weekendType__"].ToString());
 
                 int result = (int)cmd.ExecuteScalar();
+            
 
+             
                 if (result > 0)
                 {
-                    CRUD.Execute("Insert into  Personnel_EmpPersonnal (EmpId,Sex) values ('"+ EmpId + "','"+ ViewState["__Gender__"] .ToString()+ "') ");
+                    CRUD.Execute("Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId) values ('" + EmpId + "','"+ ViewState["__Gender__"] .ToString()+ "','" + ViewState["__NID__"].ToString()+ "','"+ ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherOrHusbandName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "') ");
+                    string jjj = "Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId) values ('" + EmpId + "','" + ViewState["__Gender__"].ToString() + "','" + ViewState["__NID__"].ToString() + "','" + ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherOrHusbandName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "') ";
+
+                    if (ViewState["__EmoContactNumber__"].ToString() != "")
+                    {
+                        //saveEmpAddress(EmpId, ViewState["__EmoContactNumber__"].ToString());
+                        CRUD.Execute("Insert into Personnel_EmpAddress(EmpId, MobileNo) values('"+ EmpId + "', '"+ ViewState["__EmoContactNumber__"].ToString() + "')) ");
+                    }
 
                 }
                 else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableSave();", true);
@@ -2509,31 +2523,83 @@ namespace SigmaERP.personnel
                         try { int a = int.Parse(RegID); } catch (Exception ex) { continue; }
                     }
                     string Name = row["Name"].ToString();
+                    string NameBn = row["BanglaName"].ToString();
                     string Department = row["Department"].ToString();
                     string Group = Department;
                     string Designation = row["Designation"].ToString();
                     string EmpType = row["EmpType"].ToString();
                     string JoiningDate = row["JoiningDate"].ToString();
                     string Gender = row["Gender"].ToString();
+                    string NID = row["NID"].ToString();
+                    string SalaryType = row["SalaryType"].ToString();
+                    string Shift = row["Shift"].ToString();
+                    string DutyType = row["DutyType"].ToString();
+                    string WeekendType= row["WeekendType"].ToString();
+                    string FatherOrHusbandName = row["Father'sOrHusbandName"].ToString();
+                    string MothersName = row["MothersName"].ToString();
+                    string MaritialStatus = row["MaritialStatus"].ToString();
+                    string DateOfBirth = row["DateOfBirth"].ToString();
+                    string BloodGroup = row["BloodGroup"].ToString();
+                    string Religion = row["Religion"].ToString();
+                    string LastEducationqualification = row["LastEducationqualification"].ToString();
+                    string TotalNumberOfExperience = row["TotalNumberOfExperience"].ToString();
+
+
+
+
+                    string ContactNumber = row["ContactNumber"].ToString();
                     AutoGenerateEmpId();
                     if (RegID == "")
                         ViewState["__RegID__"] = ViewState["__txtRegistrationId__"].ToString();
                     else
                         ViewState["__RegID__"] = RegID;
                     ViewState["__Name__"] = Name;
-
+                    ViewState["__NameBn__"] = NameBn;
+                    ViewState["__NID__"] = NID;
+                    ViewState["__ContactNumber__"] = ContactNumber;
                     ViewState["__DptID__"] = getDptID(Department);
                     ViewState["__DsgID__"] = getDsgID(ViewState["__DptID__"].ToString(), Designation);
                     ViewState["__GID__"] = getGID(ViewState["__DptID__"].ToString(), Group);
                     ViewState["__EmpTypeID__"] = (EmpType.ToLower() == "worker") ? "1" : "2";
                     ViewState["__Gender__"] = Gender;
+                    ViewState["__EmoContactNumber__"] = ContactNumber;
                     if (JoiningDate == "")
                         ViewState["__JoiningDate__"] = DateTime.Now.ToString("yyyy-MM-dd");
                     else
                         ViewState["__JoiningDate__"] = commonTask.ddMMyyyyTo_yyyyMMdd(JoiningDate);
+                    ViewState["__salaryType__"] = (SalaryType == "Scale") ? 0 : (SalaryType == "Gross") ? 1 : 2;
+
+                    ViewState["__shift__"] = getShifttID(Shift, ViewState["__DptID__"].ToString());
+                    ViewState["__dutyType__"] = (DutyType == "Roster") ? "1" : "0";
+                    ViewState["__weekendType__"] = (WeekendType=="Regular")?"0":"1";
+                    ViewState["__fatherOrHusbandName__"] = FatherOrHusbandName;
+                    ViewState["__mothersName__"] = MothersName;
+                    ViewState["__maritialStatus__"] = MaritialStatus;
+                    if (DateOfBirth == "")
+                    {
+                        ViewState["__dateOfBirth__"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        ViewState["__dateOfBirth__"] = commonTask.ddMMyyyyTo_yyyyMMdd(JoiningDate);
+                    }
+                    ViewState["__bloodGroup__"] = BloodGroup;
+                    ViewState["__religion__"] = getReligionId(Religion);
+                    string jj= getLasEducationId(LastEducationqualification);
+                    ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
+                    ViewState["__totalNumberOfExperience__"] = TotalNumberOfExperience;
 
 
-                    ImportEmployeeInfo();
+                   bool isImport= ImportEmployeeInfo();
+                    if (isImport)
+                    {
+                        lblMessage.InnerText = "Success-> Data Imported SuccessFully";
+                    }
+                    else
+                    {
+                        lblMessage.InnerText = "Success-> Data Imported Failed";
+                    }
+                  
 
 
                 }
@@ -2661,6 +2727,47 @@ namespace SigmaERP.personnel
             return dt.Rows[0]["DptId"].ToString();
         }
 
+        private string getShifttID(string shfName,string DptId)
+        {
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select SftId from Hrd_shift where DptName='" + shfName + "' and DptId='"+ DptId + "'");
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                CRUD.Execute("insert into Hrd_shift(SftName,companyId,DptId) values('" + shfName + "','" + ddlBranch.SelectedValue + "','" + DptId + "') ");
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable("select SftId from Hrd_shift where SftName='" + shfName + "'");
+            }
+            return dt.Rows[0]["SftId"].ToString();
+        }
+        private string getReligionId(string Rname)
+        {
+            dt = new DataTable();
+            string query = " select RId,RName from HRD_Religion where RName='" + Rname + "'";
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+
+                CRUD.Execute("insert into HRD_Religion(RName) values('" + Rname + "',') ");
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable("select SftId from HRD_Religion where RName='" + Rname + "'");
+            }
+            return dt.Rows[0]["RId"].ToString();
+        }
+
+        private string getLasEducationId(string lastEducation)
+        {
+            dt = new DataTable();
+            string query = "select Qid, QName, CompanyId from HRD_Qualification where QName='"+ lastEducation + "' ";
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                CRUD.Execute("insert into HRD_Qualification(QName) values('" + lastEducation + "',') ");
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable("select Qid from HRD_Qualification where QName='" + lastEducation + "'");
+            }
+            return dt.Rows[0]["Qid"].ToString();
+        }
         private string getDsgID(string DptId,string DsgName)
         {
 
