@@ -4,9 +4,9 @@ function ApiCall(url, token) {
         $.ajax({
             url: url,
             type: 'GET',
-       
             headers: {
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
             },
             success: function (data) {
                 resolve(data);

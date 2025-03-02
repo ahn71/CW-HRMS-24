@@ -405,6 +405,13 @@ namespace SigmaERP.personnel
                 {
                     Response.Redirect("~/hrms/employees/add?EmpId=" + getId + "&CompanyId=" + CompanyId + "&Edit=False &Transfer=True");
                 }
+                if (e.CommandName == "Profile")
+                {
+
+
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/personnel/employee_profileview.aspx?Id=" + getId + "');", true);
+
+                }
                 else if (e.CommandName == "Remove")
                 {
                     DataTable dt;

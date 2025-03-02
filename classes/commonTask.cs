@@ -317,6 +317,21 @@ namespace SigmaERP.classes
             catch { }
         }
 
+        public static void LoadEmpCardNoByEmpTypeForProfile(DropDownList dl, string CompanyId, string EmpTypeID)
+        {
+            try
+            {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
+                EmpTypeID = (EmpTypeID == "All") ? "" : "EmpTypeId=" + EmpTypeID + " and";
+                dt = new DataTable();
+                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeProfile where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
+                dl.DataSource = dt;
+                dl.DataTextField = "EmpCardNo";
+                dl.DataValueField = "EmpId";
+                dl.DataBind();
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoByShift(DropDownList dl, string CompanyId, string SftID)
         {
             try

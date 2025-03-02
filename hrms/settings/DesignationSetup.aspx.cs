@@ -181,21 +181,55 @@ namespace SigmaERP.hrms.settings
             btnSave.Text = "Save";
         }
 
+        //private Boolean SaveDesignation()
+        //{
+        //    try
+        //    {
+        //        int st;
+        //        if (dlStatus.Text.Equals("Active")) st = 1;
+        //        else st = 0;
+        //        SqlCommand cmd = new SqlCommand("insert into HRD_Designation (DsgId,DptId,DsgName,DsgNameBn,DsgShortName,DsgStatus,Ordering,CompanyId) values( '" + classes.commonTask.LoadSL("Select Max(SL) as SL From HRD_Designation", "Designation") + "','" + dlDepartment.SelectedValue + "' ,'" + txtDesignation.Text + "',N'" + txtDesignationBn.Text + "','" + txtDesignationShortName.Text + "'," + st.ToString() + "," + txtOrderNo.Text.Trim() + "," + ddlCompanyName.SelectedValue + ") ", sqlDB.connection);
+        //        cmd.ExecuteNonQuery();
+        //        loadDesignation();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblMessage.InnerText = ex.Message;
+        //        loadDesignation();
+        //        return false;
+        //    }
+        //}
+
         private Boolean SaveDesignation()
         {
             try
             {
-                int st;
-                if (dlStatus.Text.Equals("Active")) st = 1;
-                else st = 0;
-                SqlCommand cmd = new SqlCommand("insert into HRD_Designation (DsgId,DptId,DsgName,DsgNameBn,DsgShortName,DsgStatus,Ordering) values( '" + classes.commonTask.LoadSL("Select Max(SL) as SL From HRD_Designation", "Designation") + "','" + dlDepartment.SelectedValue + "' ,'" + txtDesignation.Text + "',N'" + txtDesignationBn.Text + "','" + txtDesignationShortName.Text + "'," + st.ToString() + "," + txtOrderNo.Text.Trim() + ") ", sqlDB.connection);
-                cmd.ExecuteNonQuery();
+                int st = dlStatus.Text.Equals("Active") ? 1 : 0;
+
+                // Fetch new ID securely (consider using identity column instead)
+                string newDsgId = classes.commonTask.LoadSL("Select Max(SL) as SL From HRD_Designation", "Designation");
+
+                using (SqlCommand cmd = new SqlCommand("INSERT INTO HRD_Designation (DsgId, DptId, DsgName, DsgNameBn, DsgShortName, DsgStatus, Ordering, CompanyId) VALUES (@DsgId, @DptId, @DsgName, @DsgNameBn, @DsgShortName, @DsgStatus, @Ordering, @CompanyId)", sqlDB.connection))
+                {
+                    cmd.Parameters.AddWithValue("@DsgId", newDsgId);
+                    cmd.Parameters.AddWithValue("@DptId", dlDepartment.SelectedValue);
+                    cmd.Parameters.AddWithValue("@DsgName", txtDesignation.Text);
+                    cmd.Parameters.AddWithValue("@DsgNameBn", txtDesignationBn.Text);
+                    cmd.Parameters.AddWithValue("@DsgShortName", txtDesignationShortName.Text);
+                    cmd.Parameters.AddWithValue("@DsgStatus", st);
+                    cmd.Parameters.AddWithValue("@Ordering", int.TryParse(txtOrderNo.Text.Trim(), out int orderNo) ? orderNo : (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CompanyId", ddlCompanyName.SelectedValue);
+
+                    cmd.ExecuteNonQuery();
+                }
+
                 loadDesignation();
                 return true;
             }
             catch (Exception ex)
             {
-                lblMessage.InnerText = ex.Message;
+                lblMessage.InnerText = "Error: " + ex.Message; // Consider logging this instead
                 loadDesignation();
                 return false;
             }
@@ -205,22 +239,66 @@ namespace SigmaERP.hrms.settings
         {
             try
             {
-                int st;
-                if (dlStatus.Text.Equals("Active")) st = 1;
-                else st = 0;
-                string getIdentifierValue = ViewState["__getSL__"].ToString();
-                SqlCommand cmd = new SqlCommand("Update HRD_Designation set DptId='" + dlDepartment.SelectedValue + "', DsgName='" + txtDesignation.Text + "', DsgNameBn=N'" + txtDesignationBn.Text + "', DsgShortName='" + txtDesignationShortName.Text.Trim() + "', DsgStatus=" + st.ToString() + ",Ordering=" + txtOrderNo.Text.Trim() + " where SL=" + getIdentifierValue + "", sqlDB.connection);
-                cmd.ExecuteNonQuery();
-                // loadDesignation();
+                int st = dlStatus.Text.Equals("Active") ? 1 : 0;
+
+                if (ViewState["__getSL__"] == null)
+                {
+                    lblMessage.InnerText = "Error: No record selected for update.";
+                    return false;
+                }
+
+                int sl;
+                if (!int.TryParse(ViewState["__getSL__"].ToString(), out sl))
+                {
+                    lblMessage.InnerText = "Error: Invalid record identifier.";
+                    return false;
+                }
+
+                using (SqlCommand cmd = new SqlCommand("UPDATE HRD_Designation SET DptId=@DptId, DsgName=@DsgName, DsgNameBn=@DsgNameBn, DsgShortName=@DsgShortName, DsgStatus=@DsgStatus, Ordering=@Ordering, CompanyId=@CompanyId WHERE SL=@SL", sqlDB.connection))
+                {
+                    cmd.Parameters.AddWithValue("@DptId", dlDepartment.SelectedValue);
+                    cmd.Parameters.AddWithValue("@DsgName", txtDesignation.Text);
+                    cmd.Parameters.AddWithValue("@DsgNameBn", txtDesignationBn.Text);
+                    cmd.Parameters.AddWithValue("@DsgShortName", txtDesignationShortName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@DsgStatus", st);
+                    cmd.Parameters.AddWithValue("@Ordering", int.TryParse(txtOrderNo.Text.Trim(), out int orderNo) ? orderNo : (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CompanyId", ddlCompanyName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@SL", sl);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+                // loadDesignation(); // Uncomment if needed
                 return true;
             }
             catch (Exception ex)
             {
-                lblMessage.InnerText = ex.Message;
+                lblMessage.InnerText = "Error: " + ex.Message; // Consider logging instead
                 loadDesignation();
                 return false;
             }
         }
+
+        //private Boolean UpdateDesignation()
+        //{
+        //    try
+        //    {
+        //        int st;
+        //        if (dlStatus.Text.Equals("Active")) st = 1;
+        //        else st = 0;
+        //        string getIdentifierValue = ViewState["__getSL__"].ToString();
+        //        SqlCommand cmd = new SqlCommand("Update HRD_Designation set DptId='" + dlDepartment.SelectedValue + "', DsgName='" + txtDesignation.Text + "', DsgNameBn=N'" + txtDesignationBn.Text + "', DsgShortName='" + txtDesignationShortName.Text.Trim() + "', DsgStatus=" + st.ToString() + ",Ordering=" + txtOrderNo.Text.Trim() + ",CompanyId="+ ddlCompanyName.SelectedValue +" where SL=" + getIdentifierValue + "", sqlDB.connection);
+        //        cmd.ExecuteNonQuery();
+        //        // loadDesignation();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        lblMessage.InnerText = ex.Message;
+        //        loadDesignation();
+        //        return false;
+        //    }
+        //}
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
