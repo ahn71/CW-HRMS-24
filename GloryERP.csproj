@@ -2124,6 +2124,7 @@
     <Content Include="payroll\salary\salary_sheet_excel.aspx" />
     <Content Include="personnel\employee-list-allowing-compliance.aspx" />
     <Content Include="personnel\employee_profileview.aspx" />
+    <Content Include="personnel\ImportEmployeInfo.aspx" />
     <Content Include="personnel\OtherReports.aspx" />
     <Content Include="personnel\promotion_sheetc.aspx" />
     <Content Include="payroll\Punishment_OthersPay.aspx" />
@@ -5260,6 +5261,13 @@
     </Compile>
     <Compile Include="personnel\employee_profileview.aspx.designer.cs">
       <DependentUpon>employee_profileview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="personnel\ImportEmployeInfo.aspx.cs">
+      <DependentUpon>ImportEmployeInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="personnel\ImportEmployeInfo.aspx.designer.cs">
+      <DependentUpon>ImportEmployeInfo.aspx</DependentUpon>
     </Compile>
     <Compile Include="personnel\OtherReports.aspx.cs">
       <DependentUpon>OtherReports.aspx</DependentUpon>

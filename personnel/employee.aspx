@@ -378,7 +378,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="width:175px;">Father's/ Husband's Name
+                                        <td style="width:175px;">Father's Name
                                         </td>
                                         <td>:
                                         </td>
@@ -402,7 +402,7 @@
                                         </td>
                                         <td>
 
-                                            <asp:DropDownList ID="dsMaritialStatus" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                            <asp:DropDownList ID="dsMaritialStatus" runat="server" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="dsMaritialStatus_SelectedIndexChanged" AutoPostBack="true">
                                                 <asp:ListItem>Single</asp:ListItem>
                                                 <asp:ListItem>Married</asp:ListItem>
                                                 <asp:ListItem>Widow</asp:ListItem>
@@ -412,6 +412,24 @@
                                         </td>
                                     </tr>
                                     <tr>
+
+
+                                         <tr runat="server" id="husbandOrWifeName" visible="false">
+                                        <td>Husband's /Wife's Name
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+
+                                         <asp:TextBox runat="server" ID="txtHusbandOrwifeName" CssClass="form-control text_box_width"></asp:TextBox>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+
+
+
                                         <td>Date of Birth
                                         </td>
                                         <td>:

@@ -907,8 +907,9 @@ namespace SigmaERP.personnel
              
                 if (result > 0)
                 {
-                    CRUD.Execute("Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId) values ('" + EmpId + "','"+ ViewState["__Gender__"] .ToString()+ "','" + ViewState["__NID__"].ToString()+ "','"+ ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherOrHusbandName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "') ");
-                    string jjj = "Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId) values ('" + EmpId + "','" + ViewState["__Gender__"].ToString() + "','" + ViewState["__NID__"].ToString() + "','" + ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherOrHusbandName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "') ";
+                    CRUD.Execute("Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId,HusbandOrWifeName) values ('" + EmpId + "','"+ ViewState["__Gender__"] .ToString()+ "','" + ViewState["__NID__"].ToString()+ "','"+ ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "','" + ViewState["__HusbandOrWifeName__"].ToString()+ "') ");
+
+                    string jjj = "Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId,HusbandOrWifeName) values ('" + EmpId + "','" + ViewState["__Gender__"].ToString() + "','" + ViewState["__NID__"].ToString() + "','" + ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherOrHusbandName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "','" + ViewState["__HusbandOrWifeName__"].ToString() + "') ";
 
                     if (ViewState["__EmoContactNumber__"].ToString() != "")
                     {
@@ -2037,7 +2038,7 @@ namespace SigmaERP.personnel
             {
 
                 DataTable dt;
-                sqlDB.fillDataTable("Select Personnel_EmpPersonnal.FatherName, Personnel_EmpPersonnal.MotherName, Personnel_EmpPersonnal.FatherNameBn, " +
+                sqlDB.fillDataTable("Select Personnel_EmpPersonnal.HusbandOrWifeName, Personnel_EmpPersonnal.FatherName, Personnel_EmpPersonnal.MotherName, Personnel_EmpPersonnal.FatherNameBn, " +
                     "Personnel_EmpPersonnal.MotherNameBN,Personnel_EmpPersonnal.RId, Personnel_EmpPersonnal.MaritialStatus,convert(varchar(11)," +
                     "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
                     " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
@@ -2058,6 +2059,10 @@ namespace SigmaERP.personnel
                 dsHeight.Text = dt.Rows[0]["Height"].ToString();
                 ddlLastEdQualification.SelectedValue = dt.Rows[0]["LastEdQualification"].ToString();
                 dsMaritialStatus.Text = dt.Rows[0]["MaritialStatus"].ToString();
+                if(dsMaritialStatus.Text=="Married" || dsMaritialStatus.Text== "Widow")
+                {
+                    txtHusbandOrwifeName.Text= dt.Rows[0]["HusbandOrWifeName"].ToString();
+                }
                 dsMotherName.Text = dt.Rows[0]["MotherName"].ToString();
                 //dsMotherNameBN.Text = dt.Rows[0]["MotherNameBN"].ToString();
                 dsNationality.Text = dt.Rows[0]["Nationality"].ToString();
@@ -2117,7 +2122,7 @@ namespace SigmaERP.personnel
                 //DataTable dtEmp;
                 //sqlDB.fillDataTable("SELECT EmpId FROM v_HRD_Shift", dtEmp = new DataTable());
                 string EmpId = ViewState["__EmpId__"].ToString();
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo,HusbandOrWifeName)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo,@HusbandOrWifeName) ", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__EmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
@@ -2153,6 +2158,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
                 cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text);
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2342,7 +2348,7 @@ namespace SigmaERP.personnel
                 {
                     EmpId = ddlEmpCardNo.SelectedValue;
                 }
-                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo where EmpId=@EmpId ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo,HusbandOrWifeName=@HusbandOrWifeName where EmpId=@EmpId ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", EmpId);
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
                 cmd.Parameters.AddWithValue("@MotherName", dsMotherName.Text.Trim());
@@ -2385,6 +2391,8 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
                 cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
+
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text.Trim());
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2535,7 +2543,7 @@ namespace SigmaERP.personnel
                     string Shift = row["Shift"].ToString();
                     string DutyType = row["DutyType"].ToString();
                     string WeekendType= row["WeekendType"].ToString();
-                    string FatherOrHusbandName = row["Father'sOrHusbandName"].ToString();
+                    string FathersName = row["FathersName"].ToString();
                     string MothersName = row["MothersName"].ToString();
                     string MaritialStatus = row["MaritialStatus"].ToString();
                     string DateOfBirth = row["DateOfBirth"].ToString();
@@ -2543,6 +2551,7 @@ namespace SigmaERP.personnel
                     string Religion = row["Religion"].ToString();
                     string LastEducationqualification = row["LastEducationqualification"].ToString();
                     string TotalNumberOfExperience = row["TotalNumberOfExperience"].ToString();
+                    string HusbandOrWifeName = row["HusbandOrWifeName"].ToString();
 
 
 
@@ -2572,7 +2581,7 @@ namespace SigmaERP.personnel
                     ViewState["__shift__"] = getShifttID(Shift, ViewState["__DptID__"].ToString());
                     ViewState["__dutyType__"] = (DutyType == "Roster") ? "1" : "0";
                     ViewState["__weekendType__"] = (WeekendType=="Regular")?"0":"1";
-                    ViewState["__fatherOrHusbandName__"] = FatherOrHusbandName;
+                    ViewState["__fatherName__"] = FathersName;
                     ViewState["__mothersName__"] = MothersName;
                     ViewState["__maritialStatus__"] = MaritialStatus;
                     if (DateOfBirth == "")
@@ -2588,6 +2597,7 @@ namespace SigmaERP.personnel
                     string jj= getLasEducationId(LastEducationqualification);
                     ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
                     ViewState["__totalNumberOfExperience__"] = TotalNumberOfExperience;
+                    ViewState["__HusbandOrWifeName__"] = HusbandOrWifeName;
 
 
                    bool isImport= ImportEmployeeInfo();
@@ -2833,6 +2843,19 @@ namespace SigmaERP.personnel
                 classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
 
             }
+        }
+
+        protected void dsMaritialStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(dsMaritialStatus.SelectedValue== "Married" ||dsMaritialStatus.SelectedValue== "Widow")
+            {
+                husbandOrWifeName.Visible = true;
+            }
+            else
+            {
+                husbandOrWifeName.Visible = false;
+            }
+           
         }
         //---- End Data Import----)
     }
