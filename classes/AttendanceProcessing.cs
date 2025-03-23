@@ -273,187 +273,198 @@ namespace SigmaERP.classes
                 //_attCommon.DeleteTempRawData(ProcessingID);
             }
         }
-        public void _AttendanceProcessing(string ProcessingID,string DeviceType,string CompanyId, DateTime SelectedDate, FileUpload FileUploader, bool ForAllEmployee, string DepartmentId, string EmpCardNo, string UserId,string EmpType,string db, Label lblErrorMessage)
+        public void _AttendanceProcessing(string ProcessingID,string DeviceType,string CompanyId, DateTime SelectedDate1, FileUpload FileUploader, bool ForAllEmployee, string DepartmentId, string EmpCardNo, string UserId,string EmpType,string db, Label lblErrorMessage,DateTime fromdate,DateTime toDate)
         {
             try
             {
                 if (_attCommon == null)
                     _attCommon = new AttendanceCommonTasks();
                 // load employees
-                DataTable dtEmpInfo = _attCommon.getEmployees(SelectedDate.ToString("yyyy-MM-dd"), ForAllEmployee, CompanyId, DepartmentId, EmpCardNo, EmpType);
-                if (dtEmpInfo != null && dtEmpInfo.Rows.Count > 0)
-                {
+            
                     // file upload
-                    bool isHalfDay = false;
-                    string fileName = "sql";
-                    if (db=="access")
-                        fileName=_attCommon.fileUpload(FileUploader, CompanyId);
-                    if (fileName!="")
+                    for (DateTime SelectedDate = fromdate; SelectedDate <= toDate; SelectedDate = SelectedDate.AddDays(1.0))
                     {
-                        // import raw data form uploaded file(db)
-                        if (_attCommon.importRawDataFormDevice(fileName, CompanyId, ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), dtEmpInfo.Rows[0]["RealProximityNo"].ToString(), SelectedDate, ProcessingID,db))
+                    DataTable dtEmpInfo = _attCommon.getEmployees(SelectedDate.ToString("yyyy-MM-dd"), ForAllEmployee, CompanyId, DepartmentId, EmpCardNo, EmpType);
+                        if (dtEmpInfo != null && dtEmpInfo.Rows.Count > 0)
                         {
-                            // delete existing attendance
-                            if (_attCommon.DeleteAttendance(CompanyId,DepartmentId,SelectedDate.ToString("yyyy-MM-dd"),ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), EmpType))
+                            bool isHalfDay = false;
+                            string fileName = "sql";
+                            if (db == "access")
+                                fileName = _attCommon.fileUpload(FileUploader, CompanyId);
+                            if (fileName != "")
                             {
-                                SQLOperation.forDelete("tblAttendance_NotCountableLogRecord", sqlDB.connection);  // for clear full tblAttendance_NotCountableLogRecord table
-
-                                string GeneralDayEmpType= _attCommon.GetGeneralDayInfo(CompanyId, SelectedDate.ToString("yyyy-MM-dd"));
-                              
-                                bool IsRegularWeekend = false;
-                                bool IsHoliday = false;
-                                if (GeneralDayEmpType != "0")// "0" means, General Day for all employee
+                                // import raw data form uploaded file(db)
+                                if (_attCommon.importRawDataFormDevice(fileName, CompanyId, ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), dtEmpInfo.Rows[0]["RealProximityNo"].ToString(), SelectedDate, ProcessingID, db))
                                 {
-                                    string[] WH = _attCommon.CheckHolidayWeekend(CompanyId, SelectedDate.ToString("yyyy-MM-dd"));
+                                    // delete existing attendance
+                                    if (_attCommon.DeleteAttendance(CompanyId, DepartmentId, SelectedDate.ToString("yyyy-MM-dd"), ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), EmpType))
+                                    {
+                                        SQLOperation.forDelete("tblAttendance_NotCountableLogRecord", sqlDB.connection);  // for clear full tblAttendance_NotCountableLogRecord table
 
-                                    if (bool.Parse(WH[0]))
-                                    {
-                                        if (WH[1].Equals("W"))
-                                            IsRegularWeekend = true;
-                                        else
-                                            IsHoliday = true;
-                                    }
-                                }  
-                                
-                                string[] othersetting = _attCommon.GetOthersSetting(CompanyId);
-                                TimeSpan workerTiffinTime = TimeSpan.Parse(othersetting[0]);
-                                TimeSpan staffTiffinTime = TimeSpan.Parse(othersetting[1]);
-                                for (int i = 0; i < dtEmpInfo.Rows.Count; i++)
-                                {                                   
-                                    if (DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(dtEmpInfo.Rows[i]["EmpJoiningDate"].ToString())) > SelectedDate)
-                                    {
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        
-                                        bool IsWeekend = false;
-                                        AttendanceRecord _attRecord = new AttendanceRecord{
-                                            EmpId = dtEmpInfo.Rows[i]["EmpId"].ToString(),
-                                            AttDate = SelectedDate,
-                                            EmpTypeId =dtEmpInfo.Rows[i]["EmpTypeId"].ToString(),
-                                            InHour = "00", InMin = "00",InSec = "00",
-                                            OutHour = "00", OutMin = "00", OutSec = "00",
-                                            AttStatus = "A",StateStatus="Absent",                                          
-                                            DptId = dtEmpInfo.Rows[i]["DptId"].ToString(),
-                                            DsgId = dtEmpInfo.Rows[i]["DsgId"].ToString(),
-                                            CompanyId = CompanyId,
-                                            GId= dtEmpInfo.Rows[i]["GId"].ToString(),
-                                            LateTime = "00:00:00",
-                                            StayTime = "00:00:00",
-                                            TiffinCount="0",
-                                            HolidayCount="0",
-                                            PaybleDays= "0",
-                                            OverTime = "00:00:00",
-                                            OtherOverTime = "00:00:00",
-                                            TotalOverTime = "00:00:00",
-                                            NightAllowCount = "0",
-                                            UserId=UserId                                          
-                                            
-                                        };
-                                        //check roster 
-                                        string[] rosterInfo = _attCommon.GetRosterInfo(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), dtEmpInfo.Rows[i]["SftID"].ToString(), dtEmpInfo.Rows[i]["EmpTypeId"].ToString());
-                                        if (rosterInfo == null || rosterInfo[0] == "0")
-                                        {
-                                            _attCommon.NotCountableAttendanceLog(_attRecord.EmpId, "Roster  Missing", SelectedDate.ToString("yyyy-MM-dd"));
-                                            continue;
-                                        }
-                                        _attRecord.SftId = rosterInfo[0];
-                                        //end check roster 
-                                        string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-                                         dd"),_attRecord.EmpId);
+                                        string GeneralDayEmpType = _attCommon.GetGeneralDayInfo(CompanyId, SelectedDate.ToString("yyyy-MM-dd"));
 
-                                        string specialCaseType = _attCommon.checkSpecialCase(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId);
-                                        if (Leave_Info[0] != "0" && Leave_Info[2] != "0.5")// leave  but no halfday leave
+                                        bool IsRegularWeekend = false;
+                                        bool IsHoliday = false;
+                                        if (GeneralDayEmpType != "0")// "0" means, General Day for all employee
                                         {
-                                            _attRecord.AttStatus = "Lv";
-                                            _attRecord.StateStatus = Leave_Info[1];
-                                        }
-                                        else if (specialCaseType == "3")
-                                        {
-                                            _attRecord.AttStatus = "P";
-                                            _attRecord.StateStatus ="Present";
-                                        }
-                                        else // not  Leave (W/H/P/A/L)
-                                        {
-                                            if (GeneralDayEmpType == "0" || GeneralDayEmpType == dtEmpInfo.Rows[i]["EmpTypeId"].ToString()) // checke Is General Day?
+                                            string[] WH = _attCommon.CheckHolidayWeekend(CompanyId, SelectedDate.ToString("yyyy-MM-dd"));
+
+                                            if (bool.Parse(WH[0]))
                                             {
-                                            // this is a general day 
-                                            }
-                                            else // not is general day 
-                                            {
-                                                if (dtEmpInfo.Rows[i]["WeekendType"].ToString().Equals("Roster"))
-                                                {
-                                                    IsWeekend = commonTask.IsRosterWeekend(SelectedDate.ToString("yyyy-MM-dd"), dtEmpInfo.Rows[i]["EmpId"].ToString());
-                                                }
+                                                if (WH[1].Equals("W"))
+                                                    IsRegularWeekend = true;
                                                 else
-                                                {
-                                                    IsWeekend = IsRegularWeekend;
-                                                }
-                                                if (IsHoliday)// Holiday
-                                                {
-                                                    _attRecord.AttStatus = "H";
-                                                    _attRecord.StateStatus = "Holiday";
-                                                }
-                                                else if (IsWeekend)// Weekend
-                                                {
-                                                    _attRecord.AttStatus = "W";
-                                                    _attRecord.StateStatus = "Weekend";
-                                                }
-                                            }                                     
-                                            string _ProxymityNo = _attCommon.GetEmpProximityNo(_attRecord.EmpId, SelectedDate.ToString("yyyy-MM-dd"));
-                                            _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
-                                            DataTable dtPunch = new DataTable();
-                                           dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
-                                            dtPunch = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                                    IsHoliday = true;
+                                            }
+                                        }
 
-
-                                            if (dtPunch != null && dtPunch.Rows.Count > 0)
-                                            { bool OnePunchPresent = Glory.getDBName()== "cw_hrms_tmc_hospital"?true:false;
-                                                
-
-                                                DataView dv = dtPunch.DefaultView;
-                                                dv.Sort = "PunchTime ASC";
-
-                                                dtPunch = new DataTable();
-                                                dtPunch = dv.ToTable();
-                                                isHalfDay = false;
-
-                                                if (Leave_Info[0].ToString() != "0")
-                                                {
-                                                     isHalfDay = true;
-                                                    _attRecord.AttStatus = "LV";
-                                                    _attRecord.StateStatus = Leave_Info[1];
-                                                }
-                                                _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()),rosterInfo , TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(),specialCaseType, isHalfDay);
-
-                                                if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
-                                                    _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], true, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()));
-
+                                        string[] othersetting = _attCommon.GetOthersSetting(CompanyId);
+                                        TimeSpan workerTiffinTime = TimeSpan.Parse(othersetting[0]);
+                                        TimeSpan staffTiffinTime = TimeSpan.Parse(othersetting[1]);
+                                        for (int i = 0; i < dtEmpInfo.Rows.Count; i++)
+                                        {
+                                            if (DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(dtEmpInfo.Rows[i]["EmpJoiningDate"].ToString())) > SelectedDate)
+                                            {
+                                                continue;
                                             }
                                             else
                                             {
-                                                if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
-                                                    _attRecord = _attCommon.CheckOutDuty(_attRecord,othersetting[3], false, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]),DateTime.Now, DateTime.Now);
+
+                                                bool IsWeekend = false;
+                                                AttendanceRecord _attRecord = new AttendanceRecord
+                                                {
+                                                    EmpId = dtEmpInfo.Rows[i]["EmpId"].ToString(),
+                                                    AttDate = SelectedDate,
+                                                    EmpTypeId = dtEmpInfo.Rows[i]["EmpTypeId"].ToString(),
+                                                    InHour = "00",
+                                                    InMin = "00",
+                                                    InSec = "00",
+                                                    OutHour = "00",
+                                                    OutMin = "00",
+                                                    OutSec = "00",
+                                                    AttStatus = "A",
+                                                    StateStatus = "Absent",
+                                                    DptId = dtEmpInfo.Rows[i]["DptId"].ToString(),
+                                                    DsgId = dtEmpInfo.Rows[i]["DsgId"].ToString(),
+                                                    CompanyId = CompanyId,
+                                                    GId = dtEmpInfo.Rows[i]["GId"].ToString(),
+                                                    LateTime = "00:00:00",
+                                                    StayTime = "00:00:00",
+                                                    TiffinCount = "0",
+                                                    HolidayCount = "0",
+                                                    PaybleDays = "0",
+                                                    OverTime = "00:00:00",
+                                                    OtherOverTime = "00:00:00",
+                                                    TotalOverTime = "00:00:00",
+                                                    NightAllowCount = "0",
+                                                    UserId = UserId
+
+                                                };
+                                                //check roster 
+                                                string[] rosterInfo = _attCommon.GetRosterInfo(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), dtEmpInfo.Rows[i]["SftID"].ToString(), dtEmpInfo.Rows[i]["EmpTypeId"].ToString());
+                                                if (rosterInfo == null || rosterInfo[0] == "0")
+                                                {
+                                                    _attCommon.NotCountableAttendanceLog(_attRecord.EmpId, "Roster  Missing", SelectedDate.ToString("yyyy-MM-dd"));
+                                                    continue;
+                                                }
+                                                _attRecord.SftId = rosterInfo[0];
+                                                //end check roster 
+                                                string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-                                         dd"), _attRecord.EmpId);
+
+                                                string specialCaseType = _attCommon.checkSpecialCase(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId);
+                                                if (Leave_Info[0] != "0" && Leave_Info[2] != "0.5")// leave  but no halfday leave
+                                                {
+                                                    _attRecord.AttStatus = "Lv";
+                                                    _attRecord.StateStatus = Leave_Info[1];
+                                                }
+                                                else if (specialCaseType == "3")
+                                                {
+                                                    _attRecord.AttStatus = "P";
+                                                    _attRecord.StateStatus = "Present";
+                                                }
+                                                else // not  Leave (W/H/P/A/L)
+                                                {
+                                                    if (GeneralDayEmpType == "0" || GeneralDayEmpType == dtEmpInfo.Rows[i]["EmpTypeId"].ToString()) // checke Is General Day?
+                                                    {
+                                                        // this is a general day 
+                                                    }
+                                                    else // not is general day 
+                                                    {
+                                                        if (dtEmpInfo.Rows[i]["WeekendType"].ToString().Equals("Roster"))
+                                                        {
+                                                            IsWeekend = commonTask.IsRosterWeekend(SelectedDate.ToString("yyyy-MM-dd"), dtEmpInfo.Rows[i]["EmpId"].ToString());
+                                                        }
+                                                        else
+                                                        {
+                                                            IsWeekend = IsRegularWeekend;
+                                                        }
+                                                        if (IsHoliday)// Holiday
+                                                        {
+                                                            _attRecord.AttStatus = "H";
+                                                            _attRecord.StateStatus = "Holiday";
+                                                        }
+                                                        else if (IsWeekend)// Weekend
+                                                        {
+                                                            _attRecord.AttStatus = "W";
+                                                            _attRecord.StateStatus = "Weekend";
+                                                        }
+                                                    }
+                                                    string _ProxymityNo = _attCommon.GetEmpProximityNo(_attRecord.EmpId, SelectedDate.ToString("yyyy-MM-dd"));
+                                                    _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
+                                                    DataTable dtPunch = new DataTable();
+                                                    dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                                    dtPunch = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+
+
+                                                    if (dtPunch != null && dtPunch.Rows.Count > 0)
+                                                    {
+                                                        bool OnePunchPresent = Glory.getDBName() == "cw_hrms_tmc_hospital" ? true : false;
+
+
+                                                        DataView dv = dtPunch.DefaultView;
+                                                        dv.Sort = "PunchTime ASC";
+
+                                                        dtPunch = new DataTable();
+                                                        dtPunch = dv.ToTable();
+                                                        isHalfDay = false;
+
+                                                        if (Leave_Info[0].ToString() != "0")
+                                                        {
+                                                            isHalfDay = true;
+                                                            _attRecord.AttStatus = "LV";
+                                                            _attRecord.StateStatus = Leave_Info[1];
+                                                        }
+                                                        _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()), rosterInfo, TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), specialCaseType, isHalfDay);
+
+                                                        if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
+                                                            _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], true, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()));
+
+                                                    }
+                                                    else
+                                                    {
+                                                        if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
+                                                            _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], false, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Now, DateTime.Now);
+                                                    }
+
+
+                                                }
+                                                _attCommon.SaveAttendanceRecord(_attRecord);
+
                                             }
-                                            
-
                                         }
-                                        _attCommon.SaveAttendanceRecord(_attRecord);
-
+                                        //_attCommon.DeleteTempRawData(ProcessingID);
                                     }
                                 }
-                                //_attCommon.DeleteTempRawData(ProcessingID);
-                                }
+                            }
                         }
                     }
-                }
             }
             catch (Exception ex)
             {
                 //_attCommon.DeleteTempRawData(ProcessingID);
             }
         }
-        public DataTable LoadProcessedAttendanceData(string CompanyId, string DepartmentId, string AttDate, bool ForAllEmployee, string EmpId,string EmpType,string dataAccesLevel)
+        public DataTable LoadProcessedAttendanceData(string CompanyId, string DepartmentId, string AttDate, bool ForAllEmployee, string EmpId,string EmpType,string dataAccesLevel,string AttToDate)
         {
             try
             {
@@ -463,7 +474,7 @@ namespace SigmaERP.classes
                     query = "select Right(ecs.EmpCardNo,Len(ecs.EmpCardNo)-7)+' ('+ecs.EmpProximityNo+')' as EmpCardNo,ecs.EmpType,ecs.EmpDutyType,ISNULL( ecs.WeekendType,'Regular') as WeekendType,ecs.EmpName,ecs.DptName,ecs.DsgName, case when atd.ODID >0 then atd.ATTStatus+'(OD)' else atd.ATTStatus end as ATTStatus, " +
                    "   atd.InHour+':'+atd.InMin+':'+atd.InSec as Intime,atd.OutHour+':'+atd.OutMin+':'+atd.OutSec as Outtime,Format(ATTDate,'dd-MMM-yyyy') as ATTDate,atd.AttManual,case when sft.SftId is null then '' else sft.SftName +' [ '+ convert (varchar(8), SftStartTime)+' - '+convert (varchar(8),sft.SftEndTime)+' ]' end as sftinfo  from  tblAttendanceRecord as atd left join HRD_Shift sft on atd.SftId=sft.SftId  inner join " +
                    " v_Personnel_EmpCurrentStatus ecs on " +
-                   " atd.EmpId=ecs.EmpId and ecs.IsActive=1 AND atd.ATTDate='" + AttDate + "' and atd.CompanyId='" + CompanyId + "' AND  (ecs.EmpCardNo  Like '%" + EmpId + "' or ecs.EmpAttCard='" + EmpId + "')";
+                   " atd.EmpId=ecs.EmpId and ecs.IsActive=1 AND atd.ATTDate>='" + AttDate + "' and atd.ATTDate<='" + AttToDate + "' and atd.CompanyId='" + CompanyId + "' AND  (ecs.EmpCardNo  Like '%" + EmpId + "' or ecs.EmpAttCard='" + EmpId + "')";
 
                 else if (DepartmentId.Equals("0")) {
                     string condition = "and atd.CompanyId='" + CompanyId + "'";
@@ -474,7 +485,7 @@ namespace SigmaERP.classes
                     query = "select Right(ecs.EmpCardNo,Len(ecs.EmpCardNo)-7)+' ('+ecs.EmpProximityNo+')' as EmpCardNo,ecs.EmpType,ecs.EmpDutyType,ISNULL( ecs.WeekendType,'Regular') as WeekendType,ecs.EmpName,ecs.DptName,ecs.DsgName, case when atd.ODID >0 then atd.ATTStatus+'(OD)' else atd.ATTStatus end as ATTStatus, " +
                        "  atd.InHour+':'+atd.InMin+':'+atd.InSec as Intime,atd.OutHour+':'+atd.OutMin+':'+atd.OutSec as Outtime,Format(ATTDate,'dd-MMM-yyyy') as ATTDate,atd.AttManual ,case when sft.SftId is null then '' else sft.SftName +' [ '+ convert (varchar(8), SftStartTime)+' - '+convert (varchar(8),sft.SftEndTime)+' ]' end as sftinfo  from  tblAttendanceRecord as atd left join HRD_Shift sft on atd.SftId=sft.SftId inner join " +
                        " v_Personnel_EmpCurrentStatus ecs on " +
-                       " atd.EmpId=ecs.EmpId and ecs.IsActive=1 "+ condition + "  AND atd.ATTDate='" + AttDate + "' " + EmpType + " order by ecs.DptId,ecs.CustomOrdering";
+                       " atd.EmpId=ecs.EmpId and ecs.IsActive=1 "+ condition + "  AND atd.ATTDate>='" + AttDate + "' and atd.ATTDate<='" + AttToDate + "' " + EmpType + " order by ecs.DptId,ecs.CustomOrdering";
                 }
                    
 

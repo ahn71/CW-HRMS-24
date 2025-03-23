@@ -63,20 +63,48 @@ namespace SigmaERP.classes
             try
             {
                 //return true;
+             
 
                 string _ProxymityNo = "";
                 string table = (db == "access") ? " tEnter" : " UNIS.dbo.tEnter";
                 string query = "";
-                if (ForAllEmployee)
+                if (filename == "att2000.mdb")
                 {
-                    query = "select L_UID as card_no,C_Time as PanchTime,C_Date as PanchDate from "+ table + " where C_Date = '" + SelectedDate.ToString("yyyyMMdd") + "' or C_Date = '" + SelectedDate.AddDays(1).ToString("yyyyMMdd") + "' ";
+                    if (ForAllEmployee)
+                    {
+                        query = "select ui.BADGENUMBER as card_no, c.CHECKTIME as PanchTime, Format(c.CHECKTIME, 'yyyy-mm-dd') as PanchDate " +
+                                      "from CHECKINOUT c inner join USERINFO ui on c.USERID=ui.USERID " +
+                                       "where c.CHECKTIME = #" + SelectedDate.ToString("MM/dd/yyyy") + "# " +
+                                        "or c.CHECKTIME = #" + SelectedDate.AddDays(1).ToString("MM/dd/yyyy") + "#";
+
+                    }
+                    else
+                    {
+                        _ProxymityNo = GetEmpProximityNo(EmpId, SelectedDate.ToString("yyyy-MM-dd"));
+
+                        _ProxymityNo = (_ProxymityNo == "") ? RealProximityNo : _ProxymityNo;
+                        query = "select ui.BADGENUMBER as card_no, c.CHECKTIME as PanchTime, " +
+                                    "Format(c.CHECKTIME, 'yyyy-mm-dd') as PanchDate " +
+                                    "from CHECKINOUT c inner join USERINFO ui on c.USERID = ui.USERID " +
+                                    "where (c.CHECKTIME = #" + SelectedDate.ToString("MM/dd/yyyy") + "# " +
+                                    "or c.CHECKTIME = #" + SelectedDate.AddDays(1).ToString("MM/dd/yyyy") + "#) " +
+                                    "AND ui.BADGENUMBER = '" + _ProxymityNo+"'";
+                    }
                 }
-                else
+                 else
                 {
-                    _ProxymityNo = GetEmpProximityNo(EmpId, SelectedDate.ToString("yyyy-MM-dd"));
-                    _ProxymityNo = (_ProxymityNo == "") ? RealProximityNo : _ProxymityNo;
-                    query = "select L_UID as card_no,C_Time as PanchTime,C_Date as PanchDate from " + table + " where (C_Date = '" + SelectedDate.ToString("yyyyMMdd") + "' or C_Date = '" + SelectedDate.AddDays(1).ToString("yyyyMMdd") + "') AND L_UID =" + _ProxymityNo + "";
+                    if (ForAllEmployee)
+                    {
+                        query = "select L_UID as card_no,C_Time as PanchTime,C_Date as PanchDate from " + table + " where C_Date = '" + SelectedDate.ToString("yyyyMMdd") + "' or C_Date = '" + SelectedDate.AddDays(1).ToString("yyyyMMdd") + "' ";
+                    }
+                    else
+                    {
+                        _ProxymityNo = GetEmpProximityNo(EmpId, SelectedDate.ToString("yyyy-MM-dd"));
+                        _ProxymityNo = (_ProxymityNo == "") ? RealProximityNo : _ProxymityNo;
+                        query = "select L_UID as card_no,C_Time as PanchTime,C_Date as PanchDate from " + table + " where (C_Date = '" + SelectedDate.ToString("yyyyMMdd") + "' or C_Date = '" + SelectedDate.AddDays(1).ToString("yyyyMMdd") + "') AND L_UID =" + _ProxymityNo + "";
+                    }
                 }
+                 
                 if (db == "access")
                 {
                     OleDbConnection cont = new OleDbConnection();
@@ -857,6 +885,9 @@ namespace SigmaERP.classes
             {
                 try
                 {
+                 string isHalfday = (_attRecord.isHalfday == true) ? "1" : "0";
+                 string specialCase = (_attRecord.SpecialCase==null)?"NULL": _attRecord.SpecialCase;
+
                 //if (_attRecord.AttStatus == "L")
                 //{
                 //    if (TimeSpan.Parse(_attRecord.LateTime) >= TimeSpan.Parse("03:00:00"))
@@ -866,11 +897,11 @@ namespace SigmaERP.classes
                 //    }                  
                 //}
                 string[] getColumns = { "EmpId", "AttDate", "EmpTypeId", "InHour", "InMin", "InSec", "OutHour", "OutMin", "OutSec",
-                                        "AttStatus", "StateStatus", "OverTime", "SftId", "DptId","DsgId", "CompanyId", "GId","LateTime","StayTime","TiffinCount","HolidayCount","PaybleDays","OtherOverTime","TotalOverTime","UserId","NightAllowCount,IsHalfday,SpecialCase"};
+                                        "AttStatus", "StateStatus", "OverTime", "SftId", "DptId","DsgId", "CompanyId", "GId","LateTime","StayTime","TiffinCount","HolidayCount","PaybleDays","OtherOverTime","TotalOverTime","UserId","NightAllowCount", "IsHalfday","SpecialCase"};
 
                     string[] getValues = {_attRecord.EmpId, _attRecord.AttDate.ToString("yyyy-MM-dd"),_attRecord.EmpTypeId,_attRecord.InHour,_attRecord.InMin,_attRecord.InSec,
                     _attRecord.OutHour,_attRecord.OutMin,_attRecord.OutSec,_attRecord.AttStatus,
-                                                 _attRecord.StateStatus,_attRecord.OverTime,_attRecord.SftId,_attRecord.DptId,_attRecord.DsgId,_attRecord.CompanyId,_attRecord.GId,_attRecord.LateTime,_attRecord.StayTime,_attRecord.TiffinCount,_attRecord.HolidayCount,_attRecord.PaybleDays,_attRecord.OtherOverTime,_attRecord.TotalOverTime,_attRecord.UserId,_attRecord.NightAllowCount,null,null};
+                                                 _attRecord.StateStatus,_attRecord.OverTime,_attRecord.SftId,_attRecord.DptId,_attRecord.DsgId,_attRecord.CompanyId,_attRecord.GId,_attRecord.LateTime,_attRecord.StayTime,_attRecord.TiffinCount,_attRecord.HolidayCount,_attRecord.PaybleDays,_attRecord.OtherOverTime,_attRecord.TotalOverTime,_attRecord.UserId,_attRecord.NightAllowCount,isHalfday,specialCase};
 
                 if (_attRecord.ODID > 0)
                     {
