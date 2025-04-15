@@ -269,7 +269,7 @@
                 </div>
                 <!---Today Costing Over time start---->
                 <!---Attendance Summary start---->
-                <div class="col-lg-12 col-md-12 col-sm-12 mb-25">
+<div class="col-lg-12 col-md-12 col-sm-12 mb-25">
 
                     <div class="card border-0 px-25 position-relative">
                         <div class="card-header px-0 border-0">

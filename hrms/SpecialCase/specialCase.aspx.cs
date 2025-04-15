@@ -5,14 +5,12 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace SigmaERP.hrms.Leave
+namespace SigmaERP.hrms.Special_Case
 {
-    public partial class leaveApplication : System.Web.UI.Page
+    public partial class specialCase : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //classes.commonTask.LoadBranch(ddlCompany);
-            //ddlCompany.SelectedIndex = 1;
 
         }
     }

@@ -437,10 +437,11 @@ namespace SigmaERP.ControlPanel
                 if (gvEmployeeList != null && gvEmployeeList.Rows.Count > 0)
                 {
                     string tbl = "";
-                    if (rblAutoritySetupType.SelectedValue == "Lv")
+                    //if (rblAutoritySetupType.SelectedValue == "Lv")
                         tbl = "UserApprovalAuthorityPanels";
-                    else
-                        tbl = "tblOutDutyAuthorityAccessControl";
+                    //else
+                    //    tbl = "tblOutDutyAuthorityAccessControl";
+                    string ApprovalFor = (rblAutoritySetupType.SelectedValue == "Lv") ? "LV" : "SC";
 
                     foreach (GridViewRow row in gvEmployeeList.Rows)
                     {
@@ -456,14 +457,14 @@ namespace SigmaERP.ControlPanel
                                 string AuthorityAction =((TextBox) rowAuth.FindControl("txtLvAuthorityOrder")).Text.Trim() ;
                                
                                 
-                                sqlCmd = @"INSERT INTO [dbo].["+ tbl +@"]
+                                sqlCmd = @"INSERT INTO [dbo].["+ tbl + @"]
                                         ([CompanyID]
                                         ,[EmpID]
                                         ,[AuthorityID]
                                         ,[AuthorityPosition]
-                                        ,[AuthorityAction])
+                                        ,[AuthorityAction],[ApprovalFor])
                                     VALUES
-                                        ('" + ddlCompany.SelectedValue + "','"+ EmpID + "',"+ AuthorityID + ","+ AuthorityAction + ","+ AuthorityPosition + ")";                               
+                                        ('" + ddlCompany.SelectedValue + "','"+ EmpID + "',"+ AuthorityID + ","+ AuthorityAction + ","+ AuthorityPosition + ",'"+ ApprovalFor + "')";                               
                                 CRUD.Execute(sqlCmd,sqlDB.connection);
                             }
                         }
