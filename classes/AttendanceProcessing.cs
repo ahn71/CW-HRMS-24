@@ -369,7 +369,7 @@ namespace SigmaERP.classes
                                                 }
                                                 _attRecord.SftId = rosterInfo[0];
                                                 //end check roster 
-                                                string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-                                         dd"), _attRecord.EmpId);
+                                                string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId);
 
                                                 string specialCaseType = _attCommon.checkSpecialCase(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId);
                                                 if (Leave_Info[0] != "0" && Leave_Info[2] != "0.5")// leave  but no halfday leave
