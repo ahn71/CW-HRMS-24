@@ -79,14 +79,23 @@ namespace SigmaERP.attendance
                 {                    
                     trImportFrom.Visible = true;
                 }
+                else if (ViewState["__AttMachineName__"].ToString().Equals("zk(access)"))
+                {
+                    trImportFrom.Visible = true;
+                   
+
+                    tdFileUpload.Visible = true;
+                    tdSelectFile.Visible = true;
+                }
                 else
                 {
-                    trImportFrom.Visible = false;                    
+                    trImportFrom.Visible = false; 
+                    
+                tdFileUpload.Visible = false;
+                tdSelectFile.Visible = false;
                 }
                
 
-                tdFileUpload.Visible = false;
-                tdSelectFile.Visible = false;
             }
             catch { }
         }
@@ -99,6 +108,9 @@ namespace SigmaERP.attendance
                 {
                     DataTable DtEmpAttList = null;
                     DateTime AttendanceDate = (rblImportType.SelectedItem.Value.Equals("FullImport")) ? DateTime.ParseExact(txtFullAttDate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture) : DateTime.ParseExact(txtPartialAttDate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                    DateTime AttendanceToDate = (rblImportType.SelectedItem.Value.Equals("FullImport")) ? DateTime.ParseExact(txtTodate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture) : DateTime.ParseExact(txtPartialToDate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
                     bool forAllEmployee = (rblImportType.SelectedItem.Value.Equals("FullImport")) ? true : false;
 
                     
@@ -117,11 +129,11 @@ namespace SigmaERP.attendance
                         Random rnd = new Random();
                         string ProcessingID = DateTime.Now.ToFileTime().ToString() + "_" + rnd.Next().ToString();
                         lblErrorMessage.Text = ProcessingID;
-                        attendanceProcessing._AttendanceProcessing(ProcessingID, ViewState["__AttMachineName__"].ToString(), ddlCompanyList.SelectedValue, AttendanceDate, FileUpload1, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue,rblImportFrom.SelectedValue, lblErrorMessage1);
+                        attendanceProcessing._AttendanceProcessing(ProcessingID, ViewState["__AttMachineName__"].ToString(), ddlCompanyList.SelectedValue, AttendanceDate, FileUpload1, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue,rblImportFrom.SelectedValue, lblErrorMessage1, AttendanceDate, AttendanceToDate);
                         generateAbsentNotification(AttendanceDate);
                     }
                     
-                    DtEmpAttList =attendanceProcessing.LoadProcessedAttendanceData(ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue, AttendanceDate.ToString("yyyy-MM-dd"), forAllEmployee, txtCardNo.Text.Trim(),rblEmpType.SelectedValue, Session["__dataAceesLevel__"].ToString());
+                    DtEmpAttList =attendanceProcessing.LoadProcessedAttendanceData(ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue, AttendanceDate.ToString("yyyy-MM-dd"), forAllEmployee, txtCardNo.Text.Trim(),rblEmpType.SelectedValue, Session["__dataAceesLevel__"].ToString(), AttendanceToDate.ToString("yyyy-MM-dd"));
                     gvAttendance.DataSource = DtEmpAttList;
                     gvAttendance.DataBind();
                     ulAttMissingLog.Visible = true;

@@ -1,4 +1,4 @@
-﻿// apiHelper.js
+﻿
 function ApiCall(url, token) {
     return new Promise(function (resolve, reject) {
         $.ajax({
@@ -136,7 +136,7 @@ function ApiCallById(url, token, id) {
     });
 }
 
-function ApiCallByCompId(url, token, id, companyID) {
+function ApiCallByCompId(url, token, id) {
     return new Promise(function (resolve, reject) {
         $.ajax({
             url: `${url}/${id}`, // Constructs the URL dynamically with the id

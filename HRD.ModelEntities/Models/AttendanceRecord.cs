@@ -38,7 +38,11 @@ namespace HRD.ModelEntities.Models
         public string NightAllowCount { get; set; }
         public int ODID { get; set; }
         public string TotalOverTimePre { get; set; }
+        public bool isHalfday { get; set; }
+        public string SpecialCase { get; set; }
         public string DbName { get; set; }
+
+       
          
 
 

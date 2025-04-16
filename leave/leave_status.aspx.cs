@@ -72,6 +72,8 @@ namespace SigmaERP.personnel
                 else
                 {
                     sqlDB.fillDataTable("select EmpId, LACode,EmpCardNo,DptName,DptId,TotalDays,Remarks,LeaveName,FromMonth,ToMonth,Convert(varchar(11),FromDate,111)as FromDate,Convert(varchar(11),ToDate,111)As ToDate  from v_Leave_LeaveApplication group by LACode,EmpCardNo,DptName,DptId,TotalDays,Remarks,LeaveName,FromMonth,ToMonth,FromDate,ToDate,EmpId having ToMonth='" + getMonth + "' AND LeaveName Not In ('M/L') and dptId='" + ddlDepartment.SelectedValue + "' order by dptId", dt);
+
+                    string jj = "select EmpId, LACode,EmpCardNo,DptName,DptId,TotalDays,Remarks,LeaveName,FromMonth,ToMonth,Convert(varchar(11),FromDate,111)as FromDate,Convert(varchar(11),ToDate,111)As ToDate  from v_Leave_LeaveApplication group by LACode,EmpCardNo,DptName,DptId,TotalDays,Remarks,LeaveName,FromMonth,ToMonth,FromDate,ToDate,EmpId having ToMonth='" + getMonth + "' AND LeaveName Not In ('M/L') and dptId='" + ddlDepartment.SelectedValue + "' order by dptId";
                 }
                 
                 DataTable dtCurrentMonthInfo = dt.Select(" FromMonth='"+getMonth+"' AND ToMonth='"+getMonth+"' ").CopyToDataTable();
@@ -168,7 +170,7 @@ namespace SigmaERP.personnel
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=LeaveStatusSummary-" + MonthName+ "');", true);  //Open New Tab for Sever side code 
 
             }
-            catch { }
+            catch(Exception ex) { }
         }
 
         protected void rdoDept_SelectedIndexChanged(object sender, EventArgs e)
