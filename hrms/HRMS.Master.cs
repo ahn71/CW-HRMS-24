@@ -149,7 +149,7 @@ namespace SigmaERP.hrms
                 Response.Cookies.Add(setCookies);
                 FormsAuthentication.SignOut();
                 // Response.Redirect("~/ControlPanel/Login.aspx",false);
-                Response.Redirect("/hrms/login", false);
+                Response.Redirect("~/hrms/login", false);
 
             }
             catch (Exception ex) { }

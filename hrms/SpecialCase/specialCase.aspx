@@ -257,7 +257,7 @@
          var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
          var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication/${userId}?CompanyId=${CompanyID}`;
          var getSpcDeleteUrl = rootUrl + '/api/SpecialCase/delete';
-         var getSpCApplicationUrl = rootUrl + `/api/SpecialCase/SpecialCases?CompnayId=${CompanyID}&EmpId=${'00000007'}`;
+         var getSpCApplicationUrl = rootUrl + `/api/SpecialCase/SpecialCases?CompnayId=${CompanyID}&EmpId=${loginempId}`;
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';

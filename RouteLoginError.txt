@@ -208,3 +208,9 @@ Parameter name: name
 [2025-04-16 11:00:14] Object reference not set to an instance of an object.
 [2025-04-16 12:45:21] Object reference not set to an instance of an object.
 [2025-04-17 14:49:46] Object reference not set to an instance of an object.
+[2025-04-20 17:21:07] A route named 'Attendance Root/Special Case' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-04-20 17:21:35] A route named 'Attendance Root/Special Case' is already in the route collection. Route names must be unique.
+Parameter name: name
+[2025-04-20 17:22:09] A route named 'Attendance Root/Special Case' is already in the route collection. Route names must be unique.
+Parameter name: name

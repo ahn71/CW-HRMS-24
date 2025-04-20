@@ -265,11 +265,20 @@
                                                 </a>
                                             </li>
                                             <% } %>
+
                                             <% if (IsRouteExists("attendance/daily-in-out-report"))
                                                 { %>
                                             <li class="l_sidebar">
                                                 <a href="/hrms/attendance/daily-in-out-report" class="">
                                                     <span class="menu-text">In-Out Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                            <% if (IsRouteExists("attendance/specialcase"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/SpecialCase/specialCase.aspx" class="">
+                                                    <span class="menu-text">Special Case</span>
                                                 </a>
                                             </li>
                                             <% } %>
