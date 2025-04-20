@@ -170,12 +170,48 @@
                 <div class="top-menu">
                     <div class="hexadash-top-menu position-relative">
                         <ul class="d-flex align-items-center flex-wrap">
+<%--                            <li class="has-subMenu">
+                                <li class="has-subMenux d-flex align-items-center gap-1">
+                                    <span><i class="uil uil-create-dashboard"></i></span>
+                                    <a href="dashboard" runat="server">Dashboard</a>
+                                </li>
+                            </li>
+
+                            <li class="has-subMenu">
+                                <li class="has-subMenux d-flex align-items-center gap-1">
+                                    <span><i class="uil uil-create-dashboard"></i></span>
+                                    <a href="user-dashboard" runat="server">Dashboard</a>
+                                </li>
+                            </li>--%>
+
+                            <% 
+                                string accessLevel = Session["__UserDataAccessLevel__"] != null
+                                    ? Session["__UserDataAccessLevel__"].ToString()
+                                    : "";
+                            %>
+
+                            <% if (accessLevel == "1")
+                            { %>
+                            <li class="has-subMenu">
+                                <li class="has-subMenux d-flex align-items-center gap-1">
+                                    <span><i class="uil uil-create-dashboard"></i></span>
+                                    <a href="user-dashboard" runat="server">Dashboard</a>
+                                </li>
+                            </li>
+                            <% }
+                            else
+                            { %>
                             <li class="has-subMenu">
                                 <li class="has-subMenux d-flex align-items-center gap-1">
                                     <span><i class="uil uil-create-dashboard"></i></span>
                                     <a href="dashboard" runat="server">Dashboard</a>
                                 </li>
                             </li>
+                            <% } %>
+
+
+
+
 
                             <% if (IsRouteExists("attendance"))
                                 { %>

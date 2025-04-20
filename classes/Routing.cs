@@ -32,6 +32,10 @@ namespace SigmaERP.classes
         public static string dashboardUrl = rootURL + "dashboard";
         private static string dashboardPhyLocation = "~/hrms/dashboard.aspx";
 
+        public static string UserDashboardRoutName = "UserDashboard";
+        public static string UserDashboardUrl = rootURL + "user-dashboard";
+        private static string UserDashboardPhyLocation = "~/hrms/dashbordUser.aspx";
+
         public static string appSettingsName = "appSettings";
         public static string appSettingsUrl = rootURL + "app-settings";
         private static string appSettingsPhyLocation = "~/hrms/packages/AppSettings.aspx";
@@ -50,6 +54,7 @@ namespace SigmaERP.classes
             routes.Clear();
             routes.MapPageRoute(LoginRouteName, LoginRouteUrl, LoginRoutePhysicalFile);
             routes.MapPageRoute(dashboardRoutName, dashboardUrl, dashboardPhyLocation);
+            routes.MapPageRoute(UserDashboardRoutName, UserDashboardUrl, UserDashboardPhyLocation);
             routes.MapPageRoute(appSettingsName, appSettingsUrl, appSettingsPhyLocation);
             routes.MapPageRoute(profileRoutName, profileUrl, profilePhyLocation);
             routes.MapPageRoute(bankEntryName, bankEntryUrl, bankEntryPhyLocation);

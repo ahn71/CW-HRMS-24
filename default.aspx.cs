@@ -25,7 +25,20 @@ namespace SigmaERP
                     }
                     else
                     {
-                        Response.RedirectToRoute(Routing.dashboardRoutName);                        
+
+                        var accessLevel = Session["__UserDataAccessLevel__"] != null ? Session["__UserDataAccessLevel__"].ToString() : "";
+
+                        if (accessLevel == "1")
+                        {
+                            Response.RedirectToRoute(Routing.UserDashboardRoutName); 
+                        }
+                        else
+                        {
+                            // Redirect to dashboard or other route
+                            Response.RedirectToRoute(Routing.dashboardRoutName);
+                        }
+
+                              
                         
                     }
                 }

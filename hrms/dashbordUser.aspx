@@ -12,6 +12,15 @@
              background: #f8f9fa;
              z-index: 10;
          }
+        th {
+             text-align:center;
+        }
+        td {
+            text-align:center;
+        }
+        .card-body{
+            padding:0px !important;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -57,19 +66,19 @@
                               <div class="overview-content w-100">
                                  <div class=" ap-po-details-content d-flex flex-wrap justify-content-between">
                                     <div class="ap-po-details__titlebar">
-                                       <h1>100+</h1>
-                                       <p>Total Products</p>
+                                       <h3 id="presentDays"></h3>
+                                       <p> </p>
                                     </div>
                                     <div class="ap-po-details__icon-area">
-                                       <div class="svg-icon order-bg-opacity-primary color-primary">
+                                       <div class="svg-icon order-bg-opacity-success color-success">
 
-                                          <i class="uil uil-briefcase-alt"></i>
+                                          <i class="uil uil-user-check"></i>
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="ap-po-details-time">
+                                 <div class="ap-po-details-time" style="margin-top: 20px;">
                                     <span class="color-success"><i class="las la-arrow-up"></i>
-                                       <strong>25.36%</strong></span>
+                                      </span>
                                     <small>Since last month</small>
                                  </div>
                               </div>
@@ -81,26 +90,21 @@
                            <!-- Card 2 -->
                            <div class="ap-po-details ap-po-details--2 p-25 radius-xl d-flex justify-content-between">
 
-
-
-
-
                               <div class="overview-content w-100">
                                  <div class=" ap-po-details-content d-flex flex-wrap justify-content-between">
                                     <div class="ap-po-details__titlebar">
-                                       <h1>30,825</h1>
-                                       <p>Total Orders</p>
+                                       <h3 id="absentDays"></h3>
+                                       <p> </p>
                                     </div>
-                                    <div class="ap-po-details__icon-area">
-                                       <div class="svg-icon order-bg-opacity-info color-info">
-
-                                          <i class="uil uil-shopping-cart-alt"></i>
-                                       </div>
+                                     <div class="ap-po-details__icon-area">
+                                         <div class="svg-icon order-bg-opacity-danger color-danger">
+                                             <i class="uil uil-user-minus"></i>
+                                         </div>
                                     </div>
                                  </div>
-                                 <div class="ap-po-details-time">
-                                    <span class="color-success"><i class="las la-arrow-up"></i>
-                                       <strong>25.36%</strong></span>
+                                 <div class="ap-po-details-time" style="margin-top: 20px;">
+                                 <span class="color-danger"><i class="las la-arrow-down"></i>
+                                       </span>
                                     <small>Since last month</small>
                                  </div>
                               </div>
@@ -112,26 +116,22 @@
                            <!-- Card 3 -->
                            <div class="ap-po-details ap-po-details--2 p-25 radius-xl d-flex justify-content-between">
 
-
-
-
-
                               <div class="overview-content w-100">
                                  <div class=" ap-po-details-content d-flex flex-wrap justify-content-between">
                                     <div class="ap-po-details__titlebar">
-                                       <h1>$30,825</h1>
-                                       <p>Total Sales</p>
+                                       <h3 id="lateDays"></h3>
+                                       <p> </p>
                                     </div>
                                     <div class="ap-po-details__icon-area">
-                                       <div class="svg-icon order-bg-opacity-secondary color-secondary">
+                                       <div class="svg-icon order-bg-opacity-warning color-warning">
+                                          <i class="uil uil-stopwatch-slash"></i>
 
-                                          <i class="uil uil-usd-circle"></i>
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="ap-po-details-time">
+                                 <div class="ap-po-details-time" style="margin-top: 20px;">
                                     <span class="color-danger"><i class="las la-arrow-down"></i>
-                                       <strong>25.36%</strong></span>
+                                       </span>
                                     <small>Since last month</small>
                                  </div>
                               </div>
@@ -142,27 +142,21 @@
                         <div class="col-xxl-6 col-sm-6 mb-25">
                            <!-- Card 4  -->
                            <div class="ap-po-details ap-po-details--2 p-25 radius-xl d-flex justify-content-between">
-
-
-
-
-
                               <div class="overview-content w-100">
                                  <div class=" ap-po-details-content d-flex flex-wrap justify-content-between">
                                     <div class="ap-po-details__titlebar">
-                                       <h1>30,825</h1>
-                                       <p>New Customers</p>
+                                       <h3 id="leaveDays"></h3>
+                                       <p> </p>
                                     </div>
                                     <div class="ap-po-details__icon-area">
-                                       <div class="svg-icon order-bg-opacity-warning color-warning">
-
-                                          <i class="uil uil-users-alt"></i>
+                                       <div class="svg-icon order-bg-opacity-primary color-primary">
+                                           <i class="uil uil-calendar-slash"></i>
                                        </div>
                                     </div>
                                  </div>
-                                 <div class="ap-po-details-time">
+                                 <div class="ap-po-details-time" style="margin-top: 20px;">
                                     <span class="color-success"><i class="las la-arrow-up"></i>
-                                       <strong>25.36%</strong></span>
+                                       </span>
                                     <small>Since last month</small>
                                  </div>
                               </div>
@@ -326,29 +320,54 @@
         //var rootUrl = 'http://cw-hrms-api.codehosting.xyz';
           var rootUrl = '<%= Session["__RootUrl__"]%>';
         //var rootUrl = 'http://localhost:8081';
-
-        var DailyAttUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceStatus';
-        var DailyAttSumUrl = rootUrl + '/api/Attendance/attendance/userAttendanceSummary/0001/00000007/2023-11-01';
-        var CurrentEmpStatusUrl = rootUrl + '/api/DailyAttendance/currentEmployeeStatus';
-        var GetTodaysCostingUrl = rootUrl + '/api/DailyAttendance/getTodaysCosting';
-        var GetLeaveSummaryReportURL = rootUrl + '/api/Leave/LeaveReport?companyId=0001&empId=00000007&year=2024';
-
-
         var companyId = '<%= Session["__GetCompanyId__"] %>';
+        //var companyId = 0001;
+        var LogInEmpId = '<%= Session["__GetEmpId__"] %>';
+        //var LogInEmpId = 000000007;
         var token = '<%= Session["__UserToken__"] %>';
+        var DailyAttStatusUrl = rootUrl + `/api/Attendance/attendance/userAttendaceStaus/${companyId}/${LogInEmpId}`;
+        var DailyAttSumUrl = rootUrl + `/api/Attendance/attendance/userAttendanceSummary/${companyId}/${LogInEmpId}`;
+        var GetLeaveSummaryReportURL = rootUrl + `/api/Leave/LeaveReport?companyId=${companyId}&empId=${LogInEmpId}&year=`;
+
+
+
         //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
-        function SearchData() {
-            var formattedDate = $(".hasDatepicker").val();
-            var promises = [];
+        function formatDateToDDMMYYYY(date) {
+            var d = new Date(date);
+            var day = String(d.getDate()).padStart(2, '0');
+            var month = String(d.getMonth() + 1).padStart(2, '0');
+            var year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
 
-            // Push promises for each function call
+        function SearchData() {
+            // Get the selected date from the input field
+            var rawDate = document.querySelector('.hasDatepicker').value;
+
+            // Parse the date string to a Date object
+            var parsedDate = new Date(rawDate);
+
+            // Format the date (if needed)
+            var options = { day: 'numeric', month: 'long', year: 'numeric' };
+            var formattedDate = parsedDate.toLocaleDateString('en-US', options);
+            document.querySelector('.hasDatepicker').value = formattedDate;
+
+            // Extract the year
+            var year = parsedDate.getFullYear();
+
+            // Use formatted date for summary
+            var date = formattedDate;
+            var promises = [];
+            GetMonthlyAttendanceSummary(date);
             promises.push(new Promise(function (resolve, reject) {
-                GetDailyAttendanceStatus(formattedDate);
+                GetDailyAttSummary(date);
                 resolve();
             }));
-     
+
+            GetLeaveSummary(year);
         }
+
 
         $(document).ready(function () {
             var initialDate = new Date();
@@ -357,64 +376,46 @@
             document.querySelector('.hasDatepicker').value = formattedDate;
 
             var date = formattedDate;
-            // Define an array to hold promises
-            var promises = [];
+            var year = initialDate.getFullYear(); // Use initialDate instead of 'today'
 
-            promises.push(new Promise(function (resolve, reject) {
-                GetDailyAttSummary(date);
-                resolve();
-            }));
+            GetMonthlyAttendanceSummary(date);
+            GetDailyAttSummary(date);
+            GetLeaveSummary(year);
 
-
-            GetLeaveSummary()
-
-       
+            // Optional: Trigger SearchData when datepicker changes
+            $(".hasDatepicker").on("change", function () {
+                SearchData();
+            });
         });
 
 
-        function GetDailyAttendanceStatus(date) {
-            // Show loader
-            $('#totalEmp').text('');
-            $('#totalEmpRatio').text('');
-            $('#todayPresent').text('');
-            $('#todayPresentRatio').text('');
-            $('#todayAbsent').text('');
-            $('#todayAbsentRatio').text('');
-            $('#todayLate').text('');
-            $('#todayLateRatio').text('');
-            $('#todayLeave').text('');
-            $('#todayLeaveRatio').text('');
-            $('#WHOffDuty').text('');
+        function GetMonthlyAttendanceSummary(date) {
+            $('.loaderMonthly').show(); // Show loader if needed
 
-            $('.loaderDaily').show();
-            date = date;
-            ApiCall(DailyAttUrl, companyId, date, token)
+            ApiCall(`${DailyAttStatusUrl}/${date}`, token)
                 .then(function (response) {
-                    // Hide loader
-                    $('.loaderDaily').hide();
+                    $('.loaderMonthly').hide(); // Hide loader
 
-                    // Update UI with data
-                    $('#totalEmp').text(response.total);
-                    $('#totalEmpRatio').text(response.totalPerc +'%');
-                    $('#todayPresent').text(response.present);
-                    $('#todayPresentRatio').text(response.pressentRatio +'%');
-                    $('#todayAbsent').text(response.absent);
-                    $('#todayAbsentRatio').text(response.absentRatio +'%');
-                    $('#todayLate').text(response.late);
-                    $('#todayLateRatio').text(response.lateRatio +'%');
-                    $('#todayLeave').text(response.leave);
-                    $('#todayLeaveRatio').text(response.leavePers +'%');
-                    $('#WHOffDuty').text(response.offDayDuty);
-                    $('#WHOffDeutyPers').text(response.offDayDutyPerc +'%');
+                    if (response.statusCode === 200 && response.data.length > 0) {
+                        const summary = response.data[0];
+
+                        // Bind to card titles
+                        $('#presentDays').text(`Present ${summary.presentDays} Days`);
+                        $('#absentDays').text(`Absent ${summary.absentDays} Days`);
+                        $('#lateDays').text(`Late ${summary.lateDays} Days`);
+                        $('#leaveDays').text(`Leave ${summary.leaveDays} Days`);
+
+                        // Optionally bind percentages or other metrics here too
+                        // $('#presentRatio').text("25.36%") etc...
+                    } else {
+                        console.warn('No data returned from API');
+                    }
                 })
                 .catch(function (error) {
-                    // Hide loader
-                    $('#loaderDaily').hide();
-                    console.error('Error occurred while fetching data:', error);
+                    $('.loaderMonthly').hide(); // Hide loader on error
+                    console.error('Error fetching monthly summary:', error);
                 });
         }
-
-
 
 
         function GetDailyAttSummary(date) {
@@ -422,9 +423,9 @@
             var tableBody = $('#tblDailyAttSummary tbody');
             $('.loaderDailySum').show().promise().done(function () {
                 tableBody.empty();
-            });
+            }); 
 
-            ApiCall(DailyAttSumUrl, token)
+            ApiCall(`${DailyAttSumUrl}/${date}`, token)
                 .then(function (response) {
                     $('.loaderDailySum').hide();
                     if (response.statusCode === 200 && response.data && response.data.length > 0) {
@@ -456,12 +457,12 @@
         }
 
 
-        function GetLeaveSummary() {
+        function GetLeaveSummary(year) {
             const tableBody = $('#tblLeaveSummary tbody');
             tableBody.empty();
             $('.loaderLeaveSummary').show();
 
-            ApiCall(GetLeaveSummaryReportURL, token)
+            ApiCall(`${GetLeaveSummaryReportURL}${year}`, token)
                 .then(function (response) {
                     $('.loaderLeaveSummary').hide();
                     if (response.statusCode === 200 && response.data && response.data.length > 0) {
