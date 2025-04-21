@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="leaveYearlySummaryReport.aspx.cs" Inherits="SigmaERP.hrms.Leave.leaveYearlySummaryReport" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="leaveYearlySummaryReport.aspx.cs" Inherits="SigmaERP.hrms.Leave.leaveYearlySummaryReport" EnableEventValidation="false"  %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 
         <style>

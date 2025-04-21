@@ -1,4 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="leaveApplication.aspx.cs" Inherits="SigmaERP.hrms.Leave.leaveApplication" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="leaveApplication.aspx.cs" Inherits="SigmaERP.hrms.Leave.leaveApplication" EnableEventValidation="false" %>
+
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
 

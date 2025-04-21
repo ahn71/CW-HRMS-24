@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userProfile.aspx.cs" Inherits="SigmaERP.hrms.userProfile" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userProfile.aspx.cs" Inherits="SigmaERP.hrms.userProfile" EnableEventValidation="false"  %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
     .table td:first-child {

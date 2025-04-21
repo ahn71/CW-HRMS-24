@@ -214,7 +214,7 @@ namespace SigmaERP.classes
        
         public static void RegisterRoutes(RouteCollection routes , int userId)
         {
-             routes.Clear();  // Clear all previous routes before adding new ones
+            
 
             List <RouteDTO > moduleRoutes = FetchRoutesFromApi(UserWithModuleUrl, userId);
             RegisterInitialRoutes(routes);

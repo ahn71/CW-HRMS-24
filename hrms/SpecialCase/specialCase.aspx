@@ -1,4 +1,4 @@
-﻿ <%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="specialCase.aspx.cs" Inherits="SigmaERP.hrms.Special_Case.specialCase" %>
+﻿ <%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="specialCase.aspx.cs" Inherits="SigmaERP.hrms.Special_Case.specialCase" EnableEventValidation="false" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
         .calendar-icon {

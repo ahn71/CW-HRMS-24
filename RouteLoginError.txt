@@ -214,3 +214,4 @@ Parameter name: name
 Parameter name: name
 [2025-04-20 17:22:09] A route named 'Attendance Root/Special Case' is already in the route collection. Route names must be unique.
 Parameter name: name
+[2025-04-21 11:36:28] Object reference not set to an instance of an object.

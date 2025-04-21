@@ -1,4 +1,4 @@
-﻿﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="HRMS.master.cs" Inherits="SigmaERP.hrms.HRMS" %>
+﻿﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="HRMS.master.cs" Inherits="SigmaERP.hrms.HRMS"  %>
 
 <!DOCTYPE html>
 
@@ -1594,6 +1594,9 @@
         </nav>
         <main class="main-content px-2">
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+               <%-- main-content 
+
+                   places here --%>
             </asp:ContentPlaceHolder>
         </main>
 

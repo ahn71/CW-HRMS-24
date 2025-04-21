@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="EarnLeaveReport.aspx.cs" Inherits="SigmaERP.hrms.Leave.EarnLeaveReport" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="EarnLeaveReport.aspx.cs" Inherits="SigmaERP.hrms.Leave.EarnLeaveReport" EnableEventValidation="false" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
         <style>
         #ContentPlaceHolder1_MainContent_trForCompanyList {
