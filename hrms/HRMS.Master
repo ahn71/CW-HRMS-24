@@ -1021,7 +1021,7 @@
                                             </ul>
                                         </li>
                                         <%} %>
-                                        <%if (IsRouteExists("vat-tax"))
+                                        <%if (IsRouteExists("vat-tax-root"))
                                             {%>
                                         <li class="bordered">
                                             <span class="mega-title">Vat and Tax

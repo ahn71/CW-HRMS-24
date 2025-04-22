@@ -16,7 +16,7 @@ namespace SigmaERP
         {
             Routing.RegisterInitialRoutes(RouteTable.Routes);
 
-            
+            classes.Routing.RegisterRoutes(RouteTable.Routes);
 
         }
 

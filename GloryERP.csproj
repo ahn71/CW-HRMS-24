@@ -3517,6 +3517,7 @@
     <Compile Include="classes\mRosterOperation_Shrink_Data.cs" />
     <Compile Include="classes\mZK_Shrink_Data_SqlServer.cs" />
     <Compile Include="classes\Payroll.cs" />
+    <Compile Include="classes\PermissionManager.cs" />
     <Compile Include="classes\PF_ProfitDistribution.cs" />
     <Compile Include="classes\Roster.cs" />
     <Compile Include="classes\RosteringLogic.cs" />
