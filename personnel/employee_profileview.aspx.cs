@@ -100,6 +100,8 @@ namespace SigmaERP.personnel
                         <p><strong>EmpProximityNo :</strong> " + dt.Rows[0]["EMpProximityNo"] + @"</p>
 
                            <p><strong>Date of Birth Type:</strong> " + Convert.ToDateTime(dt.Rows[0]["DateOfBirth"]).ToString("dd-MM-yyyy") + @"</p>
+
+
                        </td>
                          
                     <td style='width:50%'>
