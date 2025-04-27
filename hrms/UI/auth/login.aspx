@@ -265,9 +265,13 @@
 
                         </div>
 
-                        <div class="copyright mt-3">
-                            <p class="text-center">2024 &copy; <a href="https://www.codewareltd.com">Codeware LTD</a></p>
-                        </div>
+                   <div class="copyright mt-3">
+                        <p class="text-center">
+                            <span id="year"></span> &copy; 
+                            <a href="https://www.codewareltd.com">Codeware LTD</a>
+                        </p>
+                    </div>
+
 
                         <!--         
                         <div class="forgot-password">
@@ -291,6 +295,7 @@
 </body>
   
     <script>
+          document.getElementById("year").textContent = new Date().getFullYear();
         function validateLogIn() {
             var isValid = true;  // Assume the form is valid by default
 

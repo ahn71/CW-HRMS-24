@@ -310,6 +310,7 @@ namespace SigmaERP.classes
 
                 TimeSpan SftStartTime = TimeSpan.Parse(dt.Rows[0]["SftStartTime"].ToString());
                 TimeSpan SftEndTime = TimeSpan.Parse(dt.Rows[0]["SftEndTime"].ToString());
+
                 Gt_RosterInfo[1] = SelectedDate + " " + dt.Rows[0]["SftStartTime"].ToString();
                 if (SftStartTime > SftEndTime)
                     Gt_RosterInfo[2] = DateTime.Parse(SelectedDate).AddDays(1).ToString("yyyy-MM-dd") + " " + dt.Rows[0]["SftEndTime"].ToString();
