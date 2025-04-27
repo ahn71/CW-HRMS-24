@@ -279,10 +279,23 @@ function ApiDeleteById(url, token, id) {
             success: function (data) {
                 resolve(data);
             },
+            //error: function (xhr, status, error) {
+            //    console.error('Error occurred while deleting data:', status, error);
+            //    reject(error);
+            //}
+
             error: function (xhr, status, error) {
-                console.error('Error occurred while deleting data:', status, error);
-                reject(error);
+                //console.error('Error occurred while fetching data:', status, error);
+                var message = xhr.responseText;
+                console.log(message)
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
             }
+
         });
     });
 }
