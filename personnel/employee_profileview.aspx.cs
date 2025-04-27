@@ -28,36 +28,41 @@ namespace SigmaERP.personnel
 
         private void loadEmpProfile(string empId)
         {
-            DataTable dt = new DataTable();
-            string query = @"select ved.EmpId, Empname,EmpCardNo,ved.FatherName,ved.mothername,ved.nationality,EMpProximityNo,Dsgname,DptName,EmpStatus,isnull(EmpPicture,'')as EmpPicture,SalaryType,EmpjoiningDate,Empstatusname,BloodGroup,ved.companyname,sftname,DateOfBirth,sex,type,rname,ea.Previllage,ea.pervillage,ea.Email,ea.prePostbox,ea.PerPostBox,isnull(thna_pre.ThaName,'') as PresntThana,isnull(thna_per.ThaName,'') as PermamnetThana,isnull(ee.Degree,'') as Degree,Isnull(ee.Year,'') as Year,Isnull(ee.Institute,'')as Institute,Isnull(ee.Result,'') as Result,Address,isnull(hdpre.dstname, '') as PreCity,isnull(hrdper.dstname, '') as PerCity,gname,ved.mobileNo,NationIDCardNo,ec.ContactName,ec.EmergencyAddress,ec.EmpRelation,ec.EmergencyPhoneNo,ec.Gender,ec.Age,ec.JobDescription
+            try
+            {
+                DataTable dt = new DataTable();
+                string query = @"select ved.EmpId, Empname,EmpCardNo,ved.FatherName,ved.mothername,ved.nationality,EMpProximityNo,Dsgname,DptName,EmpStatus,isnull(EmpPicture,'')as EmpPicture,SalaryType,EmpjoiningDate,Empstatusname,BloodGroup,ved.companyname,sftname,DateOfBirth,sex,type,rname,ea.Previllage,ea.pervillage,ea.Email,ea.prePostbox,ea.PerPostBox,isnull(thna_pre.ThaName,'') as PresntThana,isnull(thna_per.ThaName,'') as PermamnetThana,isnull(ee.Degree,'') as Degree,Isnull(ee.Year,'') as Year,Isnull(ee.Institute,'')as Institute,Isnull(ee.Result,'') as Result,Address,isnull(hdpre.dstname, '') as PreCity,isnull(hrdper.dstname, '') as PerCity,gname,ved.mobileNo,NationIDCardNo,ec.ContactName,ec.EmergencyAddress,ec.EmpRelation,ec.EmergencyPhoneNo,ec.Gender,ec.Age,ec.JobDescription
    from v_EmployeeDetails ved  left join Personnel_EmpAddress ea on ved.EmpId = ea.EmpId  left join Personnel_EmpEducation ee on ved.EmpId = ee.EmpId left join Personnel_EmpExperience eex on ved.EmpId = eex.EmpId left join hrdthanainfo thna_pre on ea.PreThanaId = thna_pre.thaId left join hrdthanainfo thna_per on ea.PerThanaId = thna_per.ThaId left join Hrd_District hdpre on ea.PreCity = hdpre.DstID left join Hrd_District hrdper on ea.percity = hrdper.DstID left join Personnel_EmergencyContact ec on ved.EmpId=ec.empId where ved.EmpId = '" + empId + "'";
-            dt = CRUD.ExecuteReturnDataTable(query);
-            string divInfo = "Profile Not Found";
+                dt = CRUD.ExecuteReturnDataTable(query);
+                string divInfo = "Profile Not Found";
 
-            string image = dt.Rows[0]["EmpPicture"].ToString();
-            if (image == "")
-            {
-             
+                string image = dt.Rows[0]["EmpPicture"].ToString();
+                string date = dt.Rows[0]["DateOfBirth"] == DBNull.Value || string.IsNullOrEmpty(dt.Rows[0]["DateOfBirth"].ToString())
+                                                                                                                    ? "N/A"
+                                                                                                                    : Convert.ToDateTime(dt.Rows[0]["DateOfBirth"]).ToString("yyyy-MM-dd");
+                if (image == "")
+                {
 
-                image = "../EmployeeImages/Images/rdNoImage.png";
-            }
-            else
-            {
-                string companyId = Session["__GetCompanyId__"].ToString();
-                string rootUrl = Session["__RootUrl__"]?.ToString();
 
-                string url = rootUrl + "/" + companyId + "/" + "EmployeeImage" + "/" + dt.Rows[0]["EmpPicture"].ToString();
+                    image = "../EmployeeImages/Images/rdNoImage.png";
+                }
+                else
+                {
+                    string companyId = Session["__GetCompanyId__"].ToString();
+                    string rootUrl = Session["__RootUrl__"]?.ToString();
 
-                image = url;
-            }
+                    string url = rootUrl + "/" + companyId + "/" + "EmployeeImage" + "/" + dt.Rows[0]["EmpPicture"].ToString();
 
-            divInfo = @"
+                    image = url;
+                }
+
+                divInfo = @"
 <div class='employee-section'>
 <table class='table py-5'>
     <tr>
         <td style='width:15%'>
             <div class='profile-header col-lg-2'>
-                <img src=' " + image+ @"' alt='no image here'>
+                <img src=' " + image + @"' alt='no image here'>
             </div>
         </td>
         <td style='width:85%'>
@@ -99,9 +104,7 @@ namespace SigmaERP.personnel
                         <p><strong>Salary Type:</strong> " + dt.Rows[0]["SalaryType"] + @"</p>
                         <p><strong>EmpProximityNo :</strong> " + dt.Rows[0]["EMpProximityNo"] + @"</p>
 
-                           <p><strong>Date of Birth Type:</strong> " + Convert.ToDateTime(dt.Rows[0]["DateOfBirth"]).ToString("dd-MM-yyyy") + @"</p>
-
-
+                           <p><strong>Date of Birth Type:</strong> " + date + @"</p>
                        </td>
                          
                     <td style='width:50%'>
@@ -185,12 +188,12 @@ namespace SigmaERP.personnel
         </div>
     </div>
 </div>";
-            string eduQuery = "Select Degree, Year, Institute, Result from Personnel_EmpEducation where EmpId='"+ empId + "'";
-            DataTable eduDt = CRUD.ExecuteReturnDataTable(eduQuery);
+                string eduQuery = "Select Degree, Year, Institute, Result from Personnel_EmpEducation where EmpId='" + empId + "'";
+                DataTable eduDt = CRUD.ExecuteReturnDataTable(eduQuery);
 
-            if (eduDt.Rows.Count > 0)  // Only add education section if data exists
-            {
-                divInfo += @"
+                if (eduDt.Rows.Count > 0)  // Only add education section if data exists
+                {
+                    divInfo += @"
     <div class='col-md-12 my-4 p-0'>
         <h2 class='py-3'>Educational Qualifications</h2>
         <table class='table table-bordered table-striped table-hover mt-3'>
@@ -205,9 +208,9 @@ namespace SigmaERP.personnel
             </thead>
             <tbody>";
 
-                for (int i = 0; i < eduDt.Rows.Count; i++)
-                {
-                    divInfo += @"
+                    for (int i = 0; i < eduDt.Rows.Count; i++)
+                    {
+                        divInfo += @"
         <tr>
             <th scope='row'>" + (i + 1) + @"</th>
             <td>" + eduDt.Rows[i]["Degree"] + @"</td>
@@ -216,9 +219,9 @@ namespace SigmaERP.personnel
             <td>" + eduDt.Rows[i]["Result"] + @"</td>
         </tr>
 ";
-                }
+                    }
 
-                divInfo += @"
+                    divInfo += @"
        </tbody>
     </table>
     </div>
@@ -227,12 +230,12 @@ namespace SigmaERP.personnel
 ";
 
 
-                string expeQuery = "select Companyname, Designation, Responsibility, YearOfExp, JoiningDate, ResignDate, SpecialQualification from Personnel_EmpExperience where empID='"+ empId + "'";
-                DataTable exdt = CRUD.ExecuteReturnDataTable(expeQuery);
+                    string expeQuery = "select Companyname, Designation, Responsibility, YearOfExp, JoiningDate, ResignDate, SpecialQualification from Personnel_EmpExperience where empID='" + empId + "'";
+                    DataTable exdt = CRUD.ExecuteReturnDataTable(expeQuery);
 
-                if (exdt.Rows.Count > 0)  // Only add experience section if data exists
-                {
-                    divInfo += @"
+                    if (exdt.Rows.Count > 0)  // Only add experience section if data exists
+                    {
+                        divInfo += @"
     <div class='col-md-12 my-4 p-0'>
         <h2 class='py-3'>Employee Experience</h2>
         <table class='table table-bordered table-striped table-hover mt-3'>
@@ -250,9 +253,9 @@ namespace SigmaERP.personnel
             </thead>
             <tbody>";
 
-                    for (int i = 0; i < exdt.Rows.Count; i++)
-                    {
-                        divInfo += @"
+                        for (int i = 0; i < exdt.Rows.Count; i++)
+                        {
+                            divInfo += @"
         <tr>
             <th scope='row'>" + (i + 1) + @"</th>
             <td>" + exdt.Rows[i]["Companyname"] + @"</td>
@@ -263,9 +266,9 @@ namespace SigmaERP.personnel
             <td>" + exdt.Rows[i]["ResignDate"] + @"</td>
             <td>" + exdt.Rows[i]["SpecialQualification"] + @"</td>
         </tr>";
-                    }
+                        }
 
-                    divInfo += @"
+                        divInfo += @"
        </tbody>
     </table>
 </div>
@@ -273,14 +276,21 @@ namespace SigmaERP.personnel
 
 
 ";
+                    }
+
+
+
+
                 }
 
-
-                   
-
+                divProfileView.Controls.Add(new LiteralControl(divInfo));
+            
             }
+            catch (Exception ex)
+            {
 
-            divProfileView.Controls.Add(new LiteralControl(divInfo));
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
