@@ -139,24 +139,38 @@
 
     </style>
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="ds_nagevation_bar">
-                <ul>
-                    <li><a href="/default.aspx">Dashboard</a></li>
-                    <li>/</li>
-                    <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
-                    <li>/</li>
-                    <li><a href="#" class="ds_negevation_inactive Mactive">Processing Daily Attendance</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
     <asp:ScriptManager ID="ScriptManager1" runat="server">
     </asp:ScriptManager>
+
+
+    <main class="main-content">
+      <div class="Dashbord">
+         <div class="crm mb-25">
+            <div class="container-fulid">
+               <div class="card card-Vertical card-default card-md mt-4 mb-4">
+
+                  <div class="card-header d-flex align-items-center">
+                     <div class="card-title d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                           <h4>Leave Application</h4>
+                        </div>
+
+                     </div>
+                  </div>
+                   
+                  <div id="Cardbox" class="card-body pb-md-30">
+                     <div class="Vertical-form">
+
+
+                     </div>
+                      </div>
+                </div>
+                </div>
+             </div>
+          </div>
+        </main>
 
 
 
@@ -165,8 +179,6 @@
             <h4>Daily Attendance Processing</h4>
         </div>
         <hr />
-        <%--<div class="main_box_body">
-            <div class="main_box_content">--%>
         <div class="main_box_body Mbody">
             <div class="employee_box">
                 <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Always" runat="server">

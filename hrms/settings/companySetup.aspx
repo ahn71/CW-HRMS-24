@@ -520,10 +520,6 @@
                      $('#txtCompanyNameError').html("Company Name is required.");
                      if (isValid) $("#txtCompanyName").focus();
                      isValid = false;
-                 } else if (!alphabeticPattern.test(companyName)) {
-                     $('#txtCompanyNameError').html("Company Name must contain only alphabetic characters.");
-                     if (isValid) $("#txtCompanyName").focus();
-                     isValid = false;
                  }
                  else {
                       $('#txtCompanyNameError').html("");
