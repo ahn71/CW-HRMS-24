@@ -104,7 +104,7 @@ namespace SigmaERP.personnel
                         <p><strong>Salary Type:</strong> " + dt.Rows[0]["SalaryType"] + @"</p>
                         <p><strong>EmpProximityNo :</strong> " + dt.Rows[0]["EMpProximityNo"] + @"</p>
 
-                           <p><strong>Date of Birth Type:</strong> " + date + @"</p>
+                           <p><strong>Date of Birth:</strong> " + date + @"</p>
                        </td>
                          
                     <td style='width:50%'>

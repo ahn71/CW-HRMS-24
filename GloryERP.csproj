@@ -1141,6 +1141,7 @@
     <Content Include="ControlPanel\user_privilege.aspx" />
     <Content Include="default.aspx" />
     <Content Include="EmployeeImages\CompanyLogo\logo.png" />
+    <Content Include="EmployeeImages\Images\rdNoImage.png" />
     <Content Include="hrd\bankentry_panel.aspx" />
     <Content Include="hrd\bank_entry_panel.aspx" />
     <Content Include="hrd\business_type.aspx" />
@@ -6041,7 +6042,6 @@
     <Folder Include="AssetsNew\js\file-uploader\server\php\files\thumbnail\" />
     <Folder Include="EmployeeImages\AdvanceDocument\" />
     <Folder Include="EmployeeImages\AttachFile\" />
-    <Folder Include="EmployeeImages\Images\" />
     <Folder Include="EmployeeImages\LeaveDocument\" />
     <Folder Include="EmployeeImages\Signature\" />
     <Folder Include="hrms\StaticFiles\" />
