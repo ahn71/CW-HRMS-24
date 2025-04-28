@@ -381,9 +381,9 @@ namespace SigmaERP.classes
             catch (Exception ex) { return null; }
         }
 
-        public DataTable GetExternalPunch(DateTime StartShiftime,DateTime EndShiftdateTime)
+        public DataTable GetExternalPunch(DateTime StartShiftime,DateTime EndShiftdateTime,string empId)
         {
-            string query= "select ei.EmpProximityNo as CardNo,FORMAT(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttExternalPunchRecords ep inner join Personnel_EmployeeInfo ei on ep.EmpId=ei.EmpId where PunchTime>= '"+ StartShiftime.ToString("yyy-MM-dd HH:mm:ss") + "'   and PunchTime<= '"+ EndShiftdateTime.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+            string query= "select ei.EmpProximityNo as CardNo,FORMAT(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttExternalPunchRecords ep inner join Personnel_EmployeeInfo ei on ep.EmpId=ei.EmpId where PunchTime>= '"+ StartShiftime.ToString("yyy-MM-dd HH:mm:ss") + "'   and PunchTime<= '"+ EndShiftdateTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and ep.EmpId='" + empId + "'";
             ///dt = new DataTable();
             //dt = CRUD.ExecuteReturnDataTable(query);
             return CRUD.ExecuteReturnDataTable(query);
