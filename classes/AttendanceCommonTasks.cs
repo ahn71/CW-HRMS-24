@@ -72,10 +72,9 @@ namespace SigmaERP.classes
                 {
                     if (ForAllEmployee)
                     {
-                        query = "select ui.BADGENUMBER as card_no, c.CHECKTIME as PanchTime, Format(c.CHECKTIME, 'yyyy-mm-dd') as PanchDate " +
+                        query = "select ui.BADGENUMBER as card_no, Format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PanchTime, Format(c.CHECKTIME, 'yyyy-mm-dd') as PanchDate " +
                                       "from CHECKINOUT c inner join USERINFO ui on c.USERID=ui.USERID " +
-                                       "where c.CHECKTIME = #" + SelectedDate.ToString("MM/dd/yyyy") + "# " +
-                                        "or c.CHECKTIME = #" + SelectedDate.AddDays(1).ToString("MM/dd/yyyy") + "#";
+                                       "where Format(CHECKTIME,'yyyy-MM-dd')='" + SelectedDate.ToString("yyyy-MM-dd") + "' or Format(CHECKTIME,'yyyy-MM-dd') = '" + SelectedDate.AddDays(1).ToString("yyyy-MM-dd") + "'";
 
                     }
                     else
@@ -83,12 +82,10 @@ namespace SigmaERP.classes
                         _ProxymityNo = GetEmpProximityNo(EmpId, SelectedDate.ToString("yyyy-MM-dd"));
 
                         _ProxymityNo = (_ProxymityNo == "") ? RealProximityNo : _ProxymityNo;
-                        query = "select ui.BADGENUMBER as card_no, c.CHECKTIME as PanchTime, " +
+                        query = "select ui.BADGENUMBER as card_no, Format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PanchTime, " +
                                     "Format(c.CHECKTIME, 'yyyy-mm-dd') as PanchDate " +
                                     "from CHECKINOUT c inner join USERINFO ui on c.USERID = ui.USERID " +
-                                    "where (c.CHECKTIME = #" + SelectedDate.ToString("MM/dd/yyyy") + "# " +
-                                    "or c.CHECKTIME = #" + SelectedDate.AddDays(1).ToString("MM/dd/yyyy") + "#) " +
-                                    "AND ui.BADGENUMBER = '" + _ProxymityNo+"'";
+                                    "where (Format(CHECKTIME,'yyyy-MM-dd')='" + SelectedDate.ToString("yyyy-MM-dd")+"'  or Format(CHECKTIME,'yyyy-MM-dd') = '" + SelectedDate.AddDays(1).ToString("yyyy-MM-dd") + "')  AND ui.BADGENUMBER = '" + _ProxymityNo+"'";
                     }
                 }
                  else
@@ -128,7 +125,8 @@ namespace SigmaERP.classes
                 //----------------------------------------------- entered punch data into tblAttendance table------------------------------------------------
                 foreach (DataRow dr in dt.Rows)
                 {
-                    string PanchTime = dr["PanchDate"].ToString().Substring(0, 4) + "-" + dr["PanchDate"].ToString().Substring(4, 2) + "-" + dr["PanchDate"].ToString().Substring(6, 2) + " " + dr["PanchTime"].ToString().Substring(0, 2) + ":" + dr["PanchTime"].ToString().Substring(2, 2) + ":" + dr["PanchTime"].ToString().Substring(4, 2);
+                    //string PanchTime = dr["PanchDate"].ToString().Substring(0, 4) + "-" + dr["PanchDate"].ToString().Substring(4, 2) + "-" + dr["PanchDate"].ToString().Substring(6, 2) + " " + dr["PanchTime"].ToString().Substring(0, 2) + ":" + dr["PanchTime"].ToString().Substring(2, 2) + ":" + dr["PanchTime"].ToString().Substring(4, 2);
+                    string  PanchTime = dr["PanchTime"].ToString();
                     SaveAttendancePunch(ProcessingID, CompanyId, dr["card_no"].ToString(), DateTime.Parse(PanchTime));
 
                 }
@@ -367,11 +365,14 @@ namespace SigmaERP.classes
         {
             try
             {
-                dt = new DataTable();             
-                if(DeviceType== "zkbiotime")
+                dt = new DataTable();
+                if (DeviceType == "zkbiotime")
                     query = "select  emp_code as CardNo,FORMAT(punch_time,'yyyy-MM-dd HH:mm:ss') as PunchTime from zkbiotime.dbo.iclock_transaction where punch_time >='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and punch_time <='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  and emp_code='" + CardNo + "'  order by  FORMAT(punch_time,'yyyy-MM-dd HH:mm:ss')";
-               else if (DeviceType == "HIKVISION")
+                else if (DeviceType == "HIKVISION")
                     query = "select  EmployeeId as CardNo,FORMAT(AuthDateTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from attslog where AuthDateTime >='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and AuthDateTime <='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  and EmployeeId='" + CardNo + "'  order by  FORMAT(AuthDateTime,'yyyy-MM-dd HH:mm:ss')";
+                
+               else if(DeviceType=="zk(access)")
+                    query = "select distinct CardNo,format(punchtime,'yyyy-MM-dd HH:mm:ss')as PunchTime from tblAttendancePunch_temp where  punchtime>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and punchtime<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and CardNo='" + CardNo + "' order by format(punchtime,'yyyy-MM-dd HH:mm:ss')";
                 else // default att2000 [Old zk]
                     query = "select  distinct u.BADGENUMBER as CardNo,format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss') as PunchTime from cw_att_zk.dbo.CHECKINOUT c inner join cw_att_zk.dbo.USERINFO u on c.USERID=u.USERID where c.CHECKTIME>='" + ShiftPunchCountStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' and c.CHECKTIME<='" + ShiftPunchCountEndTime.ToString("yyyy-MM-dd HH:mm:ss") + "'  AND u.BADGENUMBER='" + CardNo + "' order by format(c.CHECKTIME,'yyyy-MM-dd HH:mm:ss')";
 
@@ -382,9 +383,10 @@ namespace SigmaERP.classes
 
         public DataTable GetExternalPunch(DateTime StartShiftime,DateTime EndShiftdateTime)
         {
-            string query= "select ei.EmpProximityNo as CardNo,FORMAT(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttExternalPunchRecords ep inner join Personnel_EmployeeInfo ei on ep.EmpId=ei.EmpId where PunchTime>= CONVERT(DATETIME2, '"+ StartShiftime + "', 120)   and PunchTime<= CONVERT(DATETIME2, '"+ EndShiftdateTime + "', 120)";
-
-            return dt;
+            string query= "select ei.EmpProximityNo as CardNo,FORMAT(PunchTime,'yyyy-MM-dd HH:mm:ss') as PunchTime from tblAttExternalPunchRecords ep inner join Personnel_EmployeeInfo ei on ep.EmpId=ei.EmpId where PunchTime>= '"+ StartShiftime.ToString("yyy-MM-dd HH:mm:ss") + "'   and PunchTime<= '"+ EndShiftdateTime.ToString("yyyy-MM-dd HH:mm:ss") + "'";
+            ///dt = new DataTable();
+            //dt = CRUD.ExecuteReturnDataTable(query);
+            return CRUD.ExecuteReturnDataTable(query);
         }
         public DataTable GetPunchWithTimetable(string BADGENUMBER,DateTime BeginningIn, DateTime EndingIn, DateTime BeginningOut, DateTime EndingOut,string DeviceType)
         {
