@@ -1159,6 +1159,7 @@
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
     <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
+    <Content Include="hrms\attendance\attendanceProcessing.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
@@ -3682,6 +3683,13 @@
     </Compile>
     <Compile Include="hrd_default.aspx.designer.cs">
       <DependentUpon>hrd_default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceProcessing.aspx.cs">
+      <DependentUpon>attendanceProcessing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceProcessing.aspx.designer.cs">
+      <DependentUpon>attendanceProcessing.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\dashbordUser.aspx.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>

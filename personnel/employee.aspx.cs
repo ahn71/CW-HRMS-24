@@ -658,7 +658,7 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@EmpCardNo", txtEmpCardNo.Text.Trim());
                     string cardNo = new String(txtEmpCardNo.Text.Where(Char.IsNumber).ToArray());
                     int ProximityNo = int.Parse(cardNo.Substring(DateTime.Now.Year.ToString().Length, cardNo.Length - DateTime.Now.Year.ToString().Length));
-                    cmd.Parameters.AddWithValue("@EmpProximityNo", ProximityNo);
+                    cmd.Parameters.AddWithValue("@EmpProximityNo", txtRegistrationId.Text.Trim());
                 }
                 cmd.Parameters.AddWithValue("@PunchType", rblPunchType.SelectedValue);
                 cmd.Parameters.AddWithValue("@RealProximityNo", txtProximityNo.Text.Trim());
