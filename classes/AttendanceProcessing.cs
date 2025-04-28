@@ -417,7 +417,7 @@ namespace SigmaERP.classes
 
 
 
-                                                dtPunch.Merge(_attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4])));
+                                                dtPunch.Merge(_attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]), dtEmpInfo.Rows[0]["EmpID"].ToString()));
 
 
 
