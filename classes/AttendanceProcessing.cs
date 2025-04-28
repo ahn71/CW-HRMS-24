@@ -412,11 +412,42 @@ namespace SigmaERP.classes
                                                     string _ProxymityNo = _attCommon.GetEmpProximityNo(_attRecord.EmpId, SelectedDate.ToString("yyyy-MM-dd"));
                                                     _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
                                                     DataTable dtPunch = new DataTable();
-                                                    dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
-                                                    dtPunch = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+
+                                                dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
 
 
-                                                    if (dtPunch != null && dtPunch.Rows.Count > 0)
+
+                                                dtPunch.Merge(_attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4])));
+
+
+
+
+
+                                                //DataTable dtPunch1 = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                                //DataTable dtPunch2 = _attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+
+                                                //if (dtPunch1 != null && dtPunch1.Rows.Count > 0)
+                                                //{
+                                                //    if (dtPunch2 != null && dtPunch2.Rows.Count > 0)
+                                                //    {
+                                                //        // if Both have data, so merge
+                                                //        dtPunch1.Merge(dtPunch2);
+                                                //    }
+                                                //    // If only dtPunch1 has data, return it as it is
+                                                //    dtPunch = dtPunch1;
+                                                //}
+                                                //else if (dtPunch2 != null && dtPunch2.Rows.Count > 0)
+                                                //{
+                                                //    // If only dtPunch2 has data, use it
+                                                //    dtPunch = dtPunch2;
+                                                //}
+                                                //else
+                                                //{
+                                                //    // If both are empty, create an empty DataTable
+                                                //    dtPunch = new DataTable();
+                                                //}
+
+                                                if (dtPunch != null && dtPunch.Rows.Count > 0)
                                                     {
                                                         bool OnePunchPresent = Glory.getDBName() == "cw_hrms_tmc_hospital" ? true : false;
 
