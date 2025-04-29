@@ -300,6 +300,7 @@ namespace SigmaERP.classes
                 else
                 {
                     dt = new DataTable();
+                    string jj = "select SftOverTime,SftId,SftStartTime,SftEndTime,SftAcceptableLate,StartingIN,EndingIN,SftEndTime,StartingOUT,EndingOUT,IsWeekend,IsNight  from v_ShiftTransferInfoDetails where SDate ='" + SelectedDate + "' AND EmpId='" + EmpId + "'";
                     dt = CRUD.ExecuteReturnDataTable("select SftOverTime,SftId,SftStartTime,SftEndTime,SftAcceptableLate,StartingIN,EndingIN,SftEndTime,StartingOUT,EndingOUT,IsWeekend,IsNight  from v_ShiftTransferInfoDetails where SDate ='" + SelectedDate + "' AND EmpId='" + EmpId + "'");
                 }
             
