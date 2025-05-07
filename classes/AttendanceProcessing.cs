@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using HRD.ModelEntities.Models;
+using SigmaERP.hrms.DTO;
 using SigmaERP.hrms.repo.repositories;
 using System;
 using System.Collections.Generic;
@@ -294,7 +295,7 @@ namespace SigmaERP.classes
                             if (fileName != "")
                             {
                                 // import raw data form uploaded file(db)
-                                if (_attCommon.importRawDataFormDevice(fileName, CompanyId, ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), dtEmpInfo.Rows[0]["RealProximityNo"].ToString(), SelectedDate, ProcessingID, db))
+                                if (_attCommon.importRawDataFormDevice(fileName, CompanyId, ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), dtEmpInfo.Rows[0]["RegId"].ToString(), SelectedDate, ProcessingID, db))
                                 {
                                     // delete existing attendance
                                     if (_attCommon.DeleteAttendance(CompanyId, DepartmentId, SelectedDate.ToString("yyyy-MM-dd"), ForAllEmployee, dtEmpInfo.Rows[0]["EmpID"].ToString(), EmpType))
@@ -321,7 +322,9 @@ namespace SigmaERP.classes
                                         string[] othersetting = _attCommon.GetOthersSetting(CompanyId);
                                         TimeSpan workerTiffinTime = TimeSpan.Parse(othersetting[0]);
                                         TimeSpan staffTiffinTime = TimeSpan.Parse(othersetting[1]);
-                                        for (int i = 0; i < dtEmpInfo.Rows.Count; i++)
+                                        var shiftDictionary = _attCommon.GetShiftsByCompany("0008");
+
+                                    for (int i = 0; i < dtEmpInfo.Rows.Count; i++)
                                         {
                                             if (DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(dtEmpInfo.Rows[i]["EmpJoiningDate"].ToString())) > SelectedDate)
                                             {
@@ -360,14 +363,29 @@ namespace SigmaERP.classes
                                                     UserId = UserId
 
                                                 };
-                                                //check roster 
-                                                string[] rosterInfo = _attCommon.GetRosterInfo(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), dtEmpInfo.Rows[i]["SftID"].ToString(), dtEmpInfo.Rows[i]["EmpTypeId"].ToString());
-                                                if (rosterInfo == null || rosterInfo[0] == "0")
+
+                                         
+
+                                            string targetShiftId = dtEmpInfo.Rows[i]["SftID"].ToString(); 
+                                            ShiftDTO shift = _attCommon.GetShiftDTOBySftId(shiftDictionary, targetShiftId);
+
+                                            if (shift != null)
+                                            {
+                                                Console.WriteLine($"Shift Start: {shift.SftStartTime}, Is Night: {shift.IsNight}");
+                                                Console.WriteLine($"Shift End Time: {shift.SftEndTime}, Is Night: {shift.SftAcceptableLate}");
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Shift not found.");
+                                            }
+
+                                            //string[] rosterInfo = _attCommon.GetRosterInfo(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), dtEmpInfo.Rows[i]["SftID"].ToString(), dtEmpInfo.Rows[i]["EmpTypeId"].ToString());
+                                                if (shift == null)
                                                 {
                                                     _attCommon.NotCountableAttendanceLog(_attRecord.EmpId, "Roster  Missing", SelectedDate.ToString("yyyy-MM-dd"));
                                                     continue;
                                                 }
-                                                _attRecord.SftId = rosterInfo[0];
+                                                _attRecord.SftId = shift.SftId.ToString();
                                                 //end check roster 
                                                 string[] Leave_Info = _attCommon.CheckLeave(SelectedDate.ToString("yyyy-MM-dd"), _attRecord.EmpId);
 
@@ -410,14 +428,14 @@ namespace SigmaERP.classes
                                                         }
                                                     }
                                                     string _ProxymityNo = _attCommon.GetEmpProximityNo(_attRecord.EmpId, SelectedDate.ToString("yyyy-MM-dd"));
-                                                    _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RealProximityNo"].ToString() : _ProxymityNo;
+                                                    _ProxymityNo = (_ProxymityNo == "") ? dtEmpInfo.Rows[i]["RegId"].ToString() : _ProxymityNo;
                                                     DataTable dtPunch = new DataTable();
 
-                                                dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]));
+                                                dtPunch = _attCommon.GetPunch(ProcessingID, DeviceType, CompanyId, _ProxymityNo, DateTime.Parse(SelectedDate.ToString("yyyy-MM-dd")+" "+  shift.StartingIN), DateTime.Parse(SelectedDate.ToString("yyyy-MM-dd")+" "+  shift.StartingIN));
 
 
 
-                                                dtPunch.Merge(_attCommon.GetExternalPunch(DateTime.Parse(rosterInfo[3]), DateTime.Parse(rosterInfo[4]), dtEmpInfo.Rows[0]["EmpID"].ToString()));
+                                                dtPunch.Merge(_attCommon.GetExternalPunch(DateTime.Parse(shift.StartingIN), DateTime.Parse(shift.StartingIN), dtEmpInfo.Rows[0]["EmpID"].ToString()));
 
 
 
@@ -465,16 +483,16 @@ namespace SigmaERP.classes
                                                             _attRecord.AttStatus = "LV";
                                                             _attRecord.StateStatus = Leave_Info[1];
                                                         }
-                                                        _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()), rosterInfo, TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), specialCaseType, isHalfDay);
+                                                        _attRecord = _attCommon.GetAttStatus(_attRecord, DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()), shift, TimeSpan.Parse(othersetting[3]), TimeSpan.Parse(othersetting[5]), OnePunchPresent, dtEmpInfo.Rows[i]["EmpDutyType"].ToString(), specialCaseType, isHalfDay);
 
                                                         if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
-                                                            _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], true, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()));
+                                                            _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], true, DateTime.Parse(shift.SftStartTime), DateTime.Parse(shift.SftEndTime), DateTime.Parse(dtPunch.Rows[0]["PunchTime"].ToString()), DateTime.Parse(dtPunch.Rows[dtPunch.Rows.Count - 1]["PunchTime"].ToString()));
 
                                                     }
                                                     else
                                                     {
                                                         if (_attRecord.StateStatus == "Absent" || _attRecord.StateStatus == "Present")
-                                                            _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], false, DateTime.Parse(rosterInfo[1]), DateTime.Parse(rosterInfo[2]), DateTime.Now, DateTime.Now);
+                                                            _attRecord = _attCommon.CheckOutDuty(_attRecord, othersetting[3], false, DateTime.Parse(shift.SftStartTime), DateTime.Parse(shift.SftEndTime), DateTime.Now, DateTime.Now);
                                                     }
 
 

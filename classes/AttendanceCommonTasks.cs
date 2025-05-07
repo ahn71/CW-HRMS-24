@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using HRD.ModelEntities.Models;
+using SigmaERP.hrms.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,12 +27,19 @@ namespace SigmaERP.classes
                 if (ForAllEmployee)
                 {
                     if (DepartmentId == "0")
-                        sqlCmd = "select cs.EmpId,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,SftId,EmpAttCard as RealProximityNo,GId,DptId,DsgId,EmpDutyType,EmpAttCard,isnull(IsDelivery,0) IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus cs left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and cs.EmpStatus=sp.SeparationType where  cs.IsActive=1 and  CompanyId='" + CompnayId + "' and ( EmpStatus in ('1','8') or sp.EffectiveDate>='" + attDate + "' )  AND EmpAttCard !=''" + EmpType;
+                        //sqlCmd = "select cs.EmpId,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,SftId,EmpAttCard as RealProximityNo,GId,DptId,DsgId,EmpDutyType,EmpAttCard,isnull(IsDelivery,0) IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus cs left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and cs.EmpStatus=sp.SeparationType where  cs.IsActive=1 and  CompanyId='" + CompnayId + "' and ( EmpStatus in ('1','8') or sp.EffectiveDate>='" + attDate + "' )  AND EmpAttCard !=''" + EmpType;
+
+                    sqlCmd = "select cs.EmpId,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(pei.EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,case when cs.EmpDutyType='Regular' then cs.SftId else ri.SftId end as SftId ,cs.GId,cs.DptId,cs.DsgId,cs.EmpDutyType,pei.EmpProximityNo as RegId,isnull(dpt.IsDelivery,0) IsDelivery,WeekendType from Personnel_EmployeeInfo pei inner join Personnel_EmpCurrentStatus cs on  pei.EmpId=cs.EmpId and  cs.IsActive=1 left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and  cs.IsActive=1 and cs.EmpStatus=sp.SeparationType  left join Hrd_Department as Dpt on dpt.DptId =cs.DptId  left join ShiftTransferInfoDetails rd on pei.EmpId = rd.EmpId and rd.SDate = '"+attDate+ "' left join ShiftTransferInfo ri on ri.STId = rd.STId where cs.CompanyId = '"+CompnayId+"' and(cs.EmpStatus in ('1', '8') or sp.EffectiveDate >= '" + attDate + "')  AND pei.EmpProximityNo != ''" + EmpType;
+
+
                     else
                         sqlCmd = "select cs.EmpId,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,SftId,EmpAttCard as RealProximityNo,GId,DptId,DsgId,EmpDutyType,EmpAttCard,isnull(IsDelivery,0) IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus cs left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and cs.EmpStatus=sp.SeparationType where  cs.IsActive=1 and CompanyId='" + CompnayId + "' and DptId='" + DepartmentId + "' AND ( EmpStatus in ('1','8') or sp.EffectiveDate>='" + attDate + "' ) AND EmpAttCard !=''" + EmpType;
                 }
                 else
-                    sqlCmd = "select cs.EmpId,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,SftId,EmpAttCard as RealProximityNo,GId,DptId,DsgId,EmpDutyType,EmpAttCard,isnull(IsDelivery,0) IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus cs left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and cs.EmpStatus=sp.SeparationType  where  cs.IsActive=1 and CompanyId='" + CompnayId + "' and  (cs.EmpCardNo Like '%"+ EmpCardNo + "' or EmpAttCard='"+ EmpCardNo + "') AND(EmpStatus in ('1', '8') or sp.EffectiveDate >= '" + attDate + "') AND EmpAttCard != ''";
+                    sqlCmd = "select cs.EmpId,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,SftId,EmpAttCard as RegId,GId,DptId,DsgId,EmpDutyType,EmpAttCard,isnull(IsDelivery,0) IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus cs left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and cs.EmpStatus=sp.SeparationType  where  cs.IsActive=1 and CompanyId='" + CompnayId + "' and  (cs.EmpCardNo Like '%" + EmpCardNo + "' or EmpAttCard='" + EmpCardNo + "') AND(EmpStatus in ('1', '8') or sp.EffectiveDate >= '" + attDate + "') AND EmpAttCard != ''";
+
+
+
 
                 return CRUD.ExecuteReturnDataTable(sqlCmd);
             }
@@ -274,6 +282,132 @@ namespace SigmaERP.classes
             }
             catch { return ""; }
         }
+        public ShiftDTO ConvertToShiftDTO(DataRow row)
+        {
+            if (row == null) return null;
+
+            var dto = new ShiftDTO
+            {
+                SftId = row.Table.Columns.Contains("SftId") ? row.Field<int>("SftId") : 0,
+                SftName = row.Table.Columns.Contains("SftName") ? row["SftName"]?.ToString() : null,
+                SftStartTime = row.Table.Columns.Contains("SftStartTime") ? row["SftStartTime"]?.ToString() : null,
+                StartingIN = row.Table.Columns.Contains("StartingIN") ? row["StartingIN"]?.ToString() : null,
+                EndingIN = row.Table.Columns.Contains("EndingIN") ? row["EndingIN"]?.ToString() : null,
+                SftEndTime = row.Table.Columns.Contains("SftEndTime") ? row["SftEndTime"]?.ToString() : null,
+                StartingOUT = row.Table.Columns.Contains("StartingOUT") ? row["StartingOUT"]?.ToString() : null,
+                EndingOUT = row.Table.Columns.Contains("EndingOUT") ? row["EndingOUT"]?.ToString() : null,
+                SftAcceptableLate = row.Table.Columns.Contains("SftAcceptableLate") ? row.Field<short?>("SftAcceptableLate") : null,
+                SftAcceptableEarlyOut = row.Table.Columns.Contains("SftAcceptableEarlyOut") ? row.Field<short?>("SftAcceptableEarlyOut") : null,
+                SftOverTime = row.Table.Columns.Contains("SftOverTime") ? row.Field<bool?>("SftOverTime") : null,
+                IsActive = row.Table.Columns.Contains("IsActive") ? row.Field<bool?>("IsActive") : null,
+                Notes = row.Table.Columns.Contains("Notes") ? row["Notes"]?.ToString() : null,
+                CompanyId = row.Table.Columns.Contains("CompanyId") ? row["CompanyId"]?.ToString() : null,
+                DptId = row.Table.Columns.Contains("DptId") ? row["DptId"]?.ToString() : null,
+                SftNameBangla = row.Table.Columns.Contains("SftNameBangla") ? row["SftNameBangla"]?.ToString() : null,
+                IsNight = row.Table.Columns.Contains("IsNight") ? row.Field<bool?>("IsNight") : null
+            };
+
+            return dto;
+        }
+
+
+        public ShiftDTO GetShiftDTOBySftId(Dictionary<string, DataRow> shiftDictionary, string sftId)
+        {
+            if (shiftDictionary.TryGetValue(sftId, out DataRow row))
+            {
+                return ConvertToShiftDTO(row);
+            }
+
+            return null; // Not found
+        }
+
+        public Dictionary<string, DataRow> GetShiftsByCompany(string companyId)
+        {
+            var shiftDictionary = new Dictionary<string, DataRow>();
+
+            try
+            {
+                var dt = CRUD.ExecuteReturnDataTable($"SELECT * FROM Hrd_Shift WHERE CompanyId = '{companyId}'");
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string shiftId = row["SftId"].ToString();
+                        if (!shiftDictionary.ContainsKey(shiftId))
+                        {
+                            shiftDictionary.Add(shiftId, row);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Optionally log error
+            }
+
+            return shiftDictionary;
+        }
+
+
+        public Dictionary<string, string[]> LoadCompanyRosterInfo(string selectedDate, string companyId)
+        {
+            var rosterMap = new Dictionary<string, string[]>();
+
+            // Get all employees with their shift & emp type for the company on that date
+            string query = $@"
+        SELECT e.EmpId, e.EmpTypeId, r.SftId, r.DutyType,
+               s.SftStartTime, s.SftEndTime, s.SftAcceptableLate,
+               s.StartingIN, s.EndingOUT, s.IsNight, s.IsWeekend
+        FROM Employees e
+        INNER JOIN v_ShiftTransferInfoDetails r ON e.EmpId = r.EmpId
+        INNER JOIN HRD_Shift s ON r.SftId = s.SftId
+        WHERE e.CompanyId = '{companyId}' AND r.SDate = '{selectedDate}'";
+
+            var dt = CRUD.ExecuteReturnDataTable(query);
+
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string empId = row["EmpId"].ToString();
+                string empTypeId = row["EmpTypeId"].ToString();
+                string sftId = row["SftId"].ToString();
+                string dutyType = row["DutyType"].ToString();
+
+                string key = $"{selectedDate}_{empTypeId}_{sftId}_{dutyType}";
+
+                if (!rosterMap.ContainsKey(key))
+                {
+                    string[] info = new string[14];
+
+                    info[0] = sftId;
+                    info[1] = $"{selectedDate} {row["SftStartTime"]}";
+                    TimeSpan start = TimeSpan.Parse(row["SftStartTime"].ToString());
+                    TimeSpan end = TimeSpan.Parse(row["SftEndTime"].ToString());
+                    info[2] = (start > end)
+                        ? DateTime.Parse(selectedDate).AddDays(1).ToString("yyyy-MM-dd") + " " + row["SftEndTime"]
+                        : $"{selectedDate} {row["SftEndTime"]}";
+
+                    info[3] = $"{selectedDate} {row["StartingIN"]}";
+                    TimeSpan inStart = TimeSpan.Parse(row["StartingIN"].ToString());
+                    TimeSpan outEnd = TimeSpan.Parse(row["EndingOUT"].ToString());
+                    info[4] = (inStart > outEnd)
+                        ? DateTime.Parse(selectedDate).AddDays(1).ToString("yyyy-MM-dd") + " " + row["EndingOUT"]
+                        : $"{selectedDate} {row["EndingOUT"]}";
+
+                    info[5] = "0"; // Reserved
+                    info[6] = row["SftAcceptableLate"].ToString();
+                    info[8] = row["IsWeekend"].ToString();
+                    info[9] = row["IsNight"].ToString();
+
+                    rosterMap[key] = info;
+                }
+            }
+
+            return rosterMap;
+        }
+
+
         public string[] GetRosterInfo(string SelectedDate, string EmpId, string DutyType, string ShiftId,string EmpTypeId)
         {
             try
@@ -572,13 +706,16 @@ namespace SigmaERP.classes
             //}
             return _attRecord;
         }
-        public AttendanceRecord GetAttStatus(AttendanceRecord _attRecord, DateTime LogInTime, DateTime LogOutTime,string [] rosterInfo, TimeSpan MinWorkingTime, TimeSpan MinOverTime, bool OnePunchPresent, string DutyType,string specialcase,bool halfDayLeave)
+        public AttendanceRecord GetAttStatus(AttendanceRecord _attRecord, DateTime LogInTime, DateTime LogOutTime,ShiftDTO shiftInfo, TimeSpan MinWorkingTime, TimeSpan MinOverTime, bool OnePunchPresent, string DutyType,string specialcase,bool halfDayLeave)
             {
-            DateTime RosterStartTime = DateTime.Parse(rosterInfo[1]); 
-            DateTime RosterEndTime = DateTime.Parse(rosterInfo[2]);
-            byte AcceptableLate= byte.Parse(rosterInfo[6]);
+            //DateTime RosterStartTime = DateTime.Parse(rosterInfo[1]); 
+            //DateTime RosterEndTime = DateTime.Parse(rosterInfo[2]);
+            //byte AcceptableLate= byte.Parse(rosterInfo[6]);
+            DateTime RosterStartTime = DateTime.Parse(shiftInfo.SftStartTime);
+            DateTime RosterEndTime = DateTime.Parse(shiftInfo.SftEndTime);
+            short AcceptableLate = shiftInfo.SftAcceptableLate ?? 0;
 
-                DateTime RosterStartTimeForOT = RosterEndTime;
+            DateTime RosterStartTimeForOT = RosterEndTime;
                 _attRecord.InHour = LogInTime.ToString("HH");
                 _attRecord.InMin = LogInTime.ToString("mm");
                 _attRecord.InSec = LogInTime.ToString("ss");
@@ -634,7 +771,7 @@ namespace SigmaERP.classes
                     if (LogOutTime>RosterStartTime)
                     {
                         totalOTTime = LogOutTime- RosterStartTime;
-                        totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
+                        totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks_UsingDTO(_attRecord.EmpId, _attRecord.AttStatus, shiftInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
                         
                     }                 
                 }
@@ -681,7 +818,7 @@ namespace SigmaERP.classes
                             if (RosterStartTimeForOT < LogOutTime)
                             {
                                 totalOTTime = LogOutTime - RosterStartTimeForOT;
-                                totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks(_attRecord.EmpId, _attRecord.AttStatus, rosterInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
+                                totalOTTime = TimeSpan.Parse(NetOverTimeAfterDeductedBreaks_UsingDTO(_attRecord.EmpId, _attRecord.AttStatus, shiftInfo, _attRecord.AttDate.ToString("yyyy-MM-dd"), TimeSpan.Parse(_attRecord.InHour + ":" + _attRecord.InMin + ":" + _attRecord.InSec), TimeSpan.Parse(_attRecord.OutHour + ":" + _attRecord.OutMin + ":" + _attRecord.OutSec), totalOTTime, DutyType));
                             }
                         }
 
@@ -764,7 +901,106 @@ namespace SigmaERP.classes
                 }
                 catch (Exception ex) { return null; }
             }
-            public string NetOverTimeAfterDeductedBreaks(string EmpId, string attStatus, string[] RosterInfo, string attDate, TimeSpan logInTime, TimeSpan logOutTime, TimeSpan TotalOverTime, string DutyType)// this block specialy for ramdan overtime . create date: 19-05-2019
+
+        public string NetOverTimeAfterDeductedBreaks_UsingDTO(string EmpId, string attStatus, ShiftDTO shiftInfo, string attDate, TimeSpan logInTime, TimeSpan logOutTime, TimeSpan TotalOverTime, string DutyType)// this block specialy for ramdan overtime . create date: 19-05-2019
+        {
+            try
+            {
+                DataTable dt;
+                string sqlcmd = "";
+                if (!(attStatus == "W" || attStatus == "H"))
+                {
+                    //if (DutyType == "Regular")
+                    //{
+                    //    sqlcmd = "select SftEndTime from HRD_SpecialTimetable where StartDate<='" + attDate + "' and EndDate>='" + attDate + "'";
+                    //    sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                    //    if (dt == null || dt.Rows.Count == 0)
+                    //    {
+                    //        sqlcmd = "select SftEndTime from HRD_Shift where SftId='" + shiftId + "'";
+                    //        sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                    //    }
+
+                    //}
+                    //else
+                    //{
+                    //    sqlcmd = "select SftEndTime from v_ShiftTransferInfoDetails where SDate ='" + attDate + "' AND EmpId='" + EmpId + "'";
+                    //    sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                    //}
+                    //string SftEndTime = dt.Rows[0]["SftEndTime"].ToString();
+
+                    //logInTime = TimeSpan.Parse(RosterInfo[2].Split(' ')[1]);
+                    logInTime = TimeSpan.Parse(shiftInfo.SftEndTime.Split(' ')[1]);
+                }
+                DateTime logIn, logOut;
+                logIn = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " " + logInTime.ToString());
+                if (logInTime > logOutTime)
+                    logOut = DateTime.Parse(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + " " + logOutTime.ToString());
+                else
+                    logOut = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " " + logOutTime.ToString());
+                TimeSpan totalBreakTime = TimeSpan.Parse("00:00:00");
+                DateTime startTime;// = TimeSpan.Parse("00:00:00");
+                DateTime endTime;// = TimeSpan.Parse("00:00:00");
+                TimeSpan breakTime = TimeSpan.Parse("00:00:00");
+                sqlcmd = "select distinct StartTime,EndTime,BreakTime,NextDay  from AttSpecialBreakTime where IsActive=1 and Date='" + attDate + "' and DutyType in('All','" + DutyType + "')";
+                sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    string IsHoliday = (attStatus == "W" || attStatus == "H") ? "1" : "0";
+                    //if (RosterInfo[10] != null)
+                    //{
+                    //    sqlcmd = "select Title,StartTime,EndTime,BreakTime,NextDay from AttBreakTimeWithShift abs inner join AttBreakTime ab on abs.BrkID=ab.SL where SpecialTimetableId="+ RosterInfo[10] + " order by NextDay,StartTime";
+                    //}                
+                    //sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                    if (dt == null || dt.Rows.Count == 0 || DutyType != "Regular")
+                    {
+                        sqlcmd = "select Title,StartTime,EndTime,BreakTime,NextDay from AttBreakTimeWithShift abs inner join AttBreakTime ab on abs.BrkID=ab.SL where SftID=" + shiftInfo.SftId + " order by NextDay,StartTime";
+                        sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                        if (dt == null || dt.Rows.Count == 0)
+                        {
+                            sqlcmd = "select Title,StartTime,EndTime,BreakTime,NextDay from AttBreakTime where IsActive=1 and BreakID is null and IsHoliday=" + IsHoliday + " order by NextDay,StartTime";
+                            sqlDB.fillDataTable(sqlcmd, dt = new DataTable());
+                        }
+                    }
+                }
+                if (dt.Rows.Count > 0)
+                {
+                    for (byte i = 0; i < dt.Rows.Count; i++)
+                    {
+
+                        if (dt.Rows[i]["NextDay"].ToString().Equals("True"))
+                        {
+                            startTime = DateTime.Parse(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + " " + dt.Rows[i]["StartTime"].ToString());
+                            endTime = DateTime.Parse(DateTime.Now.AddDays(1).ToString("yyyy-MM-dd") + " " + dt.Rows[i]["EndTime"].ToString());
+                        }
+                        else
+                        {
+                            startTime = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " " + dt.Rows[i]["StartTime"].ToString());
+                            endTime = DateTime.Parse(DateTime.Now.ToString("yyyy-MM-dd") + " " + dt.Rows[i]["EndTime"].ToString());
+                        }
+
+                        breakTime = TimeSpan.Parse(dt.Rows[i]["BreakTime"].ToString());
+                        if (logIn <= startTime && logOut >= endTime)
+                        {
+                            totalBreakTime += breakTime;
+                        }
+                        else if (logOut > startTime && logOut < endTime)
+                        {
+                            totalBreakTime += logOut - startTime;
+                        }
+
+                    }
+
+                }
+                TotalOverTime = TotalOverTime - totalBreakTime;
+                if (TotalOverTime.ToString().Contains("-"))
+                    return "00:00:00";
+                else
+                    return TotalOverTime.ToString();
+            }
+            catch { return "00:00:00"; }
+
+        }
+        public string NetOverTimeAfterDeductedBreaks(string EmpId, string attStatus, string[] RosterInfo, string attDate, TimeSpan logInTime, TimeSpan logOutTime, TimeSpan TotalOverTime, string DutyType)// this block specialy for ramdan overtime . create date: 19-05-2019
             {
                 try
                 {

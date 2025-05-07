@@ -34,6 +34,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <IncludeIisSettings>true</IncludeIisSettings>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -3698,6 +3699,7 @@
     <Compile Include="hrms\dashbordUser.aspx.designer.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\DTO\ShiftDTO.cs" />
     <Compile Include="hrms\packages\AppSettings.aspx.cs">
       <DependentUpon>AppSettings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
