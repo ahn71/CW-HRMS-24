@@ -156,7 +156,9 @@ namespace SigmaERP.attendance
                     else
                     {
                         sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + FromDate + "' " + ShiftName + IsNightShiftForReport + empType + " and DptId " + DepartmentList + "   group by DptId,CONVERT(int,DptCode),DptName order by CONVERT(int,DptCode)", dt);
-                         
+                        string kk = "Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + FromDate + "' " + ShiftName + IsNightShiftForReport + empType + " and DptId " + DepartmentList + "   group by DptId,CONVERT(int,DptCode),DptName order by CONVERT(int,DptCode)";
+
+
                     }
                 }
                 else

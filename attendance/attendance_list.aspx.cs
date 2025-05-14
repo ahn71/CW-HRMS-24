@@ -80,9 +80,12 @@ namespace SigmaERP.attendance
         {
             try
             {
-                searchStatus = 1;   // 1 means all load at first time
+                searchStatus = 1;  
+                // 1 means all load at first time
                 sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where Year='" + DateTime.Now.Year + "' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by AttDate desc", dt = new DataTable());
                 string jjjj = "select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where Year='" + DateTime.Now.Year + "' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by AttDate desc";
+
+
                 if (dt.Rows.Count<1)
                 {
                     gvAttendanceList.DataSource = null;
