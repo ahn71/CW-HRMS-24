@@ -337,7 +337,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__GetISAdministetor__"] = userData.isAdministrator;
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
-                    classes.Routing.RegisterRoutes(RouteTable.Routes, userId);
+                    classes.Routing.RegisterMenus(userId);
            
 
                     // Set cookie values

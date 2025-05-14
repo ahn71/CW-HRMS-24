@@ -27,7 +27,7 @@
                   <% if (IsRouteExists("attendance/month-setup"))
                        { %>
                  <div runat="server" id="divMonthSetup" class="col-lg-2 col-md-3 col-sm-6" title="Attendance Month Setup" >
-                     <a class="ds_Settings_Basic_Text cardStyle"  href="hrms/attendance/month-setup"> <i class="uil uil-calendar-alt iconStyle"></i><br /> Month Setup </a>
+                     <a class="ds_Settings_Basic_Text cardStyle"  href="attendance/month-setup"> <i class="uil uil-calendar-alt iconStyle"></i><br /> Month Setup </a>
                      
                  </div>
                     <% } %>
@@ -251,34 +251,41 @@
              { %>
                  
             <div class="col-lg-2 col-md-3 col-sm-6" title="New Employee Entry">
-                <a class="ds_Settings_Basic_Text" href="roster/create">
+               <%-- <a class="ds_Settings_Basic_Text" href="roster/create">
                     <img class="image_width_for_module" src="../images/common/addemployee.ico" /><br />
-                    Roster Create &nbsp;&nbsp; Panel</a>
+                   </a>--%>
+                  <a class="ds_Settings_Basic_Text cardStyle" href="roster/create"><i class="uil uil-user-arrows iconStyle"></i><br /> Roster Create Panel</a>
             </div>
            <% } %>
            <% if (IsRouteExists("roster/extend"))
              { %>
                 <div class=" col-lg-2 col-md-3 col-sm-6" title="All Employee Details">
-                <a class="ds_Settings_Basic_Text" href="roster/extend">
+<%--                <a class="ds_Settings_Basic_Text" href="roster/extend">
                     <img class="image_width_for_module" src="../images/common/employee detail.ico" /><br />
-                    Roster Extend &nbsp;&nbsp; Panel</a>
+                    </a>--%>
+
+                      <a class="ds_Settings_Basic_Text cardStyle" href="roster/extend"><i class="uil uil-user-arrows iconStyle"></i><br />Roster Extend Panel</a>
             </div>
            <% } %>
 
            <% if (IsRouteExists("roster/view-remove"))
             { %>
             <div class=" col-lg-2 col-md-3 col-sm-6" title="Employee List Report">
-                <a class="ds_Settings_Basic_Text" href="roster/view-remove">
+<%--                <a class="ds_Settings_Basic_Text" href="roster/view-remove">
                     <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
-                    Roster View & Remove</a>
+                   </a>--%>
+
+                  <a class="ds_Settings_Basic_Text cardStyle" href="roster/view-remove"><i class="uil uil-document-layout-center iconStyle"></i><br /> Roster View & Remove</a>
             </div>
               <% } %>
             <% if (IsRouteExists("roster/transfer"))
             { %>
              <div class=" col-lg-2 col-md-3 col-sm-6" title="Roster Transer Panel">
-                <a class="ds_Settings_Basic_Text" href="roster/transfer">
+         <%--       <a class="ds_Settings_Basic_Text" href="roster/transfer">
                     <img class="image_width_for_module" src="../images/common/employee detail.ico" /><br />
-                    Roster Transfer Panel</a>
+                    Roster Transfer Panel</a>--%>
+
+                   <a class="ds_Settings_Basic_Text cardStyle" href="roster/transfer"><i class="uil uil-user-arrows iconStyle"></i><br /> Roster Transfer Panel</a>
             </div> 
                <% } %>
 
@@ -293,9 +300,11 @@
             { %>
                   
              <div class=" col-lg-2 col-md-3 col-sm-6" title="All Employee Details">
-                <a class="ds_Settings_Basic_Text" href="/personnel/roster_missing.aspx">
+<%--                <a class="ds_Settings_Basic_Text" href="/personnel/roster_missing.aspx">
                     <img class="image_width_for_module" src="../images/common/employee detail.ico" /><br />
-                    Roster Missing Panel</a>
+                    Roster Missing Panel</a>--%>
+                      <a class="ds_Settings_Basic_Text cardStyle" href="/personnel/roster_missing.aspx"><i class="uil uil-snapchat-square iconStyle"></i><br /> Roster Missing Panel</a>
+
             </div> 
             <% } %>
 
@@ -303,9 +312,13 @@
             { %>
 
             <div class=" col-lg-2 col-md-3 col-sm-6" title="Employee List Report">
-                <a class="ds_Settings_Basic_Text" href="roster/place-assign">
+         <%--       <a class="ds_Settings_Basic_Text" href="roster/place-assign">
                     <img class="image_width_for_module" src="../images/common/businesstype.ico" /><br />
-                   Place Assign  &nbsp;&nbsp; &nbsp;&nbsp;Panel</a>
+                    Place Assign Panel</a>--%>
+                <a class="ds_Settings_Basic_Text cardStyle" href="roster/place-assign"><i class="uil uil-file-bookmark-alt iconStyle"></i>
+                    <br />
+                   Place Assign Panel</a>
+
             </div>
 
              <% } %>
@@ -314,16 +327,24 @@
             { %>
 
             <div class="col-lg-2 col-md-3 col-sm-6" title="New Employee Entry">
-                <a class="ds_Settings_Basic_Text" href="roster/report">
+                <%--   <a class="ds_Settings_Basic_Text" href="roster/report">
                     <img class="image_width_for_module" src="../images/common/addemployee.ico" /><br />
+                    Roster Manage Report</a>--%>
+                <a class="ds_Settings_Basic_Text cardStyle" href="roster/report"><i class="uil uil-file-bookmark-alt iconStyle"></i>
+                    <br />
                     Roster Manage Report</a>
+
             </div>
                                              <% } %>
            <% if (IsRouteExists("roster/report-by-date"))
             { %>
             <div class=" col-lg-2 col-md-3 col-sm-6" title="All Employee Details">
-                <a class="ds_Settings_Basic_Text" href="roster/report-by-date">
+<%--                <a class="ds_Settings_Basic_Text" href="roster/report-by-date">
                     <img class="image_width_for_module" src="../images/common/employee detail.ico" /><br />
+                    Roster Report By Date Range</a>--%>
+
+                      <a class="ds_Settings_Basic_Text cardStyle" href="roster/place-assign"><i class="uil uil-calendar-alt iconStyle"></i>
+                    <br />
                     Roster Report By Date Range</a>
             </div>
            <% } %>

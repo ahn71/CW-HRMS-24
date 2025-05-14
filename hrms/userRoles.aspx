@@ -449,7 +449,6 @@
                     console.error('Error occurred while fetching data:', error);
                 });
         }
-       // This function binds data to the table with serial numbers and user role-specific actions
         function bindTableData(data) {
 
             // Step 1: Destroy any existing Footable instance to avoid conflicts when reinitializing

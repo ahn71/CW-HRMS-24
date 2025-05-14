@@ -1,4 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="leaveApplication.aspx.cs" Inherits="SigmaERP.hrms.Leave.leaveApplication" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="leaveApplication.aspx.cs" Inherits="SigmaERP.hrms.Leave.leaveApplication" EnableEventValidation="false" %>
+
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
 
@@ -347,6 +349,7 @@
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication/${userId}?CompanyId=${CompanyID}`;
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
+         var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
@@ -504,7 +507,7 @@
             GetLeaves();
             GetEmployee();
             GetLeaveType();
-
+            GetCompany();
             if (DataAccessLevel == 1) {
                 $('#divapplyDate').hide();
                 $('#ddlCompanySection').hide();
@@ -654,7 +657,38 @@
                 document.getElementById('totalDay').value = '';
             }
         }
+        
+        function GetCompany() {
+            ApiCall(getCompanyUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {  // Make sure 'statusCode' matches your API response structure
+                        var responseData = response.data;  // Access the correct 'data' field
+                        console.log(responseData);
+                        CompanyPopulateDropdown(responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                    $('.loaderCosting').hide();  // Hide loader after the request finishes
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
 
+
+
+        function CompanyPopulateDropdown(data) {
+            const dropdown = document.getElementById('ddlCompany');
+            dropdown.innerHTML = '<option value="0">---Select---</option>'; // Clear existing options
+
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.companyId;
+                option.textContent = item.companyName;
+                dropdown.appendChild(option);
+            });
+        }
 
         function GetLeaves() {
             ApiCallwithEmp(getLeavesApplicationUrl, token, CompanyID, loginempId)

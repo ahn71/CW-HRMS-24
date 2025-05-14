@@ -264,7 +264,7 @@
                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                            <div class="table-responsive">
                               <div class="ad-table-table__header d-flex justify-content-between">
-                                  <h4 style="margin-top: 13px;">Grades</h4>
+                                  <h4 style="margin-top: 13px;">Shifts</h4>
                               <div id="filter-form-container">
 
                               </div>

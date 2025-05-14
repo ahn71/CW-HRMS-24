@@ -34,6 +34,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <IncludeIisSettings>true</IncludeIisSettings>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -1141,6 +1142,7 @@
     <Content Include="ControlPanel\user_privilege.aspx" />
     <Content Include="default.aspx" />
     <Content Include="EmployeeImages\CompanyLogo\logo.png" />
+    <Content Include="EmployeeImages\Images\rdNoImage.png" />
     <Content Include="hrd\bankentry_panel.aspx" />
     <Content Include="hrd\bank_entry_panel.aspx" />
     <Content Include="hrd\business_type.aspx" />
@@ -1158,6 +1160,8 @@
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
     <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
+    <Content Include="hrms\attendance\attendanceProcessing.aspx" />
+    <Content Include="hrms\dashbordUser.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
     <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
@@ -1760,6 +1764,7 @@
     <Content Include="hrms\settings\religionSetup.aspx" />
     <Content Include="hrms\settings\shiftSetup.aspx" />
     <Content Include="hrms\settings\thanaSetup.aspx" />
+    <Content Include="hrms\SpecialCase\specialCase.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
     <Content Include="hrms\UI\access\UserCreate.aspx" />
@@ -3516,6 +3521,7 @@
     <Compile Include="classes\mRosterOperation_Shrink_Data.cs" />
     <Compile Include="classes\mZK_Shrink_Data_SqlServer.cs" />
     <Compile Include="classes\Payroll.cs" />
+    <Compile Include="classes\PermissionManager.cs" />
     <Compile Include="classes\PF_ProfitDistribution.cs" />
     <Compile Include="classes\Roster.cs" />
     <Compile Include="classes\RosteringLogic.cs" />
@@ -3680,6 +3686,21 @@
     <Compile Include="hrd_default.aspx.designer.cs">
       <DependentUpon>hrd_default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\attendance\attendanceProcessing.aspx.cs">
+      <DependentUpon>attendanceProcessing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceProcessing.aspx.designer.cs">
+      <DependentUpon>attendanceProcessing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\dashbordUser.aspx.cs">
+      <DependentUpon>dashbordUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\dashbordUser.aspx.designer.cs">
+      <DependentUpon>dashbordUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\DTO\ShiftDTO.cs" />
     <Compile Include="hrms\packages\AppSettings.aspx.cs">
       <DependentUpon>AppSettings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3863,6 +3884,13 @@
     </Compile>
     <Compile Include="hrms\settings\thanaSetup.aspx.designer.cs">
       <DependentUpon>thanaSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\SpecialCase\specialCase.aspx.cs">
+      <DependentUpon>specialCase.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\SpecialCase\specialCase.aspx.designer.cs">
+      <DependentUpon>specialCase.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
@@ -6025,7 +6053,6 @@
     <Folder Include="AssetsNew\js\file-uploader\server\php\files\thumbnail\" />
     <Folder Include="EmployeeImages\AdvanceDocument\" />
     <Folder Include="EmployeeImages\AttachFile\" />
-    <Folder Include="EmployeeImages\Images\" />
     <Folder Include="EmployeeImages\LeaveDocument\" />
     <Folder Include="EmployeeImages\Signature\" />
     <Folder Include="hrms\StaticFiles\" />

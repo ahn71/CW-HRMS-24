@@ -175,15 +175,6 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.TextBox txtFullToDate;
         
         /// <summary>
-        /// CalendarExtender1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender1;
-        
-        /// <summary>
         /// partialSection control.
         /// </summary>
         /// <remarks>
@@ -211,15 +202,6 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.TextBox txtPartialAttDate;
         
         /// <summary>
-        /// txtPartialAttDate_CalendarExtender control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender txtPartialAttDate_CalendarExtender;
-        
-        /// <summary>
         /// txtPartialToDate control.
         /// </summary>
         /// <remarks>
@@ -227,15 +209,6 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPartialToDate;
-        
-        /// <summary>
-        /// CalendarExtender2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender2;
         
         /// <summary>
         /// btnImport control.

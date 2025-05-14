@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userPackages.aspx.cs" Inherits="SigmaERP.hrms.userPackages" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="userPackages.aspx.cs" Inherits="SigmaERP.hrms.userPackages" EnableEventValidation="false"  %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>

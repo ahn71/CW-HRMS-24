@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 
-
     <script type="text/javascript">
 
         var oldgridcolor;
@@ -130,7 +129,14 @@
             transform: translateY(-50%);
             color: #888;
         }
+        .AttendanceMain{
+    background: #fff;
+    padding: 10px 25px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    /* box-shadow: 5px 5px 5px gray; */
 
+        }
 
     </style>
 </asp:Content>
@@ -155,14 +161,15 @@
 
 
 
-    <div class="">
+    <div class="AttendanceMain">
         <div class="">
             <h4>Daily Attendance Processing</h4>
         </div>
+        <hr />
         <%--<div class="main_box_body">
             <div class="main_box_content">--%>
         <div class="main_box_body Mbody">
-            <div class="employee_box_content">
+            <div class="employee_box">
                 <asp:UpdatePanel ID="UpdatePanel1" UpdateMode="Always" runat="server">
                     <Triggers>
                          <asp:PostBackTrigger ControlID="btnImport" />
@@ -271,12 +278,9 @@
                                         </asp:TextBox>
                                             </div>
                             </div>
-                           
-                     
-
-                                <div class="col-lg-6">
+                              <div class="col-lg-6">
     
-                                    <label style="margin-top:5px;margin-left:20px;">To Date</label>
+                              <label style="margin-top:5px;margin-left:20px;">To Date</label>
                                 <div class="input-container">
                                     <i class="fas fa-calendar"></i>
                                 <asp:TextBox 
@@ -287,11 +291,10 @@
                                     autocomplete="off"
                                     placeholder="dd-mm-yyyy">
                                 </asp:TextBox>
-                     
                                 </div>
                                 </div>
 
-
+                        
 
                                 <%--                                <label>Full Section</label>
                                 <div>

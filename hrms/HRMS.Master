@@ -1,4 +1,4 @@
-﻿﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="HRMS.master.cs" Inherits="SigmaERP.hrms.HRMS" %>
+﻿﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="HRMS.master.cs" Inherits="SigmaERP.hrms.HRMS"  %>
 
 <!DOCTYPE html>
 
@@ -170,12 +170,48 @@
                 <div class="top-menu">
                     <div class="hexadash-top-menu position-relative">
                         <ul class="d-flex align-items-center flex-wrap">
+<%--                            <li class="has-subMenu">
+                                <li class="has-subMenux d-flex align-items-center gap-1">
+                                    <span><i class="uil uil-create-dashboard"></i></span>
+                                    <a href="dashboard" runat="server">Dashboard</a>
+                                </li>
+                            </li>
+
+                            <li class="has-subMenu">
+                                <li class="has-subMenux d-flex align-items-center gap-1">
+                                    <span><i class="uil uil-create-dashboard"></i></span>
+                                    <a href="user-dashboard" runat="server">Dashboard</a>
+                                </li>
+                            </li>--%>
+
+                            <% 
+                                string accessLevel = Session["__UserDataAccessLevel__"] != null
+                                    ? Session["__UserDataAccessLevel__"].ToString()
+                                    : "";
+                            %>
+
+                            <% if (accessLevel == "1")
+                            { %>
+                            <li class="has-subMenu">
+                                <li class="has-subMenux d-flex align-items-center gap-1">
+                                    <span><i class="uil uil-create-dashboard"></i></span>
+                                    <a href="user-dashboard" runat="server">Dashboard</a>
+                                </li>
+                            </li>
+                            <% }
+                            else
+                            { %>
                             <li class="has-subMenu">
                                 <li class="has-subMenux d-flex align-items-center gap-1">
                                     <span><i class="uil uil-create-dashboard"></i></span>
                                     <a href="dashboard" runat="server">Dashboard</a>
                                 </li>
                             </li>
+                            <% } %>
+
+
+
+
 
                             <% if (IsRouteExists("attendance"))
                                 { %>
@@ -229,11 +265,20 @@
                                                 </a>
                                             </li>
                                             <% } %>
+
                                             <% if (IsRouteExists("attendance/daily-in-out-report"))
                                                 { %>
                                             <li class="l_sidebar">
                                                 <a href="/hrms/attendance/daily-in-out-report" class="">
                                                     <span class="menu-text">In-Out Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                            <% if (IsRouteExists("attendance/specialcase"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/SpecialCase/specialCase.aspx" class="">
+                                                    <span class="menu-text">Special Case</span>
                                                 </a>
                                             </li>
                                             <% } %>
@@ -976,7 +1021,7 @@
                                             </ul>
                                         </li>
                                         <%} %>
-                                        <%if (IsRouteExists("vat-tax"))
+                                        <%if (IsRouteExists("vat-tax-root"))
                                             {%>
                                         <li class="bordered">
                                             <span class="mega-title">Vat and Tax
@@ -1549,6 +1594,9 @@
         </nav>
         <main class="main-content px-2">
             <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+               <%-- main-content 
+
+                   places here --%>
             </asp:ContentPlaceHolder>
         </main>
 

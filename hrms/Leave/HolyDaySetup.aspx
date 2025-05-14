@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="HolyDaySetup.aspx.cs" Inherits="SigmaERP.hrms.Leave.HolyDaySetup" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="HolyDaySetup.aspx.cs" Inherits="SigmaERP.hrms.Leave.HolyDaySetup" EnableEventValidation="false"  %>
 
 
  <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

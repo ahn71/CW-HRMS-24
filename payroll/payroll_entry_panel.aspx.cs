@@ -426,10 +426,11 @@ namespace SigmaERP.payroll
                 }
 
             }
-            catch {
+            catch (Exception ex){
                 ViewState["__IsChanged__"] = "no";
               //  lblMessage.InnerText = "error->Unable to Submit."; 
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "Messageshow(error,'Unable to Submit.');", true);
+
             }
         
         }

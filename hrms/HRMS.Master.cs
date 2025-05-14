@@ -123,19 +123,25 @@ namespace SigmaERP.hrms
         //            }
         //            return false;
         //        }
+        //public bool IsRouteExists(string url)
+        //{
+        //    foreach (Route route in RouteTable.Routes)
+        //    {
+        //        var routeUrl = route.Url?.ToLower();
+        //        if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+
         public bool IsRouteExists(string url)
         {
-            foreach (Route route in RouteTable.Routes)
-            {
-                var routeUrl = route.Url?.ToLower();
-                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return PermissionManager.IsUrlAllowed(url);
         }
- 
+
+
 
         protected void btnLogout_Click(object sender, EventArgs e)
         {
@@ -149,7 +155,7 @@ namespace SigmaERP.hrms
                 Response.Cookies.Add(setCookies);
                 FormsAuthentication.SignOut();
                 // Response.Redirect("~/ControlPanel/Login.aspx",false);
-                Response.Redirect("/hrms/login", false);
+                Response.Redirect("~/hrms/login", false);
 
             }
             catch (Exception ex) { }
