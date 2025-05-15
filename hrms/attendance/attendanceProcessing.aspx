@@ -160,8 +160,6 @@
                     </div>
                 </div>
             </div>
-            <!-- End: .job -->
-
         </div>
 
 
@@ -173,8 +171,6 @@
         var rootUrl = '<%= Session["__RootUrl__"]%>';
         var CompanyID = '<%= Session["__GetCompanyId__"]%>';
         var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
-        //var IsAdministrator = false;
-        //var getEmployeeUrl = `${rootUrl}/api/Employee/employees?CompanyId=${CompanyID}`;
         var getEmployeeUrl = `${rootUrl}/api/Employee/active-employees-date-range?CompanyId=${CompanyID}`;
         var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
 
@@ -183,8 +179,7 @@
 
 
         var token = '<%= Session["__UserToken__"] %>';
-        console.log('this is token you can use it :', token);
-        //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+     
 
         $(document).ready(function () {
            
@@ -200,9 +195,9 @@
         });
         function formatDate(date) {
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const month = String(date.getMonth() + 1).padStart(2, '0'); 
             const year = date.getFullYear();
-            return `${year}-${month}-${day}`; // This is HTML5 <input type="date"> compatible
+            return `${year}-${month}-${day}`; 
         }
         function SearchEmployee() {
             GetEmployee();
@@ -213,85 +208,22 @@
 
         function showAttendanceHideEmployee() {
             $('#attendanceContainer').hide();
-           // $('#employeeContainer').show();
         }
 
-        //function AttendanceProcess() {
-        //    const startDate = $('#txtStartDate').val();
-        //    const endDate = $('#txtEndDate').val();
-        //    const employeeQuery = getSelectedEmployeeQuery();
-        //    const url = `${PostAttendanceProcess}&fromDate=${startDate}&toDate=${endDate}&${employeeQuery}`;
-        //    $('.footable-loader').show();
-        //    ApiCallPostAttendProcess(url, token, 'AttFile')
-        //        .then(response => {
-        //            if (response.statusCode === 200) {
-        //                bindAttdTableData(response.data);
-        //                $('#attendanceContainer').show();
-        //                $('#employeeContainer').hide();
-        //                $('.footable-loader').hide();
-        //            } else {
-        //                console.error('API Error:', response.message);
-        //            }
-        //        })
-        //        .catch(error => {
-        //            console.error('Network Error:', error);
-        //        });
-        //}
+      
 
      
 
-        //function AttendanceProcess() {
-        //    const startDate = $('#txtStartDate').val();
-        //    const endDate = $('#txtEndDate').val();
-        //    const employeeQuery = getSelectedEmployeeQuery();
-        //     if (employeeQuery.length === 0) {
-        //        Swal.fire({
-        //            icon: 'warning',
-        //            title: 'No Employee Selected',
-        //            text: 'Please select at least one employee before processing attendance.',
-        //            confirmButtonText: 'OK'
-        //        });
-        //        return;
-        //    }
-        //    const url = `${PostAttendanceProcess}&fromDate=${startDate}&toDate=${endDate}&${employeeQuery}`;
-
-        //    $('#attendanceContainer').show();
-        //    $('#employeeContainer').hide();
-        //    //$('.footable-loader').show();
-        //    $('#progress-section').show();
-        //    $('#progress-bar').css('width', '0%').text('0%');
-        //    $('#elapsedTime').text('0');
-        //    pollingInterval = setInterval(fetchProgress, 500);
-        //    // Start processing
-        //    ApiCallPostAttendProcess(url, token, 'AttFile')
-        //        .then(response => {
-        //            if (response.statusCode === 200) {
-        //                console.log('Attendance processing started...');
-        //                // Start polling progress
-                  
-        //                bindAttdTableData(response.data);
-        //                $('#progress-section').hide();
-        //                // Bind data only after polling is complete
-        //            } else {
-        //                console.error('API Error:', response.message);
-        //                $('.footable-loader').hide();
-        //            }
-        //        })
-        //        .catch(error => {
-        //            console.error('Network Error:', error);
-        //            $('.footable-loader').hide();
-        //        });
-        //}
+       
 
         let pollingInterval;
         function AttendanceProcess() {
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();
-            const employeeQuery = getSelectedEmployeeQuery(); // Example: empIds=EMP001&empIds=EMP002
+            const employeeQuery = getSelectedEmployeeQuery(); 
 
-            // Extract employee IDs from query string
             const urlParams = new URLSearchParams(employeeQuery);
-            const empIds = urlParams.getAll('empIds'); // ['EMP001', 'EMP002', ...]
+            const empIds = urlParams.getAll('empIds');
 
             if (empIds.length === 0) {
                 Swal.fire({
@@ -304,20 +236,16 @@
             }
 
           
-            //$('#employeeContainer').hide();
             $('#progress-section').show();
             $('#progress-bar').css('width', '0%').text('0%');
-            //$('#elapsedTime').text('0');
 
-            // Start polling progress bar
             pollingInterval = setInterval(fetchProgress, 500);
 
-            // Call API with form body
             ApiCallPostAttendProcess(
-                PostAttendanceProcessURL,  // Pure URL without query params
+                PostAttendanceProcessURL, 
                 token,
-                'AttFile',              // File input ID
-                CompanyID,      // You must define this somewhere in your page context
+                'AttFile',           
+                CompanyID,      
                 startDate,
                 endDate,
                 empIds
@@ -328,8 +256,7 @@
                         bindAttdTableData(response.data);
                         $('#progress-section').hide();
                         $('#attendanceContainer').show();
-                        //$('#attendanceContainer').();
-                        //$('#employeeContainer').hide();
+            
                     } else {
                         console.error('API Error:', response.message);
                         $('.footable-loader').hide();
@@ -353,12 +280,11 @@
                 }
 
                 const formData = new FormData();
-                formData.append('file', fileInput.files[0]);       // IFormFile File
-                formData.append('companyId', companyId);           // string CompanyId
-                formData.append('fromDate', fromDate);             // DateTime FromDate
-                formData.append('toDate', toDate);                 // DateTime ToDate
+                formData.append('file', fileInput.files[0]);       
+                formData.append('companyId', companyId);          
+                formData.append('fromDate', fromDate);           
+                formData.append('toDate', toDate);             
 
-                // Append each EmpId like EmpIds[0], EmpIds[1], ...
                 empIds.forEach((id, index) => {
                     formData.append(`empIds[${index}]`, id);
                 });
@@ -377,11 +303,12 @@
                     },
                     error: function (xhr, status, error) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Attendance Failed',
-                            text: 'Something went wrong while processing attendance. Please try again or contact support if the issue persists.',
+                            icon: 'warning',
+                            title: 'Almost There!',
+                            text: 'Some issues occurred while processing attendance. Please retry or contact support if needed.',
                             confirmButtonText: 'OK'
                         });
+
 
                         reject(error);
                     }
@@ -393,19 +320,10 @@
         function fetchProgress() {
             $.get(`${rootUrl}/api/AttendanceProgress/getprogress`, function (data) {
                 $('#progress-bar').css('width', data.percent + '%').text(data.percent + '%');
-                //$('#elapsedTime').text(data.elapsedSeconds.toFixed(1));
-
                 if (data.isCompleted) {
                     clearInterval(pollingInterval);
                     $('.footable-loader').hide();
-                   // alert('Attendance processing completed in ' + data.elapsedSeconds.toFixed(1) + ' seconds');
-
-                    // Optional: Bind the table after processing completes
-                    // (if you want to fetch again instead of using existing response)
-                    // bindAttdTableData(latestData);
-
-                   // $('#attendanceContainer').show();
-                    //$('#employeeContainer').hide();
+      
                 }
             });
         }
@@ -490,23 +408,19 @@
         }
 
 
-        let allEmployeeData = []; // Store all employee data
+        let allEmployeeData = [];
         const selectedEmployeeIds = new Set();
 
         function bindTableData(data) {
             const $table = $('.adv-table');
             const defaultImage = '/hrms/user_img_default.jpg';
 
-            allEmployeeData = data; // Store the full dataset
-
-            // Destroy existing table
+            allEmployeeData = data; 
             if ($table.data('footable')) {
                 $table.data('footable').destroy();
             }
 
             $table.html('');
-
-            // Process each row
             data.forEach((row, index) => {
                 row.serial = index + 1;
                 row.userImage = null;
@@ -551,8 +465,6 @@
                     sorting: true
                 }).on('postinit.ft.table', function () {
                     $('.footable-loader').hide();
-
-                    // After table initialized, update "Select All" checkbox status
                     updateSelectAllCheckbox();
                 });
             } catch (error) {
@@ -563,8 +475,6 @@
 
         $(document).on('change', '#selectAllEmployee', function () {
             const isChecked = $(this).is(':checked');
-
-            // Update selectedEmployeeIds for all employees
             allEmployeeData.forEach(emp => {
                 if (isChecked) {
                     selectedEmployeeIds.add(emp.empId);
@@ -572,12 +482,9 @@
                     selectedEmployeeIds.delete(emp.empId);
                 }
             });
-
-            // Re-render to update all checkboxes
             bindTableData(allEmployeeData);
         });
 
-        // Handle individual checkbox
         $(document).on('change', '.EmployeerowCheckbox', function () {
             const empId = $(this).val();
             if ($(this).is(':checked')) {
@@ -589,14 +496,12 @@
             updateSelectAllCheckbox();
         });
 
-        // Helper to update "Select All" checkbox
         function updateSelectAllCheckbox() {
             const allIds = allEmployeeData.map(emp => emp.empId);
             const isAllSelected = allIds.every(id => selectedEmployeeIds.has(id));
             $('#selectAllEmployee').prop('checked', isAllSelected);
         }
 
-        // Get selected employees as query string
         function getSelectedEmployeeQuery() {
             return Array.from(selectedEmployeeIds).map(id => `empIds=${id}`).join('&');
         }
@@ -626,8 +531,6 @@
         function bindDepartments(departments) {
             const $list = $('#departmentList');
             $list.empty();
-
-            // Add "Select All" checkbox at the top
             const selectAllItem = `
                 <li>
                     <div class="checkbox-theme-default custom-checkbox">
@@ -641,8 +544,6 @@
                 </li>
             `;
             $list.append(selectAllItem);
-
-            // Add each department checkbox
             departments.forEach((dept, index) => {
                 const checkboxId = `dept-check-${index}`;
                 const listItem = `
@@ -660,14 +561,11 @@
                 $list.append(listItem);
             });
         }
-
-        // Handle "Select All" click
         $(document).on('change', '#selectAllRows', function () {
             const isChecked = $(this).is(':checked');
             $('.rowCheckbox').prop('checked', isChecked);
         });
 
-        // Sync "Select All" checkbox when departments are manually toggled
         $(document).on('change', '.rowCheckbox', function () {
             const total = $('.rowCheckbox').length;
             const checked = $('.rowCheckbox:checked').length;
