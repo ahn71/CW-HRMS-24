@@ -50,7 +50,7 @@
                         <div class="row product-page-list justify-content-center">
                             <div class="col-12 mb-25 px-10">
                                 <div class="card ">
-                                    <div class="card-body" style="padding-top: 15px !important;">
+                                    <div class="card-body position-relative" style="padding-top: 15px !important;">
 
                                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
                                             <div class="table-responsive">
@@ -109,7 +109,7 @@
                                                     <%--Close--%>
                                                 </div>
 
-                                                <div id="employeeContainer" class="position-relative">
+                                                <div id="employeeContainer">
                                                       <table class="table mb-0 packagesTable table-borderless adv-table"
                                                     data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
                                                 </table>
@@ -120,15 +120,22 @@
                                         </div>
              
                                     </div>
-                                <div id="progress-section" style="position: absolute; top:30%; width:100%; display:none ; z-index:80000">
-                                    <div class="progress" style="height:20px; margin:10px; font-size:12px;">
-                                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style=" width: 0%">
-                                            0%
+
+                                    <div id="progress-section" style="position: absolute; top: 15%;width: 70%; left: 15%; display: none; padding: 50px;">
+                                        <div class="card " style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; padding:40px">
+                                            <div class="card-body position-relative" style="padding-top: 15px !important;">
+
+                                                <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
+                                                    <div class="progress" style="height: 20px; margin: 10px; font-size: 12px;">
+                                                        <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%">
+                                                            0%
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p>Time Elapsed: <span id="elapsedTime">0</span> sec</p>
-                                </div>
-                                 <div id="attendanceContainer" class="card p-4" style="position: absolute; top:0%; width:100%; display:none" >
+                                 <div id="attendanceContainer" class="card p-4" style="position: absolute; top:0%; width:100% ;height:100%; display:none ; z-index:9990;">
                                                     <!-- Close Button -->
                                                     <div class="d-flex align-items-center pb-4 card-header justify-content-between">
 
@@ -169,7 +176,7 @@
         //var IsAdministrator = false;
         //var getEmployeeUrl = `${rootUrl}/api/Employee/employees?CompanyId=${CompanyID}`;
         var getEmployeeUrl = `${rootUrl}/api/Employee/active-employees-date-range?CompanyId=${CompanyID}`;
-        var PostAttendanceProcess = `${rootUrl}/api/Attendance/attedance/process?companyId=${CompanyID}`;
+        var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
       
@@ -202,46 +209,11 @@
         }
 
 
-        function ApiCallPostAttendProcess(url, token, fileInputId) {
-            return new Promise(function (resolve, reject) {
-                const fileInput = document.getElementById(fileInputId);
-                if (!fileInput || fileInput.files.length === 0) {
-                    Swal.fire({ icon: 'warning', title: 'File Missing', text: 'Please select a file to upload.' });
-                    reject('No file selected');
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('file', fileInput.files[0]);
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    },
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        resolve(data);
-                    },
-                    error: function (xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: xhr.responseText
-                        });
-                        reject(error);
-                    }
-                });
-            });
-        }
 
 
         function showAttendanceHideEmployee() {
             $('#attendanceContainer').hide();
-            $('#employeeContainer').show();
+           // $('#employeeContainer').show();
         }
 
         //function AttendanceProcess() {
@@ -266,13 +238,62 @@
         //        });
         //}
 
-        let pollingInterval;
+     
 
+        //function AttendanceProcess() {
+        //    const startDate = $('#txtStartDate').val();
+        //    const endDate = $('#txtEndDate').val();
+        //    const employeeQuery = getSelectedEmployeeQuery();
+        //     if (employeeQuery.length === 0) {
+        //        Swal.fire({
+        //            icon: 'warning',
+        //            title: 'No Employee Selected',
+        //            text: 'Please select at least one employee before processing attendance.',
+        //            confirmButtonText: 'OK'
+        //        });
+        //        return;
+        //    }
+        //    const url = `${PostAttendanceProcess}&fromDate=${startDate}&toDate=${endDate}&${employeeQuery}`;
+
+        //    $('#attendanceContainer').show();
+        //    $('#employeeContainer').hide();
+        //    //$('.footable-loader').show();
+        //    $('#progress-section').show();
+        //    $('#progress-bar').css('width', '0%').text('0%');
+        //    $('#elapsedTime').text('0');
+        //    pollingInterval = setInterval(fetchProgress, 500);
+        //    // Start processing
+        //    ApiCallPostAttendProcess(url, token, 'AttFile')
+        //        .then(response => {
+        //            if (response.statusCode === 200) {
+        //                console.log('Attendance processing started...');
+        //                // Start polling progress
+                  
+        //                bindAttdTableData(response.data);
+        //                $('#progress-section').hide();
+        //                // Bind data only after polling is complete
+        //            } else {
+        //                console.error('API Error:', response.message);
+        //                $('.footable-loader').hide();
+        //            }
+        //        })
+        //        .catch(error => {
+        //            console.error('Network Error:', error);
+        //            $('.footable-loader').hide();
+        //        });
+        //}
+
+        let pollingInterval;
         function AttendanceProcess() {
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();
-            const employeeQuery = getSelectedEmployeeQuery();
-             if (employeeQuery.length === 0) {
+            const employeeQuery = getSelectedEmployeeQuery(); // Example: empIds=EMP001&empIds=EMP002
+
+            // Extract employee IDs from query string
+            const urlParams = new URLSearchParams(employeeQuery);
+            const empIds = urlParams.getAll('empIds'); // ['EMP001', 'EMP002', ...]
+
+            if (empIds.length === 0) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'No Employee Selected',
@@ -281,39 +302,98 @@
                 });
                 return;
             }
-            const url = `${PostAttendanceProcess}&fromDate=${startDate}&toDate=${endDate}&${employeeQuery}`;
 
-            $('#attendanceContainer').show();
-            $('#employeeContainer').hide();
-            //$('.footable-loader').show();
+          
+            //$('#employeeContainer').hide();
             $('#progress-section').show();
             $('#progress-bar').css('width', '0%').text('0%');
-            $('#elapsedTime').text('0');
+            //$('#elapsedTime').text('0');
+
+            // Start polling progress bar
             pollingInterval = setInterval(fetchProgress, 500);
-            // Start processing
-            ApiCallPostAttendProcess(url, token, 'AttFile')
+
+            // Call API with form body
+            ApiCallPostAttendProcess(
+                PostAttendanceProcessURL,  // Pure URL without query params
+                token,
+                'AttFile',              // File input ID
+                CompanyID,      // You must define this somewhere in your page context
+                startDate,
+                endDate,
+                empIds
+            )
                 .then(response => {
                     if (response.statusCode === 200) {
                         console.log('Attendance processing started...');
-                        // Start polling progress
-                  
                         bindAttdTableData(response.data);
-                        // Bind data only after polling is complete
+                        $('#progress-section').hide();
+                        $('#attendanceContainer').show();
+                        //$('#attendanceContainer').();
+                        //$('#employeeContainer').hide();
                     } else {
                         console.error('API Error:', response.message);
                         $('.footable-loader').hide();
+                        $('#progress-section').hide();
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
                     $('.footable-loader').hide();
+                    $('#progress-section').hide();
                 });
         }
+
+        function ApiCallPostAttendProcess(apiUrl, token, fileInputId, companyId, fromDate, toDate, empIds) {
+            return new Promise(function (resolve, reject) {
+                const fileInput = document.getElementById(fileInputId);
+                if (!fileInput || fileInput.files.length === 0) {
+                    Swal.fire({ icon: 'warning', title: 'File Missing', text: 'Please select a file to upload.' });
+                    reject('No file selected');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);       // IFormFile File
+                formData.append('companyId', companyId);           // string CompanyId
+                formData.append('fromDate', fromDate);             // DateTime FromDate
+                formData.append('toDate', toDate);                 // DateTime ToDate
+
+                // Append each EmpId like EmpIds[0], EmpIds[1], ...
+                empIds.forEach((id, index) => {
+                    formData.append(`empIds[${index}]`, id);
+                });
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Attendance Failed',
+                            text: 'Something went wrong while processing attendance. Please try again or contact support if the issue persists.',
+                            confirmButtonText: 'OK'
+                        });
+
+                        reject(error);
+                    }
+                });
+            });
+        }
+
 
         function fetchProgress() {
             $.get(`${rootUrl}/api/AttendanceProgress/getprogress`, function (data) {
                 $('#progress-bar').css('width', data.percent + '%').text(data.percent + '%');
-                $('#elapsedTime').text(data.elapsedSeconds.toFixed(1));
+                //$('#elapsedTime').text(data.elapsedSeconds.toFixed(1));
 
                 if (data.isCompleted) {
                     clearInterval(pollingInterval);
@@ -324,8 +404,8 @@
                     // (if you want to fetch again instead of using existing response)
                     // bindAttdTableData(latestData);
 
-                    $('#attendanceContainer').show();
-                    $('#employeeContainer').hide();
+                   // $('#attendanceContainer').show();
+                    //$('#employeeContainer').hide();
                 }
             });
         }
