@@ -159,6 +159,15 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>Unit <span class=""></span>
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Department <span class="requerd1">*</span>
                                         </td>
                                         <td>:
@@ -741,7 +750,93 @@
 
             
         </div>
+    
+<%--    unit Api Bind --%>
+<%--    <script>
+              //var rootUrl = 'http://localhost:5081';
+
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
+        var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+        var LoginUserId = '<%= Session["__GetUserId__"]%>';
+
+        var GetDdlUnitsUrl = rootUrl + `/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+
+        var token = '<%= Session["__UserToken__"] %>';
+
+
+        $(document).ready(function () {
+           
+        
+            //GetCompanys();
+            GetUnitDropwown();
             
+        });
+        function GetUnitDropwown() {
+            ApiCall(GetDdlUnitsUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        PopulateDropdown(responseData)
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                        const dropdown = document.getElementById('ddlUnit');
+                        dropdown.innerHTML = '<option value="0">---Select---</option>';
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                    const dropdown = document.getElementById('ddlUnit');
+                    dropdown.innerHTML = '<option value="0">---Select---</option>';
+                    console.error('Error occurred while fetching data:', error);
+
+                });
+        }
+        function PopulateDropdown(data) {
+            const dropdown = document.getElementById('ddlUnit');
+
+            // Clear existing options
+            dropdown.innerHTML = '';
+
+            // Add default "ALL" option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '0';
+            defaultOption.text = '---Select---';
+            dropdown.appendChild(defaultOption);
+
+            // Loop through the response data and append options
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.text = item.name;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function ApiCall(url, token) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                //console.log(status);
+                //var message = xhr.responseJSON.message
+                //console.log('Error occurred while fetching data:', message);
+                var message = xhr.responseJSON.message;
+                console.error('Error occurred while fetching data:', message);
+                reject({ message: message, status: status, error: error });
+            }
+        });
+    });
+}
+    </script>--%>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#ddlEmpCardNo").select2();

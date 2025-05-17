@@ -47,7 +47,7 @@ namespace SigmaERP.personnel
 
                 string CompanyId = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
-                
+                classes.commonTask.LoadUnit(ViewState["__CompanyId__"].ToString(), ddlUnit);
                 ViewState["__LineORGroupDependency__"] = classes.commonTask.GroupORLineDependency();
                 loadYear();
                 setPrivilege(userPagePermition);
@@ -566,6 +566,11 @@ namespace SigmaERP.personnel
             //employee_list1 emplst = new employee_list1();
             //emplst.SearchingInEmployeeList();
             return 1;
+        }
+
+        protected void ddlUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SearchingInEmployeeList();
         }
 
         //private void loadDepartMents()

@@ -78,7 +78,9 @@ namespace SigmaERP.personnel
                         //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
                     }
                     classes.Employee.LoadEmpCardNoForEntry(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
-                    FlatCustomOrdering();        
+                    FlatCustomOrdering();
+                    classes.commonTask.LoadUnit(ddlBranch.SelectedValue, ddlUnit);
+
                     classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
                     if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                         classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
@@ -668,6 +670,7 @@ namespace SigmaERP.personnel
             
               
                 cmd.Parameters.AddWithValue("@SftId", ddlShift.SelectedValue);
+                cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
                
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
                cmd.Parameters.AddWithValue("@ShiftTransferDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
@@ -807,14 +810,6 @@ namespace SigmaERP.personnel
         {
             try
             {
-
-
-         
-
-          
-
-
-
                 System.Data.SqlTypes.SqlDateTime getDate;
                 getDate = SqlDateTime.Null;
                 string EmpId = LoadEmpId();                
@@ -1115,6 +1110,7 @@ namespace SigmaERP.personnel
               
                 
                 cmd.Parameters.AddWithValue("@SftId", ddlShift.SelectedValue);
+                cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
                 
                
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
@@ -1721,7 +1717,7 @@ namespace SigmaERP.personnel
                 txtName.Text = dtall.Rows[0]["EmpName"].ToString();
                 txtNickName.Text = dtall.Rows[0]["NickName"].ToString();
                 txtNameBangla.Text = dtall.Rows[0]["EmpNameBn"].ToString();
-
+                ddlUnit.SelectedValue = dtall.Rows[0]["UnitId"].ToString();
                 //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
                 {

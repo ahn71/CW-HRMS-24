@@ -767,6 +767,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void LoadUnit(string CompanyId, DropDownList dl)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select UnitId,UnitName From HRDUnits where CompanyId='"+ CompanyId + "' and IsActive=1", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "UnitId";
+                dl.DataTextField = "UnitName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
         public static void SearchDesignation(string DptId, DropDownList dl)
         {
             try
