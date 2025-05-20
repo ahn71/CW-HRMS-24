@@ -332,3 +332,29 @@ function ApiCallPost(url, token, postData) {
 }
 
 
+function ApiCallPostForm(url, token, formData) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                const message = xhr.responseText || 'Unexpected error occurred.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+                reject(error);
+            }
+        });
+    });
+}

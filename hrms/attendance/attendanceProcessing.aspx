@@ -20,7 +20,7 @@
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div class="mt-25">
+    <div class="mt-1">
         <div class="products_page product_page--grid mb-30">
             <div class="container-fluid">
                 <div class="row justify-content-center">
@@ -164,7 +164,7 @@
 
 
 
-
+        </div>
 
 
     <script>
@@ -586,7 +586,57 @@
         }
 
 
+        function DateWiseEmpWeekendSetup() {
+            const startDate = $('#txtStartDate').val();
+            const endDate = $('#txtEndDate').val(); // Optional use
+            const employeeQuery = getSelectedEmployeeQuery();
+            const urlParams = new URLSearchParams(employeeQuery);
+            const empIds = urlParams.getAll('empIds');
 
+            if (empIds.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Employee Selected',
+                    text: 'Please select at least one employee before processing attendance.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            const apiUrl = PostAttendanceProcessURL; 
+            const tokenValue = token;               
+            const companyId = CompanyID;            
+            const weekendDate = startDate;          
+
+            const postData = {
+                empIds: empIds,
+                companyId: companyId,
+                weekendDay: weekendDate
+            };
+
+            ApiCallPost(apiUrl, tokenValue, postData)
+                .then(data => {
+                    if (data.statusCode === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Date Wise Weekend Setup Success',
+                            text: 'Thanks!',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'API Error',
+                            text: data.message || 'Unexpected response from server.',
+                            confirmButtonText: 'OK'
+                        });
+                        console.error('API Error:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Request failed:', error);
+                });
+        }
 
     </script>
 

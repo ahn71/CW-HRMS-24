@@ -1161,6 +1161,7 @@
     <Content Include="hrd_default.aspx" />
     <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
     <Content Include="hrms\attendance\attendanceProcessing.aspx" />
+    <Content Include="hrms\attendance\attendanceWeekendSetup.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
@@ -3692,6 +3693,13 @@
     </Compile>
     <Compile Include="hrms\attendance\attendanceProcessing.aspx.designer.cs">
       <DependentUpon>attendanceProcessing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceWeekendSetup.aspx.cs">
+      <DependentUpon>attendanceWeekendSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceWeekendSetup.aspx.designer.cs">
+      <DependentUpon>attendanceWeekendSetup.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\dashbordUser.aspx.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>

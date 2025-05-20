@@ -4,11 +4,10 @@
 
     <style>
         th {
-    background: green;
-    color: white;
-    text-align: center;
-}
-
+            background: green;
+            color: white;
+            text-align: center;
+        }
 
         .switch {
             position: relative;
@@ -37,17 +36,17 @@
             transition: .4s;
         }
 
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 1.5px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 1.5px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
 
         input:checked + .slider {
             background-color: #2196F3;

@@ -241,6 +241,14 @@
                                                 </a>
                                             </li>
                                             <% } %>
+                                            <% if (IsRouteExists("attendance/attendance-process_2_0"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/attendance-process_2_0" runat="server" class="">
+                                                    <span class="menu-text">Attendance Processing V 2.0</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
                                             <% if (IsRouteExists("attendance/manually-count"))
                                                 { %>
                                             <li class="l_sidebar">
@@ -1350,6 +1358,19 @@
                             <div class="dropdown-parent-wrapper">
                                 <div class="dropdown-wrapper dropdown-wrapper--large">
                                     <ul class="list-settings">
+
+                                        <li class="d-flex">
+                                            <div class="me-3"><i class="QualiStyle uil uil-pathfinder-unite"></i></div>
+                                            <div class="flex-grow-1">
+                                                <h6>
+                                                    <a href="settings/unitSetup.aspx" runat="server" class="stretched-link">Unit Entry Panel
+                                                    </a>
+                                                </h6>
+                                                <p>Unit Entry Panel</p>
+                                            </div>
+                                        </li>
+
+
                                         <% if (IsRouteExists("settings/department"))
                                             { %>
                                         <li class="d-flex">
@@ -1535,6 +1556,11 @@
                                             </div>
                                         </li>
                                          <%} %>
+                                   
+ 
+                                  
+
+
                                     </ul>
                                 </div>
                             </div>
