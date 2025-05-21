@@ -9,7 +9,7 @@ namespace SigmaERP.classes
 {
     public class BusinessLogic
     {
-        public static DataTable get_MonthlyLoginLogOutTime(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_MonthlyLoginLogOutTime(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace SigmaERP.classes
                 "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                 ",DptId,DptName,SftId,SftName,CompanyName,Address " +
                 "from v_tblAttendanceRecord " +
-                "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + "" +
                 "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                         " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt=new DataTable());
                 else
@@ -92,7 +92,7 @@ namespace SigmaERP.classes
                 "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                 ",DptId,DptName,SftId,SftName,CompanyName,Address " +
                 "from v_tblAttendanceRecord " +
-                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%"+EmpCardNo+"'" +
+                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%"+EmpCardNo+ "' " + unitCondition + "" +
                 "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,CompanyName,Address ", dt = new DataTable());
                 return dt;
             }
@@ -100,7 +100,7 @@ namespace SigmaERP.classes
         }
 
 
-        public static DataTable get_Moanthly_Attendance_Sheet(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_Moanthly_Attendance_Sheet(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -141,7 +141,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31',"+
                     " DsgName, DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address "+
                     "from v_tblAttendanceRecord "+
-                    "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                    "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + "" +
                     "group by EmpId,EmpCardNo,EmpName, DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                         " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt);
                 else 
@@ -180,7 +180,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31',"+
                     "  DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address " +
                     "from v_tblAttendanceRecord "+
-                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ unitCondition + "" +
                     "group by EmpId,EmpCardNo,EmpName,DptId, DsgName,DptName,SftId,SftName,CompanyId,CompanyName,Address ", dt = new DataTable());
 
 
@@ -189,7 +189,7 @@ namespace SigmaERP.classes
             catch { return null; }
         }
 
-        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -211,7 +211,7 @@ namespace SigmaERP.classes
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +
                          "   FROM            dbo.v_tblAttendanceRecord "+
-                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + " " +
                          "   GROUP BY EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
                         " order by convert(int,DptId), convert(int,GId),CustomOrdering", dt);
                 else
@@ -231,7 +231,7 @@ namespace SigmaERP.classes
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +                        
                         "   FROM            dbo.v_tblAttendanceRecord " +
-                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'"+ unitCondition + " " +
                         "    GROUP BY EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering", dt);
                 return dt;
             }
@@ -240,7 +240,7 @@ namespace SigmaERP.classes
 
         //---------------------------------------For Bangla Report----------------------------------------------
 
-        public static DataTable get_MonthlyLoginLogOutTimeBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_MonthlyLoginLogOutTimeBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -283,7 +283,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                     ",DptId,DptNameBn DptName,SftId,SftNameBangla SftName,CompanyNameBangla CompanyName,AddressBangla Address " +
                     "from v_tblAttendanceRecord " +
-                    "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                    "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + "" +
                     "group by EmpCardNo, EmpId,EmpNameBn,DptId,DptNameBn,SftId,SftNameBangla,CompanyNameBangla,AddressBangla,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                             " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt = new DataTable());
                 else
@@ -323,7 +323,7 @@ namespace SigmaERP.classes
                 "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                 ",DptId,DptNameBn DptName,SftId,SftNameBangla SftName,CompanyNameBangla CompanyName,AddressBangla Address " +
                 "from v_tblAttendanceRecord " +
-                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ unitCondition + "" +
                 "group by EmpCardNo, EmpId,EmpName,DptId,DptNameBn,SftId,SftNameBangla,CompanyNameBangla,AddressBangla ", dt = new DataTable());
                 return dt;
             }
@@ -331,7 +331,7 @@ namespace SigmaERP.classes
         }
 
 
-        public static DataTable get_Moanthly_Attendance_SheetBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_Moanthly_Attendance_SheetBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -372,7 +372,7 @@ namespace SigmaERP.classes
                         "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
                         " DptId,DptNameBn DptName,DsgNameBn DsgName,SftId,SftNameBangla SftName,CompanyId,CompanyNameBangla CompanyName,AddressBangla Address " +
                         "from v_tblAttendanceRecord " +
-                        "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                        "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + "" +
                         "group by EmpId,EmpCardNo,EmpNameBn,DptId,DptNameBn,DsgNameBn,SftId,SftNameBangla,CompanyId,CompanyNameBangla,AddressBangla,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                             " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt);
                 else
@@ -411,7 +411,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
                     " DsgNameBn DsgName,DptId,DptNameBn DptName,SftId,SftNameBangla SftName,CompanyId,CompanyNameBangla CompanyName,AddressBangla Address " +
                     "from v_tblAttendanceRecord " +
-                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ unitCondition + " " +
                     " group by EmpId,EmpCardNo,EmpNameBn,DsgNameBn,DptId,DptNameBn,SftId,SftNameBangla,CompanyId,CompanyNameBangla,AddressBangla ", dt = new DataTable());
 
 
@@ -420,7 +420,7 @@ namespace SigmaERP.classes
             catch { return null; }
         }
 
-        public static DataTable get_Moanthly_Attendance_Sheet_SummaryBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_Moanthly_Attendance_Sheet_SummaryBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string condition)
         {
             try
             {
@@ -456,7 +456,7 @@ namespace SigmaERP.classes
                          "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN OverTime ELSE 0 END) AS '28_OT', SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN OverTime ELSE 0 END) AS '29_OT', SUM(CASE DATEPART(day, AttDate) " +
                          "WHEN 30 THEN OverTime ELSE 0 END) AS '30_OT', SUM(CASE DATEPART(day, AttDate) WHEN 31 THEN OverTime ELSE 0 END) AS '31_OT', SUM(OverTime) AS MonthlyTotalOT " +
                          "   FROM            dbo.v_tblAttendanceRecord " +
-                         " Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                         " Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ condition + "" +
                          "   GROUP BY EmpId, EmpCardNo, EmpNameBn,DsgNameBn, DptId, DptNameBn, SftId, SftNameBangla, CompanyId, CompanyNameBangla,AddressBangla,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                         " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt);
                 else
@@ -490,7 +490,7 @@ namespace SigmaERP.classes
                         "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN OverTime ELSE 0 END) AS '28_OT', SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN OverTime ELSE 0 END) AS '29_OT', SUM(CASE DATEPART(day, AttDate) " +
                         "WHEN 30 THEN OverTime ELSE 0 END) AS '30_OT', SUM(CASE DATEPART(day, AttDate) WHEN 31 THEN OverTime ELSE 0 END) AS '31_OT', SUM(OverTime) AS MonthlyTotalOT " +
                         "   FROM            dbo.v_tblAttendanceRecord " +
-                        "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                        "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ condition + "" +
                         "   GROUP BY EmpId, EmpCardNo, EmpNameBn,DsgNameBn, DptId, DptNameBn, SftId, SftNameBangla, CompanyId, CompanyNameBangla,AddressBangla", dt);
                 return dt;
             }

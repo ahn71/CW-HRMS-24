@@ -25,7 +25,7 @@
                    <% if (IsRouteExists("leave-root/leave-configuration"))
                                      { %>
                  <div runat="server" id="divConfiguration" class=" col-lg-2 col-md-3 col-sm-6 " title="Leave Configuration" >
-                     <a class="ds_Settings_Basic_Text" href="leave-root/leave-configuration"> <i class="uil uil-cog iconStyle"></i><br /> Configuration </a>
+                     <a class="ds_Settings_Basic_Text" href="/hrms/leave-root/leave-configuration"> <i class="uil uil-cog iconStyle"></i><br /> Configuration </a>
                      
                  </div>
                <% } %>
@@ -34,14 +34,14 @@
                   { %>
 
                  <div runat="server" id="divHoliday" class=" col-lg-2 col-md-3 col-sm-6" title="All Holiday Setup">
-                        <a class="ds_Settings_Basic_Text" href="leave-root/holiday-settings"><i class="uil  uil-clock-nine  iconStyle"></i><br />Holiday Setup </a>
+                        <a class="ds_Settings_Basic_Text" href="/hrms/leave-root/holiday-settings"><i class="uil  uil-clock-nine  iconStyle"></i><br />Holiday Setup </a>
                  </div>
                  <% } %>
 
                <% if (IsRouteExists("leave-root/holiday-settings"))
                   { %>
                  <div runat="server" id="divHolidayComp" class="col-lg-2 col-md-3 col-sm-6" title="All Holiday Setup">
-                        <a class="ds_Settings_Basic_Text" href="leave-root/holiday-settings"><i class="uil uil-clock-nine iconStyle"></i><br />Holiday Setup </a>
+                        <a class="ds_Settings_Basic_Text" href="/hrms/leave-root/holiday-settings"><i class="uil uil-clock-nine iconStyle"></i><br />Holiday Setup </a>
                  </div>
                <% } %>
 
@@ -49,7 +49,7 @@
            <% if (IsRouteExists("leave/leave-application"))
                { %>
                  <div runat="server" id="divApplication" class="col-lg-2 col-md-3 col-sm-6" title="Leave Application">
-                      <a class="ds_Settings_Basic_Text" href="leave/leave-application"><i class="uil uil-file-bookmark-alt iconStyle"></i><br />Application</a>
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave/leave-application"><i class="uil uil-file-bookmark-alt iconStyle"></i><br />Application</a>
                  </div>
 
              <% } %>
@@ -57,7 +57,7 @@
             <% if (IsRouteExists("leave-root/short-leave-application"))
             { %>
                     <div runat="server" id="divShortLeave" class="col-lg-2 col-md-3 col-sm-6" title="Earn Leave Report">
-                     <a class="ds_Settings_Basic_Text" href="leave-root/short-leave-application"><i class="uil uil-signout iconStyle"></i><br />Short Leave </a> 
+                     <a class="ds_Settings_Basic_Text" href="/hrms/leave-root/short-leave-application"><i class="uil uil-signout iconStyle"></i><br />Short Leave </a> 
                  
                  </div>   
                  
@@ -72,21 +72,21 @@
                      <% if (IsRouteExists("leave-root/leave-approval"))
                           { %>
                       <div  runat="server" id="divLeaveApproval" class="col-lg-2 col-md-3 col-sm-6" title="Pending Leave Approved">
-                      <a class="ds_Settings_Basic_Text" href="leave-root/leave-approval"><i class="uil uil-cog uil-check-square iconStyle"></i><br />Leave Approval</a>
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave-root/leave-approval"><i class="uil uil-cog uil-check-square iconStyle"></i><br />Leave Approval</a>
                      </div>
                      <% } %>
 
                     <% if (IsRouteExists("leave-root/short-leave-approval"))
                         { %>
                         <div runat="server" id="divShortLvApproval" class="col-lg-2 col-md-3 col-sm-6" title="Pending Leave Approved">
-                      <a class="ds_Settings_Basic_Text" href="leave-root/short-leave-approval"><i class="uil uil-cog uil-check-square iconStyle"></i><br />Short Lv Approval</a>
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave-root/short-leave-approval"><i class="uil uil-cog uil-check-square iconStyle"></i><br />Short Lv Approval</a>
                       </div>
                      <% } %>
 
                    <% if (IsRouteExists("leave/leave-list"))
                        { %>
                       <div runat="server" id="divLeaveList" class=" col-lg-2 col-md-3 col-sm-6" title="All Leave List">
-                     <a class="ds_Settings_Basic_Text" href="leave/leave-list"><i class="uil uil-list-ol-alt iconStyle"></i><br />All Leave List</a>
+                     <a class="ds_Settings_Basic_Text" href="/hrms/leave/leave-list"><i class="uil uil-list-ol-alt iconStyle"></i><br />All Leave List</a>
                  </div>
 
                  <% } %>
@@ -94,7 +94,7 @@
                  <% if (IsRouteExists("leave/leave-balance-report"))
                      { %>
                     <div runat="server" id="divBalanceReport" class=" col-lg-2 col-md-3 col-sm-6 " title="Leave Balance Report">
-                    <a class="ds_Settings_Basic_Text" href="leave/leave-balance-report"><i class="uil uil-file-info-alt iconStyle"></i><br />Balance Report</a> 
+                    <a class="ds_Settings_Basic_Text" href="/hrms/leave/leave-balance-report"><i class="uil uil-file-info-alt iconStyle"></i><br />Balance Report</a> 
                  </div>  
                     <% } %>
                   <div class="col-lg-2"></div>
@@ -104,7 +104,7 @@
                  <% if (IsRouteExists("leave/yearly-leave-summary-report"))
                       { %>
                      <div runat="server" id="divSummaryReport" class=" col-lg-2 col-md-3 col-sm-6 " title="Yearly Purpose Report">
-                      <a class="ds_Settings_Basic_Text" href="leave/yearly-leave-summary-report"><i class="uil  uil-file-bookmark-alt iconStyle"></i><br />Summary Report</a> 
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave/yearly-leave-summary-report"><i class="uil  uil-file-bookmark-alt iconStyle"></i><br />Summary Report</a> 
                  </div>
                   <% } %>
 
@@ -115,20 +115,20 @@
                  </div>--%>
                
                 <div runat="server" id="divEarnLeaveGeneration"  class=" col-lg-2 col-md-3 col-sm-6" title="Earn Leave Generate">
-                      <a class="ds_Settings_Basic_Text" href="leave/el-processing"><i class="uil uil-spinner-alt iconStyle"></i><br />EL Processing</a>                     
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave/el-processing"><i class="uil uil-spinner-alt iconStyle"></i><br />EL Processing</a>                     
                  </div>
                         <% } %>
                    
                   <% if (IsRouteExists("leave/el-processing"))
                    { %>
                    <div runat="server" id="divEarnLeaveGenerationComp" class=" col-lg-2 col-md-3 col-sm-6" title="Earn Leave Generate">
-                      <a class="ds_Settings_Basic_Text" href="/leave/earnleave_generationc.aspx"><img class="image_width_for_module" src="images/common/generate.ico" /><br />EL Generate</a>                     
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave/earnleave_generationc.aspx"><img class="image_width_for_module" src="images/common/generate.ico" /><br />EL Generate</a>                     
                  </div>
                  <% } %>
                 <% if (IsRouteExists("leave/el-report"))
                     { %>
                  <div  runat="server" id="divEarnLeaveReport" class=" col-lg-2 col-md-3 col-sm-6" title="Earn Leave Report">
-                     <a class="ds_Settings_Basic_Text" href="leave/el-report"><i class="uil  uil-file-bookmark-alt iconStyle"></i><br />EL Report </a>                 
+                     <a class="ds_Settings_Basic_Text" href="/hrms/leave/el-report"><i class="uil  uil-file-bookmark-alt iconStyle"></i><br />EL Report </a>                 
                  </div>
                   <% } %>
                    <div class=" col-lg-2">
