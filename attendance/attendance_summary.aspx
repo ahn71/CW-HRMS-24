@@ -90,7 +90,7 @@
                             </div>--%>
 
                             <div class="row">
-                                <div class=" col-md-7">
+                                <div class=" col-md-6">
                                     <div class="form-group att_shift">
                                         <label id="trComT" runat="server" style="width:80px">Company</label>
                                         <span id="trComR" runat="server">
@@ -100,9 +100,9 @@
                                     </div>
                                 </div>
 
-                                <div class=" col-md-5">
+                                <div class=" col-md-6">
                                 <div class="form-group att_date_picker">
-                                    <label>Date</label>
+                                    <label  style="width:80px;display:block;">Date</label>
                                     <asp:TextBox ID="txtFromDate" Width="174" runat="server" PlaceHolder="Click For Calander" CssClass="form-control select_width"></asp:TextBox>
                                     <asp:CalendarExtender Format="dd-MM-yyyy" ID="CalendarExtender1" runat="server" TargetControlID="txtFromDate">
                                     </asp:CalendarExtender>
@@ -110,13 +110,31 @@
                                     </div>
                             </div>
                             <div class="row">
-                                <div class=" col-md-7">
+
+
+                                <div class=" col-md-6">
+                                    <div class="form-group att_shift">
+                                        <label style="width:80px">Unit</label>
+                                        <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="256px" >
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class=" col-md-6">
                                     <div class="form-group att_shift">
                                         <label style="width:80px">Shift</label>
                                         <asp:DropDownList ID="ddlShiftName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" Width="256px" >
                                         </asp:DropDownList>
                                     </div>
                                 </div>
+
+
+                                 
+
                             </div>
                            
                             <div class="form-group" runat="server" visible="false">

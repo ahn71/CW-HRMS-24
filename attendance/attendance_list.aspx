@@ -122,7 +122,7 @@
         <div style="width: 100%;">
              <table style="margin: 0 0 5px 6px; border-collapse: collapse;" width="99%">
                      <tr>
-                         <td>Company</td>                        
+                         <td>Unit</td>                        
                          <td>Depertment</td>
                           <td>Shift</td>
                          <td>Line / Grp</td>
@@ -134,7 +134,10 @@
                      </tr>
                      <tr>
                            <td>
-                             <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
+                             <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" Visible="false" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
+                             </asp:DropDownList>
+
+                                 <asp:DropDownList ID="ddlUnit" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server"  AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
                              </asp:DropDownList>
                          </td>  
 
