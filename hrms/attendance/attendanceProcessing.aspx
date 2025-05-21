@@ -13,7 +13,9 @@
         td{
            text-align: left;
         }
-  
+     i{
+            margin-right:0 !important;
+        }
 
     </style>
 

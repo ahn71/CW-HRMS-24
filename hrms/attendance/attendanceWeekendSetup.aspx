@@ -19,6 +19,9 @@
         .me-2 {
             margin-right: 0.5rem;
         }
+        i{
+            margin-right:0 !important;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -81,7 +84,7 @@
                                     <div class="card-body position-relative" style="padding-top: 15px !important;">
 
                                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
-                                            <div class="table-responsive">
+                                            <div class="">
                                                 <div class="ad-table-table__header d-flex justify-content-between mb-15">
                                                     <%--Table Search Area--%>
                                                     <div class="container-fluid" style="padding-left:0px !important; padding-right:0px !important">
@@ -148,16 +151,22 @@
                                                             <!-- End Date + Search Button -->
                                                             <div class="col-lg-2 d-flex gap-2">
                                                                     <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
-                                                                        class="btn btn-sm btn-primary d-flex align-items-center justify-content-center"
-                                                                        style="height: 36px; width: 36px;">
-                                                                        <i class="fas fa-search"></i>
+                                                                        class="btn btn-primary text-center"
+                                                                        style="padding: 7px;">
+                                                                        <i class="fas fa-search"  style="font-size: 18px"></i>
                                                                     </button>
-
-                                                                 <button type="button" onclick="onClickSaveWeekend()" title="Processing" id="btnProcessing"
-                                                                        class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
-                                                                        style="height: 36px; width: 36px;">
-                                                                        <i class="uil uil-save" style="font-size: 20px"></i>
+                                                                 <button type="button" title="Search" id="btnProcessing" onclick="onClickSaveWeekend()"
+                                                                        class="btn btn-success text-center"
+                                                                        style="padding: 7px;">
+                                                                        <i class="fas fa-save"  style="font-size: 18px"></i>
                                                                     </button>
+                                                                 <button type="button" title="Search" id="btnDelete" onclick="Delete()"
+                                                                        class="btn btn-danger text-center"
+                                                                        style="padding: 7px;">
+                                                                        <i class="fas fa-trash"  style="font-size: 18px"></i>
+                                                                    </button>
+                                                               
+                                                                
                                                                 
                                                             </div>
 
@@ -170,6 +179,23 @@
                                                     </div>
                                                     <%--Close--%>
                                                 </div>
+
+                                                <div id="alertContainer" class="alert alert-info text-center mt-3" role="alert" style="height:200px">
+                                                    <strong>Note:</strong> Please filter employees first before setting up the weekend schedule.
+                                                </div>
+
+                                                <div id="dateWiseAlert" class="alert alert-success text-center mt-3" role="alert">
+                                                    <%--<strong id="dateWiseAlertText">Note:</strong> Please filter employees first before setting up the weekend schedule.--%>
+                                                </div>
+                                                
+                                                <%--<div id="dayWiseAlertText" class="alert alert-success text-center mt-3" role="alert">
+                                                    <strong>01-01-2025 Weekend Employee </strong> 
+                                                </div>--%>
+
+
+
+
+
 
                                                 <div id="employeeContainer">
                                                       <table class="table mb-0 packagesTable table-borderless adv-table"
@@ -204,7 +230,8 @@
         var getEmployeeDateWiseUrl = `${rootUrl}/api/WeekendSetup/getDatewiseEmployeeForWeekend`;
         var PostDateWiseWeekendSetupURL = `${rootUrl}/api/WeekendSetup/save/datewiseWeekendsetup`;
         var PostDayWiseWeekendSetupURL = `${rootUrl}/api/WeekendSetup/save/daywiseWeekendsetup`;
-        var DeleteDateWiseUrl = `${rootUrl}/api/WeekendSetup/delete/datewiseweekennd1`;
+        var DeleteDateWiseUrl = `${rootUrl}/api/WeekendSetup/delete/datewiseweekennd`;
+        var Delete_DayWiseUrl = `${rootUrl}/api/WeekendSetup/delete/daywiseweekend`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
         var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
@@ -292,8 +319,11 @@
             var searchType = $('#ddlSearchBye').val();
 
             if (searchType === 'Day') {
+               
+
                 GetEmployeeDayWise();
             } else {
+              
                 GetEmployee_DateWise();
             }
         }
@@ -308,6 +338,19 @@
 
         function GetEmployee_DateWise() {
             const HolyDayDate = $('#txtWeekendDate').val();
+
+            if (HolyDayDate == null || HolyDayDate=='') {
+                  Swal.fire({
+                            title: 'Warning!',
+                            text: 'Please Select Date',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        })
+            }
+
+            sessionStorage.setItem('__WeekendDate__', HolyDayDate);
+      
+
             const EmpCardNo = $('#txtEmpCardNo').val();
             const deptQuery = getSelectedDepartmentQuery();
             const unitQuery = getSelectedUnitQuery();
@@ -317,6 +360,12 @@
             ApiCall(url, token)
                 .then(response => {
                     if (response.statusCode === 200) {
+                        $('#alertContainer').hide();
+                        $('#dateWiseAlert').show();
+                        const message = `Weekend employee data loaded for the date: ${HolyDayDate}.`;
+
+                        $('#dateWiseAlert').html(`<strong>${message}</strong>`).removeClass('d-none');
+
                         bindTableData(response.data);
                     } else {
                         console.error('API Error:', response.message);
@@ -331,16 +380,66 @@
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();
             const weekendDate = $('#ddlWeekend').val();
+
+            
+            if (startDate == null || startDate=='') {
+                  Swal.fire({
+                            title: 'Warning!',
+                            text: 'Please Select Start Date',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                })
+                return
+
+            }
+               
+            if (endDate == null || endDate=='') {
+                  Swal.fire({
+                            title: 'Warning!',
+                            text: 'Please Select End Date',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                })
+                return
+            }
+              if (weekendDate == "0" ) {
+                  Swal.fire({
+                            title: 'Warning!',
+                            text: 'Please Select Weekend',
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                  })
+                 return
+
+            }
+
+
+
+
+
             const EmpCardNo = $('#txtEmpCardNo').val();
             const deptQuery = getSelectedDepartmentQuery();
             const unitQuery = getSelectedUnitQuery();
+
+            sessionStorage.setItem('__startDate__', startDate);
+            sessionStorage.setItem('__endDate__', endDate);
+            sessionStorage.setItem('__weekendDate__', weekendDate);
 
             const url = `${getEmployeeDayWiseUrl}/${CompanyID}/${startDate}/${endDate}?weekendDay=${weekendDate}&cardNum=${EmpCardNo}&${deptQuery}&${unitQuery}`;
 
             ApiCall(url, token)
                 .then(response => {
                     if (response.statusCode === 200) {
+                        $('#alertContainer').hide();
+
+                        $('#dateWiseAlert').show();
+                        $('#dateWiseAlert').html = '';
+                        const message = `Weekend employee data loaded for the period: ${startDate} to ${endDate}.`;
+
+                        $('#dateWiseAlert').html(`<strong>${message}</strong>`).removeClass('d-none');
+
                         bindTableData(response.data);
+
                     } else {
                         console.error('API Error:', response.message);
                     }
@@ -369,16 +468,16 @@
                 row.userImage = null;
                 const userImage = row.empImage || defaultImage;
 
-                row.action = `
-            <div class="actions">
-                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li>
-                        <a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove">
-                            <i class="uil uil-trash-alt"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>`;
+            //    row.action = `
+            //<div class="actions">
+            //    <ul class="">
+            //        <li>
+            //            <a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove">
+            //                <i class="uil uil-trash-alt"></i>
+            //            </a>
+            //        </li>
+            //    </ul>
+            //</div>`;
                 row.userImage = `
             <div class="user-details-container d-flex align-items-center">
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
@@ -410,7 +509,7 @@
                 { name: "lastWeekend", title: "Last Weekend", className: "userDatatable-content" },
                 { name: "currentWeekend", title: "Current Weekend", className: "userDatatable-content" },
                 { name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
-                { name: "action", title: "action", className: "userDatatable-content" }
+                //{ name: "action", title: "action", className: "userDatatable-content" }
             ];
 
             try {
@@ -428,11 +527,12 @@
 
             } catch (error) {
                 console.error("Error initializing table:", error);
+
             }
 
                 $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
                 const userRoleId = $(this).data('id');
-                Delete(userRoleId); // Custom function to handle delete logic
+              //  Delete(userRoleId); // Custom function to handle delete logic
                 console.log('Delete button clicked for userRoleId:', userRoleId);
             });
 
@@ -479,7 +579,7 @@
                         if (response.statusCode === 200) {
                             var responseData = response.data;
                             console.log('Before table Data Bind', responseData);
-                            $('.footable-loader').show();
+                           
                             bindUnits(responseData);
 
                             console.log('after Table Data Bind ', responseData);
@@ -562,7 +662,7 @@
                     if (response.statusCode === 200) {
                         var responseData = response.data;
                         console.log('Before table Data Bind', responseData);
-                        $('.footable-loader').show();
+                  
                         bindDepartments(responseData);
 
                         console.log('after Table Data Bind ', responseData);
@@ -646,9 +746,9 @@
             }
 
             function Day_WiseEmpWeekendSetup() {
-                const starDate = $('#txtStartDate').val();
-                const endDate = $('#txtEndDate').val();
-                const weekendDate = $('#ddlWeekend').val();
+                const starDate = sessionStorage.getItem('__startDate__');
+                const endDate = sessionStorage.getItem('__endDate__');
+                const weekendDate = sessionStorage.getItem('__weekendDate__');
 
                 const employeeQuery = getSelectedEmployeeQuery();
                 const urlParams = new URLSearchParams(employeeQuery);
@@ -700,7 +800,10 @@
 
 
             function DateWiseEmpWeekendSetup() {
-                const WeekendDate = $('#txtWeekendDate').val();
+                //const WeekendDate = $('#txtWeekendDate').val();
+                const WeekendDate = sessionStorage.getItem('__WeekendDate__');
+
+
                 const employeeQuery = getSelectedEmployeeQuery();
                 const urlParams = new URLSearchParams(employeeQuery);
                 const empIds = urlParams.getAll('empIds');
@@ -759,11 +862,12 @@
                 }
             }
 
+        
 
-            function Delete(id) {
+              function Delete() {
                 Swal.fire({
                     title: 'Are you sure?',
-                    text: "Do you really want to delete this Packages?",
+                    text: "Do you really want to delete this Weekend?",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -771,28 +875,97 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        ApiDeleteById(DeleteDateWiseUrl, token, id)
-                            .then(function (response) {
-                                Swal.fire({
-                                    title: 'Success!',
-                                    text: 'Packages deleted successfully.',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK'
-                                }).then(() => {
-                                    GetRoles();
-                                });
-                            })
-                            .catch(function (error) {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'An error occurred while deleting the module.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK'
-                                });
-                            });
+                        var searchType = $('#ddlSearchBye').val();
+                        if (searchType === 'Day') {
+                            Delete_DayWiseWeekend();
+                        } else {
+                            DeleteDateWiseWeekend();
+                        }
+
+                       
+                        
                     }
                 });
             }
+
+     
+               function DeleteDateWiseWeekend() {
+                const WeekendDate = sessionStorage.getItem('__WeekendDate__');
+                const employeeQuery = getSelectedEmployeeQuery(); // Already returns query string like "empIds=0001&empIds=0002"
+
+                if (!employeeQuery) {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Please select at least one employee.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                const url = `${DeleteDateWiseUrl}/${CompanyID}/${WeekendDate}?${employeeQuery}`;
+
+                ApiDeleteByUrl(url, token)
+                    .then(function (response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Weekend deleted successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            GetEmployee_DateWise();
+                        });
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while deleting the weekend data.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
+
+            function Delete_DayWiseWeekend(id) {
+
+                const startDate = sessionStorage.getItem('__startDate__');
+                const endDate = sessionStorage.getItem('__endDate__');
+                const weekendDate = sessionStorage.getItem('__weekendDate__');
+                const employeeQuery = getSelectedEmployeeQuery(); // Already returns query string like "empIds=0001&empIds=0002"
+
+                if (!employeeQuery) {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Please select at least one employee.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                url = `${Delete_DayWiseUrl}/${startDate}/${endDate}?companyId=${CompanyID}&${employeeQuery}`
+                ApiDeleteByUrl(url, token)
+                    .then(function (response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Weekend deleted successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            GetEmployeeDayWise();
+                        });
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while deleting the module.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+
+            }
+
 
 
         </script>

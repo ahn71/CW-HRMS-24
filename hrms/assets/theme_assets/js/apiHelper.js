@@ -300,6 +300,39 @@ function ApiDeleteById(url, token, id) {
     });
 }
 
+function ApiDeleteByUrl(url, token) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            //error: function (xhr, status, error) {
+            //    console.error('Error occurred while deleting data:', status, error);
+            //    reject(error);
+            //}
+
+            error: function (xhr, status, error) {
+                //console.error('Error occurred while fetching data:', status, error);
+                var message = xhr.responseText;
+                console.log(message)
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+            }
+
+        });
+    });
+}
+
 function ApiCallPost(url, token, postData) {
     return new Promise(function (resolve, reject) {
         $.ajax({
