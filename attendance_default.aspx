@@ -143,7 +143,7 @@
 
 
                  <div runat="server" id="divOvertimeReport" class=" col-lg-2 col-md-3 col-sm-6 " title="Overtime Report">
-                     <a class="ds_Settings_Basic_Text cardStyle" href="/hrms/attendance/overtime_report.aspx"><i class="uil uil-clock-eight iconStyle"></i><br />Overtime Report</a>
+                     <a class="ds_Settings_Basic_Text cardStyle" href="/hrms/attendance/overtime-report"><i class="uil uil-clock-eight iconStyle"></i><br />Overtime Report</a>
                  </div>  
 
                   <% if (IsRouteExists("attendance/out-duty-add"))
