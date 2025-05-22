@@ -1,4 +1,5 @@
 ﻿using ComplexScriptingSystem;
+using SigmaERP.classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,15 +84,7 @@ namespace SigmaERP
 
         public bool IsRouteExists(string url)
         {
-            foreach (Route route in RouteTable.Routes)
-            {
-                var routeUrl = route.Url?.ToLower();
-                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return PermissionManager.IsUrlAllowed(url);
         }
     }
 }

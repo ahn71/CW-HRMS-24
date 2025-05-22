@@ -47,12 +47,18 @@
 <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>           
                     <table runat="server" visible="true" id="tblGenerateType" class="division_table_leave1">
                         <tr id="trCompanyName" runat="server" visible="true">
-                            <td>Company
+                            <td>Unit
                             </td>
                             <td>:</td>
                             <td>
-                                <asp:DropDownList ID="ddlCompany" runat="server" AutoPostBack="true" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
+                                <asp:DropDownList ID="ddlCompany" runat="server" AutoPostBack="true" ClientIDMode="Static" Visible="false" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
                                 </asp:DropDownList>
+
+
+                                <asp:DropDownList ID="ddlUnit" runat="server" AutoPostBack="true" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
+                                </asp:DropDownList>
+
+
                             </td>
                             <td>Shift 
                             </td>

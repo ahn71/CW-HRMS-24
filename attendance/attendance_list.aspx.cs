@@ -72,6 +72,7 @@ namespace SigmaERP.attendance
                     ViewState["__UpdateAction__"] = "1";
            
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentName, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.loadUnit(ddlUnit, ViewState["__CompanyId__"].ToString());
             }
             catch { }
         }
@@ -80,9 +81,12 @@ namespace SigmaERP.attendance
         {
             try
             {
-                searchStatus = 1;   // 1 means all load at first time
+                searchStatus = 1;  
+                // 1 means all load at first time
                 sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where Year='" + DateTime.Now.Year + "' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by AttDate desc", dt = new DataTable());
                 string jjjj = "select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where Year='" + DateTime.Now.Year + "' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by AttDate desc";
+
+
                 if (dt.Rows.Count<1)
                 {
                     gvAttendanceList.DataSource = null;
@@ -256,99 +260,111 @@ namespace SigmaERP.attendance
                 {
                     ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 }
+                string unitCondition = "";
+                if (ddlUnit.SelectedValue != "0")
+                {
+                    unitCondition = " and UnitId="+ddlUnit.SelectedValue;
+                }
                 string dataAccesCondition = AccessControl.getDataAccessCondition(ddlCompanyList.SelectedValue,"0");
                 string queryCondition = "";
                 string query = "select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord  where";
                 //1. Search by Company, Card No
                 if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
                     {
-                        queryCondition = " " + dataAccesCondition + "  and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                        queryCondition = " " + dataAccesCondition + "  and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  "+unitCondition+" order by AttDate desc";
                     }
-                    
+
+
+
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != ""  && ddlUnit.SelectedValue!= "0" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
+                {
+                    queryCondition = " " + dataAccesCondition + "  " + unitCondition + " order by AttDate desc";
+                }
+
                 //2. Search by Company,Department,Card No
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
                     {
-                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "' and DptId='" + ddlDepartmentName.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "' and DptId='" + ddlDepartmentName.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                     }
                    
                 //3. Search by Company,Shift,Card No
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
                     {
-                       queryCondition=" " + dataAccesCondition + " and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                       queryCondition=" " + dataAccesCondition + " and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                     }
                    
                 //4. Search by Company,Department,Shift  
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length == 0 && ddlChoseYear.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0)
                 {
 
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                 //5. Search by Company,Department,Shift,CardNo 
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
                     {
-                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                     }
                   
                 //6. Search by Company,Department,Shift,CardNo,From Date,To Date
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0)
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "'  " + unitCondition + " order by AttDate desc";
                 }
                     
                 //7. Search by Company,Department,Shift,CardNo,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0)
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                    
                 //8. Search by Company,Department,Shift,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0)
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                     
                 //9. Search by Company,Department,From date,To Date
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0)
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "'  " + unitCondition + " order by AttDate desc";
                 }
                  
                 //10. Search by Company,Department,From date,To Date,Card No
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0)
                     {
-                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'";
+                        queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                     }
                   
 
                 //11. Search by Company,Department,Shift,From date,To Date
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0)
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "'  " + unitCondition + " order by AttDate desc";
                 }
                   
                 // 12. Search by Company, Department
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
                 {
-                    queryCondition= " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' order by AttDate desc"; 
+                    queryCondition= " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'   " + unitCondition + " order by AttDate desc"; 
                 }
                    
 
                 //13.  Search by Company, Shift
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && ddlDepartmentName.SelectedItem.Text.Trim() == "" && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
                 {
-                    queryCondition = " " + dataAccesCondition + " and SftId='" + ddlShift.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " " + dataAccesCondition + " and SftId='" + ddlShift.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                
                 //14. Search by Company, CardNo,From date,To date
                 else if (ddlCompanyList.SelectedIndex > 0 && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0)
                 {
-                    queryCondition = "  " + dataAccesCondition + "  and ATTDate >='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    queryCondition = "  " + dataAccesCondition + "  and ATTDate >='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                 }
                 
                 //15. Search by Company,Department,Year
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && ddlChoseYear.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "'  order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and Year='" + ddlChoseYear.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                    
 
@@ -358,14 +374,14 @@ namespace SigmaERP.attendance
                 // 4. Search by Company,Department,Shift,Grouping 
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + "  " + unitCondition + " order by AttDate desc";
                 }
                    
 
                 // 4. Search by Company,Department,Shift,Grouping ,CardNo
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                 }
                    
 
@@ -373,25 +389,25 @@ namespace SigmaERP.attendance
                 //5. Search by Company,Department,Shift,CardNo,From Date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition = " CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "'  " + unitCondition + " order by AttDate desc";
                 }
                   
                 //6. Search by Company,Department,Shift,CardNo,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                    
                 //7. Search by Company,Department,Shift,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "'";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "'  " + unitCondition + " ";
                 }
                    
                 //8. Search by Company,Department,Shift,From date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedIndex > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "'and SftId='" + ddlShift.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "'    " + unitCondition + " order by AttDate desc";
                 }
                   
 
@@ -399,14 +415,14 @@ namespace SigmaERP.attendance
                 // 4. Search by Company,Department,Grouping 
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length == 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() == "") && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + "  " + unitCondition + " order by AttDate desc";
                 }
                     
 
                 // 4. Search by Company,Department,Grouping ,CardNo
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedItem.Text.Trim() != "") && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  " + unitCondition + " order by AttDate desc";
                 }
                     
 
@@ -414,25 +430,25 @@ namespace SigmaERP.attendance
                 //5. Search by Company,Department,CardNo,From Date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtCardNo.Text.Trim().Length > 0 && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'and ATTDate>='" + ViewState["__FDate__"].ToString() + "' and ATTDate<='" + ViewState["__TDate__"].ToString() + "'  " + unitCondition + " order by AttDate desc";
                 }
                    
                 //6. Search by Company,Department,CardNo,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' and Year='" + ddlChoseYear.SelectedValue + "'   " + unitCondition + " order by AttDate desc";
                 }
                    
                 //7. Search by Company,Department,Year,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && ddlChoseYear.SelectedItem.Text.Trim() != "" && txtCardNo.Text.Trim().Length == 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "' order by AttDate desc";
+                    queryCondition = " EmpStatus in ('1','8')  and CompanyId='" + ddlCompanyList.SelectedValue + "'and DptId='" + ddlDepartmentName.SelectedValue + "' and GId=" + ddlGrouping.SelectedValue + " and Year='" + ddlChoseYear.SelectedValue + "'  " + unitCondition + " order by AttDate desc";
                 }
                    
                 //8. Search by Company,Department,From date,To Date,Grouping
                 else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentName.SelectedItem.Text.Trim() != "" && ddlShift.SelectedItem.Text.Trim() == "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && ddlGrouping.SelectedItem.Text.Trim() != "")
                 {
-                    queryCondition= "EmpStatus in ('1', '8')  and CompanyId = '" + ddlCompanyList.SelectedValue + "'and DptId = '" + ddlDepartmentName.SelectedValue + "' and GId = " + ddlGrouping.SelectedValue + " and ATTDate>= '" + ViewState["__FDate__"].ToString() + "' and ATTDate<= '" + ViewState["__TDate__"].ToString() + "' order by AttDate desc";
+                    queryCondition= "EmpStatus in ('1', '8')  and CompanyId = '" + ddlCompanyList.SelectedValue + "'and DptId = '" + ddlDepartmentName.SelectedValue + "' and GId = " + ddlGrouping.SelectedValue + " and ATTDate>= '" + ViewState["__FDate__"].ToString() + "' and ATTDate<= '" + ViewState["__TDate__"].ToString() + "'  " + unitCondition + " order by AttDate desc";
                 }
                
                 if (queryCondition == "")
@@ -451,6 +467,7 @@ namespace SigmaERP.attendance
                     gvAttendanceList.DataBind();
                     return;
                 }
+                divRecordMessage.Visible = false;
                 gvAttendanceList.DataSource = dt;
                 gvAttendanceList.DataBind();
 
@@ -575,6 +592,11 @@ namespace SigmaERP.attendance
             allClear();
         }
 
+        protected void ddlUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
         //public void cheCkInitialPermission()
         //{
         //    if (ViewState["__WriteAction__"].Equals("0"))
@@ -583,7 +605,7 @@ namespace SigmaERP.attendance
         //    }
         //    else
         //    {
-          
+
         //    }
         //}
 

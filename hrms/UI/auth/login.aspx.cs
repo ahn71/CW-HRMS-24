@@ -561,7 +561,7 @@ namespace SigmaERP.hrms.UI.auth
 
         private void cardMenuUrl()
         {
-            Session["__topMenu__"] = "/hrms/attendance";
+            Session["__topMenu__"] = "/hrms/attendance/attendance";
             Session["__topMenuForLeave__"] = "/hrms/leave-root";
             Session["__topMenuForPersonnel__"] = "/hrms/personnel/employees";
             Session["__topMenuforSalary__"] = "/hrms/salary";

@@ -2632,11 +2632,23 @@ namespace SigmaERP.classes
             else
                 return "";
 
-
-
-
         }
 
+        public static void loadUnit(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+
+                da = new SqlDataAdapter("select Unitid,UnitName  from HRDUnits Where CompanyId='"+ CompanyId + "'", sqlDB.connection);
+                da.Fill(dt = new DataTable());
+                dl.DataValueField = "Unitid";
+                dl.DataTextField = "UnitName";
+                dl.DataSource = dt;
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
 
 
 

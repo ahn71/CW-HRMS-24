@@ -57,11 +57,15 @@
                     
                      <table runat="server" visible="true" id="tblGenerateType"  class="division_table_leave1">                                      
                                 <tr id="trForCompanyList" runat="server">
-                                <td>Company</td>
+                                <td>Unit</td>
                                     <td>&nbsp;:&nbsp;</td>
                                 <td>
-                                    <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
+                                    <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" Visible="false" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
                                     </asp:DropDownList>
+
+                                    <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
+                                    </asp:DropDownList>
+
                                 </td>   
                                      <td>Generate Type</td>
                                     <td>&nbsp;:&nbsp;</td>        
