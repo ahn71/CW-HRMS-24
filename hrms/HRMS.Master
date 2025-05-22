@@ -216,7 +216,7 @@
                             <% if (IsRouteExists("attendance"))
                                 { %>
                             <li class="mega-item has-subMenu">
-                                <a href="attendance" class="">Attendance</a>
+                                <a href="#" class="">Attendance</a>
                                 <ul class="megaMenu-wrapper megaMenu-md">
                                     <% if (IsRouteExists("attendance/month-setup") || IsRouteExists("attendance/processing") || IsRouteExists("attendance/manually-count") ||
        IsRouteExists("attendance/list") || IsRouteExists("attendance/daily-summary-report") || IsRouteExists("attendance/daily-in-out-report") || IsRouteExists("attendance/manual-report") || IsRouteExists("attendance/monthly-report") || IsRouteExists("attendance/manpower-wise"))
@@ -225,14 +225,6 @@
                                     <li class="bordered">
                                         <span class="mega-title">Attendance</span>
                                         <ul>
-                                            <% if (IsRouteExists("attendance/month-setup"))
-                                                { %>
-                                            <li class="l_sidebar">
-                                                <a href="attendance/month-setup" runat="server" class="">
-                                                    <span class="menu-text">Month Setup</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
                                             <% if (IsRouteExists("attendance/processing"))
                                                 { %>
                                             <li class="l_sidebar">
@@ -245,10 +237,20 @@
                                                 { %>
                                             <li class="l_sidebar">
                                                 <a href="/hrms/attendance/attendance-process_2_0" runat="server" class="">
-                                                    <span class="menu-text">Attendance Processing V 2.0</span>
+                                                    <span class="menu-text">Attendance Process 2.0</span>
                                                 </a>
                                             </li>
                                             <% } %>
+
+                                               <% if (IsRouteExists("attendance/list"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="attendance/list" runat="server" class="">
+                                                    <span class="menu-text">Attendance List</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                            
                                             <% if (IsRouteExists("attendance/manually-count"))
                                                 { %>
                                             <li class="l_sidebar">
@@ -257,31 +259,36 @@
                                                 </a>
                                             </li>
                                             <% } %>
-                                            <% if (IsRouteExists("attendance/list"))
+
+                                            <% if (IsRouteExists("attendance/month-setup"))
                                                 { %>
                                             <li class="l_sidebar">
-                                                <a href="attendance/list" runat="server" class="">
-                                                    <span class="menu-text">Attendance List</span>
+                                                <a href="attendance/month-setup" runat="server" class="">
+                                                    <span class="menu-text">Month Setup</span>
                                                 </a>
                                             </li>
                                             <% } %>
-                                            <% if (IsRouteExists("attendance/daily-summary-report"))
+                                                <% if (IsRouteExists("attendance/weekend-setup"))
                                                 { %>
-                                            <li class="l_sidebar">
-                                                <a href="/hrms/attendance/daily-summary-report" class="">
-                                                    <span class="menu-text">Att Summary</span>
+                                            <li>
+                                                <a href="/hrms/attendance/weekend-setup" class="">
+                                                    <span class="menu-text">Weekend Setup</span>
                                                 </a>
                                             </li>
                                             <% } %>
 
-                                            <% if (IsRouteExists("attendance/daily-in-out-report"))
+                                            <% if (IsRouteExists("attendance/general-day-setup"))
                                                 { %>
-                                            <li class="l_sidebar">
-                                                <a href="/hrms/attendance/daily-in-out-report" class="">
-                                                    <span class="menu-text">In-Out Report</span>
+                                            <li>
+                                                <a href="/hrms/attendance/general-day-setup" class="">
+                                                    <span class="menu-text">General Day Setup</span>
                                                 </a>
                                             </li>
                                             <% } %>
+
+                                         
+                                          
+
                                             <% if (IsRouteExists("attendance/specialcase"))
                                                 { %>
                                             <li class="l_sidebar">
@@ -290,30 +297,7 @@
                                                 </a>
                                             </li>
                                             <% } %>
-                                            <% if (IsRouteExists("attendance/manual-report"))
-                                                { %>
-                                            <li class="l_sidebar">
-                                                <a href="/hrms/attendance/manual-report" class="">
-                                                    <span class="menu-text">Manual Report</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-                                            <% if (IsRouteExists("attendance/monthly-report"))
-                                                { %>
-                                            <li class="l_sidebar">
-                                                <a href="/hrms/attendance/monthly-report" class="">
-                                                    <span class="menu-text">Monthly Status</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-                                            <% if (IsRouteExists("attendance/manpower-wise"))
-                                                { %>
-                                            <li class="l_sidebar">
-                                                <a href="/hrms/attendance/manpower-wise" class="">
-                                                    <span class="menu-text">Manpower Wise Attendance</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
+                                           
                                         </ul>
                                     </li>
                                     <%} %>
@@ -322,9 +306,102 @@
                                         { %>
 
                                     <li class="bordered">
-                                        <span class="mega-title">Out Duty</span>
+                                        <span class="mega-title">Attendance Reports</span>
                                         <ul>
-                                            <% if (IsRouteExists("attendance/out-duty-add"))
+
+                                            <% if (IsRouteExists("attendance/monthly-report"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/monthly-report" class="">
+                                                    <span class="menu-text">Monthly Status</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                            
+                                            <% if (IsRouteExists("attendance/daily-in-out-report"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/daily-in-out-report" class="">
+                                                    <span class="menu-text">In-Out Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                              <% if (IsRouteExists("attendance/daily-summary-report"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/daily-summary-report" class="">
+                                                    <span class="menu-text">Att Summary</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+
+                                            <% if (IsRouteExists("attendance/weekend-info-report"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/weekend-info-report" class="">
+                                                    <span class="menu-text">Weekend Info Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("attendance/attendance-analysis"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/attendance-analysis" class="">
+                                                    <span class="menu-text">Analysis Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("attendance/absent-notification"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/absent-notification" class="">
+                                                    <span class="menu-text">Absent Notification</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("attendance/manpower-statement"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/manpower-statement" class="">
+                                                    <span class="menu-text">Manpower Statement</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                             <% if (IsRouteExists("attendance/manual-report"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/manual-report" class="">
+                                                    <span class="menu-text">Manual Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("attendance/manpower-wise"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/manpower-wise" class="">
+                                                    <span class="menu-text">Manpower Wise Attendance</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+   
+
+                                            <% if (IsRouteExists("attendance/out-duty-report"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/out-duty-report" class="">
+                                                    <span class="menu-text">Out Duty Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <%--                                               <% if (IsRouteExists("attendance/out-duty-add"))
                                                 { %>
                                             <li>
                                                 <a href="/hrms/attendance/out-duty-add" class="">
@@ -349,70 +426,11 @@
                                                     <span class="menu-text">Out Duty Approval</span>
                                                 </a>
                                             </li>
-                                            <% } %>
+                                            <% } %>--%>
 
-                                            <% if (IsRouteExists("attendance/out-duty-report"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/out-duty-report" class="">
-                                                    <span class="menu-text">Out Duty Report</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
+                                        
 
-                                            <% if (IsRouteExists("attendance/absent-notification"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/absent-notification" class="">
-                                                    <span class="menu-text">Absent Notification</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-
-                                            <% if (IsRouteExists("attendance/manpower-statement"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/manpower-statement" class="">
-                                                    <span class="menu-text">Manpower Statement</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-
-                                            <% if (IsRouteExists("attendance/weekend-setup"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/weekend-setup" class="">
-                                                    <span class="menu-text">Weekend Setup</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-
-                                            <% if (IsRouteExists("attendance/general-day-setup"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/general-day-setup" class="">
-                                                    <span class="menu-text">General Day Setup</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-
-                                            <% if (IsRouteExists("attendance/weekend-info-report"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/weekend-info-report" class="">
-                                                    <span class="menu-text">Weekend Info Report</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
-
-                                            <% if (IsRouteExists("attendance/attendance-analysis"))
-                                                { %>
-                                            <li>
-                                                <a href="/hrms/attendance/attendance-analysis" class="">
-                                                    <span class="menu-text">Analysis Report</span>
-                                                </a>
-                                            </li>
-                                            <% } %>
+                                      
                                         </ul>
                                     </li>
 
@@ -741,7 +759,7 @@
                             <% if (IsRouteExists("leave-root"))
                                 { %>
                             <li class="mega-item has-subMenu">
-                                <a href="leave-root" class="">Leave</a>
+                                <a href="#" class="">Leave</a>
                                 <ul class="subMenu ">
                                     <li class="bordered">
                                         <ul>
