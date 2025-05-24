@@ -518,7 +518,7 @@ namespace SigmaERP.classes
             }
             catch { }
         }
-
+   
         public static void loadDepartmentListByCompany(DropDownList dl, string CompanyId)
         {
             try
@@ -549,6 +549,24 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void loadDepartmentListByCompanyWithCommonDpt(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetConditionAll(CompanyId);
+                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where " + condition + "", sqlDB.connection);
+                da.Fill(dt = new DataTable());
+                dl.DataValueField = "DptId";
+                dl.DataTextField = "DptName";
+                dl.DataSource = dt;
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
+
+
         public static void loadLeaveNameByCompany(DropDownList dl, string CompanyId)
         {
             try
@@ -759,6 +777,20 @@ namespace SigmaERP.classes
             try
             {
                 sqlDB.fillDataTable("Select DsgId,DsgName From HRD_Designation where DsgStatus='True' and DptId='" + DptId + "'", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "DsgId";
+                dl.DataTextField = "DsgName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
+        public static void LoadDesignationAll(string DptId, DropDownList dl)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select DsgId,DsgName From HRD_Designation where DsgStatus='True' and  ( DptId='" + DptId + "' or DptId=0)", dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "DsgId";
                 dl.DataTextField = "DsgName";

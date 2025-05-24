@@ -83,8 +83,8 @@
                             <asp:HiddenField ID="hdfCardnoDigitsSet" Value="0" runat="server" ClientIDMode="Static" />
                             <div class="employee_box_left">
                                 <table class="employee_table">
-                                    <tr id="trBranch" runat="server">
-                                        <td>Branch <span class="requerd1">*</span>
+                                    <tr id="trBranch" runat="server" visible="false">
+                                        <td>Company <span class="requerd1">*</span>
                                         </td>
                                         <td>:
                                         </td>
@@ -104,7 +104,7 @@
 
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr runat="server" visible="false">
                                         <td>
                                         </td>
                                         <td>
@@ -139,7 +139,7 @@
 
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr runat="server" visible="false">
                                         <td>Nick  Name <span class="requerd1">*</span>
                                         </td>
                                         <td>:
@@ -189,7 +189,7 @@
                                     </tr>
 
                                     <tr>
-                                        <td>Group <span class="requerd1">*</span>
+                                        <td>Group/Section <span class="requerd1">*</span>
                                         </td>
                                         <td>:
                                         </td>
@@ -198,7 +198,7 @@
                                         </td>
                                     </tr>
                                      <tr>
-                                        <td>Emp Shift <span class="requerd1">*</span>
+                                        <td>Permanent Shift <span class="requerd1">*</span>
                                         </td>
                                         <td>:
                                         </td>
@@ -293,6 +293,7 @@
 
                                             <asp:DropDownList ID="ddlType" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
                                                 <asp:ListItem>Permanent</asp:ListItem>
+                                                <asp:ListItem>Probation</asp:ListItem>
                                                 <asp:ListItem>Temporary</asp:ListItem>
                                             </asp:DropDownList>
                                         </td>
@@ -318,6 +319,25 @@
                                                 <asp:ListItem Value="Regular" Text="Regular" Selected="True"></asp:ListItem>
                                                 <asp:ListItem Value="Roster" Text="Roster"></asp:ListItem>                                               
                                             </asp:RadioButtonList>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <tr>
+                                        <td>Weekend 
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:DropDownList ID="ddlWeekend" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                                <asp:ListItem Text="" Value=""></asp:ListItem>
+                                                <asp:ListItem Text="Sunday" Value="Sunday"></asp:ListItem>
+                                                <asp:ListItem Text="Monday" Value="Monday"></asp:ListItem>
+                                                <asp:ListItem Text="Tuesday" Value="Tuesday"></asp:ListItem>
+                                                <asp:ListItem Text="Wednesday" Value="Wednesday"></asp:ListItem>
+                                                <asp:ListItem Text="Thursday" Value="Thursday"></asp:ListItem>
+                                                <asp:ListItem Text="Friday" Value="Friday"></asp:ListItem>
+                                                <asp:ListItem Text="Saturday" Value="Saturday"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </td>
                                     </tr>
                                     <tr>
@@ -1047,11 +1067,11 @@
                     $('#txtName').focus();
                     return false;
                 }
-                if ($('#txtNickName').val().trim().length == 0) {
-                    showMessage("warning->Please Type Nick Name ");
-                    $('#txtNickName').focus();
-                    return false;
-                }
+                //if ($('#txtNickName').val().trim().length == 0) {
+                //    showMessage("warning->Please Type Nick Name ");
+                //    $('#txtNickName').focus();
+                //    return false;
+                //}
                if ($('#ddlDepartment option:selected').text().length == 0) {
                     showMessage("warning->Please Select Department ");
                     $('#ddlDepartment').focus();
@@ -1388,5 +1408,6 @@
                 
     <script src="../hrms/assets/theme_assets/js/charts.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </asp:Content>              
