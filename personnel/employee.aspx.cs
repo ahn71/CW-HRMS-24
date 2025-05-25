@@ -36,6 +36,7 @@ namespace SigmaERP.personnel
 
         //View=270
         protected void Page_Load(object sender, EventArgs e)
+
         {
             try
             {
@@ -1513,6 +1514,7 @@ namespace SigmaERP.personnel
                 hdfConveyance.Value = "0";
                 hdfhouserent.Value = "0";
                 hdfMedical.Value = "0";
+                ddlWeekend.SelectedIndex = 0;
                 //txtDesingnationBangla.Text = "";
                 //txtEmpCardNo.Text = "";
                 txtAlternativeCard.Text = "";
@@ -1565,7 +1567,7 @@ namespace SigmaERP.personnel
                 this.Request.QueryString.Remove("EmpId");
                 this.Request.QueryString.Remove("Edit");
 
-                ddlEmpCardNo.SelectedIndex = 0;
+               // ddlEmpCardNo.SelectedIndex = 0;
                 ddlEmpStatus.SelectedIndex = 0;
                 // Request.QueryString.Remove("EmpId");
 

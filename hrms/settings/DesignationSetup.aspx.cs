@@ -150,10 +150,12 @@ namespace SigmaERP.hrms.settings
                 }
                 else
                 {
-                    classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), dlDepartment);
+                    classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
+                  //  classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), dlDepartment);
+
                 }
                 dt = new DataTable();
-                dt = commonTask.getDesignation(getSL);
+                dt = commonTask.getDesignationAll(getSL);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     dlDepartment.SelectedValue = getDptId;

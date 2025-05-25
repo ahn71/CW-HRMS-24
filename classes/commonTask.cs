@@ -128,6 +128,22 @@ namespace SigmaERP.classes
             }
             catch { return null; }
         }
+
+      
+
+        public static DataTable getDesignationAll(string SL)
+        {
+            try
+            {
+                string sqlcmd = "";
+                sqlcmd = "select dsg.SL, dsg.CompanyId,CompanyName, DsgId,dsg.DptId, ISNULL(NULLIF(dpt.DptName, ''), 'All') AS DptName,DsgName,DsgNameBn,DsgShortName,DsgStatus,Ordering  from HRD_Designation as dsg Left Join HRD_CompanyInfo as cmp on cmp.CompanyId=dsg.CompanyId left join HRD_Department  as dpt on dpt.DptId =dsg.DptId where dsg.SL='"+SL+"'";
+
+                dt = new DataTable();
+                sqlDB.fillDataTable(sqlcmd, dt);
+                return dt;
+            }
+            catch { return null; }
+        }
         public static bool checkJoiningDate(string Empcardno, int DurationDays)
         {
             try {
