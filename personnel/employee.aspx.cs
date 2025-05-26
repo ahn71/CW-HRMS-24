@@ -82,7 +82,8 @@ namespace SigmaERP.personnel
                     FlatCustomOrdering();
                     classes.commonTask.LoadUnit(ddlBranch.SelectedValue, ddlUnit);
 
-                    classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
+                    //classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
+                    classes.commonTask.LoadDesignationAll(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
                     if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                         classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
                     //-----------------For Employee Personel---------------------
@@ -1750,7 +1751,8 @@ namespace SigmaERP.personnel
                 txtRegistrationId.Text = dtall.Rows[0]["EmpProximityNo"].ToString();
                 txtTIN.Text = dtall.Rows[0]["TIN"].ToString();
                             
-                classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
+              //  classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
                 ddlDesingnation.SelectedValue = dtall.Rows[0]["DsgId"].ToString();
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("True"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ddlBranch.SelectedValue, dtall.Rows[0]["DptId"].ToString());
