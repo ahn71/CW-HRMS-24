@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="attendanceProcessing.aspx.cs" Inherits="SigmaERP.hrms.attendance.attendanceProcessing" %>
+
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -7,16 +8,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
-        .packagesTable{
-            padding :0 !important;
-        }
-        td{
-           text-align: left;
-        }
-     i{
-            margin-right:0 !important;
+        .packagesTable {
+            padding: 0 !important;
         }
 
+        td {
+            text-align: left;
+        }
+
+        i {
+            margin-right: 0 !important;
+        }
     </style>
 
 
@@ -58,7 +60,7 @@
                                             <div class="table-responsive">
                                                 <div class="ad-table-table__header d-flex justify-content-between mb-15">
                                                     <%--Table Search Area--%>
-                                                    <div class="container-fluid" style="padding-left:0px !important; padding-right:0px !important">
+                                                    <div class="container-fluid" style="padding-left: 0px !important; padding-right: 0px !important">
                                                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 align-items-end">
 
                                                             <!-- Search Input -->
@@ -91,19 +93,22 @@
                                                                 </div>
                                                             </div>
 
-                                                        
+
 
                                                             <!-- File Input and Process Button -->
                                                             <div class="col">
-                                                                <label for="AttFile" class="form-label mb-1 p-0">Attendance File</label>
-                                                                <div class="d-flex align-items-center">
-                                                                    <input type="file" id="AttFile" class="form-control me-2" style="width: 100%;" aria-describedby="passwordHelpInline">
-                                                                    <button type="button" onclick="AttendanceProcess()" title="Processing" id="btnProcessing"
-                                                                        class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
-                                                                        style="height: 36px; width: 36px;">
-                                                                        <i class="uil uil-calculator" style="font-size:20px"></i>
-                                                                    </button>
+                                                                <div id="AttdMetchinFileSection" style="display:none">
+                                                                    <label for="AttFile" class="form-label mb-1 p-0">Attendance File</label>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <input type="file" id="AttFile" class="form-control me-2" style="width: 100%;" aria-describedby="passwordHelpInline">
+                                                                    </div>
                                                                 </div>
+
+                                                                <button type="button" onclick="AttendanceProcess()" title="Processing" id="btnProcessing"
+                                                                    class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
+                                                                    style="height: 36px; width: 36px;">
+                                                                    <i class="uil uil-calculator" style="font-size: 20px"></i>
+                                                                </button>
                                                             </div>
 
                                                         </div>
@@ -112,19 +117,19 @@
                                                 </div>
 
                                                 <div id="employeeContainer">
-                                                      <table class="table mb-0 packagesTable table-borderless adv-table"
-                                                    data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
-                                                </table>
+                                                    <table class="table mb-0 packagesTable table-borderless adv-table"
+                                                        data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
+                                                    </table>
                                                 </div>
 
 
                                             </div>
                                         </div>
-             
+
                                     </div>
 
-                                    <div id="progress-section" style="position: absolute; top: 15%;width: 70%; left: 15%; display: none; padding: 50px;">
-                                        <div class="card " style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; padding:40px">
+                                    <div id="progress-section" style="position: absolute; top: 15%; width: 70%; left: 15%; display: none; padding: 50px;">
+                                        <div class="card " style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; padding: 40px">
                                             <div class="card-body position-relative" style="padding-top: 15px !important;">
 
                                                 <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
@@ -137,23 +142,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                 <div id="attendanceContainer" class="card p-4" style="position: absolute; top:0%; width:100% ;height:100%; display:none ; z-index:9990;">
-                                                    <!-- Close Button -->
-                                                    <div class="d-flex align-items-center pb-4 card-header justify-content-between">
+                                    <div id="attendanceContainer" class="card p-4" style="position: absolute; top: 0%; width: 100%; height: 100%; display: none; z-index: 9990;">
+                                        <!-- Close Button -->
+                                        <div class="d-flex align-items-center pb-4 card-header justify-content-between">
 
-                                                        <h2>Attendance Result</h2>
-                                                        <button type="button" class="alert alert-danger fs-5"
-                                                            title="Close" onclick="showAttendanceHideEmployee()">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
-                                                    </div>
+                                            <h2>Attendance Result</h2>
+                                            <button type="button" class="alert alert-danger fs-5"
+                                                title="Close" onclick="showAttendanceHideEmployee()">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
 
 
-                                                    <div id="filter-form-container"></div>
+                                        <div id="filter-form-container"></div>
 
-                                                    <table id="attdTable" class="table mb-0 table-borderless attd-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
-                                                    </table>
-                                                </div>
+                                        <table id="attdTable" class="table mb-0 table-borderless attd-table" data-sorting="true" data-filtering="true" data-filter-container="#filter-form-container" data-paging="true" data-paging-size="10">
+                                        </table>
+                                    </div>
                                 </div>
 
                             </div>
@@ -166,25 +171,26 @@
 
 
 
-        </div>
+    </div>
 
 
     <script>
         var rootUrl = '<%= Session["__RootUrl__"]%>';
         var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+        var AttdMetchin = '<%= Session["__GetAttdMetchinName__"]%>';
         var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
         var getEmployeeUrl = `${rootUrl}/api/Employee/active-employees-date-range?CompanyId=${CompanyID}`;
         var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
-      
+
 
 
         var token = '<%= Session["__UserToken__"] %>';
-     
+
 
         $(document).ready(function () {
-           
+
             const today = new Date();
             const formattedDate = formatDate(today);
 
@@ -193,13 +199,19 @@
 
             GetEmployee();
             GetDepartment();
- 
+
+            if (AttdMetchin === "zk(access)") {
+                $("#attendanceSection").show();
+            } else {
+                $("#attendanceSection").hide();
+            }
+
         });
         function formatDate(date) {
             const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); 
+            const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = date.getFullYear();
-            return `${year}-${month}-${day}`; 
+            return `${year}-${month}-${day}`;
         }
         function SearchEmployee() {
             GetEmployee();
@@ -212,17 +224,17 @@
             $('#attendanceContainer').hide();
         }
 
-      
 
-     
 
-       
+
+
+
 
         let pollingInterval;
         function AttendanceProcess() {
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();
-            const employeeQuery = getSelectedEmployeeQuery(); 
+            const employeeQuery = getSelectedEmployeeQuery();
 
             const urlParams = new URLSearchParams(employeeQuery);
             const empIds = urlParams.getAll('empIds');
@@ -237,17 +249,17 @@
                 return;
             }
 
-          
+
             $('#progress-section').show();
             $('#progress-bar').css('width', '0%').text('0%');
 
             pollingInterval = setInterval(fetchProgress, 500);
 
             ApiCallPostAttendProcess(
-                PostAttendanceProcessURL, 
+                PostAttendanceProcessURL,
                 token,
-                'AttFile',           
-                CompanyID,      
+                'AttFile',
+                CompanyID,
                 startDate,
                 endDate,
                 empIds
@@ -258,7 +270,7 @@
                         bindAttdTableData(response.data);
                         $('#progress-section').hide();
                         $('#attendanceContainer').show();
-            
+
                     } else {
                         console.error('API Error:', response.message);
                         $('.footable-loader').hide();
@@ -275,17 +287,17 @@
         function ApiCallPostAttendProcess(apiUrl, token, fileInputId, companyId, fromDate, toDate, empIds) {
             return new Promise(function (resolve, reject) {
                 const fileInput = document.getElementById(fileInputId);
-                if (!fileInput || fileInput.files.length === 0) {
-                    Swal.fire({ icon: 'warning', title: 'File Missing', text: 'Please select a file to upload.' });
-                    reject('No file selected');
-                    return;
-                }
+                //if (!fileInput || fileInput.files.length === 0) {
+                //    Swal.fire({ icon: 'warning', title: 'File Missing', text: 'Please select a file to upload.' });
+                //    reject('No file selected');
+                //    return;
+                //}
 
                 const formData = new FormData();
-                formData.append('file', fileInput.files[0]);       
-                formData.append('companyId', companyId);          
-                formData.append('fromDate', fromDate);           
-                formData.append('toDate', toDate);             
+                formData.append('file', fileInput.files[0]);
+                formData.append('companyId', companyId);
+                formData.append('fromDate', fromDate);
+                formData.append('toDate', toDate);
 
                 empIds.forEach((id, index) => {
                     formData.append(`empIds[${index}]`, id);
@@ -325,7 +337,7 @@
                 if (data.isCompleted) {
                     clearInterval(pollingInterval);
                     $('.footable-loader').hide();
-      
+
                 }
             });
         }
@@ -336,7 +348,7 @@
             if ($table.data('footable')) {
                 $table.data('footable').destroy();
             }
-            
+
             $('#filter-form-container').empty();
 
             let serialNumber = 1;
@@ -369,15 +381,15 @@
             try {
                 $table.footable({
                     columns: columns,
-                   "rows": data,
-                     "filtering": {
-                         "enabled": true,
-                         "placeholder": "Search...",
-                         "dropdownTitle": "Search in:",
-                         "position": "left",
-                         "containers": "#filter-form-container",
-                         "space": true
-                     }
+                    "rows": data,
+                    "filtering": {
+                        "enabled": true,
+                        "placeholder": "Search...",
+                        "dropdownTitle": "Search in:",
+                        "position": "left",
+                        "containers": "#filter-form-container",
+                        "space": true
+                    }
                 }).on('postinit.ft.table', function () {
                     $('.footable-loader').hide();
                 });
@@ -417,7 +429,7 @@
             const $table = $('.adv-table');
             const defaultImage = '/hrms/user_img_default.jpg';
 
-            allEmployeeData = data; 
+            allEmployeeData = data;
             if ($table.data('footable')) {
                 $table.data('footable').destroy();
             }
@@ -605,10 +617,10 @@
                 return;
             }
 
-            const apiUrl = PostAttendanceProcessURL; 
-            const tokenValue = token;               
-            const companyId = CompanyID;            
-            const weekendDate = startDate;          
+            const apiUrl = PostAttendanceProcessURL;
+            const tokenValue = token;
+            const companyId = CompanyID;
+            const weekendDate = startDate;
 
             const postData = {
                 empIds: empIds,
@@ -645,8 +657,8 @@
 
     <script src="../assets/theme_assets/js/loadCompany.js"></script>
     <script src="../assets/theme_assets/js/apiHelper.js"></script>
-   
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
 </asp:Content>

@@ -312,6 +312,7 @@ namespace SigmaERP.hrms.UI.auth
                     var permission = jsonResponse.permission;
                     Session["__GetCompanyId__"] = userData.companyId;
                     Session["__GetEmpId__"] = userData.empId;
+                    Session["__GetAttdMetchinName__"] = userData.attdMetchinName;
                     Session["__GetUserId__"] = userData.userId;  
                     Session["__GetUserFullName__"] = userData.name;  
                     Session["__GetUID__"] = userData.userId.ToString();
@@ -335,6 +336,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__UserDataAccessLevel__"] = userData.dataAccessLevel.ToString();
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
                     Session["__GetISAdministetor__"] = userData.isAdministrator;
+                  
                     //Session["__ActualPermission__"] = userData.permission;
                     int userId = userData.userId;
                     classes.Routing.RegisterMenus(userId);
