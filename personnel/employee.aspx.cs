@@ -36,6 +36,7 @@ namespace SigmaERP.personnel
 
         //View=270
         protected void Page_Load(object sender, EventArgs e)
+
         {
             try
             {
@@ -81,7 +82,8 @@ namespace SigmaERP.personnel
                     FlatCustomOrdering();
                     classes.commonTask.LoadUnit(ddlBranch.SelectedValue, ddlUnit);
 
-                    classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
+                    //classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
+                    classes.commonTask.LoadDesignationAll(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
                     if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                         classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
                     //-----------------For Employee Personel---------------------
@@ -114,7 +116,10 @@ namespace SigmaERP.personnel
                 }
 
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Handle the exception here
+            }
         }
         private void Transfer()
         {
@@ -406,7 +411,11 @@ namespace SigmaERP.personnel
                 ViewState["__DptCode__"] = dptID[1].ToString();
                 if (ViewState["IsTranster"]==null || ViewState["IsTranster"].ToString().Equals(""))
                 AutoGenerateEmpIdByDepartment();
-                classes.commonTask.LoadDesignation(ViewState["__DptId__"].ToString(), ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(ViewState["__DptId__"].ToString(), ddlDesingnation);
+
+
+
+
                classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
                // classes.commonTask.LoadShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
                 DepartmentCustomOrdering();
@@ -414,7 +423,7 @@ namespace SigmaERP.personnel
             else
             {
                 ViewState["__DptId__"] = ddlDepartment.SelectedValue;
-                classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue, ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(ddlDepartment.SelectedValue, ddlDesingnation);
                 classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ddlDepartment.SelectedValue);
                 //classes.commonTask.LoadShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ddlDepartment.SelectedValue);
             }
@@ -535,7 +544,10 @@ namespace SigmaERP.personnel
 
                         string response = PostDocument(apiUrl, empId, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
 
-                  
+
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "SweetAlertSuccess",
+              "Swal.fire({ icon: 'success', title: 'Saved!', text: 'Employee information saved successfully.' });", true);
+
                         //                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
                         //$"goToNewTab('/personnel/EmployeeAddress.aspx?EmpId={empId}');", true);
 
@@ -746,6 +758,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@EmpDutyType", rblDutyType.SelectedValue);
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);                
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
+                cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
 
                 int result = (int)cmd.ExecuteScalar();
 
@@ -1196,6 +1209,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@EmpDutyType", rblDutyType.SelectedValue);
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
+                cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
 
                 int result = (int)cmd.ExecuteScalar();
 
@@ -1501,6 +1515,7 @@ namespace SigmaERP.personnel
                 hdfConveyance.Value = "0";
                 hdfhouserent.Value = "0";
                 hdfMedical.Value = "0";
+                ddlWeekend.SelectedIndex = 0;
                 //txtDesingnationBangla.Text = "";
                 //txtEmpCardNo.Text = "";
                 txtAlternativeCard.Text = "";
@@ -1553,7 +1568,7 @@ namespace SigmaERP.personnel
                 this.Request.QueryString.Remove("EmpId");
                 this.Request.QueryString.Remove("Edit");
 
-                ddlEmpCardNo.SelectedIndex = 0;
+               // ddlEmpCardNo.SelectedIndex = 0;
                 ddlEmpStatus.SelectedIndex = 0;
                 // Request.QueryString.Remove("EmpId");
 
@@ -1718,6 +1733,7 @@ namespace SigmaERP.personnel
                 txtNickName.Text = dtall.Rows[0]["NickName"].ToString();
                 txtNameBangla.Text = dtall.Rows[0]["EmpNameBn"].ToString();
                 ddlUnit.SelectedValue = dtall.Rows[0]["UnitId"].ToString();
+                ddlWeekend.SelectedValue = dtall.Rows[0]["Weekend"].ToString();
                 //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
                 {
@@ -1735,7 +1751,8 @@ namespace SigmaERP.personnel
                 txtRegistrationId.Text = dtall.Rows[0]["EmpProximityNo"].ToString();
                 txtTIN.Text = dtall.Rows[0]["TIN"].ToString();
                             
-                classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
+              //  classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
                 ddlDesingnation.SelectedValue = dtall.Rows[0]["DsgId"].ToString();
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("True"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ddlBranch.SelectedValue, dtall.Rows[0]["DptId"].ToString());

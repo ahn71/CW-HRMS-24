@@ -255,6 +255,7 @@
                                                                         <asp:ListItem Value="RMS">RMS</asp:ListItem>
                                                                         <asp:ListItem Value="HIKVISION">HIKVISION</asp:ListItem>
                                                                         <asp:ListItem Value="zk(access)">ZK(access)</asp:ListItem>
+                                                                        <asp:ListItem Value="Stellar">Stellar</asp:ListItem>
                                                                     </asp:DropDownList>
                                                                 </div>
                                                             </div>

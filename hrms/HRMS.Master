@@ -405,6 +405,16 @@
                                             </li>
                                             <% } %>
 
+                                             <% if (IsRouteExists("attendance/overtime-report"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/overtime-report" class="">
+                                                    <span class="menu-text">Over Time Report</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+
                                             <%--                                               <% if (IsRouteExists("attendance/out-duty-add"))
                                                 { %>
                                             <li>

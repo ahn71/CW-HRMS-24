@@ -70,7 +70,7 @@ namespace SigmaERP.hrms.settings
                 if (permission.Contains(198))
                     ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
-                classes.commonTask.loadDepartmentListByCompany(dlDepartment, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -91,7 +91,10 @@ namespace SigmaERP.hrms.settings
                 }
                 else
                 {
-                    sqlcmd = "SELECT SL,CompanyId,CompanyName,DptId,DsgId, DptName,DsgName,DsgNameBn, DsgShortName, DsgStatus,Ordering FROM v_HRD_Designation where CompanyId='" + ViewState["__CompanyId__"] + "' " + DptId + " Order by Ordering";
+               
+
+                    sqlcmd = "select dsg.SL, dsg.CompanyId,CompanyName, DsgId,dsg.DptId, ISNULL(NULLIF(dpt.DptName, ''), 'All') AS DptName,DsgName,DsgNameBn,DsgShortName,DsgStatus,Ordering  from HRD_Designation as dsg Left Join HRD_CompanyInfo as cmp on cmp.CompanyId=dsg.CompanyId left join HRD_Department  as dpt on dpt.DptId =dsg.DptId where cmp.CompanyId='" + ViewState["__CompanyId__"] + "'  Order by Ordering";
+
                 }
                 dt = new DataTable();
                 sqlDB.fillDataTable(sqlcmd, dt);
@@ -99,7 +102,9 @@ namespace SigmaERP.hrms.settings
                 divDesignationList.DataBind();
 
             }
-            catch { }
+            catch (Exception ex)
+            {
+            }
         }
         protected void divDesignationList_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -145,10 +150,12 @@ namespace SigmaERP.hrms.settings
                 }
                 else
                 {
-                    classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), dlDepartment);
+                    classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
+                  //  classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), dlDepartment);
+
                 }
                 dt = new DataTable();
-                dt = commonTask.getDesignation(getSL);
+                dt = commonTask.getDesignationAll(getSL);
                 if (dt != null && dt.Rows.Count > 0)
                 {
                     dlDepartment.SelectedValue = getDptId;
@@ -304,10 +311,7 @@ namespace SigmaERP.hrms.settings
         {
             try
             {
-                if (dlDepartment.SelectedValue == "0")
-                {
-                    lblMessage.InnerText = "warning->Please Select Any Department !"; dlDepartment.Focus(); return;
-                }
+               
                 if (txtDesignation.Text == "")
                 {
                     lblMessage.InnerText = "warning->Please Enter Designation !";

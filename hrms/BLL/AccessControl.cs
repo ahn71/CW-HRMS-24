@@ -191,14 +191,33 @@ namespace SigmaERP.hrms.BLL
             }
             else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
             {
-                conditon += " and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") ";  //for custom 
+                conditon += " and  DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ")";  //for custom 
             }
             else if(HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2") // own department
             {
-                conditon += " and DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") ";
+                conditon += " and  DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ")";
             }
             return conditon;
         }
+
+        public static string loadDepartmetConditionAll(string CompanyId)
+        {
+            string conditon = " CompanyId = '" + CompanyId + "'";
+            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                conditon += "";  //for all department 
+            }
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                conditon += " and (  DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") OR DptId=0)";  //for custom 
+            }
+            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2") // own department
+            {
+                conditon += " and ( DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") OR DptId=0)";
+            }
+            return conditon;
+        }
+
 
         public static string hasOwnEmpIdWithOtherDepartment()
         {
