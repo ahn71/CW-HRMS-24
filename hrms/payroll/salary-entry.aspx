@@ -429,10 +429,10 @@
                                                                                         <div class="input-group with-icon">
 
                                                                                             <select name="ddlGrade" id="ddlGrade" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                                <option value="0">---Select---</option>
+                                                                                               <%-- <option value="0">---Select---</option>
                                                                                                 <option value="3">1st</option>
                                                                                                 <option value="2">2nd</option>
-                                                                                                <option value="1">3rd</option>
+                                                                                                <option value="1">3rd</option>--%>
                                                                                            
                                                                                             </select>
                                                                                         </div>
@@ -616,6 +616,7 @@
             var PostDateWiseWeekendSetupURL = `${rootUrl}/api/WeekendSetup/save/datewiseWeekendsetup`;
 
             var GetBankInfoURL = `${rootUrl}/api/BankInfo/basicInfo/${CompanyID}`;
+            var GeGradeInfoURL = `${rootUrl}/api/Grade/grades?CompanyId=${CompanyID}`;
 
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
@@ -874,6 +875,7 @@
                 // Move this outside the click handler
                 $('#salaryModal').on('shown.bs.modal', function () {
                     GetBankInfo(); // Safe to call here — dropdown will exist in the DOM
+                    GetGradeInfo();
                 });
 
             }
@@ -1346,6 +1348,43 @@
                 });
             }
 
+
+            function GetGradeInfo() {
+                ApiCall(GeGradeInfoURL, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                            GradePopulateDropdown(responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                            const dropdown = document.getElementById('ddlGrade');
+                            dropdown.innerHTML = '<option value="0">---Select---</option>';
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                        const dropdown = document.getElementById('ddlGrade');
+                        dropdown.innerHTML = '<option value="0">---Select---</option>';
+                    });
+            }
+
+            function GradePopulateDropdown(data) {
+                const dropdown = document.getElementById('ddlGrade');
+                if (!dropdown) {
+                    console.warn('ddlGrade not found in DOM when trying to bind data.');
+                    return;
+                }
+
+                dropdown.innerHTML = '<option value="0">---Select---</option>';
+
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.gradeId;
+                    option.textContent = item.grdName;
+                    dropdown.appendChild(option);
+                });
+            }
 
 
         </script>
