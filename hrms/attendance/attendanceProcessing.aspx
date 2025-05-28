@@ -97,7 +97,7 @@
 
                                                             <!-- File Input and Process Button -->
                                                             <div class="col">
-                                                                <div id="AttdMetchinFileSection" style="display:none">
+                                                                <div id="AttdMetchinFileSection">
                                                                     <label for="AttFile" class="form-label mb-1 p-0">Attendance File</label>
                                                                     <div class="d-flex align-items-center">
                                                                         <input type="file" id="AttFile" class="form-control me-2" style="width: 100%;" aria-describedby="passwordHelpInline">
@@ -201,9 +201,9 @@
             GetDepartment();
 
             if (AttdMetchin === "zk(access)") {
-                $("#attendanceSection").show();
+                $("#AttdMetchinFileSection").show();
             } else {
-                $("#attendanceSection").hide();
+                $("#AttdMetchinFileSection").hide();
             }
 
         });
