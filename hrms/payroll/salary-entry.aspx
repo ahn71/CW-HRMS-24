@@ -194,161 +194,7 @@
                                                 </table>
                                                 </div>
 
-                                                <!-- Employee Salary Entry Modal -->
-                                            <%--    <div class="modal fade" id="salaryModal" tabindex="-1" aria-labelledby="salaryModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="salaryModalLabel">Set Employee Salary</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form id="salaryForm">
-                                                                    <input type="hidden" id="empIdField" name="empId">
-                                                                    <div class="form-group row mb-3">
-                                                                        <div class="col-sm-3 d-flex align-items-center">
-                                                                            <label for="ddlDataAccessLevel" class="col-form-label color-dark fs-14 fw-500 mb-0">Payment Method</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="input-group">
-                                                                         <span class="input-group-text bg-white text-gray">
-                                                                                    <i class="las la-credit-card"></i>
-                                                                                </span>
-                                                                                <select name="ddlPaymentMethod" id="ddlDataAccessLevel" class="form-select">
-                                                                                    <option value="0">---Select---</option>
-                                                                                    <option value="3">Bank</option>
-                                                                                    <option value="2">Check</option>
-                                                                                    <option value="1">Cash</option>
-                                                                                    <option value="4">Dutch Bangla</option>
-                                                                                </select>
-                                                                            </div>
-                                                                            <span class="text-danger" id="errorDataAccessLevel"></span>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtBasicSalary" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Basic</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                                <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtBasicSalary">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtMedical" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Medical</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                              <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtMedical">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtConveyance" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Conveyance</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                               <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtConveyance">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtTechnical" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Technical</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                               <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtTechnical">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtHouse" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">House</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                               <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtHouse">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                                                                                                                                                <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtOthers" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Others</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                               <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtOthers">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtGross" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Gross</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                               <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtGross">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtAttBonuse" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Atten. Bonus</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                            <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtAttBonuse">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtDormetory" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">Dormitory Rent</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                               <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtDormetory">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                     <div class="form-group row mb-25">
-                                                                        <div class="col-sm-3 d-flex aling-items-center">
-                                                                            <label for="txtTds" class=" col-form-label color-dark fs-14 fw-500 align-center mb-10">TDS</label>
-                                                                        </div>
-                                                                        <div class="col-sm-9">
-                                                                            <div class="with-icon">
-                                                                              <span class="las la-money-bill lar color-gray"></span>
-                                                                                <input type="number" class="form-control  ih-medium ip-gray radius-xs b-light" id="txtTds">
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                   
-                                                                </form>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary" id="saveSalaryBtn">Save Salary</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>--%>
+                                
 
                                                 <div class="modal fade" id="salaryModal" tabindex="-1" aria-labelledby="salaryModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-xl">
@@ -388,8 +234,8 @@
                                                                                 
                                                                                 <select name="ddlPaymentMethod" id="ddlPaymentMethod" class="form-control ih-medium ip-gray radius-xs b-light">
                                                                                     <option value="0">---Select---</option>
-                                                                                    <option value="1">Cash</option>
-                                                                                    <option value="3">Bank</option>
+                                                                                    <option value="0">Cash</option>
+                                                                                    <option value="1">Bank</option>
                                                                                     <option value="2">Check</option>
                                                                                 </select>
                                                                             </div>
@@ -450,9 +296,9 @@
                                                                                         </div>
                                                                                     </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionBasic">
                                                                             <div class="form-group">
-                                                                                <label for="txtBasicSalary" class=" color-dark fs-14 fw-500 align-center">Basic Salary</label>
+                                                                                <label for="txtBasicSalary" class=" color-dark fs-14 fw-500 align-center">Basic Salary <small id="txtBasicMsg" style="margin-left:5px;font-size:10px"></small></label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtBasicSalary">
@@ -460,19 +306,31 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionMedical">
                                                                             <div class="form-group">
-                                                                                <label for="txtMedical" class=" color-dark fs-14 fw-500 align-center">Medical</label>
+                                                                                <label for="txtMedical" class=" color-dark fs-14 fw-500 align-center">Medical<small id="txtMedicalMsg" style="margin-left:5px;font-size:10px"></small></label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtMedical">
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-
-                                                                        <div class="col-lg-4">
+                                                                         <div class="col-lg-4" id="SectionFood">
                                                                             <div class="form-group">
-                                                                                <label for="txtConveyance" class=" color-dark fs-14 fw-500 align-center">Conveyance</label>
+                                                                                <label for="txtFood" class=" color-dark fs-14 fw-500 align-center">Food<small id="txtFoodMsg" style="margin-left:5px;font-size:10px"></small></label>
+                                                                                <div class="with-icon">
+                                                                                    <span class="las la-money-bill"></span>
+                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtFood">
+                                                                                </div>
+                                                                           </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-4" id="SectionConveyance">
+                                                                            <div class="form-group">
+                                                                                <label for="txtConveyance" class=" color-dark fs-14 fw-500 align-center">Conveyance
+                                                                                    <small id="txtConveyanceMsg" style="margin-left:5px;font-size:10px"></small>
+
+                                                                                </label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtConveyance">
@@ -480,9 +338,11 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionTechnical">
                                                                             <div class="form-group">
-                                                                                <label for="txtTechnical" class=" color-dark fs-14 fw-500 align-center">Technical</label>
+                                                                                <label for="txtTechnical" class=" color-dark fs-14 fw-500 align-center">Technical <small id="txtTechnicalMsg" style="margin-left:5px;font-size:10px"></small>
+
+                                                                                </label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtTechnical">
@@ -490,9 +350,12 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionHouse">
                                                                             <div class="form-group">
-                                                                                <label for="txtHouse" class=" color-dark fs-14 fw-500 align-center">House Rent</label>
+                                                                                <label for="txtHouse" class=" color-dark fs-14 fw-500 align-center">House Rent
+
+                                                                                    <small id="txtHouseMsg" style="margin-left:5px;font-size:10px"></small>
+                                                                                </label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtHouse">
@@ -500,9 +363,11 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionOthers">
                                                                             <div class="form-group">
-                                                                                <label for="txtOthers" class=" color-dark fs-14 fw-500 align-center">Others</label>
+                                                                                <label for="txtOthers" class=" color-dark fs-14 fw-500 align-center">Others
+                                                                                    <small id="txtOthersMsg" style="margin-left:5px;font-size:10px"></small>
+                                                                                </label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtOthers">
@@ -511,9 +376,11 @@
                                                                         </div>
 
                                                                    
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionAttBonuse">
                                                                             <div class="form-group">
-                                                                                <label for="txtAttBonuse" class=" color-dark fs-14 fw-500 align-center">Attendance Bonus</label>
+                                                                                <label for="txtAttBonuse" class=" color-dark fs-14 fw-500 align-center">Attendance Bonus
+                                                                                    <small id="txtAttBonuseMsg" style="margin-left:5px;font-size:10px"></small>
+                                                                                </label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtAttBonuse">
@@ -521,9 +388,9 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionDormitory">
                                                                             <div class="form-group">
-                                                                                <label for="txtDormetory" class=" color-dark fs-14 fw-500 align-center">Dormitory Rent</label>
+                                                                                <label for="txtDormetory" class=" color-dark fs-14 fw-500 align-center">Dormitory Rent  <small id="txtDormitoryMsg" style="margin-left:5px;font-size:10px"></small></label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtDormetory">
@@ -531,9 +398,9 @@
                                                                             </div>
                                                                         </div>
 
-                                                                        <div class="col-lg-4">
+                                                                        <div class="col-lg-4" id="SectionTds">
                                                                             <div class="form-group">
-                                                                                <label for="txtTds" class=" color-dark fs-14 fw-500 align-center">TDS</label>
+                                                                                <label for="txtTds" class=" color-dark fs-14 fw-500 align-center">TDS  <small id="txtTdsMsg" style="margin-left:5px;font-size:10px"></small></label>
                                                                                 <div class="with-icon">
                                                                                     <span class="las la-money-bill"></span>
                                                                                     <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtTds">
@@ -547,25 +414,26 @@
                                                                             </div>
 
                                                                         <div class="col-lg-4">
-                                                                            <div class="card shadow-sm rounded p-3">
-                                                                                <div class="text-center">
-                                                                                    <!-- Profile Image -->
-                                                                                    <img src="/hrms/user_img_default.jpg" alt="Employee Photo"
-                                                                                        class="rounded-circle mb-3" width="100" height="100" />
+                                                                          <div class="card shadow-sm rounded p-3">
+                                                                            <div class="text-center">
+                                                                              <!-- Profile Image -->
+                                                                              <img id="empImage" src="/hrms/user_img_default.jpg" alt="Employee Photo"
+                                                                                   class="rounded-circle mb-3" width="100" height="100" />
 
-                                                                                    <!-- Employee Info -->
-                                                                                    <h5 class="mb-1 fw-bold">John Doe</h5>
-                                                                                    <p class="mb-1 text-muted">Senior Accountant</p>
-                                                                                    <p class="mb-1 text-muted">Finance Department</p>
+                                                                              <!-- Employee Info -->
+                                                                              <h5 id="empName" class="mb-1 fw-bold">John Doe</h5>
+                                                                              <p id="empDesignation" class="mb-1 text-muted">Senior Accountant</p>
+                                                                              <p id="empDepartment" class="mb-1 text-muted">Finance Department</p>
 
-                                                                                    <!-- Details -->
-                                                                                    <ul class="list-group list-group-flush mt-3 text-start">
-                                                                                        <li class="list-group-item py-1"><strong>Card No:</strong> 123456</li>
-                                                                                        <li class="list-group-item py-1"><strong>Type:</strong> Staff</li>
-                                                                                    </ul>
-                                                                                </div>
+                                                                              <!-- Details -->
+                                                                              <ul class="list-group list-group-flush mt-3 text-start">
+                                                                                <li class="list-group-item py-1"><strong>Card No:</strong> <span id="empCardNo">123456</span></li>
+                                                                                <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType">Staff</span></li>
+                                                                              </ul>
                                                                             </div>
+                                                                          </div>
                                                                         </div>
+
 
 
 
@@ -611,12 +479,13 @@
             var rootUrl = '<%= Session["__RootUrl__"]%>';
             var CompanyID = '<%= Session["__GetCompanyId__"]%>';
             var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
-            var getEmployeeDayWiseUrl = `${rootUrl}/api/Employee/employees`;
-            var getEmployeeDateWiseUrl = `${rootUrl}/api/WeekendSetup/getDatewiseEmployeeForWeekend`;
-            var PostDateWiseWeekendSetupURL = `${rootUrl}/api/WeekendSetup/save/datewiseWeekendsetup`;
+            var getEmployeeeUrl = `${rootUrl}/api/Employee/employees`;
+          
 
             var GetBankInfoURL = `${rootUrl}/api/BankInfo/basicInfo/${CompanyID}`;
             var GeGradeInfoURL = `${rootUrl}/api/Grade/grades?CompanyId=${CompanyID}`;
+            var GetSalaryStractureURL = `${rootUrl}/api/Salary/salary-structure/${CompanyID}`;
+            var GetEmployeeInfoByeIdURL = `${rootUrl}/api/Salary/SalaryInfo/${CompanyID}`;
 
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
@@ -649,7 +518,7 @@
 
                 GetUnit();
                 GetDepartment();
-
+                GetSalaryStracture();
                 //model Bank Info
                 //GetBankInfo();
 
@@ -756,7 +625,7 @@
 
 
 
-                const url = `${getEmployeeDayWiseUrl}?CompanyId=${CompanyID}${deptQuery}${empCardNo}`;
+                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}${deptQuery}${empCardNo}`;
 
                 ApiCall(url, token)
                     .then(response => {
@@ -803,7 +672,10 @@
             <div class="actions">
                 <ul class="">
                     <li>
-                        <a href="javascript:void(0)" data-id="${row.empId}" class="btn btn-primary btn-sm text-white delete-btn remove">
+                        <a href="javascript:void(0)"
+                         data-emp-id="${row.empId}" 
+                         data-emp-type="${row.empType}" 
+                         class="btn btn-primary btn-sm text-white delete-btn remove">
                             <i class="uil uil-money-insert"></i>Set Salary
                         </a>
                     </li>
@@ -840,7 +712,7 @@
                     { name: "empType", title: "Emp Type", className: "userDatatable-content" },
                     { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
                     //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
-                    { name: "action", title: "action", className: "userDatatable-content" }
+                    { name: "action", title: "Action", className: "userDatatable-content" }
                 ];
 
                 try {
@@ -861,22 +733,57 @@
 
                 }
 
-                //          $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                //  const EmpId = $(this).data('id');
-                ////  Delete(userRoleId); // Custom function to handle delete logic
-                //              console.log('Delete button clicked for userRoleId:', EmpId);
+                let selectedEmpId = null;
+                let selectedEmpType = null;
 
                 $(document).off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                    const empId = $(this).data('id');
-                    $('#empIdField').val(empId);
+                    selectedEmpId = $(this).data('emp-id');
+                    selectedEmpType = $(this).data('emp-type');
+
+                    $('#empIdField').val(selectedEmpId);
+
+                    // Optional: You can store the empType in a hidden field too
+                    $('#empTypeField').val(selectedEmpType); 
+
+                    console.log(selectedEmpType)
+                    console.log(selectedEmpId)
+
                     $('#salaryModal').modal('show');
                 });
 
-                // Move this outside the click handler
                 $('#salaryModal').on('shown.bs.modal', function () {
-                    GetBankInfo(); // Safe to call here — dropdown will exist in the DOM
+                    GetBankInfo();
                     GetGradeInfo();
+                    GetEmployeeInfoByeId(selectedEmpId);
+
+                    const roleKey = selectedEmpType ?.toLowerCase(); // Ensure lowercase (e.g., 'Worker' → 'worker')
+
+                    const salaryFields = {
+                        basic: { msgSelector: '#txtBasicMsg', sectionId: '#SectionBasic' },
+                        medical: { msgSelector: '#txtMedicalMsg', sectionId: '#SectionMedical' },
+                        conveyance: { msgSelector: '#txtConveyanceMsg', sectionId: '#SectionConveyance' },
+                        technical: { msgSelector: '#txtTechnicalMsg', sectionId: '#SectionTechnical' },
+                        houserent: { msgSelector: '#txtHouseMsg', sectionId: '#SectionHouse' },
+                        food: { msgSelector: '#txtFoodMsg', sectionId: '#SectionFood' },
+                        others: { msgSelector: '#txtOthersMsg', sectionId: '#SectionOthers' },
+                        attbonuse: { msgSelector: '#txtAttBonuseMsg', sectionId: '#SectionAttBonuse' },
+                        dormitory: { msgSelector: '#txtDormitoryMsg', sectionId: '#SectionDormitory' },
+                        tds: { msgSelector: '#txtTdsMsg', sectionId: '#SectionTds' },
+                    };
+
+                    Object.entries(salaryFields).forEach(([key, { msgSelector, sectionId }]) => {
+                        const fieldData = salaryStructureCache[`${roleKey} ${key}`];
+
+                        if (fieldData) {
+                            $(msgSelector).text(fieldData.msg || '');
+                            $(sectionId).show();
+                        } else {
+                            $(sectionId).hide();
+                        }
+                    });
                 });
+
+
 
             }
 
@@ -1077,239 +984,81 @@
                     .join('&');
             }
 
-            function onClickSaveWeekend() {
-                var searchType = $('#ddlSearchBye').val();
+            var salaryStructureCache = {};
 
-                if (searchType === 'Day') {
-                    Day_WiseEmpWeekendSetup();
-                } else {
-                    DateWiseEmpWeekendSetup();
-                }
-            }
-
-            function Day_WiseEmpWeekendSetup() {
-                const starDate = sessionStorage.getItem('__startDate__');
-                const endDate = sessionStorage.getItem('__endDate__');
-                const weekendDate = sessionStorage.getItem('__weekendDate__');
-
-                const employeeQuery = getSelectedEmployeeQuery();
-                const urlParams = new URLSearchParams(employeeQuery);
-                const empIds = urlParams.getAll('empIds');
-
-                if (empIds.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No Employee Selected',
-                        text: 'Please select at least one employee before processing attendance.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('companyId', CompanyID);
-                formData.append('fromDate', starDate);
-                formData.append('toDate', endDate);
-                formData.append('weekendDay', weekendDate);
-
-                empIds.forEach((id, index) => {
-                    formData.append(`empIds[${index}]`, id);
-                });
-
-                ApiCallPostForm(PostDayWiseWeekendSetupURL, token, formData)
-                    .then(data => {
-                        if (data.status === 200) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Date Wise Weekend Setup Success',
-                                text: 'Thanks!',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'API Error',
-                                text: data.message || 'Unexpected response from server.',
-                                confirmButtonText: 'OK'
-                            });
-                            console.error('API Error:', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Request failed:', error);
-                    });
-            }
-
-
-            function DateWiseEmpWeekendSetup() {
-                //const WeekendDate = $('#txtWeekendDate').val();
-                const WeekendDate = sessionStorage.getItem('__WeekendDate__');
-
-
-                const employeeQuery = getSelectedEmployeeQuery();
-                const urlParams = new URLSearchParams(employeeQuery);
-                const empIds = urlParams.getAll('empIds');
-
-                if (empIds.length === 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No Employee Selected',
-                        text: 'Please select at least one employee before processing attendance.',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('companyId', CompanyID);
-                formData.append('weekendDay', WeekendDate);
-
-                empIds.forEach((id, index) => {
-                    formData.append(`empIds[${index}]`, id);
-                });
-
-                ApiCallPostForm(PostDateWiseWeekendSetupURL, token, formData)
-                    .then(data => {
-                        if (data.status === 200) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Date Wise Weekend Setup Success',
-                                text: 'Thanks!',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'API Error',
-                                text: data.message || 'Unexpected response from server.',
-                                confirmButtonText: 'OK'
-                            });
-                            console.error('API Error:', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Request failed:', error);
-                    });
-            }
-
-
-
-            function onClickDeleteWeekend() {
-                var searchType = $('#ddlSearchBye').val();
-
-                if (searchType === 'Day') {
-                    Day_WiseWeekendDelete();
-                } else {
-                    DateWiseWeekendDelete();
-                }
-            }
-
-
-
-            function Delete() {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you really want to delete this Weekend?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        var searchType = $('#ddlSearchBye').val();
-                        if (searchType === 'Day') {
-                            Delete_DayWiseWeekend();
-                        } else {
-                            DeleteDateWiseWeekend();
-                        }
-
-
-
-                    }
-                });
-            }
-
-
-            function DeleteDateWiseWeekend() {
-                const WeekendDate = sessionStorage.getItem('__WeekendDate__');
-                const employeeQuery = getSelectedEmployeeQuery(); // Already returns query string like "empIds=0001&empIds=0002"
-
-                if (!employeeQuery) {
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Please select at least one employee.',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-
-                const url = `${DeleteDateWiseUrl}/${CompanyID}/${WeekendDate}?${employeeQuery}`;
-
-                ApiDeleteByUrl(url, token)
+            function GetSalaryStracture() {
+                ApiCall(GetSalaryStractureURL, token)
                     .then(function (response) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Weekend deleted successfully.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            GetEmployee_DateWise();
-                        });
+                        if (response.statusCode === 200) {
+                            var data = response.data;
+
+                            // Flatten and cache with keys like "worker basic", "staff medical"
+                            for (var role in data) {
+                                for (var key in data[role]) {
+                                    var cleanKey = key.trim(); // Removes newline characters
+                                    var cacheKey = role + " " + cleanKey;
+                                    salaryStructureCache[cacheKey] = data[role][key];
+                                }
+                            }
+
+                            console.log("Salary structure cached:", salaryStructureCache);
+                        }
                     })
                     .catch(function (error) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An error occurred while deleting the weekend data.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                        console.error("Error loading employee info:", error);
                     });
             }
 
-            function Delete_DayWiseWeekend(id) {
 
-                const startDate = sessionStorage.getItem('__startDate__');
-                const endDate = sessionStorage.getItem('__endDate__');
-                const weekendDate = sessionStorage.getItem('__weekendDate__');
-                const employeeQuery = getSelectedEmployeeQuery(); // Already returns query string like "empIds=0001&empIds=0002"
 
-                if (!employeeQuery) {
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Please select at least one employee.',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                    return;
-                }
-
-                url = `${Delete_DayWiseUrl}/${startDate}/${endDate}?companyId=${CompanyID}&${employeeQuery}`
-                ApiDeleteByUrl(url, token)
+            function GetEmployeeInfoByeId(EmpId) {
+                ApiCall(`${GetEmployeeInfoByeIdURL}/${EmpId}`, token)
                     .then(function (response) {
-                        Swal.fire({
-                            title: 'Success!',
-                            text: 'Weekend deleted successfully.',
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            GetEmployeeDayWise();
-                        });
+                        if (response.statusCode === 200) {
+                            var data = response.data;
+
+                            // --- Dropdowns ---
+                            $('#ddlOvertTime').val(
+                                data.isSingleRateOT ? '1' : (data.isOverTime ? '3' : '2')
+                            );
+                            $('#ddlPaymentMethod').val(data.paymentMethod ?? '0');
+                            $('#ddlSalaryBank').val(data.bankId ?? '0');
+                            $('#ddlGrade').val(data.grdId ?? '');
+
+                            // --- Textboxes ---
+                            $('#AccountNo').val(data.empAccountNo ?? '');
+                            $('#txtGross').val((data.empPresentSalary ?? 0).toFixed(2));
+                            $('#txtBasicSalary').val((data.basicSalary ?? 0).toFixed(2));
+                            $('#txtMedical').val((data.medicalAllownce ?? 0).toFixed(2));
+                            $('#txtFood').val((data.foodAllownce ?? 0).toFixed(2));
+                            $('#txtConveyance').val((data.convenceAllownce ?? 0).toFixed(2));
+                            $('#txtTechnical').val((data.technicalAllownce ?? 0).toFixed(2));
+                            $('#txtHouse').val((data.houseRent ?? 0).toFixed(2));
+                            $('#txtOthers').val((data.othersAllownce ?? 0).toFixed(2));
+                            $('#txtAttBonuse').val((data.attendanceBonus ?? 0).toFixed(2));
+                            $('#txtDormetory').val((data.dormitoryRent ?? 0).toFixed(2));
+                            $('#txtTds').val((data.incomeTax ?? 0).toFixed(2));
+
+
+                            $('#empName').text(data.empName ?? 'N/A');
+                            $('#empDesignation').text(data.dsgName ?? 'N/A');
+                            $('#empDepartment').text(data.dptName ?? 'N/A');
+                            $('#empCardNo').text(data.empCardNo ?? 'N/A');
+                            $('#empType').text(data.empType ?? 'N/A');
+
+                            // Profile Image Handling
+                            let imagePath = data.empPicture && data.empPicture.trim() !== ''
+                                ? data.empPicture
+                                : '/hrms/user_img_default.jpg';
+                            $('#empImage').attr('src', imagePath);
+
+                        }
                     })
                     .catch(function (error) {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'An error occurred while deleting the module.',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
+                        console.error("Error loading employee info:", error);
                     });
-
             }
 
-
-            //Model Start 
 
             function GetBankInfo() {
                 ApiCall(GetBankInfoURL, token)
