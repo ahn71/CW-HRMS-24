@@ -121,7 +121,7 @@
                                      <asp:DropDownList runat="server" ID="ddlDepartment" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlDepartment_SelectedIndexChanged" ></asp:DropDownList>
                                  </td>
                                   <td>
-                                      Roster 
+                                      Current Roster 
                                       </td>
                                        <td class="auto-style1">
                                      <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged" ClientIDMode="Static" ></asp:DropDownList>

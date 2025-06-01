@@ -72,9 +72,10 @@ namespace SigmaERP.personnel
 
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
-                classes.commonTask.LoadGrouping(ddlGroupList,ddlCompanyList.SelectedValue);  
+                classes.commonTask.LoadGroupingAll(ddlGroupList,ddlCompanyList.SelectedValue);  
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);
                 classes.commonTask.LoadShiftForSMOperation(ddlNewShift, ddlCompanyList.SelectedValue);
+                classes.commonTask.LoadPermanentShiftShift(ddlPermanentShift, ddlCompanyList.SelectedValue);
             }
             catch { }
 
@@ -116,6 +117,12 @@ namespace SigmaERP.personnel
             try
             {
                 dtShiftInfoDetails = new DataTable();
+
+                string condition = "";
+                if(ddlPermanentShift.SelectedValue != "0")
+                {
+                    condition += " and pecs.sftid='" + ddlPermanentShift.SelectedValue + "'";
+                }
                 if (!ForJustDepartment)  // if for just department is true then execut else block.else execute if block 
                 {
                     DateTime TFromDate = DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim())); 
@@ -142,8 +149,12 @@ namespace SigmaERP.personnel
                 }
                 else
                 {
-                    SqlCmd = " Select Distinct EmpId,EmpCardNo+' ('+ EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,CAST('' as varchar(30)) as SftName,EmpType,CAST(0 AS bit) AS Status,CAST(0 AS bit) AS Assigned,CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,SftId From v_Personnel_EmpCurrentStatus where IsActive=1 and DptId ='" + ddlDepartmentList.SelectedItem.Value + "' AND CompanyId='" + ddlCompanyList.SelectedValue + "' AND  GId=" + ddlGroupList.SelectedValue + "" +
-                     " AND EmpDutyType='Roster' And EmpStatus in (1,8) order by EmpCardNo";
+                    //SqlCmd = " Select Distinct EmpId,EmpCardNo+' ('+ EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,CAST('' as varchar(30)) as SftName,EmpType,CAST(0 AS bit) AS Status,CAST(0 AS bit) AS Assigned,CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,SftId From v_Personnel_EmpCurrentStatus where IsActive=1 and DptId ='" + ddlDepartmentList.SelectedItem.Value + "' AND CompanyId='" + ddlCompanyList.SelectedValue + "' AND  GId=" + ddlGroupList.SelectedValue + "" +
+                    // " AND EmpDutyType='Roster' And EmpStatus in (1,8) order by EmpCardNo";
+
+
+                    SqlCmd = " select  Distinct pecs.EmpId,RIGHT(pecs.EmpCardNo, 6) + ' (' + RIGHT(pei.EmpProximityNo, 6) + ')' AS EmpCardNo,Pei.EmpName,dsg.DsgName,CAST('' as varchar(30)) as SftName,perSft.sftName as perSftName ,etype.EmpType,CAST(0 AS bit) AS Status, CAST(0 AS bit) AS Assigned, CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,pecs.SftId from Personnel_EmpCurrentStatus as pecs left join Personnel_employeeInfo as pei on pei.EmpId = pecs.EmpId left join Hrd_Designation as dsg on dsg.DsgId = pecs.DsgId Left Join HRD_EmployeeType as etype on pecs.EmpTypeId = etype.EmpTypeId left join Hrd_shift as perSft on perSft.SftId = pecs.sftId where pecs.IsActive = 1 and pecs.DptId = '"+ddlDepartmentList.SelectedItem.Value+"' AND pecs.CompanyId = '"+ddlCompanyList.SelectedValue+"' AND pecs.GId = '"+ddlGroupList.SelectedValue+ "' AND pecs.EmpDutyType = 'Roster' And pecs.EmpStatus in (1, 8) "+condition+" order by EmpCardNo";
+
                 }
                 sqlDB.fillDataTable(SqlCmd, dtShiftInfoDetails);
 
@@ -167,8 +178,9 @@ namespace SigmaERP.personnel
 
               //  ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+            }
         }
         private void shiftTransfer()
         {
@@ -625,6 +637,18 @@ INSERT INTO [dbo].[ShiftTransferInfo]
             }
 
             catch { }
+        }
+
+        protected void ddlPermanentShift_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadAllEmployeeList(true);
+                System.Threading.Thread.Sleep(1000);
+            }
+
+            catch { }
+
         }
     }
 }

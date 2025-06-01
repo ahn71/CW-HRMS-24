@@ -508,6 +508,21 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void LoadGroupingAll(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlDB.fillDataTable("Select GId,GName From HRD_Group where " + condition + " and IsActive='True'", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "GId";
+                dl.DataTextField = "GName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
         public static void LoadGrouping(DropDownList dl, string CompanyId, string DptId)
         {
             try
@@ -1945,7 +1960,27 @@ namespace SigmaERP.classes
                 dl.DataBind();
                 dl.Items.Insert(0, new ListItem(string.Empty, "0"));
             }
-            catch { }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public static void LoadPermanentShiftShift(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlCmd = "Select SftId,SftName From HRD_Shift where " + condition + " or DptId='0' order by sftName ";
+                sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "SftId";
+                dl.DataTextField = "SftName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch (Exception ex)
+            {
+            }
         }
         public static void loadDepartmentListByCompanyAndGroup(DropDownList dl, string CompanyId, string GroupId)
         {

@@ -130,10 +130,10 @@
                <div style="border:1px solid white">                  
                         <table style="width:100%" >
                               <tr>
-                                    <td style="color:#fff;font-size:13px;">
+                                    <td style="color:#fff;font-size:13px;" runat="server" visible="false"> 
                                        Company
                                       </td>
-                                       <td class="tdWidth">
+                                       <td class="tdWidth" runat="server" visible="false">
                                      <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged"  ></asp:DropDownList>
                                  </td>
 
@@ -150,7 +150,7 @@
                                      <asp:DropDownList runat="server" ID="ddlGrouopList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlGrouopList_SelectedIndexChanged"  ></asp:DropDownList>
                                  </td>   
                                   <td style="color:#fff;font-size:13px;">
-                                      Shift 
+                                      Current Roster 
                                       </td>
                                        <td class="tdWidth">
                                      <asp:DropDownList runat="server" ID="ddlAssignShift" CssClass="form-control text_box_width style" style="min-width:96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlAssignShift_SelectedIndexChanged" ></asp:DropDownList>
