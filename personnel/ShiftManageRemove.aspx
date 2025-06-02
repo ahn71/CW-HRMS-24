@@ -106,7 +106,7 @@
                         <ContentTemplate>                      
                         
                <div>
-                        <table style="width:88%;margin:0px auto">
+                        <table style="width:90%;margin:0px auto">
                               <tr>
                                     <%--<td runat="server" >
                                        Company
@@ -134,9 +134,12 @@
                                        <asp:TextBox Height="28px" MaxLength="10" AutoComplete="Off" PlaceHolder="Select for single date " Style=" border:1px solid; text-align:center;" ID="txtRosterDate" runat="server" Enabled="true" ForeColor="Blue"   ></asp:TextBox> 
                                    <asp:CalendarExtender ID="txtRosterDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtRosterDate">
                                    </asp:CalendarExtender>
+                                      </td>
+                                      <td>
+
                              <asp:Button runat="server" ID="btnSearch" CssClass="css_btn Ptbut" Text="Search" Width="125px" Height="34px" OnClick="btnSearch_Click"  /> 
                                   </td>
-                                <td>                                    
+                                <td runat="server" visible="false">                                    
                                      <asp:Button runat="server" ID="btnClose" CssClass="css_btn Ptbut" Text="Close" Width="65px" Height="34px"  />
                                       
                                 </td> 

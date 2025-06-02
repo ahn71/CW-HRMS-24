@@ -61,10 +61,10 @@
                <div style="margin-left:15px">
                         <table style="border-collapse: collapse;width:100%; padding: 5px 0px;">
                               <tr>
-                                    <td>
+                                    <td runat="server" visible="false">
                                        Company
                                       </td>
-                                       <td >
+                                       <td runat="server" visible="false">
                                      <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="200px" AutoPostBack="True" Enabled="False"   ></asp:DropDownList>
                                  </td>
                                        <td >

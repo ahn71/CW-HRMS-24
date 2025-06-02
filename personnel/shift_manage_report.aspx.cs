@@ -141,7 +141,7 @@ namespace SigmaERP.personnel
             Session["__ShiftTarnsferReport__"] = dt;
             if (dt==null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning-> Data Not Found";
                 return;
             } 
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=ShiftTarnsferReport-"+ddlCompanyList.SelectedValue+"');", true);  //Open New Tab for Sever side code
@@ -172,7 +172,7 @@ namespace SigmaERP.personnel
             dt = GenerateRepotData();
             if (dt == null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning-> Data Not Found";
                 return;
             }
             gvEmpList.DataSource = dt;

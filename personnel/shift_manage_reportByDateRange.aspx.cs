@@ -164,7 +164,7 @@ namespace SigmaERP.personnel
             Session["__ShiftTarnsferReport__"] = dt;
             if (dt == null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning->";
                 return;
             }
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=ShiftTarnsferReport-" + ddlCompany.SelectedValue + "');", true);  //Open New Tab for Sever side code
@@ -211,7 +211,7 @@ namespace SigmaERP.personnel
             sqlDB.fillDataTable(sql, dt = new DataTable());           
             if (dt == null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning-> Data Not Found";
                 return;
             }
             Session["__ShiftScheduleDetails__"] = dt;

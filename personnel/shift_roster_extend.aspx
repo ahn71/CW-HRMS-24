@@ -122,8 +122,8 @@
                    <div style="overflow:hidden;margin-top:-32px; float:right;">
                                                
                        <asp:RadioButtonList style="color:#fff;font-size:13px;font-weight:bold;position:relative;float:right;margin-right:5%;"  ID="rbRosterType" runat="server" ClientIDMode="Static" RepeatDirection="Horizontal" Font-Bold="True">
-                           <asp:ListItem Value="Create" Text="Create Roster"></asp:ListItem>
-                           <asp:ListItem Value="Extend" Text="Extend Roster"></asp:ListItem>
+                          <%-- <asp:ListItem Value="Create" Text="Create Roster"></asp:ListItem>--%>
+                           <asp:ListItem Value="Extend" Text="Extend Roster" Selected="True" ></asp:ListItem>
                        </asp:RadioButtonList>               
                    </div>
                                  </div>
