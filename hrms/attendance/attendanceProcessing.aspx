@@ -374,6 +374,7 @@
                 { name: "empPicture", title: "Name", className: "userDatatable-content" },
                 { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
                 { name: "dptName", title: "Department", className: "userDatatable-content" },
+                { name: "attStatus", title: "Status", className: "userDatatable-content" },
                 { name: "inPunch", title: "In Time", className: "userDatatable-content" },
                 { name: "outPunch", title: "Out Time", className: "userDatatable-content" },
             ];

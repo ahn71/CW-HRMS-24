@@ -160,7 +160,7 @@
                                       <asp:CheckBox ID="chkLoadAllShiftList" runat="server" AutoPostBack="true" Text="All A.Sh." OnCheckedChanged="chkLoadAllShiftList_CheckedChanged"  />
                                   </td> 
                                   <td >
-                                       <asp:TextBox ID="txtDate" runat="server" Width="100px" placeHolder="Extend Date" Style=" text-align:center "  ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                       <asp:TextBox ID="txtDate" runat="server" Width="100px"   autocomplete="off" placeHolder="Extend Date" Style=" text-align:center "  ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
                                       <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                 PopupButtonID="imgEffectDateFrom" Enabled="True"
                                                 TargetControlID="txtDate" ID="CExtApplicationDate">

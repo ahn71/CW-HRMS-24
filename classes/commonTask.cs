@@ -2042,7 +2042,7 @@ namespace SigmaERP.classes
                 dl.DataSource = dt;
                 dl.DataBind();
                 if (dl.Items.Count > 1)
-                    dl.Items.Insert(0, new ListItem("All", "0"));
+                    dl.Items.Insert(0, new ListItem("", "0"));
             }
             catch { }
         }

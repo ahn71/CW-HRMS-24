@@ -249,10 +249,6 @@
 
                                                                                             <select name="ddlSalaryBankName" id="ddlSalaryBank" class="form-control ih-medium ip-gray radius-xs b-light">
 
-                                                                                               <%-- <option value="0">---Select---</option>
-                                                                                                <option value="3">IFIC Bank</option>
-                                                                                                <option value="2">Inslami Bank</option>
-                                                                                                <option value="1">Jamuna bank</option>--%>
                                                                                            
                                                                                             </select>
                                                                                         </div>

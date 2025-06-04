@@ -131,7 +131,7 @@
                                   </td>                                                                                    
                                        <td>  <asp:Button runat="server" ID="btnDelete" CssClass="css_btn Ptbut" Font-Bold="true" Text="Delete full roster" OnClientClick="return confirm('Do you want to delete ?')" Width="125px" Height="34px" OnClick="btnDelete_Click"  /></td>
                                   <td>
-                                       <asp:TextBox Height="28px" MaxLength="10" AutoComplete="Off" PlaceHolder="Select for single date " Style=" border:1px solid; text-align:center;" ID="txtRosterDate" runat="server" Enabled="true" ForeColor="Blue"   ></asp:TextBox> 
+                                       <asp:TextBox Height="28px" MaxLength="10" AutoComplete="Off" PlaceHolder="Select for single date " Style=" border:1px solid; text-align:center;" ID="txtRosterDate" runat="server" Enabled="true" ForeColor="Blue" ></asp:TextBox> 
                                    <asp:CalendarExtender ID="txtRosterDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtRosterDate">
                                    </asp:CalendarExtender>
                                       </td>

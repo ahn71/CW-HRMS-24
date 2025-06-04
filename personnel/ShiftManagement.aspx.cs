@@ -128,11 +128,11 @@ namespace SigmaERP.personnel
                 if (!ForJustDepartment)  // if for just department is true then execut else block.else execute if block 
                 {
                     string condition2 = "";
-                    if (ddlGroupList.SelectedIndex > 0)
-                    {
+                    //if (ddlGroupList.SelectedIndex > 0)
+                    //{
                         condition += " and GId='" + ddlGroupList.SelectedValue + "' ";
                         condition2 += " and s.GId='" + ddlGroupList.SelectedValue + "' ";
-                    }
+                    //}
                     if (ddlPermanentShift.SelectedValue != "0")
                     {
                         condition += " and Sftid='" + ddlPermanentShift.SelectedValue + "'";
@@ -161,10 +161,10 @@ namespace SigmaERP.personnel
                 }
                 else
                 {
-                    if (ddlGroupList.SelectedIndex > 0)
-                    {
+                    //if (ddlGroupList.SelectedIndex > 0)
+                    //{
                         condition += " and pecs.GId='" + ddlGroupList.SelectedValue + "' ";
-                    }
+                  //  }
                     if (ddlPermanentShift.SelectedIndex>0)
                     {
                         condition += " and pecs.sftid='" + ddlPermanentShift.SelectedValue + "' ";
@@ -526,7 +526,7 @@ INSERT INTO [dbo].[ShiftTransferInfo]
                 classes.commonTask.LoadShiftForSMOperation(ddlNewShift, ddlCompanyList.SelectedValue,ddlDepartmentList.SelectedValue);
 
                 commonTask.loadGroupByDepartment(ddlGroupList, ddlDepartmentList.SelectedValue);
-
+                if(ddlGroupList.SelectedValue!="0")
                 ddlGroupList_SelectedIndexChanged(sender,e);
 
 
