@@ -1163,6 +1163,7 @@
     <Content Include="hrms\attendance\attendanceProcessing.aspx" />
     <Content Include="hrms\attendance\attendanceWeekendSetup.aspx" />
     <Content Include="hrms\attendance\roster\roster-entry.aspx" />
+    <Content Include="hrms\attendance\roster\roster-list.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
@@ -3710,6 +3711,13 @@
     </Compile>
     <Compile Include="hrms\attendance\roster\roster-entry.aspx.designer.cs">
       <DependentUpon>roster-entry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\roster\roster-list.aspx.cs">
+      <DependentUpon>roster-list.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\roster\roster-list.aspx.designer.cs">
+      <DependentUpon>roster-list.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\dashbordUser.aspx.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>

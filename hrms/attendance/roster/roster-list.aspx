@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="roster-entry.aspx.cs" Inherits="SigmaERP.hrms.attendance.roster.roster_entry" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="roster-list.aspx.cs" Inherits="SigmaERP.hrms.attendance.roster.roster_list" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-     <style>
+         <style>
             .packagesTable {
                 padding: 0 !important;
             }
@@ -38,9 +38,8 @@
          }
         </style>
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
-            <div class="mt-1">
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+                <div class="mt-1">
         <div class="products_page product_page--grid mb-30">
             <div class="container-fluid">
                 <div class="row justify-content-center">
@@ -807,5 +806,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 </asp:Content>
