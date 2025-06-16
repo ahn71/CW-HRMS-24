@@ -33,7 +33,7 @@
          .loaderDaily {
              position: absolute;
              left: 50%;
-             top: 8%;
+             top: 10%;
 
          }
          .user-role{
@@ -144,7 +144,7 @@
                                     <div class="card-body position-relative mt-3" style="padding-top: 15px !important;">
 
                                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
-                                            <div class="loaderparent">
+                                            <div class="loaderparent  position-relative ">
                                                 <div class="ad-table-table__header d-flex justify-content-between mb-15">
                                                     <div class="container-fluid" style="padding-left:0px !important; padding-right:0px !important">
                                                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 align-items-end">
@@ -194,7 +194,7 @@
                                                            
                                                               <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                                                     <button type="button" class="btn btn-danger btn-sm" onclick="Delete()">Delete</button>
-                                                                    <button type="button" class="btn btn-warning btn-sm">Excel</button>
+                                                                    <button id="exportExcelBtn" type="button" class="btn btn-warning btn-sm" onclick="ExportToExcel()">Excel</button>
                                                                     <button type="button" class="btn btn-success btn-sm">PDF</button>
                                                                 </div>
 
@@ -223,7 +223,7 @@
                                                 </div>
 
                                                 <div id="alertContainer" class="alert alert-info text-center mt-3" role="alert" style="height: 200px">
-                                                    <strong>Note:</strong> Please filter employees first before setting up the Roster.
+                                                    <strong>Note:</strong> Please select a start and end date to filter the roster.
                                                 </div>
                                                 <div id="employeeContainer">
                                                       <table class="table mb-0 packagesTable table-borderless adv-table"
@@ -267,6 +267,7 @@
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
             var DeleteRosterUrl = `${rootUrl}/api/Roster/roster/delete`;
+            var DeleteRosterByDateURL = `${rootUrl}/api/Roster/DeleteBydate?companyId=${CompanyID}`;
 
 
 
@@ -409,25 +410,33 @@
                 appendQueryStringToFormData(unitQueryString);
 
                 const url = `${getEmployeeeUrl}`;
-
+                $('.loaderDaily').show();
+                $('.loaderparent').css('opacity', '0.5');
                 ApiCallPostForm(url, token, formData)
                     .then(response => {
                         if (response.statusCode === 200) {
+                           $('.loaderDaily').hide();
                             $('#alertContainer').hide();
+                            $('.loaderparent').css('opacity', '1');
                             $('#DataSubmitContainer').show();
+                             sessionStorage.setItem('__employeeRosterData__', JSON.stringify(response.data));
                             bindTableData(response.data);
                         } else {
                             console.error('API Error:', response.message);
                             bindTableData([]);
+                             $('.loaderDaily').hide();
+                            $('.loaderparent').css('opacity', '1');
                         }
                     })
                     .catch(error => {
                         console.error('Network Error:', error);
                         bindTableData([]);
+                         $('.loaderDaily').hide();
+                         $('.loaderparent').css('opacity', '1');
                     });
             }
 
-
+      
 
             let allEmployeeData = [];
             const selectedEmployeeIds = new Set();
@@ -453,6 +462,7 @@
                     <li>
                         <a href="javascript:void(0)"
                          data-emp-id="${row.empId}" 
+                         data-roster-date="${row.rosterDate}" 
                          class="text-danger delete-btn">
                             <i class="uil uil-trash"></i>
                         </a>
@@ -514,14 +524,16 @@
                 }
 
                 let selectedEmpId = null;
+                let selectedRosterDate = null;
 
                 $(document).off('click', '.delete-btn').on('click', '.delete-btn', function () {
                     selectedEmpId = $(this).data('emp-id');
-
-                    $('#empIdField').val(selectedEmpId);
+                    selectedRosterDate = $(this).data('roster-date');
+                    const parts = selectedRosterDate.split('-'); // ['04', '06', '2025']
+                    const formattedDate = `${parts[1]}-${parts[0]}-${parts[2]}`;
+                    console.log(selectedRosterDate)
                     console.log(selectedEmpId)
-
-                    $('#salaryModal').modal('show');
+                    DeleteByeDate(selectedEmpId,formattedDate);
                 });
             }
 
@@ -1043,24 +1055,6 @@
         }
 
             function Delete() {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "Do you really want to delete this Weekend?",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        DeleteRoster();
-
-
-                    }
-                });
-            }
-
-            function DeleteRoster() {
                 const startDate = sessionStorage.getItem('__startDate__');
                 const endDate = sessionStorage.getItem('__endDate__');
                 const companyId = sessionStorage.getItem('__companyId__'); // or wherever you get companyId from
@@ -1070,39 +1064,52 @@
                 if (!employeeQuery) {
                     Swal.fire({
                         title: 'Warning!',
-                        text: 'Please select at least one employee.',
+                        text: 'Please select employee.',
                         icon: 'warning',
                         confirmButtonText: 'OK'
                     });
                     return;
                 }
-
-                // Convert query string to array of empIds
                 const empIds = [];
                 const params = new URLSearchParams(employeeQuery);
                 for (const value of params.getAll('empIds')) {
                     empIds.push(value);
                 }
 
-                // Prepare the DTO object
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Are you sure you want to delete the roster entries from ${startDate} to ${endDate} for the selected employees?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+          
                 const deleteRosterData = {
                     fromDate: startDate,
                     toDate: endDate,
-                    companyId: companyId,
+                    companyId: CompanyID,
                     empIds: empIds
                 };
 
                 const url = `${DeleteRosterUrl}`;
+                $('.loaderDaily').show();
+                $('.loaderparent').css('opacity', '0.5');
 
                 ApiDeleteByBody(url, deleteRosterData, token)
                     .then(function (response) {
                         Swal.fire({
                             title: 'Success!',
-                            text: 'Weekend deleted successfully.',
+                            text: 'Roster deleted successfully.',
                             icon: 'success',
                             confirmButtonText: 'OK'
                         }).then(() => {
-                            GetEmployeeDayWise();
+                            GetEmployees();
+                            $('.loaderDaily').hide();
+                            $('.loaderparent').css('opacity', '1');
+                            selectedEmployeeIds.clear();
                         });
                     })
                     .catch(function (error) {
@@ -1113,7 +1120,98 @@
                             confirmButtonText: 'OK'
                         });
                     });
+
+
+                    }
+                });
             }
+
+            
+
+            
+         function DeleteByeDate(empId, rosterDate) {
+             Swal.fire({
+                 title: 'Are you sure?',
+                   text: `Do you want to permanently delete the roster for this date: ${rosterDate}?`,
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Yes, delete it!'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     url=`${DeleteRosterByDateURL}&empId=${empId}&rosterDate=${rosterDate}`
+                     ApiDeleteByUrl(url, token)
+                         .then(function (response) {
+                             Swal.fire({
+                                 title: 'Success!',
+                                 text: 'Roster deleted successfully.',
+                                 icon: 'success',
+                                 confirmButtonText: 'OK'
+                             }).then(() => {
+                                 GetEmployees();
+                             });
+                         })
+                         .catch(function (error) {
+                             Swal.fire({
+                                 title: 'Error!',
+                                 text: 'An error occurred while deleting the module.',
+                                 icon: 'error',
+                                 confirmButtonText: 'OK'
+                             });
+                         });
+                 }
+             });
+            }
+
+            function ExportToExcel() {
+                const jsonData = sessionStorage.getItem('__employeeRosterData__');
+                if (!jsonData) {
+                    Swal.fire('No Data', 'No employee data found to export.', 'info');
+                    return;
+                }
+
+                let data = JSON.parse(jsonData);
+                if (data.length === 0) {
+                    Swal.fire('Empty', 'No data available to export.', 'warning');
+                    return;
+                }
+
+                if (selectedEmployeeIds.size === 0) {
+                    Swal.fire('Warning', 'Please select at least one employee before exporting.', 'warning');
+                    return;
+                }
+
+                // 🛑 Fields to exclude from export
+                const excludedFields = ['empId', 'gid', 'unitId', 'cSftId', 'dptId', 'perSftId', 'companyId', 'employeeImage'];
+
+                // ✅ Filter data for selected employees only
+                const filteredSelectedData = data.filter(row => selectedEmployeeIds.has(row.empId));
+
+                // ✅ Remove excluded fields from each selected row
+                const exportData = filteredSelectedData.map(row => {
+                    const newRow = {};
+                    Object.keys(row).forEach(key => {
+                        if (!excludedFields.includes(key)) {
+                            newRow[key] = row[key];
+                        }
+                    });
+                    return newRow;
+                });
+
+                if (exportData.length === 0) {
+                    Swal.fire('Notice', 'No matching selected employee data to export.', 'info');
+                    return;
+                }
+
+                // Convert to Excel and export
+                const worksheet = XLSX.utils.json_to_sheet(exportData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Employee Roster");
+                XLSX.writeFile(workbook, `Employee_Roster_${new Date().toISOString().slice(0, 10)}.xlsx`);
+            }
+
+
 
         </script>
 <%--    <script src="../../assets/theme_assets/js/loadCompany.js"></script>
@@ -1125,4 +1223,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 </asp:Content>

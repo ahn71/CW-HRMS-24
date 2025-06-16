@@ -407,10 +407,10 @@ function ApiCallPostForm(url, token, formData) {
                 resolve(data);
             },
             error: function (xhr, status, error) {
-                const message = xhr.responseText || 'Unexpected error occurred.';
+                const message = xhr.responseJSON.message || 'Unexpected error occurred.';
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
+                    icon: 'warning',
+                    title: 'Warning',
                     text: message
                 });
                 reject(error);
