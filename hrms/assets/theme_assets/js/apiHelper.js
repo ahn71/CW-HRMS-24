@@ -332,7 +332,34 @@ function ApiDeleteByUrl(url, token) {
         });
     });
 }
+function ApiDeleteByBody(url, data, token) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            data: data,
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (response) {
+                resolve(response);
+            },
+            error: function (xhr, status, error) {
+                let message = xhr.responseJSON ?.Message || xhr.responseText || 'Unknown error';
+                console.error('Error occurred while deleting data:', message);
 
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: message
+                });
+
+                reject(error);
+            }
+        });
+    });
+}
 function ApiCallPost(url, token, postData) {
     return new Promise(function (resolve, reject) {
         $.ajax({

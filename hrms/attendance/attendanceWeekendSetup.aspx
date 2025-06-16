@@ -468,16 +468,16 @@
                 row.userImage = null;
                 const userImage = row.empImage || defaultImage;
 
-            //    row.action = `
-            //<div class="actions">
-            //    <ul class="">
-            //        <li>
-            //            <a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove">
-            //                <i class="uil uil-trash-alt"></i>
-            //            </a>
-            //        </li>
-            //    </ul>
-            //</div>`;
+                row.action = `
+            <div class="actions">
+                <ul class="">
+                    <li>
+                        <a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove">
+                            <i class="uil uil-trash-alt"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>`;
                 row.userImage = `
             <div class="user-details-container d-flex align-items-center">
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">

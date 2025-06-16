@@ -36,6 +36,9 @@
              top: 8%;
 
          }
+         .user-role{
+             font-size:10px !important;
+         }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -48,8 +51,8 @@
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
-                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
-                                        Filter bye Unit
+                                        <img src="../../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter by Unit
                                     </span>
                                     <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
                                 </h6>
@@ -66,12 +69,57 @@
                                 </aside>
                             </div>
                         </div>
+                          <div class="card">
+                            <div id="togglePerShift" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size:16px; color:black";>
+                                        <img src="../../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter By Permanent Shift
+                                    </span>
+                                    <i id="arrowIconPerShift" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample3">
+                                        <div class="product-brands" overflow-y: auto;">
+                                           <ul id="PerShiftList">
+
+                                              
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div id="toggleCurShift" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
+                                        <img src="../../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter By Current Shift
+                                    </span>
+                                    <i id="arrowIconCurShift" class="fas fa-chevron-down"></i>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExampleCur">
+                                        <div class="product-brands" style="overflow-y: auto;">
+                                            <ul id="CurShiftList"></ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+
                         <div class="card mt-1">
                             <div id="toggleDepartment" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
-                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
-                                        Filter bye Department
+                                        <img src="../../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
+                                        Filter by Department
                                     </span>
                                     <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
                                 </h6>
@@ -101,25 +149,33 @@
                                                     <div class="container-fluid" style="padding-left:0px !important; padding-right:0px !important">
                                                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 align-items-end">
 
-                                                            <div class="col-lg-4 d-flex">
-                                                                <div class="col-lg-5">
+                                                            <div class="col-lg-8 d-flex">
+                                                                <%--<div class="col-lg-5">
                                                                     <label for="txtSearch" class="form-label mb-1 p-0">Permanent Shift</label>
                                                                     <div class="input-group">
                                                                         <select name="ddlShift" id="ddlShift" class="form-control me-2">
                                                                         </select>
                                                                     </div>
+                                                                </div>--%>
+                                                                  <div class="col-lg-3">
+                                                                    <label for="txtStartDate" class="form-label mb-1 p-0">Start Date</label>
+                                                                    <input type="date" id="txtStartDate" class="form-control" aria-describedby="passwordHelpInline">
+                                                                </div>
+                                                                <div class="col-lg-3">
+                                                                    <label for="txtEndDate" class="form-label mb-1 p-0">End Date</label>
+                                                                    <input type="date" id="txtEndDate" class="form-control" aria-describedby="passwordHelpInline">
                                                                 </div>
 
-
-                                                                <div class="col-lg-5">
+                                                                <div class="col-lg-3">
                                                                     <label for="txtSearch" class="form-label mb-1 p-0">Employee ID</label>
                                                                     <div class="input-group">
                                                                         
-                                                                          <%--  <i class="uil uil-search"></i>--%>
+                                                                     
                                                                         
                                                                         <input type="text" id="txtEmpCardNo" class="form-control border-start-0" placeholder="Employee ID..." aria-describedby="searchIcon">
                                                                     </div>
                                                                 </div>
+
 
                                                                 <div class="col-lg-2" style="margin-left:5px">
                                                                     <label for="txtSearch" class="form-label mb-1 p-0" style="opacity:0"> ID</label>
@@ -133,43 +189,25 @@
                                                                 </div>
                                                                 
                                                             </div>
-                                                            <div style="display:none" id="DataSubmitContainer" class="col-lg-8">
+                                                            <div  id="DataSubmitContainer" class="col-lg-4">
                                                             <div  class=" d-flex">
-                                                                <div class="col-lg-3">
-                                                                    <label for="txtStartDate" class="form-label mb-1 p-0">Start Date</label>
-                                                                    <input type="date" id="txtStartDate" class="form-control" aria-describedby="passwordHelpInline">
-                                                                </div>
-                                                                <div class="col-lg-3">
-                                                                    <label for="txtEndDate" class="form-label mb-1 p-0">End Date</label>
-                                                                    <input type="date" id="txtEndDate" class="form-control" aria-describedby="passwordHelpInline">
-                                                                </div>
-                                                                <div class="col-lg-4" style="margin-left:5px">
-                                                                    <label for="txtSearch" class="form-label mb-1 p-0">New Shift</label>
-                                                                    <div class="input-group">
-                                                                        <select name="ddlNewShift" id="ddlNewShift" class="form-control me-2">
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-2" style="margin-left:5px">
-                                                                    <label for="txtSearch" class="form-label mb-1 p-0" style="opacity: 0">New Shift</label>
-                                                                    <div class="input-group">
-                                                                        <button type="button" onclick="RosterSubmit()" title="Processing" id="btnProcessing"
-                                                                            class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
-                                                                            style="height: 36px;">
-                                                                            <%--<i class="uil uil-save" style="font-size: 20px"></i>--%>Submit
-                                                                        </button>
-                                                                    </div>
+                                                           
+                                                              <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete()">Delete</button>
+                                                                    <button type="button" class="btn btn-warning btn-sm">Excel</button>
+                                                                    <button type="button" class="btn btn-success btn-sm">PDF</button>
                                                                 </div>
 
 
                                                             </div>
+                                                                
 
                                                           </div>
     
 
                                                         </div>
                                                     </div>
-                                                    <%--Close--%>
+                                             
                                                 </div>
 
 
@@ -220,12 +258,15 @@
             var rootUrl = '<%= Session["__RootUrl__"]%>';
             var CompanyID = '<%= Session["__GetCompanyId__"]%>';
             var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
-            var getEmployeeeUrl = `${rootUrl}/api/Employee/employees`;
+            var getEmployeeeUrl = `${rootUrl}/api/Roster/roster/list`;
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+            var getPerShiftUrl = `${rootUrl}/api/Roster/permanent-shift?CompanyId=${CompanyID}`;
+            var getCurShiftUrl = `${rootUrl}/api/Roster/current-shift?CompanyId=${CompanyID}`;
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
+            var DeleteRosterUrl = `${rootUrl}/api/Roster/roster/delete`;
 
 
 
@@ -245,9 +286,18 @@
                     DepartmentToggle();
                 });
 
+                  $('#togglePerShift').on('click', function () {
+                    PermanentShiftToggle();
+                });
+                $('#toggleCurShift').on('click', function () {
+                    CurrentShiftToggle();
+                });
+
                 GetShifts();
                 GetNewShifts();
                 GetUnit();
+                GetPermanentShift();
+                GetCurrentShift();
                 GetDepartment();
              
 
@@ -266,7 +316,31 @@
                     arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
             }
+            
+            function PermanentShiftToggle() {
+                const unitList = $('#PerShiftList');
+                const arrowIcon = $('#arrowIconPerShift');
 
+                unitList.toggle(); // Corrected variable
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+            function CurrentShiftToggle() {
+                const shiftList = $('#CurShiftList');
+                const arrowIcon = $('#arrowIconCurShift');
+
+                shiftList.toggle();
+
+                if (shiftList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
 
             function DepartmentToggle() {
                 const unitList = $('#departmentList');
@@ -296,34 +370,55 @@
             }
 
             function GetEmployees() {
-                const EmpCardNo = $('#txtEmpCardNo').val();
-                const Shift = $('#ddlShift').val();
-                const deptQuery = getSelectedDepartmentQuery(); // returns something like: "DptIds=1&"
-                const unitQuery = getSelectedUnitQuery(); // not used below — include if needed
+                const fromDate = $('#txtStartDate').val();
+                const toDate = $('#txtEndDate').val();
 
-                let empCardNo = '';
-                if (EmpCardNo && EmpCardNo.length > 0) {
-                    empCardNo = `&EmpCardNo=${EmpCardNo}`;
+                sessionStorage.setItem('__startDate__', fromDate);
+                sessionStorage.setItem('__endDate__', toDate);
+
+                const companyId = CompanyID;
+                const empCardNo = $('#txtEmpCardNo').val();
+
+                const dptQueryString = getSelectedDepartmentQuery();     // "DptIds=1&DptIds=2"
+                const ctSftQueryString = getSelectedCurShiftQuery();     // similarly
+                const ptSftQueryString = getSelectedPermShiftQuery();    // similarly
+                const unitQueryString = getSelectedUnitQuery();          // similarly
+
+                const formData = new FormData();
+                formData.append('FromDate', fromDate);
+                formData.append('ToDate', toDate);
+                formData.append('CompanyId', companyId);
+                if (empCardNo) {
+                    formData.append('EmpCardNo', empCardNo);
                 }
 
-                let shiftId = '';
-                if (Shift !== null && Shift !== 'null') {
-                    shiftId = `&SftId=${Shift}`;
+                // Helper function to parse query string and append all key-value pairs to FormData
+                function appendQueryStringToFormData(qs) {
+                    if (!qs) return;
+                    qs.split('&').forEach(pair => {
+                        const [key, value] = pair.split('=');
+                        if (key && value) {
+                            formData.append(key, decodeURIComponent(value));
+                        }
+                    });
                 }
 
-                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${shiftId}&DeautyType=Roster`;
+                appendQueryStringToFormData(dptQueryString);
+                appendQueryStringToFormData(ctSftQueryString);
+                appendQueryStringToFormData(ptSftQueryString);
+                appendQueryStringToFormData(unitQueryString);
 
-                ApiCall(url, token)
+                const url = `${getEmployeeeUrl}`;
+
+                ApiCallPostForm(url, token, formData)
                     .then(response => {
                         if (response.statusCode === 200) {
-                            const message = `Weekend employee data loaded for the period:`;
                             $('#alertContainer').hide();
                             $('#DataSubmitContainer').show();
                             bindTableData(response.data);
-                       
                         } else {
                             console.error('API Error:', response.message);
-                             bindTableData([]);
+                            bindTableData([]);
                         }
                     })
                     .catch(error => {
@@ -331,6 +426,7 @@
                         bindTableData([]);
                     });
             }
+
 
 
             let allEmployeeData = [];
@@ -349,28 +445,27 @@
                 data.forEach((row, index) => {
                     row.serial = index + 1;
                     row.userImage = null;
-                    const userImage = row.empImage || defaultImage;
+                    const userImage = row.employeeImage || defaultImage;
 
-            //        row.action = `
-            //<div class="actions">
-            //    <ul class="">
-            //        <li>
-            //            <a href="javascript:void(0)"
-            //             data-emp-id="${row.empId}" 
-            //             data-emp-type="${row.empType}" 
-            //             class="btn btn-primary btn-sm text-white delete-btn remove">
-            //                <i class="uil uil-money-insert"></i>Set Salary
-            //            </a>
-            //        </li>
-            //    </ul>
-            //</div>`;
+                    row.action = `
+            <div class="actions">
+                <ul class="">
+                    <li>
+                        <a href="javascript:void(0)"
+                         data-emp-id="${row.empId}" 
+                         class="text-danger delete-btn">
+                            <i class="uil uil-trash"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>`;
                     row.userImage = `
             <div class="user-details-container d-flex align-items-center">
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
                 <div>
-                    <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.empName}</a>
-                    <div class="user-role">${row.dsgName}</div>
-                    <div class="user-role">${row.dptName}</div>
+                    <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.name}</a>
+                    <div class="user-role">${row.designation}</div>
+                    <div class="user-role">${row.department}</div>
                 </div>
             </div>
         `.trim();
@@ -391,13 +486,13 @@
                     },
                     { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                     { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
-                    { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
-                    { name: "empType", title: "Emp Type", className: "userDatatable-content" },
-                    { name: "shift", title: "Permanent Shift", className: "userDatatable-content" },
-                    { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
-                    { name: "deautyType", title: "Deauty Type", className: "userDatatable-content" },
+                    { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
+                    { name: "permanentShift", title: "P. Shift", className: "userDatatable-content" },
+                    { name: "currentShift", title: "C. Shift", className: "userDatatable-content" },
+                    { name: "rosterDate", title: "Roster Date", className: "userDatatable-content" },
+                    //{ name: "deautyType", title: "Deauty Type", className: "userDatatable-content" },
                     //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
-                    //{ name: "action", title: "Action", className: "userDatatable-content" }
+                    { name: "action", title: "", className: "userDatatable-content" }
                 ];
 
                 try {
@@ -419,27 +514,15 @@
                 }
 
                 let selectedEmpId = null;
-                let selectedEmpType = null;
 
                 $(document).off('click', '.delete-btn').on('click', '.delete-btn', function () {
                     selectedEmpId = $(this).data('emp-id');
-                    selectedEmpType = $(this).data('emp-type');
 
                     $('#empIdField').val(selectedEmpId);
-
-                    // Optional: You can store the empType in a hidden field too
-                    $('#empTypeField').val(selectedEmpType); 
-
-                    console.log(selectedEmpType)
                     console.log(selectedEmpId)
 
                     $('#salaryModal').modal('show');
                 });
-
-           
-
-
-
             }
 
 
@@ -563,7 +646,171 @@
                     .join('&');
             }
 
+            function GetPermanentShift() {
+                ApiCall(getPerShiftUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            const permShifts = response.data;
+                            console.log('Before table Data Bind', permShifts);
 
+                            bindPermanentShifts(permShifts);
+
+                            console.log('After Table Data Bind', permShifts);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+
+            function bindPermanentShifts(permShifts) {
+                const $list = $('#PerShiftList');
+                $list.empty(); // Clear existing list
+
+                // Add "Select All" checkbox
+                const selectAllItem = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllPerShift">
+                <label for="selectAllPerShift">
+                    <span class="checkbox-text" style="margin-left:20px">
+                        Select All
+                    </span>
+                </label>
+            </div>
+        </li>
+    `;
+                $list.append(selectAllItem);
+
+                // Add permShift checkboxes
+                permShifts.forEach((shift, index) => {
+                    const checkboxId = `permShift-check-${index}`;
+                    const listItem = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="PermShiftCheckbox" id="${checkboxId}" value="${shift.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left:20px">
+                            ${shift.name}
+                        </span>
+                    </label>
+                </div>
+            </li>
+        `;
+                    $list.append(listItem);
+                });
+            }
+
+            // Select All checkbox toggle
+            $(document).on('change', '#selectAllPerShift', function () {
+                const isChecked = $(this).is(':checked');
+                $('.PermShiftCheckbox').prop('checked', isChecked);
+            });
+
+            // Sync "Select All" state with individual checkboxes
+            $(document).on('change', '.PermShiftCheckbox', function () {
+                const total = $('.PermShiftCheckbox').length;
+                const checked = $('.PermShiftCheckbox:checked').length;
+                $('#selectAllPerShift').prop('checked', total === checked);
+            });
+
+            // Optional: Get selected permShift IDs as query string
+            function getSelectedPermShiftQuery() {
+                return $('.PermShiftCheckbox:checked')
+                    .map(function () {
+                        return 'PtSftIds=' + $(this).val();
+                    })
+                    .get()
+                    .join('&');
+            }
+
+
+            function GetCurrentShift() {
+                ApiCall(getCurShiftUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            const curShifts = response.data;
+                            console.log('Before Current Shift Bind', curShifts);
+
+                            bindCurrentShifts(curShifts);
+
+                            console.log('After Current Shift Bind', curShifts);
+                        } else {
+                            console.error('Error fetching Current Shift:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error fetching Current Shift:', error);
+                    });
+            }
+
+            function bindCurrentShifts(curShifts) {
+                const $list = $('#CurShiftList');
+                $list.empty(); // Clear existing list
+
+                // Add "Select All" checkbox
+                const selectAllItem = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllCurShift">
+                <label for="selectAllCurShift">
+                    <span class="checkbox-text" style="margin-left:20px">
+                        Select All
+                    </span>
+                </label>
+            </div>
+        </li>
+    `;
+                $list.append(selectAllItem);
+
+                // Add current shift checkboxes
+                curShifts.forEach((shift, index) => {
+                    const checkboxId = `curShift-check-${index}`;
+                    const listItem = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="CurShiftCheckbox" id="${checkboxId}" value="${shift.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left:20px">
+                            ${shift.name}
+                        </span>
+                    </label>
+                </div>
+            </li>
+        `;
+                    $list.append(listItem);
+                });
+            }
+
+            // "Select All" toggle
+            $(document).on('change', '#selectAllCurShift', function () {
+                const isChecked = $(this).is(':checked');
+                $('.CurShiftCheckbox').prop('checked', isChecked);
+            });
+
+            // Sync "Select All" checkbox
+            $(document).on('change', '.CurShiftCheckbox', function () {
+                const total = $('.CurShiftCheckbox').length;
+                const checked = $('.CurShiftCheckbox:checked').length;
+                $('#selectAllCurShift').prop('checked', total === checked);
+            });
+
+            // Optional: Get selected current shift IDs as query string
+            function getSelectedCurShiftQuery() {
+                return $('.CurShiftCheckbox:checked')
+                    .map(function () {
+                        return 'CtSftIds=' + $(this).val();
+                    })
+                    .get()
+                    .join('&');
+            }
+
+
+            // "Select All" toggles all checkbox
 
             function GetDepartment() {
                 ApiCall(getDepartmentUrl, token)
@@ -795,14 +1042,86 @@
                 });
         }
 
+            function Delete() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to delete this Weekend?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        DeleteRoster();
+
+
+                    }
+                });
+            }
+
+            function DeleteRoster() {
+                const startDate = sessionStorage.getItem('__startDate__');
+                const endDate = sessionStorage.getItem('__endDate__');
+                const companyId = sessionStorage.getItem('__companyId__'); // or wherever you get companyId from
+
+                // Parse empIds from your query string like "empIds=0001&empIds=0002"
+                const employeeQuery = getSelectedEmployeeQuery();
+                if (!employeeQuery) {
+                    Swal.fire({
+                        title: 'Warning!',
+                        text: 'Please select at least one employee.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                // Convert query string to array of empIds
+                const empIds = [];
+                const params = new URLSearchParams(employeeQuery);
+                for (const value of params.getAll('empIds')) {
+                    empIds.push(value);
+                }
+
+                // Prepare the DTO object
+                const deleteRosterData = {
+                    fromDate: startDate,
+                    toDate: endDate,
+                    companyId: companyId,
+                    empIds: empIds
+                };
+
+                const url = `${DeleteRosterUrl}`;
+
+                ApiDeleteByBody(url, deleteRosterData, token)
+                    .then(function (response) {
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Weekend deleted successfully.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            GetEmployeeDayWise();
+                        });
+                    })
+                    .catch(function (error) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while deleting the module.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
 
         </script>
 <%--    <script src="../../assets/theme_assets/js/loadCompany.js"></script>
     <script src="../../assets/theme_assets/js/apiHelper.js"></script>--%>
 
     
-    <script src="../assets/theme_assets/js/loadCompany.js"></script>
-    <script src="../assets/theme_assets/js/apiHelper.js"></script>
+    <script src="../../assets/theme_assets/js/loadCompany.js"></script>
+    <script src="../../assets/theme_assets/js/apiHelper.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
