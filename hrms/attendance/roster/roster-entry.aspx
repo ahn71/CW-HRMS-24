@@ -36,6 +36,9 @@
              top: 8%;
 
          }
+         .user-role{
+             font-size:10px !important;
+         }
         </style>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -311,7 +314,8 @@
                 if (Shift !== null && Shift !== 'null') {
                     shiftId = `&SftId=${Shift}`;
                 }
-
+               $('.loaderDaily').show();
+               $('.loaderparent').css('opacity', '0.5');
                 const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${shiftId}&DeautyType=Roster`;
 
                 ApiCall(url, token)
@@ -320,16 +324,22 @@
                             const message = `Weekend employee data loaded for the period:`;
                             $('#alertContainer').hide();
                             $('#DataSubmitContainer').show();
+                            $('.loaderDaily').hide();
+                            $('.loaderparent').css('opacity', '1');
                             bindTableData(response.data);
                        
                         } else {
                             console.error('API Error:', response.message);
-                             bindTableData([]);
+                            bindTableData([]);
+                            $('.loaderDaily').hide();
+                            $('.loaderparent').css('opacity', '1');
                         }
                     })
                     .catch(error => {
                         console.error('Network Error:', error);
                         bindTableData([]);
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
                     });
             }
 
@@ -367,7 +377,7 @@
             //</div>`;
                     row.userImage = `
             <div class="user-details-container d-flex align-items-center">
-                <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
+                <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
                 <div>
                     <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.empName}</a>
                     <div class="user-role">${row.dsgName}</div>
@@ -392,11 +402,11 @@
                     },
                     { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                     { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
-                    { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
+                    { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
                     { name: "empType", title: "Emp Type", className: "userDatatable-content" },
-                    { name: "shift", title: "Permanent Shift", className: "userDatatable-content" },
+                    { name: "shift", title: "P. Shift", className: "userDatatable-content" },
                     { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
-                    { name: "deautyType", title: "Deauty Type", className: "userDatatable-content" },
+                    { name: "deautyType", title: "D. Type", className: "userDatatable-content" },
                     //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
                     //{ name: "action", title: "Action", className: "userDatatable-content" }
                 ];

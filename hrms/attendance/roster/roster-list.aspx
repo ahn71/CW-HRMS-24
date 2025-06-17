@@ -51,7 +51,7 @@
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
-                                        <img src="../../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
                                         Filter by Unit
                                     </span>
                                     <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
@@ -73,7 +73,7 @@
                             <div id="togglePerShift" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
-                                        <img src="../../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
                                         Filter By Permanent Shift
                                     </span>
                                     <i id="arrowIconPerShift" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
@@ -97,7 +97,7 @@
                             <div id="toggleCurShift" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
-                                        <img src="../../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px !important; width: 16px !important">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px !important; width: 16px !important">
                                         Filter By Current Shift
                                     </span>
                                     <i id="arrowIconCurShift" class="fas fa-chevron-down"></i>
@@ -118,7 +118,7 @@
                             <div id="toggleDepartment" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
-                                        <img src="../../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
                                         Filter by Department
                                     </span>
                                     <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
@@ -192,10 +192,11 @@
                                                             <div  id="DataSubmitContainer" class="col-lg-4">
                                                             <div  class=" d-flex">
                                                            
-                                                              <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="Delete()">Delete</button>
-                                                                    <button id="exportExcelBtn" type="button" class="btn btn-warning btn-sm" onclick="ExportToExcel()">Excel</button>
-                                                                    <button type="button" class="btn btn-success btn-sm">PDF</button>
+                                                              <div class="btn-group" role="group" aria-label="Basic mixed styles example"> 
+                                                                  <button id="exportExcelBtn" type="button" class="btn btn-primary btn-sm" onclick="ExportToExcel()">Export</button>
+                                                                    <button type="button" class="btn btn-danger btn-sm ml-2" onclick="Delete()">Delete</button>
+                                                                   
+                                                                 <%--   <button type="button" class="btn btn-success btn-sm">PDF</button>--%>
                                                                 </div>
 
 
@@ -471,7 +472,7 @@
             </div>`;
                     row.userImage = `
             <div class="user-details-container d-flex align-items-center">
-                <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
+                <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
                 <div>
                     <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.name}</a>
                     <div class="user-role">${row.designation}</div>
@@ -1182,18 +1183,26 @@
                     return;
                 }
 
-                // 🛑 Fields to exclude from export
                 const excludedFields = ['empId', 'gid', 'unitId', 'cSftId', 'dptId', 'perSftId', 'companyId', 'employeeImage'];
 
-                // ✅ Filter data for selected employees only
+                const headerMap = {
+                    name: 'Employee Name',
+                    empCardNo: 'Employee Id',
+                    designation: 'Designation',
+                    department: 'Department',
+                    currentShift: 'Current Shift',
+                    permanentShift: 'Permanent Shift',
+                    rosterDate: 'Roster Date',
+                    groupName: 'Group Name'
+                };
+
                 const filteredSelectedData = data.filter(row => selectedEmployeeIds.has(row.empId));
 
-                // ✅ Remove excluded fields from each selected row
                 const exportData = filteredSelectedData.map(row => {
                     const newRow = {};
                     Object.keys(row).forEach(key => {
-                        if (!excludedFields.includes(key)) {
-                            newRow[key] = row[key];
+                        if (!excludedFields.includes(key) && headerMap[key]) {
+                            newRow[headerMap[key]] = row[key];
                         }
                     });
                     return newRow;
@@ -1204,13 +1213,44 @@
                     return;
                 }
 
-                // Convert to Excel and export
-                const worksheet = XLSX.utils.json_to_sheet(exportData);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Employee Roster");
-                XLSX.writeFile(workbook, `Employee_Roster_${new Date().toISOString().slice(0, 10)}.xlsx`);
-            }
+                // Create worksheet starting at A2 (to leave space for title)
+                const worksheet = XLSX.utils.json_to_sheet(exportData, { origin: 'A2' });
 
+                // Add title "Roster Report" at A1
+                XLSX.utils.sheet_add_aoa(worksheet, [['Roster Report']], { origin: 'A1' });
+
+                // Determine how many columns we have
+                const headerKeys = Object.values(headerMap);
+                const totalColumns = headerKeys.length;
+                const lastColLetter = XLSX.utils.encode_col(totalColumns - 1); // E.g. if 8 columns => H
+
+                // Merge A1:H1 for title
+                worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: totalColumns - 1 } }];
+
+                // Apply style to merged title cell (font size and alignment)
+                worksheet['A1'].s = {
+                    font: {
+                        name: 'Arial',
+                        sz: 20,
+                        bold: true
+                    },
+                    alignment: {
+                        horizontal: 'center',
+                        vertical: 'center'
+                    }
+                };
+
+                // Workbook creation
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Employee Roster');
+
+                // Include styles (SheetJS requires XLSX-style writer)
+                XLSX.writeFile(workbook, `Employee_Roster_${new Date().toISOString().slice(0, 10)}.xlsx`, {
+                    bookType: 'xlsx',
+                    type: 'binary',
+                    cellStyles: true // This option enables styles
+                });
+            }
 
 
         </script>
@@ -1218,8 +1258,8 @@
     <script src="../../assets/theme_assets/js/apiHelper.js"></script>--%>
 
     
-    <script src="../../assets/theme_assets/js/loadCompany.js"></script>
-    <script src="../../assets/theme_assets/js/apiHelper.js"></script>
+    <script src="../assets/theme_assets/js/loadCompany.js"></script>
+    <script src="../assets/theme_assets/js/apiHelper.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
