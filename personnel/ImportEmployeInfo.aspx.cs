@@ -172,8 +172,16 @@ namespace SigmaERP.personnel
                     ViewState["__bloodGroup__"] = BloodGroup;
                     ViewState["__religion__"] = getReligionId(Religion);
                     ViewState["__ReligionName"] = Religion;
-                    ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
-                    ViewState["__LastEducationName__"] = LastEducationqualification;
+                    if (LastEducationqualification == "")
+                    {
+                        ViewState["__lastEducationQualification__"] = "";
+                    }
+                    else
+                    {
+                        ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
+                        ViewState["__LastEducationName__"] = LastEducationqualification;
+                    }
+                   
                     ViewState["__totalNumberOfExperience__"] = TotalNumberOfExperience;
                     ViewState["__HusbandOrWifeName__"] = HusbandOrWifeName;
                     ViewState["__TIN__"] = TIN;
@@ -579,7 +587,7 @@ namespace SigmaERP.personnel
                 row["DateOfBirth"] = ViewState["__dateOfBirth__"].ToString();
                 row["BloodGroup"] = ViewState["__bloodGroup__"].ToString();
                 row["Religion"] = ViewState["__ReligionName"].ToString();
-                row["LastEducationQualification"] = ViewState["__LastEducationName__"].ToString();
+                row["LastEducationQualification"] = ViewState["__LastEducationName__"];
                 row["TotalNumberOfExperience"] =0;
                 row["ContactNumber"] = ViewState["__ContactNumber__"].ToString();
                 row["TIN"] = ViewState["__TIN__"].ToString();
