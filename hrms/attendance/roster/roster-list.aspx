@@ -7,6 +7,7 @@
 
             td {
                 text-align: left;
+                margin-top:3px !important;
             }
 
             .w-100 {
@@ -37,7 +38,7 @@
 
          }
          .user-role{
-             font-size:10px !important;
+             font-size:12px !important;
          }
         </style>
 </asp:Content>
@@ -472,11 +473,11 @@
             </div>`;
                     row.userImage = `
             <div class="user-details-container d-flex align-items-center">
-                <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
+                <img src="${userImage}" alt="User Image" class="user-image" style="width: 30px; height: 30px; margin-right: 10px;">
                 <div>
                     <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.name}</a>
-                    <div class="user-role">${row.designation}</div>
-                    <div class="user-role">${row.department}</div>
+                    <div class="user-role">${row.designation},${row.department}</div>
+
                 </div>
             </div>
         `.trim();
@@ -498,10 +499,11 @@
                     { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                     { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                     { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
+                    { name: "empType", title: "Emp. Type", className: "userDatatable-content" },
                     { name: "permanentShift", title: "P. Shift", className: "userDatatable-content" },
                     { name: "currentShift", title: "C. Shift", className: "userDatatable-content" },
                     { name: "rosterDate", title: "Roster Date", className: "userDatatable-content" },
-                    //{ name: "deautyType", title: "Deauty Type", className: "userDatatable-content" },
+          
                     //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
                     { name: "action", title: "", className: "userDatatable-content" }
                 ];

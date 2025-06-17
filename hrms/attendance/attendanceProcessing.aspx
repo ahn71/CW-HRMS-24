@@ -115,7 +115,7 @@
                                                     </div>
                                                     <%--Close--%>
                                                 </div>
-
+                                               
                                                 <div id="employeeContainer">
                                                     <table class="table mb-0 packagesTable table-borderless adv-table"
                                                         data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
@@ -270,17 +270,21 @@
                         bindAttdTableData(response.data);
                         $('#progress-section').hide();
                         $('#attendanceContainer').show();
+                      
+
 
                     } else {
                         console.error('API Error:', response.message);
                         $('.footable-loader').hide();
                         $('#progress-section').hide();
+                       
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
                     $('.footable-loader').hide();
                     $('#progress-section').hide();
+                
                 });
         }
 
@@ -372,8 +376,8 @@
             const columns = [
                 { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                 { name: "empPicture", title: "Name", className: "userDatatable-content" },
-                { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
-                { name: "dptName", title: "Department", className: "userDatatable-content" },
+                { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
+                { name: "departmnet", title: "Department", className: "userDatatable-content" },
                 { name: "attStatus", title: "Status", className: "userDatatable-content" },
                 { name: "inPunch", title: "In Time", className: "userDatatable-content" },
                 { name: "outPunch", title: "Out Time", className: "userDatatable-content" },
@@ -415,10 +419,12 @@
                         bindTableData(response.data);
                     } else {
                         console.error('API Error:', response.message);
+                        
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
+                     bindTableData([]);
                 });
         }
 

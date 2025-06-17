@@ -380,8 +380,8 @@
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
                 <div>
                     <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.empName}</a>
-                    <div class="user-role">${row.dsgName}</div>
-                    <div class="user-role">${row.dptName}</div>
+                    <div class="user-role">${row.dptName},${row.dsgName}</div>
+                    <div class="user-role"></div>
                 </div>
             </div>
         `.trim();
@@ -406,7 +406,7 @@
                     { name: "empType", title: "Emp Type", className: "userDatatable-content" },
                     { name: "shift", title: "P. Shift", className: "userDatatable-content" },
                     { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
-                    { name: "deautyType", title: "D. Type", className: "userDatatable-content" },
+                    //{ name: "deautyType", title: "D. Type", className: "userDatatable-content" },
                     //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
                     //{ name: "action", title: "Action", className: "userDatatable-content" }
                 ];
