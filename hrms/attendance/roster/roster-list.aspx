@@ -265,7 +265,7 @@
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
             var getPerShiftUrl = `${rootUrl}/api/Roster/permanent-shift?CompanyId=${CompanyID}`;
-            var getCurShiftUrl = `${rootUrl}/api/Roster/current-shift?CompanyId=${CompanyID}`;
+            var getCurShiftUrl = `${rootUrl}/api/Roster/permanent-shift?CompanyId=${CompanyID}`;
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
             var DeleteRosterUrl = `${rootUrl}/api/Roster/roster/delete`;
@@ -1062,9 +1062,9 @@
                 const endDate = sessionStorage.getItem('__endDate__');
                 const companyId = sessionStorage.getItem('__companyId__'); // or wherever you get companyId from
 
-                // Parse empIds from your query string like "empIds=0001&empIds=0002"
-                const employeeQuery = getSelectedEmployeeQuery();
-                if (!employeeQuery) {
+                const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
+
+                 if (!selectedEmployeeIds || selectedEmployeeIds.size === 0)  {
                     Swal.fire({
                         title: 'Warning!',
                         text: 'Please select employee.',
@@ -1072,11 +1072,6 @@
                         confirmButtonText: 'OK'
                     });
                     return;
-                }
-                const empIds = [];
-                const params = new URLSearchParams(employeeQuery);
-                for (const value of params.getAll('empIds')) {
-                    empIds.push(value);
                 }
 
                 Swal.fire({
@@ -1094,7 +1089,7 @@
                     fromDate: startDate,
                     toDate: endDate,
                     companyId: CompanyID,
-                    empIds: empIds
+                    empIds: employeeQuery
                 };
 
                 const url = `${DeleteRosterUrl}`;
@@ -1265,6 +1260,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 
 </asp:Content>

@@ -718,20 +718,21 @@
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();
             const Shift  = $('#ddlNewShift').val();
-            const employeeQuery = getSelectedEmployeeQuery();
+           // const employeeQuery = getSelectedEmployeeQuery();
 
-           const urlParams = new URLSearchParams(employeeQuery);
-           const empIds = urlParams.getAll('empIds');
+           //const urlParams = new URLSearchParams(employeeQuery);
+           //const empIds = urlParams.getAll('empIds');
 
+           const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
+           
 
            const formData = new FormData();
            formData.append('fromDate', startDate);
            formData.append('toDate', endDate);
            formData.append('shiftId', Shift);
            formData.append('companyId', CompanyID);
-           empIds.forEach((id, index) => {
-               formData.append(`empIds[${index}]`, id);
-           });
+           formData.append('empIds', employeeQuery);
+           
                if (!startDate) {
                    Swal.fire({
                        icon: 'warning',
@@ -762,7 +763,7 @@
                    return;
                }
 
-               if (empIds.length === 0) {
+               if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'No Employee Selected',
@@ -781,6 +782,9 @@
                 .then(response => {
                     if (response.statusCode === 200) {
                         console.log('Roster Create Success');
+                        selectedEmployeeIds.clear();
+                        $('#selectAllEmployee').prop('checked', false);
+                        $('.EmployeerowCheckbox').prop('checked', false);
                         $('.loaderDaily').hide();
                         $('.loaderparent').css('opacity', '1');
                         Swal.fire({
@@ -796,6 +800,7 @@
                         $('.loaderDaily').hide();
                         $('.loaderparent').css('opacity', '1');
                         //$('#progress-section').hide();
+
                     }
                 })
                 .catch(error => {
