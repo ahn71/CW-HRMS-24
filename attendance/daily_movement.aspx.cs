@@ -58,9 +58,15 @@ namespace SigmaERP.attendance
                // string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
                 //ViewState["__ReadAction__"] = AccessPermission[0];
-                classes.commonTask.LoadShiftNameByCompany(ViewState["__CompanyId__"].ToString(), ddlShift);
+                classes.commonTask.LoadActiveShiftsForCompany(ViewState["__CompanyId__"].ToString(), ddlShift);
+                classes.commonTask.LoadActiveShiftsForCompany(ViewState["__CompanyId__"].ToString(), ddlPermanentShift);
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                 classes.commonTask.loadUnit(ddlUnit, ViewState["__CompanyId__"].ToString());
+                if (ddlUnit.Items.Count < 3)
+                {
+                    trUnit.Visible = false;
+                }
+
                 //-----------------------------------------------------
 
 
@@ -101,7 +107,17 @@ namespace SigmaERP.attendance
             }
 
 
-            string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
+            string ShiftName = "";
+
+            if (ddlShift.SelectedValue != "0")
+            {
+                ShiftName += " and SftId='" + ddlShift.SelectedValue + "' ";
+            }
+
+            if (ddlPermanentShift.SelectedValue != "0")
+            {
+                ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
+            }
             string[] dmy = txtDate.Text.Split('-');
             string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
             string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
@@ -186,8 +202,19 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            string ShiftName = "";
 
-            string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
+            if (ddlShift.SelectedValue != "0")
+            {
+                ShiftName += " and SftId='" + ddlShift.SelectedValue + "' ";
+            }
+
+            if (ddlPermanentShift.SelectedValue != "0")
+            {
+                ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
+            }
+
+
             string[] dmy = txtDate.Text.Split('-');
             string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
             string AttStatus = "";

@@ -229,6 +229,24 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadActiveShiftsForCompany (string CompnayId, DropDownList ddl)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompnayId);
+                dt = new DataTable();
+
+                sqlDB.fillDataTable("SELECT Distinct SftName,SftId from HRD_Shift where " + condition + " and IsActive=1", dt);
+                ddl.DataValueField = "SftId";
+                ddl.DataTextField = "SftName";
+                ddl.DataSource = dt;
+                ddl.DataBind();
+                if (ddl.Items.Count > 1)
+                    ddl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
+
         public static void LoadEarnleaveList(string CompnayId, DropDownList ddl)
         {
             try
