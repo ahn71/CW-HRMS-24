@@ -316,7 +316,7 @@
                         resolve(data);
                     },
                     error: function (xhr, status, error) {
-                         console.log("Error Message for attendance proccess",status)
+                         console.log("Error Message for attendance proccess: ",xhrr)
                          console.log("Error Message for attendance proccess",error)
                         Swal.fire({
                            

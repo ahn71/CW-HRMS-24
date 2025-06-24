@@ -29,7 +29,7 @@ namespace SigmaERP.payroll
                 ViewState["__WriteAction__"] = "0";
                 // ViewState["__DeletAction__"] = "1";
                 ViewState["__ReadAction__"] = "0";
-                ViewState["__UpdateAction__"] = "1";
+                ViewState["__UpdateAction__"] = "0";
 
                 int[] pagePermission = { 328, 329, 330 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
