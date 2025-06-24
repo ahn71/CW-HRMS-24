@@ -51,7 +51,7 @@ namespace SigmaERP.classes
                  "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
                  "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
                  "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
-                 ",DptId,DptName,SftId,SftName,PSftName,CompanyName,Address " +
+                 ",DptId,DptName,SftId,SftName,PSftName as GName,CompanyName,Address " +
                  "from v_tblAttendanceRecord " +
                  "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,PSftName,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                          " order by convert(int,DptCode), convert(int,SftId),CustomOrdering";
@@ -93,10 +93,10 @@ namespace SigmaERP.classes
                 "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
                 "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
                 "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
-                ",DptId,DptName,SftId,SftName,CompanyName,Address " +
+                ",DptId,DptName,SftId,SftName,PSftName as GName,CompanyName,Address " +
                 "from v_tblAttendanceRecord " +
                 "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' " + unitCondition + "" +
-                "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,CompanyName,Address ", dt = new DataTable());
+                "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName ,PSftName ,CompanyName,Address ", dt = new DataTable());
                 }
                 return dt;
             }
@@ -144,7 +144,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 29 then code else 0 end) as '29'," +
                     "sum(case DATEPART (day,AttDate) when 30 then code else 0 end) as '30'," +
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
-                    " DsgName, DptId,DptName,SftId,SftName,PSftName,CompanyId,CompanyName,Address " +
+                    " DsgName, DptId,DptName,SftId,SftName,PSftName as GName,CompanyId,CompanyName,Address " +
                     "from v_tblAttendanceRecord " +
                     "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + ""+
                     "group by EmpId,EmpCardNo,EmpName, PSftName, DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
@@ -187,10 +187,10 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 29 then code else 0 end) as '29'," +
                     "sum(case DATEPART (day,AttDate) when 30 then code else 0 end) as '30'," +
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
-                    "  DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address " +
+                    "  DsgName,DptId,DptName,SftId,SftName, PSftName as GName,CompanyId,CompanyName,Address " +
                     "from v_tblAttendanceRecord " +
                     "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' " + unitCondition + "" +
-                    "group by EmpId,EmpCardNo,EmpName,DptId, DsgName,DptName,SftId,SftName,CompanyId,CompanyName,Address ", dt = new DataTable());
+                    "group by EmpId,EmpCardNo,EmpName,DptId, DsgName,DptName,SftId,SftName,PSftName,CompanyId,CompanyName,Address ", dt = new DataTable());
                 }
 
                 return dt;

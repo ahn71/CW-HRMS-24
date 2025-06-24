@@ -30,6 +30,9 @@
              .row > *{
                  margin-top: 0 !important;
              }
+
+
+
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -280,9 +283,7 @@
                                                                                         </div>
                                                                                         <span class="text-danger" id="ddlGradeError"></span>
                                                                                     </div>
-
-
-                                                                                    <div class="col-lg-4">
+                                                                                     <div class="col-lg-4">
                                                                                         <div class="form-group">
                                                                                             <label for="txtGross" class=" color-dark fs-14 fw-500 align-center">Gross</label>
                                                                                             <div class="with-icon">
@@ -291,118 +292,8 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-
-                                                                        <div class="col-lg-4" id="SectionBasic">
-                                                                            <div class="form-group">
-                                                                                <label for="txtBasicSalary" class=" color-dark fs-14 fw-500 align-center">Basic Salary <small id="txtBasicMsg" style="margin-left:5px;font-size:10px"></small></label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtBasicSalary">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionMedical">
-                                                                            <div class="form-group">
-                                                                                <label for="txtMedical" class=" color-dark fs-14 fw-500 align-center">Medical<small id="txtMedicalMsg" style="margin-left:5px;font-size:10px"></small></label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtMedical">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                         <div class="col-lg-4" id="SectionFood">
-                                                                            <div class="form-group">
-                                                                                <label for="txtFood" class=" color-dark fs-14 fw-500 align-center">Food<small id="txtFoodMsg" style="margin-left:5px;font-size:10px"></small></label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtFood">
-                                                                                </div>
-                                                                           </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionConveyance">
-                                                                            <div class="form-group">
-                                                                                <label for="txtConveyance" class=" color-dark fs-14 fw-500 align-center">Conveyance
-                                                                                    <small id="txtConveyanceMsg" style="margin-left:5px;font-size:10px"></small>
-
-                                                                                </label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtConveyance">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionTechnical">
-                                                                            <div class="form-group">
-                                                                                <label for="txtTechnical" class=" color-dark fs-14 fw-500 align-center">Technical <small id="txtTechnicalMsg" style="margin-left:5px;font-size:10px"></small>
-
-                                                                                </label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtTechnical">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionHouse">
-                                                                            <div class="form-group">
-                                                                                <label for="txtHouse" class=" color-dark fs-14 fw-500 align-center">House Rent
-
-                                                                                    <small id="txtHouseMsg" style="margin-left:5px;font-size:10px"></small>
-                                                                                </label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtHouse">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionOthers">
-                                                                            <div class="form-group">
-                                                                                <label for="txtOthers" class=" color-dark fs-14 fw-500 align-center">Others
-                                                                                    <small id="txtOthersMsg" style="margin-left:5px;font-size:10px"></small>
-                                                                                </label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtOthers">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                   
-                                                                        <div class="col-lg-4" id="SectionAttBonuse">
-                                                                            <div class="form-group">
-                                                                                <label for="txtAttBonuse" class=" color-dark fs-14 fw-500 align-center">Attendance Bonus
-                                                                                    <small id="txtAttBonuseMsg" style="margin-left:5px;font-size:10px"></small>
-                                                                                </label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtAttBonuse">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionDormitory">
-                                                                            <div class="form-group">
-                                                                                <label for="txtDormetory" class=" color-dark fs-14 fw-500 align-center">Dormitory Rent  <small id="txtDormitoryMsg" style="margin-left:5px;font-size:10px"></small></label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtDormetory">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="col-lg-4" id="SectionTds">
-                                                                            <div class="form-group">
-                                                                                <label for="txtTds" class=" color-dark fs-14 fw-500 align-center">TDS  <small id="txtTdsMsg" style="margin-left:5px;font-size:10px"></small></label>
-                                                                                <div class="with-icon">
-                                                                                    <span class="las la-money-bill"></span>
-                                                                                    <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtTds">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
+                                                                                        <div class="row" id="salaryFieldsContainer"></div>
+                                                                            
                                                                                 </div>
 
 
@@ -439,6 +330,10 @@
 
 
                                                                     </div>
+
+                                                            
+
+
                                                                 </form>
                                                             </div>
 
@@ -494,7 +389,7 @@
 
             $(document).ready(function () {
 
-                GetEmployeeDayWise();
+                GetEmployees();
 
 
 
@@ -558,7 +453,7 @@
             function SearchEmployee() {
 
 
-                GetEmployeeDayWise();
+                GetEmployees();
 
             }
 
@@ -570,47 +465,7 @@
             }
 
 
-            function GetEmployee_DateWise() {
-                const HolyDayDate = $('#txtWeekendDate').val();
-
-                if (HolyDayDate == null || HolyDayDate == '') {
-                    Swal.fire({
-                        title: 'Warning!',
-                        text: 'Please Select Date',
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    })
-                }
-
-                sessionStorage.setItem('__WeekendDate__', HolyDayDate);
-
-
-                const EmpCardNo = $('#txtEmpCardNo').val();
-                const deptQuery = getSelectedDepartmentQuery();
-                const unitQuery = getSelectedUnitQuery();
-
-                const url = `${getEmployeeDateWiseUrl}/${CompanyID}/${HolyDayDate}?cardNum=${EmpCardNo}&${deptQuery}&${unitQuery}`;
-
-                ApiCall(url, token)
-                    .then(response => {
-                        if (response.statusCode === 200) {
-                            $('#alertContainer').hide();
-                            $('#dateWiseAlert').show();
-                            const message = `Weekend employee data loaded for the date: ${HolyDayDate}.`;
-
-                            $('#dateWiseAlert').html(`<strong>${message}</strong>`).removeClass('d-none');
-
-                            bindTableData(response.data);
-                        } else {
-                            console.error('API Error:', response.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Network Error:', error);
-                    });
-            }
-
-            function GetEmployeeDayWise() {
+            function GetEmployees() {
                 const EmpCardNo = $('#txtEmpCardNo').val();
                 const deptQuery = getSelectedDepartmentQuery();
                 const unitQuery = getSelectedUnitQuery();
@@ -648,7 +503,8 @@
 
             let allEmployeeData = [];
             const selectedEmployeeIds = new Set();
-
+            let selectedEmpId = null;
+            let selectedEmpType = null;
             function bindTableData(data) {
                 const $table = $('.adv-table');
                 const defaultImage = '/hrms/user_img_default.jpg';
@@ -688,10 +544,10 @@
             </div>
         `.trim();
 
-                    row.select = `
-            <input type="checkbox" class="EmployeerowCheckbox" data-id="${row.empId}" value="${row.empId}"
-                ${selectedEmployeeIds.has(row.empId) ? 'checked' : ''} />
-        `;
+        //            row.select = `
+        //    <input type="checkbox" class="EmployeerowCheckbox" data-id="${row.empId}" value="${row.empId}"
+        //        ${selectedEmployeeIds.has(row.empId) ? 'checked' : ''} />
+        //`;
                 });
 
                 const columns = [
@@ -729,8 +585,7 @@
 
                 }
 
-                let selectedEmpId = null;
-                let selectedEmpType = null;
+              
 
                 $(document).off('click', '.delete-btn').on('click', '.delete-btn', function () {
                     selectedEmpId = $(this).data('emp-id');
@@ -750,34 +605,15 @@
                 $('#salaryModal').on('shown.bs.modal', function () {
                     GetBankInfo();
                     GetGradeInfo();
-                    GetEmployeeInfoByeId(selectedEmpId);
+                  
 
-                    const roleKey = selectedEmpType ?.toLowerCase(); // Ensure lowercase (e.g., 'Worker' → 'worker')
+                    const roleKey = selectedEmpType ?.toLowerCase(); // "worker", "staff", etc.
+                    renderDynamicSalaryFields(roleKey);
 
-                    const salaryFields = {
-                        basic: { msgSelector: '#txtBasicMsg', sectionId: '#SectionBasic' },
-                        medical: { msgSelector: '#txtMedicalMsg', sectionId: '#SectionMedical' },
-                        conveyance: { msgSelector: '#txtConveyanceMsg', sectionId: '#SectionConveyance' },
-                        technical: { msgSelector: '#txtTechnicalMsg', sectionId: '#SectionTechnical' },
-                        houserent: { msgSelector: '#txtHouseMsg', sectionId: '#SectionHouse' },
-                        food: { msgSelector: '#txtFoodMsg', sectionId: '#SectionFood' },
-                        others: { msgSelector: '#txtOthersMsg', sectionId: '#SectionOthers' },
-                        attbonuse: { msgSelector: '#txtAttBonuseMsg', sectionId: '#SectionAttBonuse' },
-                        dormitory: { msgSelector: '#txtDormitoryMsg', sectionId: '#SectionDormitory' },
-                        tds: { msgSelector: '#txtTdsMsg', sectionId: '#SectionTds' },
-                    };
 
-                    Object.entries(salaryFields).forEach(([key, { msgSelector, sectionId }]) => {
-                        const fieldData = salaryStructureCache[`${roleKey} ${key}`];
-
-                        if (fieldData) {
-                            $(msgSelector).text(fieldData.msg || '');
-                            $(sectionId).show();
-                        } else {
-                            $(sectionId).hide();
-                        }
-                    });
+                      GetEmployeeInfoByeId(selectedEmpId);
                 });
+
 
 
 
@@ -1131,6 +967,188 @@
                 });
             }
 
+                        function renderDynamicSalaryFields(roleKey) {
+                const container = $('#salaryFieldsContainer');
+                container.empty();
+
+                let structure = salaryStructureCache[roleKey];
+
+                // Try grouping if structure is undefined
+                if (!structure) {
+                    structure = groupSalaryStructure(roleKey); // fallback
+                }
+
+                if (!structure || Object.keys(structure).length === 0) {
+                    container.append(`<p class="text-danger">No salary structure found for "${roleKey}"</p>`);
+                    return;
+                }
+
+                Object.entries(structure).forEach(([fieldKey, fieldData]) => {
+                    const label = fieldData.label || fieldKey;
+                    const value = fieldData.value || '';
+                    const msg = fieldData.msg || '';
+                    const id = `txt${capitalize(fieldKey)}`;
+                    const msgId = `${id}Msg`;
+
+                    const fieldHtml = `
+            <div class="col-lg-4" id="Section${capitalize(fieldKey)}">
+                <div class="form-group">
+                    <label for="${id}" class="color-dark fs-14 fw-500 align-center">${label}
+                        <small id="${msgId}" style="margin-left:5px;font-size:10px">${msg}</small>
+                    </label>
+                    <div class="with-icon">
+                        <span class="las la-money-bill"></span>
+                        <input type="number" 
+                            class="form-control ih-medium ip-gray radius-xs b-light" 
+                            id="${id}" 
+                            name="${fieldKey}" 
+                            data-calculation-type="${fieldData.calculationType}"
+                            data-formula="${fieldData.calculationType === 'formula' ? fieldData.value : ''}"
+                            value="${fieldData.calculationType === 'fixed' ? value : ''}">
+                    </div>
+                </div>
+            </div>
+        `;
+                    container.append(fieldHtml);
+                });
+            }
+
+            function groupSalaryStructure(roleKey) {
+                const grouped = {};
+                Object.entries(salaryStructureCache).forEach(([fullKey, value]) => {
+                    if (fullKey.startsWith(roleKey + " ")) {
+                        const shortKey = fullKey.replace(roleKey + " ", "");
+                        grouped[shortKey] = value;
+                    }
+                });
+                return grouped;
+            }
+
+
+            function capitalize(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1);
+            }
+            $('#salaryFieldsContainer').on('input', '#txtGross', function () {
+                const grossValue = parseFloat($(this).val()) || 0;
+                const inputs = {};
+
+                // Collect current values
+                $('#salaryFieldsContainer input').each(function () {
+                    const name = $(this).attr('name');
+                    const val = parseFloat($(this).val()) || 0;
+                    inputs[name] = val;
+                });
+                inputs.gross = grossValue;
+
+                // Recalculate fields with formulas
+                $('#salaryFieldsContainer input').each(function () {
+                    const type = $(this).data('calculation-type');
+                    const formula = $(this).data('formula');
+                    if (type === 'formula' && formula) {
+                        try {
+                            const result = math.evaluate(formula, inputs);
+                            $(this).val(result.toFixed(2));
+                        } catch (err) {
+                            console.warn(`Error evaluating formula for ${$(this).attr('name')}:`, err);
+                        }
+                    }
+                });
+            });
+
+
+            function getDynamicFormulas() {
+                const roleKey = selectedEmpType?.toLowerCase();
+                const formulas = {};
+
+                if (!roleKey) return formulas;
+
+                for (const key in salaryStructureCache) {
+                    if (key.startsWith(roleKey)) {
+                        const fieldName = key.replace(`${roleKey} `, ''); // e.g., 'staff basic' -> 'basic'
+                        const item = salaryStructureCache[key]; // Expected: { calculationType, value }
+                        formulas[fieldName] = item;
+                    }
+                }
+
+                return formulas;
+            }
+            
+            document.getElementById('txtGross').addEventListener('input', function () {
+                const grossValue = parseFloat(this.value);
+                if (!isNaN(grossValue)) {
+                    calculateSalary(grossValue);
+                } else {
+                    document.getElementById('txtBasic').value = '';
+                    document.getElementById('txtHouse_rent').value = '';
+                    if (document.getElementById('txtPf')) {
+                        document.getElementById('txtPf').value = '';
+                    }
+                }
+            });
+            function calculateSalary(grossValue) {
+                const formulas = getDynamicFormulas();
+                const scope = {
+                    gross: grossValue
+                };
+
+                try {
+                    // First pass: assign fixed values
+                    for (const [key, formula] of Object.entries(formulas)) {
+                        if (formula.calculationType === 'fixed') {
+                            scope[key] = formula.value;
+                        }
+                    }
+
+                    // Second pass: evaluate formulas
+         
+                    for (const [key, formula] of Object.entries(formulas)) {
+                        if (formula.calculationType === 'percentage') {
+                            scope[key] = math.evaluate(formula.value, scope);
+                        }
+                    }
+                    for (const [key, formula] of Object.entries(formulas)) {
+                        if (formula.calculationType === 'formula') {
+                            scope[key] = math.evaluate(formula.value, scope);
+                        }
+                    }
+                    // Dynamic field update
+                    for (const key in formulas) {
+                        if (key === 'house_rent')
+                        {
+                            console.log(key);
+                        }
+                        const htmlId = 'txt' + key.charAt(0).toUpperCase() + key.slice(1);
+
+                        const element = document.getElementById(htmlId);
+                        const value = scope[key];
+
+                        if (element) {
+                            if (typeof value === 'number') {
+                                element.value = value > 0 ? value.toFixed(2) : '';
+                            } else {
+                                element.value = value ?? '';
+                            }
+                        }
+                    }
+
+                } catch (err) {
+                    console.error('Formula calculation error:', err);
+
+                    // Reset all relevant fields on error
+                    for (const key in formulas) {
+                        const htmlId = 'txt' + key.replace(/(^\w|_\w)/g, match => match.replace('_', '').toUpperCase());
+                        const element = document.getElementById(htmlId);
+                        if (element) element.value = '';
+                    }
+                }
+            }
+
+
+        
+
+
+
+
 
         </script>
 
@@ -1138,4 +1156,5 @@
     <script src="../assets/theme_assets/js/apiHelper.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.2/math.min.js"></script>
 </asp:Content>

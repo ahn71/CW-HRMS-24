@@ -267,7 +267,7 @@ namespace SigmaERP.attendance
 
             DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
             if (txtCardNo.Text.Trim().Length == 0)
-                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "   AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " "+ unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ";
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "   AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " "+ unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ";
                 
             else
             {
@@ -278,7 +278,7 @@ namespace SigmaERP.attendance
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
-                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " "+unitCondition+"";
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " "+unitCondition+"";
                 
             }
             sqlDB.fillDataTable(query, dt = new DataTable());
