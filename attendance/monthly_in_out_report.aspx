@@ -56,17 +56,34 @@
 <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
                     
                      <table runat="server" visible="true" id="tblGenerateType"  class="division_table_leave1">                                      
-                                <tr id="trForCompanyList" runat="server">
-                                <td>Unit</td>
+                         <tr runat="server" id="trUnit">
+                             <td>Unit</td>
                                     <td>&nbsp;:&nbsp;</td>
                                 <td>
+                                     <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </td>
+
+                         </tr>
+                                <tr id="trForCompanyList" runat="server">
+                                <td runat="server" visible="false">
                                     <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" Visible="false" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
                                     </asp:DropDownList>
 
-                                    <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
-                                    </asp:DropDownList>
+                                   
 
                                 </td>   
+
+                                     <td>Permanent Shift 
+                            </td>
+                            <td>:
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="ddlPermanentShift" ClientIDMode="Static" CssClass="form-control select_width" runat="server">
+                                </asp:DropDownList>
+
+                            </td>
+
                                      <td>Generate Type</td>
                                     <td>&nbsp;:&nbsp;</td>        
                                 <td><asp:RadioButtonList ID="rblGenerateType" runat="server" RepeatDirection="Horizontal" Font-Bold="true" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged">
@@ -108,10 +125,10 @@
                                         <td colspan="5">
                                             <asp:RadioButtonList ID="rblReportType" runat="server" AutoPostBack="True" Font-Bold="true" RepeatDirection="Horizontal">
                                                 <asp:ListItem Selected="True" Text="Log in-out" Value="0"></asp:ListItem>
-                                                <asp:ListItem Text="Attendance status" Value="1"></asp:ListItem>
-                                                <asp:ListItem Text="Attendance summary" Value="2"></asp:ListItem>
-                                                <asp:ListItem Text="Job Card" Value="3"></asp:ListItem>
-                                                <asp:ListItem Text="Job Card New" Value="5"></asp:ListItem>
+                                               <%-- <asp:ListItem Text="Attendance status" Value="1"></asp:ListItem>--%>
+                                                <asp:ListItem Text="Attendance status" Value="2"></asp:ListItem>
+                                             <%--   <asp:ListItem Text="Job Card" Value="3"></asp:ListItem>--%>
+                                                <asp:ListItem Text="Job Card" Value="5"></asp:ListItem>
                                                 <asp:ListItem Text="Only W &amp; H" Value="4"></asp:ListItem>
                                             </asp:RadioButtonList>
                                         </td>

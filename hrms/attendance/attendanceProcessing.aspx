@@ -19,6 +19,11 @@
         i {
             margin-right: 0 !important;
         }
+        .clickable-roster:hover {
+            color: darkorange; /* Change this to your department color */
+            text-decoration: underline;
+        }
+
     </style>
 
 
@@ -115,7 +120,7 @@
                                                     </div>
                                                     <%--Close--%>
                                                 </div>
-
+                                               
                                                 <div id="employeeContainer">
                                                     <table class="table mb-0 packagesTable table-borderless adv-table"
                                                         data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
@@ -147,10 +152,16 @@
                                         <div class="d-flex align-items-center pb-4 card-header justify-content-between">
 
                                             <h2>Attendance Result</h2>
-                                            <button type="button" class="alert alert-danger fs-5"
+                                            <div class="d-flex">
+                                                <h2 id="totalMessingRoster" class="text-danger clickable-roster" style="margin-right:30px; cursor:pointer;" title="Click to view details">
+    <!-- Total Missing Data will be shown here --></h2>
+
+                                                <button type="button" class="alert alert-danger fs-5"
                                                 title="Close" onclick="showAttendanceHideEmployee()">
                                                 <i class="fas fa-times"></i>
                                             </button>
+                                            </div>
+                                       
                                         </div>
 
 
@@ -234,12 +245,9 @@
         function AttendanceProcess() {
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();
-            const employeeQuery = getSelectedEmployeeQuery();
+            const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
 
-            const urlParams = new URLSearchParams(employeeQuery);
-            const empIds = urlParams.getAll('empIds');
-
-            if (empIds.length === 0) {
+            if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'No Employee Selected',
@@ -248,7 +256,6 @@
                 });
                 return;
             }
-
 
             $('#progress-section').show();
             $('#progress-bar').css('width', '0%').text('0%');
@@ -262,7 +269,7 @@
                 CompanyID,
                 startDate,
                 endDate,
-                empIds
+                employeeQuery
             )
                 .then(response => {
                     if (response.statusCode === 200) {
@@ -270,17 +277,31 @@
                         bindAttdTableData(response.data);
                         $('#progress-section').hide();
                         $('#attendanceContainer').show();
+                       console.log('Missing Data', response.missingData);
+                        sessionStorage.setItem('__MessingRosterData__', JSON.stringify(response.missingData));
+                        const totalMessing = response.missingData?.length || 0;
+                        console.log('Total Missing Data:', totalMessing);
+                        $('#totalMessingRoster').text('Messing Roster ' + '('+ totalMessing+ ')');
+
+                        if (totalMessing === 0) {
+                            $('#totalMessingRoster').hide();
+                        } else {
+                            $('#totalMessingRoster').show();
+                        }
+
 
                     } else {
                         console.error('API Error:', response.message);
                         $('.footable-loader').hide();
                         $('#progress-section').hide();
+                       
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
                     $('.footable-loader').hide();
                     $('#progress-section').hide();
+                
                 });
         }
 
@@ -298,10 +319,7 @@
                 formData.append('companyId', companyId);
                 formData.append('fromDate', fromDate);
                 formData.append('toDate', toDate);
-
-                empIds.forEach((id, index) => {
-                    formData.append(`empIds[${index}]`, id);
-                });
+                formData.append('empIds', empIds);
 
                 $.ajax({
                     url: apiUrl,
@@ -375,8 +393,10 @@
             const columns = [
                 { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                 { name: "empPicture", title: "Name", className: "userDatatable-content" },
-                { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
-                { name: "dptName", title: "Department", className: "userDatatable-content" },
+                { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
+                { name: "departmnet", title: "Department", className: "userDatatable-content" },
+                { name: "attDate", title: "Date", className: "userDatatable-content" },
+                { name: "attStatus", title: "Status", className: "userDatatable-content" },
                 { name: "inPunch", title: "In Time", className: "userDatatable-content" },
                 { name: "outPunch", title: "Out Time", className: "userDatatable-content" },
             ];
@@ -405,6 +425,7 @@
 
 
 
+
         function GetEmployee() {
             const startDate = $('#txtStartDate').val();
             const EmpCardNo = $('#txtEmpCardNo').val();
@@ -417,10 +438,12 @@
                         bindTableData(response.data);
                     } else {
                         console.error('API Error:', response.message);
+                        
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
+                     bindTableData([]);
                 });
         }
 
@@ -654,7 +677,78 @@
                     console.error('Request failed:', error);
                 });
         }
+        $(document).on('click', '#totalMessingRoster', function () {
+            const rawData = sessionStorage.getItem('__MessingRosterData__');
+            const missingDetails = rawData ? JSON.parse(rawData) : [];
 
+            if (!missingDetails.length) {
+                alert('No missing roster entries found.');
+                return;
+            }
+
+            const companyName = 'ABR SPINNING MILLS LIMITED';
+            const companyAddress = 'House# 10, (Lift-7) Road-90, Gulshan-2, Dhaka-1212';
+            const reportTitle = 'Missing Roster Report';
+            const generatedDate = 'Generated on: ' + new Date().toLocaleString();
+
+            // 🔁 Step 1: Define field mappings (key: original key, value: new label)
+            const headerMap = {
+                empCardNo: 'Employee ID',
+                empName: 'Employee Name',
+                dptName: 'Department',
+                dsgName: 'Designation',
+                perShift: 'Permanent Shift',
+                attDate: 'Attendance Date',
+                reason: 'Reason'
+            };
+
+            // ✅ Step 2: Create array of header labels
+            const headers = Object.values(headerMap);
+
+            // ✅ Step 3: Convert data to rows based on the header map
+            const dataRows = missingDetails.map(item =>
+                Object.keys(headerMap).map(key => item[key] ?? '')
+            );
+
+            // ✅ Step 4: Build full worksheet data with company info and headers
+            const worksheetData = [
+                [companyName],
+                [companyAddress],
+                [reportTitle],
+                [generatedDate],
+                [],
+                headers,
+                ...dataRows
+            ];
+
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+            // ✅ Step 5: Merge and style top header rows
+            const mergeAcross = headers.length - 1;
+            worksheet['!merges'] = [
+                { s: { r: 0, c: 0 }, e: { r: 0, c: mergeAcross } },
+                { s: { r: 1, c: 0 }, e: { r: 1, c: mergeAcross } },
+                { s: { r: 2, c: 0 }, e: { r: 2, c: mergeAcross } },
+                { s: { r: 3, c: 0 }, e: { r: 3, c: mergeAcross } },
+            ];
+
+            // 🔧 Optional: Style the title rows (center align, bold, font size)
+            ['A1', 'A2', 'A3', 'A4'].forEach(cell => {
+                if (worksheet[cell]) {
+                    worksheet[cell].s = {
+                        alignment: { horizontal: 'center', vertical: 'center' },
+                        font: { bold: true, sz: 16 }
+                    };
+                }
+            });
+
+            worksheet['!cols'] = headers.map(() => ({ wch: 22 }));
+
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'MissingRoster');
+
+            XLSX.writeFile(workbook, 'MissingRoster_Report.xlsx');
+        });
     </script>
 
 

@@ -122,18 +122,18 @@
                    <div style="overflow:hidden;margin-top:-32px; float:right;">
                                                
                        <asp:RadioButtonList style="color:#fff;font-size:13px;font-weight:bold;position:relative;float:right;margin-right:5%;"  ID="rbRosterType" runat="server" ClientIDMode="Static" RepeatDirection="Horizontal" Font-Bold="True">
-                           <asp:ListItem Value="Create" Text="Create Roster"></asp:ListItem>
-                           <asp:ListItem Value="Extend" Text="Extend Roster"></asp:ListItem>
+                          <%-- <asp:ListItem Value="Create" Text="Create Roster"></asp:ListItem>--%>
+                           <asp:ListItem Value="Extend" Text="Extend Roster" Selected="True" ></asp:ListItem>
                        </asp:RadioButtonList>               
                    </div>
                                  </div>
                <div style="border:1px solid white">                  
                         <table style="width:100%" >
                               <tr>
-                                    <td style="color:#fff;font-size:13px;">
+                                    <td style="color:#fff;font-size:13px;" runat="server" visible="false"> 
                                        Company
                                       </td>
-                                       <td class="tdWidth">
+                                       <td class="tdWidth" runat="server" visible="false">
                                      <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged"  ></asp:DropDownList>
                                  </td>
 
@@ -150,7 +150,7 @@
                                      <asp:DropDownList runat="server" ID="ddlGrouopList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlGrouopList_SelectedIndexChanged"  ></asp:DropDownList>
                                  </td>   
                                   <td style="color:#fff;font-size:13px;">
-                                      Shift 
+                                      Current Roster 
                                       </td>
                                        <td class="tdWidth">
                                      <asp:DropDownList runat="server" ID="ddlAssignShift" CssClass="form-control text_box_width style" style="min-width:96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlAssignShift_SelectedIndexChanged" ></asp:DropDownList>
@@ -160,7 +160,7 @@
                                       <asp:CheckBox ID="chkLoadAllShiftList" runat="server" AutoPostBack="true" Text="All A.Sh." OnCheckedChanged="chkLoadAllShiftList_CheckedChanged"  />
                                   </td> 
                                   <td >
-                                       <asp:TextBox ID="txtDate" runat="server" Width="100px" placeHolder="Extend Date" Style=" text-align:center "  ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                       <asp:TextBox ID="txtDate" runat="server" Width="100px"   autocomplete="off" placeHolder="Extend Date" Style=" text-align:center "  ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
                                       <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
                                                 PopupButtonID="imgEffectDateFrom" Enabled="True"
                                                 TargetControlID="txtDate" ID="CExtApplicationDate">

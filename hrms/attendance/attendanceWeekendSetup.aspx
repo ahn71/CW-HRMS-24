@@ -468,16 +468,16 @@
                 row.userImage = null;
                 const userImage = row.empImage || defaultImage;
 
-            //    row.action = `
-            //<div class="actions">
-            //    <ul class="">
-            //        <li>
-            //            <a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove">
-            //                <i class="uil uil-trash-alt"></i>
-            //            </a>
-            //        </li>
-            //    </ul>
-            //</div>`;
+                row.action = `
+            <div class="actions">
+                <ul class="">
+                    <li>
+                        <a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove">
+                            <i class="uil uil-trash-alt"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>`;
                 row.userImage = `
             <div class="user-details-container d-flex align-items-center">
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
@@ -750,11 +750,10 @@
                 const endDate = sessionStorage.getItem('__endDate__');
                 const weekendDate = sessionStorage.getItem('__weekendDate__');
 
-                const employeeQuery = getSelectedEmployeeQuery();
-                const urlParams = new URLSearchParams(employeeQuery);
-                const empIds = urlParams.getAll('empIds');
+            
+                const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
 
-                if (empIds.length === 0) {
+                if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'No Employee Selected',
@@ -769,10 +768,9 @@
                 formData.append('fromDate', starDate);
                 formData.append('toDate', endDate);
                 formData.append('weekendDay', weekendDate);
+                formData.append('empIds', employeeQuery);
 
-                empIds.forEach((id, index) => {
-                    formData.append(`empIds[${index}]`, id);
-                });
+             
 
                 ApiCallPostForm(PostDayWiseWeekendSetupURL, token, formData)
                     .then(data => {
@@ -783,6 +781,9 @@
                                 text: 'Thanks!',
                                 confirmButtonText: 'OK'
                             });
+                            selectedEmployeeIds.clear();
+                            $('#selectAllEmployee').prop('checked', false);
+                            $('.EmployeerowCheckbox').prop('checked', false);
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -802,13 +803,9 @@
             function DateWiseEmpWeekendSetup() {
                 //const WeekendDate = $('#txtWeekendDate').val();
                 const WeekendDate = sessionStorage.getItem('__WeekendDate__');
+                const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
 
-
-                const employeeQuery = getSelectedEmployeeQuery();
-                const urlParams = new URLSearchParams(employeeQuery);
-                const empIds = urlParams.getAll('empIds');
-
-                if (empIds.length === 0) {
+                if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'No Employee Selected',
@@ -818,14 +815,12 @@
                     return;
                 }
 
+
+
                 const formData = new FormData();
                 formData.append('companyId', CompanyID);
                 formData.append('weekendDay', WeekendDate);
-
-                empIds.forEach((id, index) => {
-                    formData.append(`empIds[${index}]`, id);
-                });
-
+                formData.append('empIds', employeeQuery);
                 ApiCallPostForm(PostDateWiseWeekendSetupURL, token, formData)
                     .then(data => {
                         if (data.status === 200) {
@@ -835,6 +830,9 @@
                                 text: 'Thanks!',
                                 confirmButtonText: 'OK'
                             });
+                            selectedEmployeeIds.clear();
+                            $('#selectAllEmployee').prop('checked', false);
+                            $('.EmployeerowCheckbox').prop('checked', false);
                         } else {
                             Swal.fire({
                                 icon: 'error',

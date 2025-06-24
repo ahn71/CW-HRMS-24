@@ -347,7 +347,7 @@
                     <img class="image_width_for_module" src="../images/common/employee detail.ico" /><br />
                     Roster Report By Date Range</a>--%>
 
-                      <a class="ds_Settings_Basic_Text cardStyle" href="/hrms/roster/place-assign"><i class="uil uil-calendar-alt iconStyle"></i>
+                      <a class="ds_Settings_Basic_Text cardStyle" href="/hrms/roster/report-by-date"><i class="uil uil-calendar-alt iconStyle"></i>
                     <br />
                     Roster Report By Date Range</a>
             </div>

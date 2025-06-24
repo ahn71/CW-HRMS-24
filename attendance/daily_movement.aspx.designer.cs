@@ -76,6 +76,24 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblGenerateType;
         
         /// <summary>
+        /// trUnit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trUnit;
+        
+        /// <summary>
+        /// ddlUnit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlUnit;
+        
+        /// <summary>
         /// trCompanyName control.
         /// </summary>
         /// <remarks>
@@ -94,13 +112,13 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.DropDownList ddlCompany;
         
         /// <summary>
-        /// ddlUnit control.
+        /// ddlPermanentShift control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlUnit;
+        protected global::System.Web.UI.WebControls.DropDownList ddlPermanentShift;
         
         /// <summary>
         /// ddlShift control.

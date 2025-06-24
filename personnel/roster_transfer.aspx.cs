@@ -82,7 +82,7 @@ namespace SigmaERP.personnel
                 gvEmpList.DataBind(); return;
             }
             divRecordMessage.Visible = false;
-            if (!ViewState["__ReadAction__"].ToString().Equals("0"))
+            //if (!ViewState["__ReadAction__"].ToString().Equals("0"))
                 gvEmpList.Visible = true;
             LoadAllEmployeeList();
           //  lblTotal.Text = gvEmpList.Rows.Count.ToString();

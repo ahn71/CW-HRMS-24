@@ -77,21 +77,48 @@ namespace SigmaERP.personnel
             try
             {
                 classes.commonTask.loadGroupByDepartment_Company(ddlGrouopList, ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue);
-               
+
+                if (ddlGrouopList.Items.Count > 0)
+                {
+                    ddlGrouopList.SelectedIndex = 0;
+
+                    // Manually trigger the selected index changed event
+                    ddlGrouopList_SelectedIndexChanged(ddlGrouopList, EventArgs.Empty);
+                }
+
             }
             catch { }
         }
 
+        string SqlCmd = "";
 
         private void loadAssignedShiftList()
         {
             try
             {
-                dt = new DataTable();
-                if (!chkLoadAllShiftList.Checked) sqlDB.fillDataTable("select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='"+ddlGrouopList.SelectedValue.ToString()+"' order by STId Desc ", dt);
-                else sqlDB.fillDataTable("select STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='" + ddlGrouopList.SelectedValue.ToString() + "' order by STId Desc ", dt);
+                string condition = "";
+                if(ddlGrouopList.SelectedIndex > 0)
+                {
+                   condition += " AND GID = '" + ddlGrouopList.SelectedValue.ToString() + "'";
+                }
 
-                string hhhh = "select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='" + ddlGrouopList.SelectedValue.ToString() + "' order by STId Desc ";
+                dt = new DataTable();
+                if (!chkLoadAllShiftList.Checked) {
+
+                    SqlCmd = "select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' " + condition + " order by STId Desc";
+
+
+                    sqlDB.fillDataTable(SqlCmd, dt);
+                }
+                
+                else
+                {
+
+                    SqlCmd = "select STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' "+ condition + " order by STId Desc";
+
+                    sqlDB.fillDataTable(SqlCmd, dt);
+                }
+                //string hhhh = "select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' " + condition + " order by STId Desc  ";
 
                 ddlAssignShift.DataTextField = "Title";
                 ddlAssignShift.DataValueField = "SftId_DptId";
@@ -113,17 +140,25 @@ namespace SigmaERP.personnel
 
         protected void ddlAssignShift_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
-            if (ddlDepartmentList.SelectedValue == "0")
+            try
             {
-                gvEmpList.DataSource = null;
-                gvEmpList.DataBind(); return;
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                if (ddlDepartmentList.SelectedValue == "0")
+                {
+                    gvEmpList.DataSource = null;
+                    gvEmpList.DataBind(); return;
+                }
+                divRecordMessage.Visible = false;
+                gvEmpList.Visible = true;
+                LoadAllEmployeeList();
+                lblTotal.Text = gvEmpList.Rows.Count.ToString();
+            
+
             }
-            divRecordMessage.Visible = false;
-            if (!ViewState["__ReadAction__"].ToString().Equals("0"))
-            gvEmpList.Visible = true;
-            LoadAllEmployeeList();
-            lblTotal.Text = gvEmpList.Rows.Count.ToString();
+            catch (Exception ex)
+            { }
+
+       
 
         }
 

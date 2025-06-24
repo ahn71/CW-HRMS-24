@@ -58,9 +58,15 @@ namespace SigmaERP.attendance
                // string[] AccessPermission = new string[0];
                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
                 //ViewState["__ReadAction__"] = AccessPermission[0];
-                classes.commonTask.LoadShiftNameByCompany(ViewState["__CompanyId__"].ToString(), ddlShift);
+                classes.commonTask.LoadActiveShiftsForCompany(ViewState["__CompanyId__"].ToString(), ddlShift);
+                classes.commonTask.LoadActiveShiftsForCompany(ViewState["__CompanyId__"].ToString(), ddlPermanentShift);
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                 classes.commonTask.loadUnit(ddlUnit, ViewState["__CompanyId__"].ToString());
+                if (ddlUnit.Items.Count < 3)
+                {
+                    trUnit.Visible = false;
+                }
+
                 //-----------------------------------------------------
 
 
@@ -101,7 +107,17 @@ namespace SigmaERP.attendance
             }
 
 
-            string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
+            string ShiftName = "";
+
+            if (ddlShift.SelectedValue != "0")
+            {
+                ShiftName += " and SftId='" + ddlShift.SelectedValue + "' ";
+            }
+
+            if (ddlPermanentShift.SelectedValue != "0")
+            {
+                ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
+            }
             string[] dmy = txtDate.Text.Split('-');
             string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
             string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
@@ -186,8 +202,19 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            string ShiftName = "";
 
-            string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
+            if (ddlShift.SelectedValue != "0")
+            {
+                ShiftName += " and SftId='" + ddlShift.SelectedValue + "' ";
+            }
+
+            if (ddlPermanentShift.SelectedValue != "0")
+            {
+                ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
+            }
+
+
             string[] dmy = txtDate.Text.Split('-');
             string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
             string AttStatus = "";
@@ -240,7 +267,7 @@ namespace SigmaERP.attendance
 
             DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
             if (txtCardNo.Text.Trim().Length == 0)
-                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "   AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " "+ unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ";
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "   AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " "+ unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ";
                 
             else
             {
@@ -251,7 +278,7 @@ namespace SigmaERP.attendance
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
-                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " "+unitCondition+"";
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " "+unitCondition+"";
                 
             }
             sqlDB.fillDataTable(query, dt = new DataTable());
