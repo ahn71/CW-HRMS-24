@@ -1,4 +1,5 @@
-﻿using SigmaERP.Models;
+﻿using Newtonsoft.Json.Linq;
+using SigmaERP.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,10 +22,10 @@ namespace SigmaERP.classes
             string[] getDays = SelectedDate.Split('-');
             DateTime FromDate=DateTime.Parse( getDays[2] + "-" + getDays[1] + "-01");
             DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
-            
-              
-                // getting selected employees 
-                DataTable dtEmployees = new DataTable();
+
+               var paryRollPolicy=getPayrollPolicy(CompanyId);
+                  // getting selected employees 
+                  DataTable dtEmployees = new DataTable();
                 if (IsSeperationGeneration == "0")// regular employee 
                 {
                     // check half month salary and set From Date            
@@ -50,12 +51,13 @@ namespace SigmaERP.classes
                 int Activeday = int.Parse(dt.Rows[0]["TotalWorkingDays"].ToString());
 
                 //get stamp Amount
-                double stampDeduct = (hasStampDeduction)?getStampDeduction():0;
+               
                     //int count = 0;
                     //int countPost = 0;
                     //int countSuccess= 0;
                 foreach (DataRow employee in dtEmployees.Rows)
                 {
+                        double stampDeduct = (hasStampDeduction) ? getStampDeduction(paryRollPolicy["StampDeduction"].ToString(), employee["PaymentMethod"].ToString()) : 0;
                         // excepted employee ignore here 
                         if (ExceptedEmpCardNo!= "")
                         {
@@ -239,14 +241,14 @@ namespace SigmaERP.classes
         private DataTable getEmployees(string CompanyId,string EmpId, string SelectDate)
         {
 
-            EmpId = (EmpId == "0" )?"": " and EmpId='" + EmpId + "'";
-             return CRUD.ExecuteReturnDataTable("select CompanyId,DptId,DsgId,GrdName,EmpId,EmpCardNo,EmpName,EmpType,EmpTypeId,EmpStatus,ActiveSalary,IsActive,CompanyId,SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate from v_Personnel_EmpCurrentStatus Where  EmpStatus in ('1','8') AND ActiveSalary='true' AND IsActive='1' AND CompanyId='" + CompanyId + "' and EmpJoiningDate<='" + SelectDate + "' "+EmpId);
+            EmpId = (EmpId == "0" )?"": " and cs.EmpId='" + EmpId + "'";
+             return CRUD.ExecuteReturnDataTable("Select cs.CompanyId,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,cs.MedicalAllownce,cs.FoodAllownce,cs.ConvenceAllownce, cs.HouseRent,cs.TechnicalAllownce,cs.OthersAllownce,cs.EmpPresentSalary,cs.AttendanceBonus,cs.LunchCount,cs.LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,cs.PaymentMethod from dbo.Personnel_EmployeeInfo ei on  sp.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId  LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  Where  cs.EmpStatus in ('1','8') AND cs.ActiveSalary='true' AND cs.CompanyId='" + CompanyId + "' and ei.EmpJoiningDate<='" + SelectDate + "' "+EmpId);
         }
         private DataTable getSeparationEmployees(string CompanyId,string EmpId, string YearMonth)
         {
 
             EmpId = (EmpId == "0" )?"": " and s.EmpId='" + EmpId + "'";
-             return CRUD.ExecuteReturnDataTable("select s.EmpSeparationId,c.CompanyId,DptId,DsgId,GrdName,c.EmpId,c.EmpCardNo,c.EmpName,c.EmpType,c.EmpTypeId,c.EmpStatus,ActiveSalary,c.IsActive,c.CompanyId,c.SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate,convert(varchar(10), s.EffectiveDate,120) as EffectiveDate from v_Personnel_EmpSeparation s inner join v_Personnel_EmpCurrentStatus as c on s.EmpId=c.EmpId and c.IsActive=1 and c.EmpStatus not in(1,8) where s.CompanyId ='" + CompanyId+"' AND YearMonth='"+ YearMonth + "' AND s.IsActive='True' "+EmpId);
+            return CRUD.ExecuteReturnDataTable("select s.EmpSeparationId,cs.CompanyId,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,cs.MedicalAllownce,cs.FoodAllownce,cs.ConvenceAllownce, cs.HouseRent,cs.TechnicalAllownce,cs.OthersAllownce,cs.EmpPresentSalary,cs.AttendanceBonus,cs.LunchCount,cs.LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate   convert(varchar(10), s.EffectiveDate,120) as EffectiveDate,cs.PaymentMethod from  Personnel_EmpSeparation s inner join dbo.Personnel_EmployeeInfo ei on  sp.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID where s.CompanyId = '" + CompanyId+"' AND YearMonth = '"+ YearMonth + "' AND s.IsActive = 'True'" );
         }
         private DataTable getMonthInfo(string  CompanyId,string Month)
         {
@@ -353,6 +355,13 @@ namespace SigmaERP.classes
 
         }
 
+
+
+
+
+
+
+
         private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
         {
 
@@ -381,8 +390,9 @@ namespace SigmaERP.classes
             return salaryRecord;
         }
 
-        private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord,string EmpDutyType)
+        private SalaryRecord checkAttendanceBonus_old(SalaryRecord salaryRecord,string EmpDutyType)
         {
+
             if (salaryRecord.AbsentDay > 0 || salaryRecord.LateDays > 0 || salaryRecord.TotalLeave > 0)
                 salaryRecord.AttendanceBonus = 0;
             else
@@ -462,19 +472,55 @@ namespace SigmaERP.classes
 
         }
 
+
+
+        private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType)
+        {
+
+            
+
+
+            
+            return salaryRecord;
+
+        }
+
+
         private double getOthersPay(string EmpId)
         {
             dt = new DataTable();
             dt=CRUD.ExecuteReturnDataTable("select  ISNULL(Sum(OtherPay),0) OtherPay from Payroll_OthersPay where EmpId='" + EmpId + "' AND IsActive='1' ");
             return double.Parse(dt.Rows[0]["OtherPay"].ToString());
         }
-        private double getStampDeduction()
+        private double getStampDeduction_old()
         {
           
             dt = new DataTable();
             dt=CRUD.ExecuteReturnDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)");
             return double.Parse(dt.Rows[0]["StampDeduct"].ToString());
         }
+
+
+        private double getStampDeduction(string StampPolicy,string paymentMethod)
+        {
+
+            JObject obj = JObject.Parse(StampPolicy);
+            JArray conditions = (JArray)obj["conditions"];
+
+            foreach (JObject condition in conditions)
+            {
+                if (condition["paymentMethod"]?.ToString() == paymentMethod)
+                {
+                    return int.Parse(condition["deductAmount"]?.ToString() ?? "0");
+                }
+            }
+
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)");
+            return double.Parse(dt.Rows[0]["StampDeduct"].ToString());
+        }
+
         private double getOthersDeduction(string EmpId,string MonthName)
         {
             dt = new DataTable();
@@ -624,6 +670,28 @@ namespace SigmaERP.classes
                 CRUD.Execute("delete from Payroll_MonthlySalarySheet where CompanyId='" + CompanyId + "'  AND YearMonth='" + ToDate.ToString("yyyy-MM") + "-01'  AND IsSeperationGeneration='1' " + EmpId);
             }
             catch { }
+        }
+
+
+
+        private Dictionary<string,string> getPayrollPolicy(string companyId)
+        {
+            Dictionary<string, string> payrollPolicyDict = new Dictionary<string, string>();
+
+            string query = "select PolicyType,PolicyJson from Payroll_Policies where CompanyId='"+ companyId + "'";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                string policyType = row["PolicyType"].ToString();
+                string policyJson = row["PolicyJson"].ToString();
+
+                if (!payrollPolicyDict.ContainsKey(policyType))
+                {
+                    payrollPolicyDict.Add(policyType, policyJson);
+                }
+            }
+            return payrollPolicyDict;
         }
     }
 }
