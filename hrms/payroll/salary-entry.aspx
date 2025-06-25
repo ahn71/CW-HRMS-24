@@ -32,7 +32,19 @@
              }
 
 
+            .swal2-container {
+                z-index: 99999 !important;
+            }
+            .uil-money-insert{
+                margin-right:5px;
+            }
 
+            label{
+                margin-bottom:3px;
+            }
+            .form-control {
+                height: 40px !important;
+            }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -217,26 +229,13 @@
                                                                 
                                                                             <div class="col-lg-8 mb-10">
                                                                                 <div class="row">
-                                                                                         <div class="col-lg-4 mb-10">
-                                                                                        <label for="ddlOvertTime" class="color-dark fs-14 fw-500 align-center">Over Time </label>
-                                                                                        <div class="input-group with-icon">
-
-                                                                                            <select name="ddlOvertTime" id="ddlOvertTime" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                                <option value="0">---Select---</option>
-                                                                                                <option value="3">Yes</option>
-                                                                                                <option value="2">No</option>
-                                                                                                <option value="1">Single Rate</option>
-                                                                                           
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <span class="text-danger" id="ddlOvertTimeError"></span>
-                                                                                    </div>
+                                                                                   
                                                                                     <div class="col-lg-4">
                                                                             <label for="ddlPaymentMethod" class="color-dark fs-14 fw-500 align-center">Payment Method</label>
-                                                                            <div class="input-group with-icon">
+                                                                            <div class="input-group">
                                                                                 
                                                                                 <select name="ddlPaymentMethod" id="ddlPaymentMethod" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                    <option value="0">---Select---</option>
+                                                                                    <option value="">---Select---</option>
                                                                                     <option value="0">Cash</option>
                                                                                     <option value="1">Bank</option>
                                                                                     <option value="2">Check</option>
@@ -248,8 +247,8 @@
                                                                                
                                                                                      <div class="col-lg-4 mb-10">
                                                                                         <label for="ddlSalaryBank" class="color-dark fs-14 fw-500 align-center">Salary Bank</label>
-                                                                                        <div class="input-group with-icon">
-
+                                                                                        <div class="input-group ">
+                                                                                          
                                                                                             <select name="ddlSalaryBankName" id="ddlSalaryBank" class="form-control ih-medium ip-gray radius-xs b-light">
 
                                                                                            
@@ -258,20 +257,19 @@
                                                                                         <span class="text-danger" id="ddlSalaryBankError"></span>
                                                                                     </div>
 
-
-                                                                                    <div class="col-lg-4">
+                                                                                     <div class="col-lg-4">
                                                                                         <div class="form-group">
                                                                                             <label for="txtAccountNo" class=" color-dark fs-14 fw-500 align-center">Account No</label>
                                                                                             <div class="with-icon">
                                                                                                 <span class="las la-money-bill"></span>
-                                                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light" id="AccountNo">
+                                                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light" id="txtAccountNo">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
 
-                                                                                        <div class="col-lg-4 mb-10">
+                                                                                     <div class="col-lg-4 mb-10">
                                                                                         <label for="ddlGrade" class="color-dark fs-14 fw-500 mb-1">Grade</label>
-                                                                                        <div class="input-group with-icon">
+                                                                                        <div class="input-group">
 
                                                                                             <select name="ddlGrade" id="ddlGrade" class="form-control ih-medium ip-gray radius-xs b-light">
                                                                                                <%-- <option value="0">---Select---</option>
@@ -283,6 +281,20 @@
                                                                                         </div>
                                                                                         <span class="text-danger" id="ddlGradeError"></span>
                                                                                     </div>
+                                                                                     <div class="col-lg-4 mb-10">
+                                                                                        <label for="ddlOvertTime" class="color-dark fs-14 fw-500 align-center">Over Time </label>
+                                                                                        <div class="input-group">
+
+                                                                                            <select name="ddlOvertTime" id="ddlOvertTime" class="form-control ih-medium ip-gray radius-xs b-light">
+                                                                                                
+                                                                                                <option value="1" selected >Yes</option>
+                                                                                                <option value="0">No</option>
+                                                                                                <option value="">Single Rate</option>
+                                                                                           
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="ddlOvertTimeError"></span>
+                                                                                    </div>
                                                                                      <div class="col-lg-4">
                                                                                         <div class="form-group">
                                                                                             <label for="txtGross" class=" color-dark fs-14 fw-500 align-center">Gross</label>
@@ -292,9 +304,10 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                        <div class="row" id="salaryFieldsContainer"></div>
+                                                                                    
                                                                             
                                                                                 </div>
+                                                                                 <div class="row" id="salaryFieldsContainer"></div>
 
 
 
@@ -314,8 +327,8 @@
 
                                                                               <!-- Details -->
                                                                               <ul class="list-group list-group-flush mt-3 text-start">
-                                                                                <li class="list-group-item py-1"><strong>Card No:</strong> <span id="empCardNo">123456</span></li>
-                                                                                <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType">Staff</span></li>
+                                                                                <li class="list-group-item py-1"><strong>Employee Id:</strong> <span id="empCardNo"></span></li>
+                                                                                <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType"></span></li>
                                                                               </ul>
                                                                             </div>
                                                                           </div>
@@ -339,7 +352,7 @@
 
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary" id="saveSalaryBtn">Submit</button>
+                                                                <button type="button" class="btn btn-primary" id="saveSalaryBtn" onclick="SaveSalary();">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -381,6 +394,7 @@
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+            var PostSalarySaveURL = `${rootUrl}/api/Salary/salary-save`;
 
 
 
@@ -850,22 +864,20 @@
                             var data = response.data;
 
                             // --- Dropdowns ---
-                            $('#ddlOvertTime').val(
-                                data.isSingleRateOT ? '1' : (data.isOverTime ? '3' : '2')
-                            );
+                           $('#ddlOvertTime').val(data.isSingleRateOT ? '' : (data.isOverTime ? '1' : '0'));
                             $('#ddlPaymentMethod').val(data.paymentMethod ?? '0');
                             $('#ddlSalaryBank').val(data.bankId ?? '0');
                             $('#ddlGrade').val(data.grdId ?? '');
 
                             // --- Textboxes ---
-                            $('#AccountNo').val(data.empAccountNo ?? '');
+                            $('#txtAccountNo').val(data.empAccountNo ?? '');
                             $('#txtGross').val((data.empPresentSalary ?? 0).toFixed(2));
-                            $('#txtBasicSalary').val((data.basicSalary ?? 0).toFixed(2));
+                            $('#txtBasic').val((data.basicSalary ?? 0).toFixed(2));
                             $('#txtMedical').val((data.medicalAllownce ?? 0).toFixed(2));
                             $('#txtFood').val((data.foodAllownce ?? 0).toFixed(2));
                             $('#txtConveyance').val((data.convenceAllownce ?? 0).toFixed(2));
                             $('#txtTechnical').val((data.technicalAllownce ?? 0).toFixed(2));
-                            $('#txtHouse').val((data.houseRent ?? 0).toFixed(2));
+                            $('#txtHouse_rent').val((data.houseRent ?? 0).toFixed(2));
                             $('#txtOthers').val((data.othersAllownce ?? 0).toFixed(2));
                             $('#txtAttBonuse').val((data.attendanceBonus ?? 0).toFixed(2));
                             $('#txtDormetory').val((data.dormitoryRent ?? 0).toFixed(2));
@@ -875,7 +887,7 @@
                             $('#empName').text(data.empName ?? 'N/A');
                             $('#empDesignation').text(data.dsgName ?? 'N/A');
                             $('#empDepartment').text(data.dptName ?? 'N/A');
-                            $('#empCardNo').text(data.empCardNo ?? 'N/A');
+                            $('#empCardNo').text(data.empCardNo ? data.empCardNo.slice(-6) : 'N/A');
                             $('#empType').text(data.empType ?? 'N/A');
 
                             // Profile Image Handling
@@ -967,7 +979,7 @@
                 });
             }
 
-                        function renderDynamicSalaryFields(roleKey) {
+            function renderDynamicSalaryFields(roleKey) {
                 const container = $('#salaryFieldsContainer');
                 container.empty();
 
@@ -987,30 +999,41 @@
                     const label = fieldData.label || fieldKey;
                     const value = fieldData.value || '';
                     const msg = fieldData.msg || '';
+                    const calculationType = fieldData.calculationType || '';
                     const id = `txt${capitalize(fieldKey)}`;
                     const msgId = `${id}Msg`;
 
-                    const fieldHtml = `
-            <div class="col-lg-4" id="Section${capitalize(fieldKey)}">
-                <div class="form-group">
-                    <label for="${id}" class="color-dark fs-14 fw-500 align-center">${label}
-                        <small id="${msgId}" style="margin-left:5px;font-size:10px">${msg}</small>
-                    </label>
-                    <div class="with-icon">
-                        <span class="las la-money-bill"></span>
-                        <input type="number" 
-                            class="form-control ih-medium ip-gray radius-xs b-light" 
-                            id="${id}" 
-                            name="${fieldKey}" 
-                            data-calculation-type="${fieldData.calculationType}"
-                            data-formula="${fieldData.calculationType === 'formula' ? fieldData.value : ''}"
-                            value="${fieldData.calculationType === 'fixed' ? value : ''}">
+                    // For formula fields, display formula and tooltip msg
+                    let msgHtml = '';
+                    if (calculationType === 'formula') {
+                        msgHtml = ` <small class="text-info fs-12" title="${msg}" style="font-size:10px; cursor: help; margin-left:5px;" >Formula </small> `;
+                    } else {
+                        msgHtml = `<small id="${msgId}" style="margin-left:5px;font-size:10px" class="text-primary fs-12">${msg}</small> `;
+                    }
+
+                            const fieldHtml = `
+                <div class="col-lg-4" id="Section${capitalize(fieldKey)}">
+                    <div class="form-group">
+                        <label for="${id}" class="color-dark fs-14 fw-500 align-center">${label}
+                            ${msgHtml}
+                        </label>
+                        <div class="with-icon">
+                            <span class="las la-money-bill"></span>
+                            <input type="number" 
+                                class="form-control ih-medium ip-gray radius-xs b-light" 
+                                id="${id}" 
+                                name="${fieldKey}" 
+                                data-calculation-type="${calculationType}"
+                                data-formula="${calculationType === 'formula' ? value : ''}"
+                                value="${calculationType === 'fixed' ? value : ''}" 
+                                disabled>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
                     container.append(fieldHtml);
                 });
+
             }
 
             function groupSalaryStructure(roleKey) {
@@ -1120,7 +1143,7 @@
                         const htmlId = 'txt' + key.charAt(0).toUpperCase() + key.slice(1);
 
                         const element = document.getElementById(htmlId);
-                        const value = scope[key];
+                        const value =  Math.round(scope[key]);
 
                         if (element) {
                             if (typeof value === 'number') {
@@ -1144,7 +1167,79 @@
             }
 
 
-        
+
+            function SaveSalary() {
+                // Determine empType based on selectedEmpType value
+                const empType = selectedEmpType === 'Worker' ? 1 : 2;
+
+                // Initialize salaryData object with basic fields
+                const salaryData = {
+                    empId: selectedEmpId,
+                    empType: empType,
+                    paymentMethod: parseInt($('#ddlPaymentMethod').val()),
+                    bankId: parseInt($('#ddlSalaryBank').val()),
+                    empAccountNo: $('#txtAccountNo').val().trim(),
+                    empPresentSalary: parseFloat($('#txtGross').val()),
+                    basicSalary: parseFloat($('#txtBasic').val()) || 0,
+                    overTime: $('#ddlOvertTime').val() === "1" ? true : $('#ddlOvertTime').val() === "0" ? false : null,
+                    grdId: $('#ddlGrade').val(),
+                    companyId: CompanyID
+                };
+
+                // Conditionally add medicalAllowance if element exists
+                const txtMedical = document.getElementById('txtMedical');
+                if (txtMedical) {
+                    salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
+                }
+
+                // Conditionally add conveyanceAllowance if element exists
+                const txtConveyance = document.getElementById('txtConveyance');
+                if (txtConveyance) {
+                    salaryData.conveyanceAllowance = parseFloat(txtConveyance.value) || 0;
+                }
+
+                // Conditionally add houseRent if element exists
+                const txtHouseRent = document.getElementById('txtHouse_rent');
+                if (txtHouseRent) {
+                    salaryData.houseRent = parseFloat(txtHouseRent.value) || 0;
+                }
+
+                // Conditionally add foodAllowance if element exists
+                const txtFood = document.getElementById('txtFood');
+                if (txtFood) {
+                    salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
+                }
+
+                // Call API to save salary data
+                ApiCallPost(PostSalarySaveURL, token, salaryData)
+                    .then(response => {
+                        if (response.statusCode === 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Salary Saved Successfully',
+                                text: 'Thank you!',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'API Error',
+                                text: response.message || 'Unexpected response from server.',
+                                confirmButtonText: 'OK'
+                            });
+                            console.error('API Error:', response.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Request failed:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Request Failed',
+                            text: 'Something went wrong while saving salary.',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
 
 
 
