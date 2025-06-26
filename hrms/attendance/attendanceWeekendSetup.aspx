@@ -35,7 +35,7 @@
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
-                                        Filter bye Unit
+                                        Filter by Unit
                                     </span>
                                     <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
                                 </h6>
@@ -57,7 +57,7 @@
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
-                                        Filter bye Department
+                                        Filter by Department
                                     </span>
                                     <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
                                     <!-- Arrow icon -->
