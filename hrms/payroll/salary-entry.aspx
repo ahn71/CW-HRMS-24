@@ -32,7 +32,19 @@
              }
 
 
+            .swal2-container {
+                z-index: 99999 !important;
+            }
+            .uil-money-insert{
+                margin-right:5px;
+            }
 
+            label{
+                margin-bottom:3px;
+            }
+            .form-control {
+                height: 40px !important;
+            }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -43,11 +55,41 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
                         <div class="card">
+                            <div id="toggleFilter5" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size:16px; color:black";>
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter by Emp. Type
+                                    </span>
+                                    <i id="arrowIcon1" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample91">
+                                        <div class="product-brands" overflow-y: auto;">
+
+                                        
+                                         
+                                                <div class="input-group">
+                                                    <select name="ddlSearchType" id="ddlSearchType" class="form-control me-2">
+                                                        <option value="">All </option>
+                                                        <option value="Staff">Staff </option>
+                                                        <option value="Worker">Worker</option>
+                                                    </select>
+                                                </div>
+                                          
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                                                <div class="card">
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
-                                        Filter bye Unit
+                                        Filter by Unit
                                     </span>
                                     <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
                                 </h6>
@@ -69,7 +111,7 @@
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
-                                        Filter bye Department
+                                        Filter by Department
                                     </span>
                                     <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
                                     <!-- Arrow icon -->
@@ -104,70 +146,22 @@
 
                                                             <!-- Search Input -->
 
-                                                            <div class="col-lg-2">
-                                                                <label for="txtSearch" class="form-label mb-1 p-0">Search by</label>
-                                                                <div class="input-group">
-                                                                    <select name="ddlSearchType" id="ddlSearchBy" class="form-control me-2">
-                                                                        <option value="2">Staff </option>
-                                                                        <option value="1">Worker</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
 
 
-                                                            <div class="col-lg-2">
-                                                                <label for="txtSearch" class="form-label mb-1 p-0">Employee ID</label>
-                                                                <div class="input-group">
+                                                            <div class="col-lg-4">
+                                                                
+                                                                <div class="input-group mt-2">
                                                                     <span class="input-group-text bg-white border-end-0">
                                                                         <i class="uil uil-search"></i>
                                                                     </span>
-                                                                    <input type="text" id="txtEmpCardNo" class="form-control border-start-0" placeholder="Employee ID..." aria-describedby="searchIcon">
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Start Date -->
-                                                              <%--  <div class="col-lg-2 day-wise-field" >
-                                                                    <label for="txtStartDate" class="form-label mb-1 p-0">Start Date</label>
-                                                                    <input type="date" id="txtStartDate" class="form-control">
-                                                                </div>
-
-                                                                <div class="col-lg-2 day-wise-field" >
-                                                                    <label for="txtEndDate" class="form-label mb-1 p-0">End Date</label>
-                                                                    <input type="date" id="txtEndDate" class="form-control">
-                                                                </div>--%>
-
-                                                      
-
-
-
-
-
-                                                            <!-- End Date + Search Button -->
-                                                            <div class="col-lg-2 d-flex gap-2">
-                                                                    <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
+                                                                    <input type="text" id="txtEmpCardNo" class="form-control border-start-0" placeholder="Type Employee ID" aria-describedby="searchIcon">
+                                                                     <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
                                                                         class="btn btn-primary text-center"
                                                                         style="padding: 7px;">
                                                                         <i class="fas fa-search"  style="font-size: 18px"></i>
                                                                     </button>
-                                                           <%--      <button type="button" title="Search" id="btnProcessing" onclick="onClickSaveWeekend()"
-                                                                        class="btn btn-success text-center"
-                                                                        style="padding: 7px;">
-                                                                        <i class="fas fa-save"  style="font-size: 18px"></i>
-                                                                    </button>
-                                                                 <button type="button" title="Search" id="btnDelete" onclick="Delete()"
-                                                                        class="btn btn-danger text-center"
-                                                                        style="padding: 7px;">
-                                                                        <i class="fas fa-trash"  style="font-size: 18px"></i>
-                                                                    </button>--%>
-                                                               
-                                                                
-                                                                
+                                                                </div>
                                                             </div>
-
-
-
-                                                       
-    
 
                                                         </div>
                                                     </div>
@@ -217,26 +211,13 @@
                                                                 
                                                                             <div class="col-lg-8 mb-10">
                                                                                 <div class="row">
-                                                                                         <div class="col-lg-4 mb-10">
-                                                                                        <label for="ddlOvertTime" class="color-dark fs-14 fw-500 align-center">Over Time </label>
-                                                                                        <div class="input-group with-icon">
-
-                                                                                            <select name="ddlOvertTime" id="ddlOvertTime" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                                <option value="0">---Select---</option>
-                                                                                                <option value="3">Yes</option>
-                                                                                                <option value="2">No</option>
-                                                                                                <option value="1">Single Rate</option>
-                                                                                           
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <span class="text-danger" id="ddlOvertTimeError"></span>
-                                                                                    </div>
+                                                                                   
                                                                                     <div class="col-lg-4">
                                                                             <label for="ddlPaymentMethod" class="color-dark fs-14 fw-500 align-center">Payment Method</label>
-                                                                            <div class="input-group with-icon">
+                                                                            <div class="input-group">
                                                                                 
                                                                                 <select name="ddlPaymentMethod" id="ddlPaymentMethod" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                    <option value="0">---Select---</option>
+                                                                                    <option value="">---Select---</option>
                                                                                     <option value="0">Cash</option>
                                                                                     <option value="1">Bank</option>
                                                                                     <option value="2">Check</option>
@@ -248,8 +229,8 @@
                                                                                
                                                                                      <div class="col-lg-4 mb-10">
                                                                                         <label for="ddlSalaryBank" class="color-dark fs-14 fw-500 align-center">Salary Bank</label>
-                                                                                        <div class="input-group with-icon">
-
+                                                                                        <div class="input-group ">
+                                                                                          
                                                                                             <select name="ddlSalaryBankName" id="ddlSalaryBank" class="form-control ih-medium ip-gray radius-xs b-light">
 
                                                                                            
@@ -258,20 +239,19 @@
                                                                                         <span class="text-danger" id="ddlSalaryBankError"></span>
                                                                                     </div>
 
-
-                                                                                    <div class="col-lg-4">
+                                                                                     <div class="col-lg-4">
                                                                                         <div class="form-group">
                                                                                             <label for="txtAccountNo" class=" color-dark fs-14 fw-500 align-center">Account No</label>
                                                                                             <div class="with-icon">
                                                                                                 <span class="las la-money-bill"></span>
-                                                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light" id="AccountNo">
+                                                                                                <input type="text" class="form-control ih-medium ip-gray radius-xs b-light" id="txtAccountNo">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
 
-                                                                                        <div class="col-lg-4 mb-10">
+                                                                                     <div class="col-lg-4 mb-10">
                                                                                         <label for="ddlGrade" class="color-dark fs-14 fw-500 mb-1">Grade</label>
-                                                                                        <div class="input-group with-icon">
+                                                                                        <div class="input-group">
 
                                                                                             <select name="ddlGrade" id="ddlGrade" class="form-control ih-medium ip-gray radius-xs b-light">
                                                                                                <%-- <option value="0">---Select---</option>
@@ -283,6 +263,20 @@
                                                                                         </div>
                                                                                         <span class="text-danger" id="ddlGradeError"></span>
                                                                                     </div>
+                                                                                     <div class="col-lg-4 mb-10">
+                                                                                        <label for="ddlOvertTime" class="color-dark fs-14 fw-500 align-center">Over Time </label>
+                                                                                        <div class="input-group">
+
+                                                                                            <select name="ddlOvertTime" id="ddlOvertTime" class="form-control ih-medium ip-gray radius-xs b-light">
+                                                                                                
+                                                                                                <option value="1" selected >Yes</option>
+                                                                                                <option value="0">No</option>
+                                                                                                <option value="">Single Rate</option>
+                                                                                           
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="ddlOvertTimeError"></span>
+                                                                                    </div>
                                                                                      <div class="col-lg-4">
                                                                                         <div class="form-group">
                                                                                             <label for="txtGross" class=" color-dark fs-14 fw-500 align-center">Gross</label>
@@ -292,9 +286,10 @@
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                        <div class="row" id="salaryFieldsContainer"></div>
+                                                                                    
                                                                             
                                                                                 </div>
+                                                                                 <div class="row" id="salaryFieldsContainer"></div>
 
 
 
@@ -308,26 +303,18 @@
                                                                                    class="rounded-circle mb-3" width="100" height="100" />
 
                                                                               <!-- Employee Info -->
-                                                                              <h5 id="empName" class="mb-1 fw-bold">John Doe</h5>
-                                                                              <p id="empDesignation" class="mb-1 text-muted">Senior Accountant</p>
-                                                                              <p id="empDepartment" class="mb-1 text-muted">Finance Department</p>
+                                                                              <h5 id="empName" class="mb-1 fw-bold"></h5>
+                                                                              <p id="empDesignation" class="mb-1 text-muted"></p>
+                                                                              <p id="empDepartment" class="mb-1 text-muted"></p>
 
                                                                               <!-- Details -->
                                                                               <ul class="list-group list-group-flush mt-3 text-start">
-                                                                                <li class="list-group-item py-1"><strong>Card No:</strong> <span id="empCardNo">123456</span></li>
-                                                                                <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType">Staff</span></li>
+                                                                                <li class="list-group-item py-1"><strong>Employee Id:</strong> <span id="empCardNo"></span></li>
+                                                                                <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType"></span></li>
                                                                               </ul>
                                                                             </div>
                                                                           </div>
                                                                         </div>
-
-
-
-
-                                                                   
-
-                                                                      
-
 
                                                                     </div>
 
@@ -339,7 +326,7 @@
 
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary" id="saveSalaryBtn">Submit</button>
+                                                                <button type="button" class="btn btn-primary" id="saveSalaryBtn" onclick="SaveSalary();">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -381,6 +368,7 @@
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+            var PostSalarySaveURL = `${rootUrl}/api/Salary/salary-save`;
 
 
 
@@ -390,9 +378,6 @@
             $(document).ready(function () {
 
                 GetEmployees();
-
-
-
                 $('#toggleFilter').on('click', function () {
                     unitToggle();
                 });
@@ -410,8 +395,6 @@
                 GetUnit();
                 GetDepartment();
                 GetSalaryStracture();
-                //model Bank Info
-                //GetBankInfo();
 
             });
 
@@ -434,7 +417,7 @@
                 const unitList = $('#departmentList');
                 const arrowIcon = $('#arrowIcondpt');
 
-                unitList.toggle(); // Corrected variable
+                unitList.toggle(); 
 
                 if (unitList.is(':visible')) {
                     arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
@@ -457,38 +440,34 @@
 
             }
 
-
-
-
             function showAttendanceHideEmployee() {
                 $('#attendanceContainer').hide();
             }
 
 
             function GetEmployees() {
-                const EmpCardNo = $('#txtEmpCardNo').val();
+                  const EmpCardNo = $('#txtEmpCardNo').val();
+                const EmpType = $('#ddlSearchType').val();
+
                 const deptQuery = getSelectedDepartmentQuery();
                 const unitQuery = getSelectedUnitQuery();
-                const empCardNo = '';
-                if (EmpCardNo.length > 0) {
+
+                let empCardNo = '';
+                let emptype = '';
+
+                if (EmpCardNo && EmpCardNo.length > 0) {
                     empCardNo = `&EmpCardNo=${EmpCardNo}`;
                 }
 
-
-
-                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}${deptQuery}${empCardNo}`;
+                if (EmpType && EmpType.length > 0) {
+                    emptype = `&EmpType=${EmpType}`;
+                }
+                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${emptype}`;
 
                 ApiCall(url, token)
                     .then(response => {
                         if (response.statusCode === 200) {
-                            //$('#alertContainer').hide();
-
-                            //$('#dateWiseAlert').show();
-                            //$('#dateWiseAlert').html = '';
                             const message = `Weekend employee data loaded for the period:`;
-
-
-
                             bindTableData(response.data);
 
                         } else {
@@ -543,27 +522,15 @@
                 </div>
             </div>
         `.trim();
-
-        //            row.select = `
-        //    <input type="checkbox" class="EmployeerowCheckbox" data-id="${row.empId}" value="${row.empId}"
-        //        ${selectedEmployeeIds.has(row.empId) ? 'checked' : ''} />
-        //`;
                 });
 
                 const columns = [
-                    {
-                        name: "select",
-                        title: `<input type="checkbox" id="selectAllEmployee" />`,
-                        className: "text-center",
-                        sortable: false,
-                        type: "html"
-                    },
                     { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                     { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                     { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
                     { name: "empType", title: "Emp Type", className: "userDatatable-content" },
+                    { name: "empPresentSalary", title: "Salary", className: "userDatatable-content" },
                     { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
-                    //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
                     { name: "action", title: "Action", className: "userDatatable-content" }
                 ];
 
@@ -576,7 +543,6 @@
                         sorting: true
                     }).on('postinit.ft.table', function () {
                         $('.footable-loader').hide();
-                        updateSelectAllCheckbox();
                     });
 
 
@@ -593,7 +559,6 @@
 
                     $('#empIdField').val(selectedEmpId);
 
-                    // Optional: You can store the empType in a hidden field too
                     $('#empTypeField').val(selectedEmpType); 
 
                     console.log(selectedEmpType)
@@ -613,46 +578,7 @@
 
                       GetEmployeeInfoByeId(selectedEmpId);
                 });
-
-
-
-
             }
-
-
-            $(document).on('change', '#selectAllEmployee', function () {
-                const isChecked = $(this).is(':checked');
-                allEmployeeData.forEach(emp => {
-                    if (isChecked) {
-                        selectedEmployeeIds.add(emp.empId);
-                    } else {
-                        selectedEmployeeIds.delete(emp.empId);
-                    }
-                });
-                bindTableData(allEmployeeData);
-            });
-
-            $(document).on('change', '.EmployeerowCheckbox', function () {
-                const empId = $(this).val();
-                if ($(this).is(':checked')) {
-                    selectedEmployeeIds.add(empId);
-                } else {
-                    selectedEmployeeIds.delete(empId);
-                }
-
-                updateSelectAllCheckbox();
-            });
-
-            function updateSelectAllCheckbox() {
-                const allIds = allEmployeeData.map(emp => emp.empId);
-                const isAllSelected = allIds.every(id => selectedEmployeeIds.has(id));
-                $('#selectAllEmployee').prop('checked', isAllSelected);
-            }
-
-            function getSelectedEmployeeQuery() {
-                return Array.from(selectedEmployeeIds).map(id => `empIds=${id}`).join('&');
-            }
-
 
             function GetUnit() {
                 ApiCall(getUnitUrl, token)
@@ -676,9 +602,9 @@
 
             function bindUnits(units) {
                 const $list = $('#UnitList');
-                $list.empty(); // Clear existing list
+                $list.empty();
 
-                // Add "Select All" checkbox
+
                 const selectAllItem = `
         <li>
             <div class="checkbox-theme-default custom-checkbox">
@@ -693,7 +619,6 @@
     `;
                 $list.append(selectAllItem);
 
-                // Add unit checkboxes
                 units.forEach((unit, index) => {
                     const checkboxId = `unit-check-${index}`;
                     const listItem = `
@@ -712,20 +637,18 @@
                 });
             }
 
-            // Event listener for "Select All" functionality
             $(document).on('change', '#selectAllUnits', function () {
                 const isChecked = $(this).is(':checked');
                 $('.unitCheckbox').prop('checked', isChecked);
             });
 
-            // Sync "Select All" when individual checkboxes are clicked
             $(document).on('change', '.unitCheckbox', function () {
                 const total = $('.unitCheckbox').length;
                 const checked = $('.unitCheckbox:checked').length;
                 $('#selectAllUnits').prop('checked', total === checked);
             });
 
-            // Optional: function to get selected unit IDs as query string
+
             function getSelectedUnitQuery() {
                 return $('.unitCheckbox:checked')
                     .map(function () {
@@ -824,10 +747,9 @@
                         if (response.statusCode === 200) {
                             var data = response.data;
 
-                            // Flatten and cache with keys like "worker basic", "staff medical"
                             for (var role in data) {
                                 for (var key in data[role]) {
-                                    var cleanKey = key.trim(); // Removes newline characters
+                                    var cleanKey = key.trim(); 
                                     var cacheKey = role + " " + cleanKey;
                                     salaryStructureCache[cacheKey] = data[role][key];
                                 }
@@ -850,22 +772,20 @@
                             var data = response.data;
 
                             // --- Dropdowns ---
-                            $('#ddlOvertTime').val(
-                                data.isSingleRateOT ? '1' : (data.isOverTime ? '3' : '2')
-                            );
+                           $('#ddlOvertTime').val(data.isSingleRateOT ? '' : (data.isOverTime ? '1' : '0'));
                             $('#ddlPaymentMethod').val(data.paymentMethod ?? '0');
                             $('#ddlSalaryBank').val(data.bankId ?? '0');
                             $('#ddlGrade').val(data.grdId ?? '');
 
                             // --- Textboxes ---
-                            $('#AccountNo').val(data.empAccountNo ?? '');
+                            $('#txtAccountNo').val(data.empAccountNo ?? '');
                             $('#txtGross').val((data.empPresentSalary ?? 0).toFixed(2));
-                            $('#txtBasicSalary').val((data.basicSalary ?? 0).toFixed(2));
+                            $('#txtBasic').val((data.basicSalary ?? 0).toFixed(2));
                             $('#txtMedical').val((data.medicalAllownce ?? 0).toFixed(2));
                             $('#txtFood').val((data.foodAllownce ?? 0).toFixed(2));
                             $('#txtConveyance').val((data.convenceAllownce ?? 0).toFixed(2));
                             $('#txtTechnical').val((data.technicalAllownce ?? 0).toFixed(2));
-                            $('#txtHouse').val((data.houseRent ?? 0).toFixed(2));
+                            $('#txtHouse_rent').val((data.houseRent ?? 0).toFixed(2));
                             $('#txtOthers').val((data.othersAllownce ?? 0).toFixed(2));
                             $('#txtAttBonuse').val((data.attendanceBonus ?? 0).toFixed(2));
                             $('#txtDormetory').val((data.dormitoryRent ?? 0).toFixed(2));
@@ -875,7 +795,7 @@
                             $('#empName').text(data.empName ?? 'N/A');
                             $('#empDesignation').text(data.dsgName ?? 'N/A');
                             $('#empDepartment').text(data.dptName ?? 'N/A');
-                            $('#empCardNo').text(data.empCardNo ?? 'N/A');
+                            $('#empCardNo').text(data.empCardNo ? data.empCardNo.slice(-6) : 'N/A');
                             $('#empType').text(data.empType ?? 'N/A');
 
                             // Profile Image Handling
@@ -967,13 +887,12 @@
                 });
             }
 
-                        function renderDynamicSalaryFields(roleKey) {
+            function renderDynamicSalaryFields(roleKey) {
                 const container = $('#salaryFieldsContainer');
                 container.empty();
 
                 let structure = salaryStructureCache[roleKey];
 
-                // Try grouping if structure is undefined
                 if (!structure) {
                     structure = groupSalaryStructure(roleKey); // fallback
                 }
@@ -987,30 +906,39 @@
                     const label = fieldData.label || fieldKey;
                     const value = fieldData.value || '';
                     const msg = fieldData.msg || '';
+                    const calculationType = fieldData.calculationType || '';
                     const id = `txt${capitalize(fieldKey)}`;
                     const msgId = `${id}Msg`;
+                    let msgHtml = '';
+                    if (calculationType === 'formula') {
+                        msgHtml = ` <small class="text-info fs-12" title="${msg}" style="font-size:10px; cursor: help; margin-left:5px;" >Formula </small> `;
+                    } else {
+                        msgHtml = `<small id="${msgId}" style="margin-left:5px;font-size:10px" class="text-primary fs-12">${msg}</small> `;
+                    }
 
-                    const fieldHtml = `
-            <div class="col-lg-4" id="Section${capitalize(fieldKey)}">
-                <div class="form-group">
-                    <label for="${id}" class="color-dark fs-14 fw-500 align-center">${label}
-                        <small id="${msgId}" style="margin-left:5px;font-size:10px">${msg}</small>
-                    </label>
-                    <div class="with-icon">
-                        <span class="las la-money-bill"></span>
-                        <input type="number" 
-                            class="form-control ih-medium ip-gray radius-xs b-light" 
-                            id="${id}" 
-                            name="${fieldKey}" 
-                            data-calculation-type="${fieldData.calculationType}"
-                            data-formula="${fieldData.calculationType === 'formula' ? fieldData.value : ''}"
-                            value="${fieldData.calculationType === 'fixed' ? value : ''}">
+                            const fieldHtml = `
+                <div class="col-lg-4" id="Section${capitalize(fieldKey)}">
+                    <div class="form-group">
+                        <label for="${id}" class="color-dark fs-14 fw-500 align-center">${label}
+                            ${msgHtml}
+                        </label>
+                        <div class="with-icon">
+                            <span class="las la-money-bill"></span>
+                            <input type="number" 
+                                class="form-control ih-medium ip-gray radius-xs b-light" 
+                                id="${id}" 
+                                name="${fieldKey}" 
+                                data-calculation-type="${calculationType}"
+                                data-formula="${calculationType === 'formula' ? value : ''}"
+                                value="${calculationType === 'fixed' ? value : ''}" 
+                                disabled>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
+            `;
                     container.append(fieldHtml);
                 });
+
             }
 
             function groupSalaryStructure(roleKey) {
@@ -1032,7 +960,6 @@
                 const grossValue = parseFloat($(this).val()) || 0;
                 const inputs = {};
 
-                // Collect current values
                 $('#salaryFieldsContainer input').each(function () {
                     const name = $(this).attr('name');
                     const val = parseFloat($(this).val()) || 0;
@@ -1040,7 +967,6 @@
                 });
                 inputs.gross = grossValue;
 
-                // Recalculate fields with formulas
                 $('#salaryFieldsContainer input').each(function () {
                     const type = $(this).data('calculation-type');
                     const formula = $(this).data('formula');
@@ -1064,8 +990,8 @@
 
                 for (const key in salaryStructureCache) {
                     if (key.startsWith(roleKey)) {
-                        const fieldName = key.replace(`${roleKey} `, ''); // e.g., 'staff basic' -> 'basic'
-                        const item = salaryStructureCache[key]; // Expected: { calculationType, value }
+                        const fieldName = key.replace(`${roleKey} `, '');
+                        const item = salaryStructureCache[key];
                         formulas[fieldName] = item;
                     }
                 }
@@ -1092,14 +1018,12 @@
                 };
 
                 try {
-                    // First pass: assign fixed values
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'fixed') {
                             scope[key] = formula.value;
                         }
                     }
 
-                    // Second pass: evaluate formulas
          
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'percentage') {
@@ -1111,7 +1035,7 @@
                             scope[key] = math.evaluate(formula.value, scope);
                         }
                     }
-                    // Dynamic field update
+
                     for (const key in formulas) {
                         if (key === 'house_rent')
                         {
@@ -1120,7 +1044,7 @@
                         const htmlId = 'txt' + key.charAt(0).toUpperCase() + key.slice(1);
 
                         const element = document.getElementById(htmlId);
-                        const value = scope[key];
+                        const value =  Math.round(scope[key]);
 
                         if (element) {
                             if (typeof value === 'number') {
@@ -1144,7 +1068,85 @@
             }
 
 
-        
+
+            function SaveSalary() {
+                const empType = selectedEmpType === 'Worker' ? 1 : 2;
+                const salaryData = {
+                    empId: selectedEmpId,
+                    empType: empType,
+                    paymentMethod: parseInt($('#ddlPaymentMethod').val()),
+                    bankId: parseInt($('#ddlSalaryBank').val()),
+                    empAccountNo: $('#txtAccountNo').val().trim(),
+                    empPresentSalary: parseFloat($('#txtGross').val()),
+                    basicSalary: parseFloat($('#txtBasic').val()) || 0,
+                    overTime: $('#ddlOvertTime').val() === "1" ? true : $('#ddlOvertTime').val() === "0" ? false : null,
+                    grdId: $('#ddlGrade').val(),
+                    companyId: CompanyID
+                };
+
+                const txtMedical = document.getElementById('txtMedical');
+                if (txtMedical) {
+                    salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
+                }
+                const txtConveyance = document.getElementById('txtConveyance');
+                if (txtConveyance) {
+                    salaryData.conveyanceAllowance = parseFloat(txtConveyance.value) || 0;
+                }
+
+                const txtHouseRent = document.getElementById('txtHouse_rent');
+                if (txtHouseRent) {
+                    salaryData.houseRent = parseFloat(txtHouseRent.value) || 0;
+                }
+                const txtFood = document.getElementById('txtFood');
+                if (txtFood) {
+                    salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
+                }
+
+                ApiCallPost(PostSalarySaveURL, token, salaryData)
+                    .then(response => {
+                        if (response.statusCode === 200) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Salary Saved Successfully',
+                                text: 'Thank you!',
+                                confirmButtonText: 'OK'
+                            });
+                            const newSalary = parseInt($('#txtGross').val()) || 0;
+                            const empId = selectedEmpId; 
+
+                            const index = allEmployeeData.findIndex(emp => emp.empId == empId);
+                            if (index !== -1) {
+                                allEmployeeData[index].empPresentSalary = newSalary;
+                            }
+                            const row = $(`.adv-table tbody tr`).filter(function () {
+                                return $(this).find('a.user-name').data('id') == empId;
+                            });
+
+                            if (row.length) {
+                                row.find('td').eq(4).text(newSalary);
+                            }
+                                $('#salaryModal').modal('hide');
+                            
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'API Error',
+                                text: response.message || 'Unexpected response from server.',
+                                confirmButtonText: 'OK'
+                            });
+                            console.error('API Error:', response.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Request failed:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Request Failed',
+                            text: 'Something went wrong while saving salary.',
+                            confirmButtonText: 'OK'
+                        });
+                    });
+            }
 
 
 
