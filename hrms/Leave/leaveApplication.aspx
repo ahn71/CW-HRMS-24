@@ -36,6 +36,20 @@
             background: rgba(0, 0, 0, 0.1);
             border-radius:4px;
         }
+      
+        .hader-style {
+            font-weight: 600;
+            font-size: 14px;
+            background-color: #ddebf1eb;
+           
+        }
+        th{
+          font-size: 12px;
+
+        }
+        td{
+           font-size: 12px;
+        }
 
     </style>
 </asp:Content>
@@ -314,7 +328,6 @@
               <div class="modal-dialog modal-lg">
                   <div class="modal-content" id="modalContent">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="leaveApplicationModalLabel">Leave Application Details</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -347,7 +360,7 @@
         
         
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
-         var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication/${userId}?CompanyId=${CompanyID}`;
+         var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication`;
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
          var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
@@ -994,16 +1007,21 @@
             html2pdf()
                 .from(element)
                 .set({
-                    margin: 1,
+                    margin: 0.4167, // 40px in inches
                     filename: 'leave-application.pdf',
                     html2canvas: {
-                        scale: 2, 
-                        letterRendering: true 
+                        scale: 2,
+                        letterRendering: true
                     },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'letter',
+                        orientation: 'portrait'
+                    }
                 })
                 .save();
         }
+
         //function Delete(id) {
         //    Swal.fire({
         //        title: 'Are you sure?',
@@ -1118,44 +1136,108 @@
 
 
 
-        function FetchDataForView(Id) {
-            ApiCall(getLeaveByIdUrl, token)
-                .then(function (responseData) {
-                    var data = responseData.data[0]; 
-                    var leaveApplicationContent = `
-            <div class="row">
-              <div class="col-md-6">
-                <p><strong>Employee Name:</strong> ${data.empName}</p>
-                <p><strong>Designation:</strong> ${data.dsgName}</p>
-                <p><strong>Leave Type:</strong> ${data.leaveName}</p>
-                <p><strong>Leave Start Date:</strong> ${data.leaveStartDate}</p>
-                <p><strong>Leave End Date:</strong> ${data.leaveEndDate}</p>
-                <p><strong>Total Leave Days:</strong> ${data.totalLeaveDays}</p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>Remarks:</strong> ${data.remarks}</p>
-                <p><strong>Handed Over Employee ID:</strong> ${data.handedOverEmpName}</p>
-                <p><strong>Leave Address:</strong> ${data.lvAddress}</p>
-                <p><strong>Leave Contact:</strong> ${data.lvContact}</p>
-                <p><strong>Approval Status:</strong> ${data.approvalStatus ?? 'Pending'}</p>
-                <p><strong>Company ID:</strong> ${data.companyId}</p>
-              </div>
+function FetchDataForView(Id) {
+    ApiCall(`${getLeaveByIdUrl}/${Id}?CompanyId=${CompanyID}`, token)
+        .then(function (responseData) {
+            var data = responseData.data[0];
+
+        var leaveApplicationContent = `
+          <div class="container-fluid px-2">
+            <h5 class="text-text-info border-bottom pb-2 text-center">Leave Application Approval Form</h5>
+            <p class="text-center mb-0" style="font-size:12px"><strong>Company Name:</strong> Your Company Name</p>
+            <p class="text-center mb-0" style="font-size:12px"><strong>Company Address:</strong> Your Address</p>
+
+            <h6 class="text-dark px-2 py-1 mt-3 hader-style">Employee Information</h6>
+            <div class="row mb-2">
+              <div class="col-md-6 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Employee ID:</strong> ${data.empId}</div>
+              <div class="col-md-6 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Employee Name:</strong> ${data.empName}</div>
+              <div class="col-md-6 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Designation:</strong> ${data.dsgName}</div>
+              <div class="col-md-6 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Department:</strong> ${data.dptId}</div>
+              <div class="col-md-6 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Shift:</strong> ${data.sftId}</div>
+              <div class="col-md-6 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Employee Type:</strong> ${data.empTypeId}</div>
             </div>
-            `;
+
+            <h6 class="text-dark px-2 py-1 mt-3 hader-style">Leave Details</h6>
+            <div class="row mb-2">
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Application ID:</strong> ${data.applicationId}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Leave Type:</strong> ${data.leaveName}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Half-Day Leave:</strong> ${data.isHalfDayLeave ? 'Yes' : 'No'}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Leave Start Date:</strong> ${data.leaveStartDate}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Leave End Date:</strong> ${data.leaveEndDate}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Total Leave Days:</strong> ${data.totalLeaveDays}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Apply Date:</strong> ${data.applyDate}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Approval Status:</strong> ${data.approvalStatus ?? 'Pending'}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Leave Address:</strong> ${data.lvAddress}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px;  margin-top:5px;"><strong class="fw-bold text-dark">Contact During Leave:</strong> ${data.lvContact}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Handed Over To:</strong> ${data.handedOverEmpName}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Pregnancy Date:</strong> ${data.pregnantDate ?? '-'}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Expected Delivery Date:</strong> ${data.expectedDeliveryDate ?? '-'}</div>
+              <div class="col-md-4 text-dark" style="font-size: 12px; margin-top:5px;"><strong class="fw-bold text-dark">Remarks:</strong> ${data.remarks}</div>
+            </div>
+              <h6 class="text-dark px-2 py-1 mt-3 hader-style">Leave Statement</h6>
+            <table class="table table-bordered table-sm mt-2">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Lave Of Type</th>
+                  <th scope="col">Entitled</th>
+                  <th scope="col">Availed</th>
+                  <th scope="col">Balance</th>
+          
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                 <td>1st Level</td>
+                 <td></td>
+                 <td></td>
+                 <td></td>
+                 </tr>
+                <tr>
+                  <td>2nd Level</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                <td>3rd Level</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              </tbody>
+            </table>
+            <h6 class="text-dark px-2 py-1 mt-3 hader-style">Approval Panel</h6>
+            <table class="table table-bordered table-sm mt-2">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">Position</th>
+                  <th scope="col">Approver Name</th>
+                  <th scope="col">Decision</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Signature</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1st Level</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>2nd Level</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>3rd Level</td><td></td><td></td><td></td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        `;
 
 
-                    document.getElementById('leaveApplicationContent').innerHTML = leaveApplicationContent;
-
-                    var myModal = new bootstrap.Modal(document.getElementById('leaveApplicationModal'));
-                    myModal.show();
-                })
-                .catch(function (error) {
-                    console.error('Error:', error);
-                });
-        }
-        
 
 
+            document.getElementById('leaveApplicationContent').innerHTML = leaveApplicationContent;
+
+            var myModal = new bootstrap.Modal(document.getElementById('leaveApplicationModal'));
+            myModal.show();
+        })
+        .catch(function (error) {
+            console.error('Error fetching leave application:', error);
+        });
+}
 
 
 

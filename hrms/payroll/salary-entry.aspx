@@ -221,7 +221,8 @@
                                                                                     <option value="">---Select---</option>
                                                                                     <option value="0">Cash</option>
                                                                                     <option value="1">Bank</option>
-                                                                                    <option value="2">Check</option>
+                                                                                    <option value="2">Bkash</option>
+                                                                                    <option value="3">Check</option>
                                                                                 </select>
                                                                             </div>
                                                                             <span class="text-danger" id="errorDataAccessLevel"></span>
