@@ -237,3 +237,4 @@ Parameter name: name
 [2025-05-22 17:31:14] Object reference not set to an instance of an object.
 [2025-06-26 10:03:39] Object reference not set to an instance of an object.
 [2025-06-26 15:12:13] Object reference not set to an instance of an object.
+[2025-06-29 16:40:23] Unexpected character encountered while parsing value: S. Path '', line 0, position 0.

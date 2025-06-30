@@ -165,7 +165,10 @@ namespace SigmaERP.hrms.UI.auth
 
                     if (DateTime.Now >= EffectiveDate)
                     {
-                        SqlCommand cmd = new SqlCommand("update Personnel_EmpSeparation set IsActive='1' where EmpSeparationId=" + dtActive.Rows[i]["EmpSeparationId"].ToString() + "", sqlDB.connection);
+                        SqlCommand cmd = new SqlCommand("update Personnel_EmpSeparation set IsLastSeparation='0' where  EmpId='" + dtActive.Rows[i]["EmpId"].ToString() + "'", sqlDB.connection);
+                        cmd.ExecuteNonQuery();
+
+                         cmd = new SqlCommand("update Personnel_EmpSeparation set IsActive='1' , IsLastSeparation='1' where EmpSeparationId=" + dtActive.Rows[i]["EmpSeparationId"].ToString() + "", sqlDB.connection);
                         cmd.ExecuteNonQuery();
 
                         cmd = new SqlCommand("Update Personnel_EmpCurrentStatus set EmpStatus=" + dtActive.Rows[i]["EmpStatus"].ToString() + " where EmpId='" + dtActive.Rows[i]["EmpId"].ToString() + "' and IsActive=1", sqlDB.connection);
@@ -178,7 +181,7 @@ namespace SigmaERP.hrms.UI.auth
                     }
                 }
             }
-            catch { }
+            catch(Exception ex) { }
 
         }
         private void checkForSeparationActiveCompliance()
