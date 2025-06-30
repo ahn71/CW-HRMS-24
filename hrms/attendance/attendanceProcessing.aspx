@@ -334,7 +334,10 @@
                         resolve(data);
                     },
                     error: function (xhr, status, error) {
+                         console.log("Error Message for attendance proccess: ",xhrr)
+                         console.log("Error Message for attendance proccess",error)
                         Swal.fire({
+                           
                             icon: 'warning',
                             title: 'Almost There!',
                             text: 'Some issues occurred while processing attendance. Please retry or contact support if needed.',

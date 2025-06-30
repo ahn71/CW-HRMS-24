@@ -1,9 +1,11 @@
-﻿using SigmaERP.Models;
+﻿using Newtonsoft.Json.Linq;
+using SigmaERP.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 
 namespace SigmaERP.classes
 {
@@ -21,10 +23,10 @@ namespace SigmaERP.classes
             string[] getDays = SelectedDate.Split('-');
             DateTime FromDate=DateTime.Parse( getDays[2] + "-" + getDays[1] + "-01");
             DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
-            
-              
-                // getting selected employees 
-                DataTable dtEmployees = new DataTable();
+
+               var payRollPolicy=getPayrollPolicy(CompanyId);
+                  // getting selected employees 
+                  DataTable dtEmployees = new DataTable();
                 if (IsSeperationGeneration == "0")// regular employee 
                 {
                     // check half month salary and set From Date            
@@ -49,13 +51,19 @@ namespace SigmaERP.classes
                 int TotalDays= int.Parse(dt.Rows[0]["TotalDays"].ToString());              
                 int Activeday = int.Parse(dt.Rows[0]["TotalWorkingDays"].ToString());
 
-                //get stamp Amount
-                double stampDeduct = (hasStampDeduction)?getStampDeduction():0;
+
+                   var allAdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId);
+
+                    var allPunishmentDeductions = getAllPunishment(EmpId, FromDate);
+                    //get stamp Amount
+
                     //int count = 0;
                     //int countPost = 0;
                     //int countSuccess= 0;
-                foreach (DataRow employee in dtEmployees.Rows)
+                    foreach (DataRow employee in dtEmployees.Rows)
                 {
+                        string paymentMethod = employee["PaymentMethod"].ToString() == null ? "0" : employee["PaymentMethod"].ToString();
+                        double stampDeduct = (hasStampDeduction) ? getStampDeduction(payRollPolicy["StampDeduction"].ToString(), paymentMethod) : 0;
                         // excepted employee ignore here 
                         if (ExceptedEmpCardNo!= "")
                         {
@@ -84,7 +92,7 @@ namespace SigmaERP.classes
                         _FromDate = empJoiningDate;
                     //initial 
                     try {
-                            salaryRecord = new SalaryRecord
+                          salaryRecord = new SalaryRecord
                             {
                                 UserId = int.Parse(UserId),
                                 EmpId = employee["EmpId"].ToString(),
@@ -159,7 +167,7 @@ namespace SigmaERP.classes
                     salaryRecord = getAttendanceStatus(salaryRecord);
                     // check git
                     //check Attendance bonus
-                    salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString());
+                    salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString(), payRollPolicy["AttendanceBonus"].ToString());
 
                     //get Others Pay
                     salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
@@ -170,26 +178,40 @@ namespace SigmaERP.classes
                     //get PF Deduction 
                     if (hasPF)
                         salaryRecord.ProvidentFund = getPF(employee,ToDate);
-                    //get Advance Deduction
+                        //get Advance Deduction
+
+                        //get Advance Deduction
                     if (hasAdvanceDeduction)
-                        salaryRecord.AdvanceDeduction = getAdvanceDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
-                    //get Tax Deduction
+                    {
+                        //salaryRecord.AdvanceDeduction = getAdvanceDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
+                        if (allAdvanceDeductions.TryGetValue(salaryRecord.EmpId, out DataRow advanceDeduction))
+                        {
+                            salaryRecord.AdvanceDeduction = double.Parse(advanceDeduction["Amount"].ToString());
+                        }
+                    }
+                        //get Tax Deduction
                     salaryRecord.ProfitTax =Round(double.Parse(employee["TaxAmount"].ToString()));
                     // get Late Deduction
                     if (hasLateDeduction)
-                        salaryRecord.LateFine = getLateFine();
-                   //get Punishment Deduction
-                    salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
+                        salaryRecord.LateFine = getLateFine(payRollPolicy["LateDeduction"].ToString());
+
+                    //get Punishment Deduction
+                    //salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
+
+                    if (allPunishmentDeductions.TryGetValue(salaryRecord.EmpId, out DataRow punishmentDeduction))
+                    {
+                        salaryRecord.OthersDeduction = double.Parse(punishmentDeduction["PAmount"].ToString());
+                    }
 
                         //OverTime 
-                        if (employee["EmpTypeId"].ToString() == "1")// for worker 
+                    if (employee["EmpTypeId"].ToString() == "1")// for worker 
                     {
                         salaryRecord = getOverTime(salaryRecord, employee);
                     }
                     //Payable days calculations 
                     salaryRecord = getPayableDaysCalculation(salaryRecord, hasSpesialGross, PersentOfGross);
                     //Payable amount calculation
-                    salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction);
+                    salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction,payRollPolicy["AbsentDeduction"].ToString());
 
                         if (saveSalary(salaryRecord))
                         {
@@ -239,21 +261,23 @@ namespace SigmaERP.classes
         private DataTable getEmployees(string CompanyId,string EmpId, string SelectDate)
         {
 
-            EmpId = (EmpId == "0" )?"": " and EmpId='" + EmpId + "'";
-             return CRUD.ExecuteReturnDataTable("select CompanyId,DptId,DsgId,GrdName,EmpId,EmpCardNo,EmpName,EmpType,EmpTypeId,EmpStatus,ActiveSalary,IsActive,CompanyId,SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate from v_Personnel_EmpCurrentStatus Where  EmpStatus in ('1','8') AND ActiveSalary='true' AND IsActive='1' AND CompanyId='" + CompanyId + "' and EmpJoiningDate<='" + SelectDate + "' "+EmpId);
+            EmpId = (EmpId == "0" )?"": " and cs.EmpId='" + EmpId + "'";
+            string query= "Select cs.CompanyId,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,ISNULL(cs.ConvenceAllownce,0) as ConvenceAllownce, ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce ,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus ,ISNULL(cs.LunchCount,0),ISNULL(cs.LunchAllownce,0),CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,cs.PaymentMethod from dbo.Personnel_EmployeeInfo ei on  sp.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId  LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  Where  cs.EmpStatus in ('1','8') AND cs.ActiveSalary='true' AND cs.CompanyId='" + CompanyId + "' and ei.EmpJoiningDate<='" + SelectDate + "' " + EmpId;
+
+             return CRUD.ExecuteReturnDataTable("Select cs.CompanyId,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,ISNULL(cs.ConvenceAllownce,0) as ConvenceAllownce, ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce ,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus ,ISNULL(cs.LunchCount,0),ISNULL(cs.LunchAllownce,0),CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,cs.PaymentMethod from dbo.Personnel_EmployeeInfo ei inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId  LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  Where  cs.EmpStatus in ('1','8') AND cs.ActiveSalary='true' AND cs.CompanyId='" + CompanyId + "' and ei.EmpJoiningDate<='" + SelectDate + "' "+EmpId);
         }
         private DataTable getSeparationEmployees(string CompanyId,string EmpId, string YearMonth)
         {
 
             EmpId = (EmpId == "0" )?"": " and s.EmpId='" + EmpId + "'";
-             return CRUD.ExecuteReturnDataTable("select s.EmpSeparationId,c.CompanyId,DptId,DsgId,GrdName,c.EmpId,c.EmpCardNo,c.EmpName,c.EmpType,c.EmpTypeId,c.EmpStatus,ActiveSalary,c.IsActive,c.CompanyId,c.SftId,OverTime,EmpDutyType,PfMember,convert(varchar(10), PfDate,120) as PfDate,ISNULL(PFAmount,0) as PFAmount,isnull(IncomeTax,0) as TaxAmount ,BasicSalary,MedicalAllownce,FoodAllownce,ConvenceAllownce,HouseRent,TechnicalAllownce,OthersAllownce,EmpPresentSalary,AttendanceBonus,LunchCount,LunchAllownce,convert(varchar(10), EmpJoiningDate,120) as EmpJoiningDate,convert(varchar(10), s.EffectiveDate,120) as EffectiveDate from v_Personnel_EmpSeparation s inner join v_Personnel_EmpCurrentStatus as c on s.EmpId=c.EmpId and c.IsActive=1 and c.EmpStatus not in(1,8) where s.CompanyId ='" + CompanyId+"' AND YearMonth='"+ YearMonth + "' AND s.IsActive='True' "+EmpId);
+            return CRUD.ExecuteReturnDataTable("select s.EmpSeparationId,cs.CompanyId,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,Isnull(cs.ConvenceAllownce,0), ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus,cs.LunchCount,ISNULL(cs.LunchAllownce,0) as LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate   convert(varchar(10), s.EffectiveDate,120) as EffectiveDate,cs.PaymentMethod from  Personnel_EmpSeparation s inner join dbo.Personnel_EmployeeInfo ei on  sp.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID where s.CompanyId = '" + CompanyId+"' AND YearMonth = '"+ YearMonth + "' AND s.IsActive = 'True'" );
         }
         private DataTable getMonthInfo(string  CompanyId,string Month)
         {
             return CRUD.ExecuteReturnDataTable("select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'"); 
             
         }
-        private SalaryRecord getAttendanceStatus(SalaryRecord salaryRecord)
+        private SalaryRecord getAttendanceStatus_Old(SalaryRecord salaryRecord)
         {
             //Leave 
             dt = new DataTable();
@@ -289,6 +313,34 @@ namespace SigmaERP.classes
 
             return salaryRecord;
 
+        }
+
+
+
+
+        private SalaryRecord getAttendanceStatus(SalaryRecord salaryRecord)
+        {
+            //Attendance Summary 
+            dt = new DataTable();
+
+            string query = "select EmpId,sum(case when ATTStatus In ('P','L') AND PaybleDays='1' then 1 else 0 end  ) as P,sum(case when ATTStatus In ('L') AND PaybleDays='1' then 1 else 0 end  ) as L, Sum(Case when ATTStatus='A' or  StateStatus='Leave Without Pay (LWP)' or (ATTStatus In ('P','L') AND PaybleDays='0' ) then 1 else 0 end ) as A,Sum(case when StateStatus='Casual Leave' then 1 else 0 end) as 'CL',Sum(case when StateStatus = 'Sick Leave' then 1 else 0 end) as 'SL',Sum(case when StateStatus = 'Annual Leave' then 1 else 0 end) as 'EL', Sum(case when StateStatus = 'Maternity Leave' then 1 else 0 end) as 'ML', Sum(case when StateStatus = 'Leave Without Pay (LWP)' then 1 else 0 end) as 'LWP',sum(case when ATTStatus ='Lv'then 1 else 0 end  )  as Lv from v_tblAttendanceRecord where  EmpId='" + salaryRecord.EmpId + "' And AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' group by EmpId";
+
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                salaryRecord.PresentDay = int.Parse(dt.Rows[0]["P"].ToString());
+                salaryRecord.LateDays = int.Parse(dt.Rows[0]["L"].ToString());
+                salaryRecord.AbsentDay = int.Parse(dt.Rows[0]["A"].ToString());
+                salaryRecord.CasualLeave = int.Parse(dt.Rows[0]["CL"].ToString());
+                salaryRecord.SickLeave = int.Parse(dt.Rows[0]["SL"].ToString());
+                salaryRecord.AnnualLeave = int.Parse(dt.Rows[0]["EL"].ToString());
+                salaryRecord.LWP = int.Parse(dt.Rows[0]["LWP"].ToString());
+                salaryRecord.ML = int.Parse(dt.Rows[0]["ML"].ToString());
+                salaryRecord.TotalLeave = int.Parse(dt.Rows[0]["Lv"].ToString());
+                salaryRecord.OthersLeave = salaryRecord.TotalLeave - (salaryRecord.CasualLeave + salaryRecord.SickLeave + salaryRecord.AnnualLeave + salaryRecord.LWP + salaryRecord.ML);
+
+            }
+            return salaryRecord;
         }
 
         private SalaryRecord getPayableDaysCalculation(SalaryRecord salaryRecord,bool hasSpesialGross,string PersentOfGross)
@@ -340,7 +392,7 @@ namespace SigmaERP.classes
                 Amount = Math.Floor(Amount);
             return Amount;
         }
-        private Double getLateFine()
+        private Double getLateFine_old()
         {
             //Late Deduction
             if (salaryRecord.LateDays > 2)
@@ -353,12 +405,58 @@ namespace SigmaERP.classes
 
         }
 
-        private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction)
-        {
 
-            
+        private Double getLateFine(string lateDeduction)
+        {
+           
+            JObject jObj = JObject.Parse(lateDeduction);
+
+            int lateDaysPerDeduct = (int)jObj["lateDaysPerDeduct"];
+            int deductDays = (int)jObj["deductDays"];
+            string deductFrom = jObj["deductFrom"].ToString();
+            if (salaryRecord.LateDays >= lateDaysPerDeduct)
+            {
+                int totalDeductDays = (salaryRecord.LateDays / lateDaysPerDeduct) * deductDays;
+
+                double baseSalary = 0;
+                if (deductFrom == "Basic")
+                    baseSalary = salaryRecord.BasicSalary;
+                else if (deductFrom == "Gross")
+                    baseSalary = salaryRecord.EmpPresentSalary;
+
+                return Round(baseSalary / 30 * totalDeductDays);
+            }
+
+            return 0;
+
+        }
+
+
+
+
+
+
+
+
+        private SalaryRecord getNetPayableCalculation(SalaryRecord salaryRecord,bool ckbAdvanceDeduction,string AbsentDeduction)
+        {
+            if(salaryRecord.AbsentDay>0)
+                salaryRecord.AbsentDeduction = getAbsentDeduction(salaryRecord,AbsentDeduction, salaryRecord.AbsentDay);
+            //string deductFrom = getAbsentDeduction(AbsentDeduction, salaryRecord.AbsentDay);
+            //double amount = 0;
+            //if (deductFrom == "Basic")
+            //{
+            //    amount= Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay);
+            //}
+            //else
+            //{
+            //    amount = Round(salaryRecord.EmpPresentSalary / salaryRecord.DaysInMonth * salaryRecord.AbsentDay);
+            //}
+          
+
+
             // Absent Deduction
-           salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
+           //salaryRecord.AbsentDeduction =Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay); //Always 30 days in month count for Absent Diduction at RSS
             /*salaryRecord.AbsentDeduction =Round(salaryRecord.EmpPresentSalary / 30 * salaryRecord.AbsentDay);*/ //static for Mollah Fashion
             
             double totalDeductions = salaryRecord.LateFine + salaryRecord.AbsentDeduction + salaryRecord.AdvanceDeduction + salaryRecord.ProvidentFund + salaryRecord.ProfitTax + salaryRecord.OthersDeduction;
@@ -381,8 +479,9 @@ namespace SigmaERP.classes
             return salaryRecord;
         }
 
-        private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord,string EmpDutyType)
+        private SalaryRecord checkAttendanceBonus_old(SalaryRecord salaryRecord,string EmpDutyType)
         {
+
             if (salaryRecord.AbsentDay > 0 || salaryRecord.LateDays > 0 || salaryRecord.TotalLeave > 0)
                 salaryRecord.AttendanceBonus = 0;
             else
@@ -462,19 +561,90 @@ namespace SigmaERP.classes
 
         }
 
+
+
+        private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType,string AttendanceBonus)
+        {
+
+           
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                Dictionary<string, object> data = (Dictionary<string, object>)serializer.DeserializeObject(AttendanceBonus);
+                object[] rules = (object[])data["rules"];
+                foreach (object ruleObj in rules)
+                {
+                    Dictionary<string, object> rule = (Dictionary<string, object>)ruleObj;
+                    bool isValid = true;            
+
+                    if (rule.ContainsKey("emptype"))
+                    {
+                        int emptype = Convert.ToInt32(rule["emptype"]);
+                        if (salaryRecord.EmpTypeId != emptype)                       
+                            continue;                        
+                    }
+                    if (rule.ContainsKey("maxLeave"))
+                    {
+                        int maxLeave = Convert.ToInt32(rule["maxLeave"]);
+                        if (salaryRecord.TotalLeave > maxLeave)                    
+                            continue;  
+                    }
+                    if (rule.ContainsKey("maxLate"))
+                    {
+                        int maxLate = Convert.ToInt32(rule["maxLate"]);
+                        if (maxLate!=0 && salaryRecord.LateDays > maxLate)                      
+                            continue;                        
+                    }   
+                    if (isValid)
+                    {
+                        double bonus = Convert.ToDouble(rule["bonusAmount"]);
+                        salaryRecord.AttendanceBonus = bonus;
+                        break;
+                    }
+                }
+                return salaryRecord;
+            }
+
+
+        
+
+        
+
+
         private double getOthersPay(string EmpId)
         {
             dt = new DataTable();
             dt=CRUD.ExecuteReturnDataTable("select  ISNULL(Sum(OtherPay),0) OtherPay from Payroll_OthersPay where EmpId='" + EmpId + "' AND IsActive='1' ");
             return double.Parse(dt.Rows[0]["OtherPay"].ToString());
         }
-        private double getStampDeduction()
+        private double getStampDeduction_old()
         {
           
             dt = new DataTable();
             dt=CRUD.ExecuteReturnDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)");
             return double.Parse(dt.Rows[0]["StampDeduct"].ToString());
         }
+
+
+        private double getStampDeduction(string StampPolicy,string paymentMethod)
+        {
+
+            JObject obj = JObject.Parse(StampPolicy);
+            JArray conditions = (JArray)obj["conditions"];
+
+            foreach (JObject condition in conditions)
+            {
+                if (condition["paymentMethod"]?.ToString() == paymentMethod)
+                {
+                    return int.Parse(condition["deductAmount"]?.ToString() ?? "0");
+                }
+            }
+            return 0;
+
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)");
+            return double.Parse(dt.Rows[0]["StampDeduct"].ToString());
+        }
+
         private double getOthersDeduction(string EmpId,string MonthName)
         {
             dt = new DataTable();
@@ -625,5 +795,136 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+
+
+        private Dictionary<string,string> getPayrollPolicy(string companyId)
+        {
+            Dictionary<string, string> payrollPolicyDict = new Dictionary<string, string>();
+
+            string query = "select PolicyType,PolicyJson from Payroll_Policies where CompanyId='"+ companyId + "'";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                string policyType = row["PolicyType"].ToString();
+                string policyJson = row["PolicyJson"].ToString();
+
+                if (!payrollPolicyDict.ContainsKey(policyType))
+                {
+                    payrollPolicyDict.Add(policyType, policyJson);
+                }
+            }
+            return payrollPolicyDict;
+        }
+
+
+        private double getAbsentDeduction(SalaryRecord salaryRecord,string AbsentDeduct,int absentDays)
+        {
+            JObject jObj = JObject.Parse(AbsentDeduct);
+            JArray rulesArray = (JArray)jObj["rules"];
+
+            foreach (JObject rule in rulesArray)
+            {
+                if (rule.ContainsKey("maxAbsent"))
+                {
+                    if (rule["maxAbsent"] != null)
+                    {
+                        int maxAbsent = (int)rule["maxAbsent"];
+                        if (absentDays < maxAbsent)
+                        {
+                            if (rule["deductFrom"].ToString() == "Basic")
+                            {
+                                return Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay);
+                            }
+                            else
+                            {
+                                return Round(salaryRecord.EmpPresentSalary / salaryRecord.DaysInMonth * salaryRecord.AbsentDay);
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    if (rule["deductFrom"].ToString() == "Basic")
+                    {
+                        return Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay);
+                    }
+                    else
+                    {
+                        return Round(salaryRecord.EmpPresentSalary / salaryRecord.DaysInMonth * salaryRecord.AbsentDay);
+                    }
+                }
+                
+
+              
+               
+            }
+
+            return 0;
+            
+
+
+
+            //string deductFrom = getAbsentDeduction(AbsentDeduction, salaryRecord.AbsentDay);
+            //double amount = 0;
+            //if (deductFrom == "Basic")
+            //{
+            //    amount= Round(salaryRecord.BasicSalary / 30 * salaryRecord.AbsentDay);
+            //}
+            //else
+            //{
+            //    amount = Round(salaryRecord.EmpPresentSalary / salaryRecord.DaysInMonth * salaryRecord.AbsentDay);
+            //}
+
+        }
+
+
+        private Dictionary<string, DataRow> getAllAdvanceDeduction(DateTime FromDate, string EmpId)
+        {
+            query = "select EmpID,Amount from Payroll_LoanMonthlySetup where Month='" + FromDate.ToString("yyyy-MM") + "-01'";
+            if (EmpId != "")
+                query += " and EmpId='" + EmpId + "'";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            return convertDatatableToDict(dt, "EmpId");
+        }
+
+        private Dictionary<string, DataRow> getAllPunishment(string EmpId, DateTime FromDate)
+        {
+            string query= "select EmpId, PAmount from Payroll_Punishment where MonthName = '" + FromDate.ToString("MM-yyyy") + "'";
+            if (EmpId != "")
+                query += " and EmpId='" + EmpId + "'";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            return convertDatatableToDict(dt, "EmpId");
+        }
+
+
+        public Dictionary<string, DataRow> convertDatatableToDict(DataTable dt, string keyName)
+        {
+            try
+            {
+                var dict = new Dictionary<string, DataRow>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row[keyName] != DBNull.Value)
+                    {
+                        string key = row[keyName].ToString();
+                        if (!dict.ContainsKey(key))
+                            dict[key] = row;
+                    }
+                }
+
+                return dict;
+            }
+            catch (Exception ex) { return null; }
+        }
+
+
+
+  
     }
 }
