@@ -55,37 +55,28 @@
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
-                        <div class="card">
-                            <div id="toggleFilter5" class="card-header px-20 py-15" style="cursor: pointer;">
+                        <div class="card" id="EmpTypeSection">
+                            <div id="toggleEmpType" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
-                                    <span class="d-flex align-items-center" style="font-size:16px; color:black";>
-                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
-                                        Filter by Emp. Type
+                                    <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px; width: 16px;">
+                                        Filter by EmpType
                                     </span>
-                                    <i id="arrowIcon1" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
+                                    <i id="arrowIconEmpType" class="fas fa-chevron-down"></i>
                                 </h6>
                             </div>
                             <div class="card-body">
-                                <aside class="">
-                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show"  id="multiCollapseExample91"><!-- test Git  -->
-                                        <div class="product-brands" overflow-y: auto;">
-
-                                        
-                                         
-                                                <div class="input-group">
-                                                    <select name="ddlSearchType" id="ddlSearchType" class="form-control me-2">
-                                                        <option value="">All </option>
-                                                        <option value="Staff">Staff </option>
-                                                        <option value="Worker">Worker</option>
-                                                    </select>
-                                                </div>
-                                          
+                                <aside>
+                                    <div class="card border-0 shadow-none mt-10 collapse show" id="multiCollapseExample4">
+                                        <div class="product-brands">
+                                            <ul id="empTypeList" class="list-unstyled mb-0"></ul>
                                         </div>
                                     </div>
                                 </aside>
                             </div>
                         </div>
-                                                <div class="card">
+
+                        <div class="card" id="unitSection">
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
@@ -370,6 +361,7 @@
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+            var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
             var PostSalarySaveURL = `${rootUrl}/api/Salary/salary-save`;
 
 
@@ -388,16 +380,20 @@
                     DepartmentToggle();
                 });
 
+                $('#toggleEmpType').on('click', function () {
+                    EmpTypetToggle();
+                });
+
                 const today = new Date();
                 const formattedDate = formatDate(today);
 
                 $('#txtStartDate').val(formattedDate);
                 $('#txtEndDate').val(formattedDate);
-
+          
                 GetUnit();
                 GetDepartment();
                 GetSalaryStracture();
-
+                GetEmpType();
             });
 
 
@@ -414,6 +410,18 @@
                 }
             }
 
+            function EmpTypetToggle() {
+                const unitList = $('#empTypeList');
+                const arrowIcon = $('#arrowIconEmpType');
+
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
 
             function DepartmentToggle() {
                 const unitList = $('#departmentList');
@@ -453,18 +461,17 @@
 
                 const deptQuery = getSelectedDepartmentQuery();
                 const unitQuery = getSelectedUnitQuery();
+                const empTypeQuery = getSelectedEmpTypeQuery();
 
                 let empCardNo = '';
-                let emptype = '';
+               
 
                 if (EmpCardNo && EmpCardNo.length > 0) {
                     empCardNo = `&EmpCardNo=${EmpCardNo}`;
                 }
 
-                if (EmpType && EmpType.length > 0) {
-                    emptype = `&EmpType=${EmpType}`;
-                }
-                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${emptype}`;
+             
+                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}&${empTypeQuery}`;
 
                 ApiCall(url, token)
                     .then(response => {
@@ -582,6 +589,84 @@
                 });
             }
 
+            function GetEmpType() {
+                ApiCall(getEmpTypeUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                            console.log('Before table Data Bind', responseData);
+
+                            bindEmpType(responseData);
+
+                            console.log('after Table Data Bind ', responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+            // Function to bind EmpType list
+            function bindEmpType(empTypeList) {
+                const $list = $('#empTypeList');
+                $list.empty();
+
+                // Add "Select All" option
+                const selectAllHTML = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllEmpTypes">
+                <label for="selectAllEmpTypes">
+                    <span class="checkbox-text" style="margin-left: 20px;">Select All</span>
+                </label>
+            </div>
+        </li>
+    `;
+                $list.append(selectAllHTML);
+
+                // Append each EmpType checkbox
+                empTypeList.forEach((empType, index) => {
+                    const checkboxId = `empType-check-${index}`;
+                    const itemHTML = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="empTypeCheckbox" id="${checkboxId}" value="${empType.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left: 20px;">${empType.name}</span>
+                    </label>
+                </div>
+            </li>
+        `;
+                    $list.append(itemHTML);
+                });
+            }
+
+            // "Select All" checkbox behavior
+            $(document).on('change', '#selectAllEmpTypes', function () {
+                const isChecked = $(this).is(':checked');
+                $('.empTypeCheckbox').prop('checked', isChecked);
+            });
+
+            // Sync "Select All" checkbox based on individual checks
+            $(document).on('change', '.empTypeCheckbox', function () {
+                const total = $('.empTypeCheckbox').length;
+                const checked = $('.empTypeCheckbox:checked').length;
+                $('#selectAllEmpTypes').prop('checked', total === checked);
+            });
+
+            // Get selected EmpType query string
+            function getSelectedEmpTypeQuery() {
+                return $('.empTypeCheckbox:checked')
+                    .map(function () {
+                        return 'EmpTypeIds=' + $(this).val();
+                    })
+                    .get()
+                    .join('&');
+            }
+
+
             function GetUnit() {
                 ApiCall(getUnitUrl, token)
                     .then(function (response) {
@@ -590,7 +675,11 @@
                             console.log('Before table Data Bind', responseData);
 
                             bindUnits(responseData);
-
+                            if (responseData.length > 1) {
+                                $('#unitSection').show();
+                            } else {
+                                $('#unitSection').hide();
+                            }
                             console.log('after Table Data Bind ', responseData);
                         } else {
                             console.error('Error occurred while fetching data:', response.message);
@@ -1022,19 +1111,19 @@
                 try {
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'fixed') {
-                            scope[key] = formula.value;
+                            scope[key] = Math.round(formula.value);
                         }
                     }
 
          
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'percentage') {
-                            scope[key] = math.evaluate(formula.value, scope);
+                           scope[key] = Math.round(math.evaluate(formula.value, scope));
                         }
                     }
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'formula') {
-                            scope[key] = math.evaluate(formula.value, scope);
+                            scope[key] = Math.round(math.evaluate(formula.value, scope));
                         }
                     }
 
@@ -1072,7 +1161,15 @@
 
 
             function SaveSalary() {
-                const empType = selectedEmpType === 'Worker' ? 1 : 2;
+                let empType = '';
+
+                if (selectedEmpType === 'Worker') {
+                    empType = '1';
+                } else if (selectedEmpType === 'Staff') {
+                    empType = '2';
+                } else {
+                    empType = '3';
+                }
                 const salaryData = {
                     empId: selectedEmpId,
                     empType: empType,

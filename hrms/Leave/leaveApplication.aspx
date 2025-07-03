@@ -43,14 +43,14 @@
             background-color: #ddebf1eb;
            
         }
-        th{
+       .report-tbl  th{
           font-size: 11px;
           padding: 1px 2px !important;
           font-weight: 500;
 
         }
  
-        td{
+        .report-tbl td{
            font-size: 11px;
            padding: 1px 2px !important;
         }
@@ -1246,7 +1246,7 @@
                <div class="row gx-2" >
       <div class="col-md-6">
         <h6 class="text-dark px-2 py-1 hader-style">Leave Statement</h6>
-        <table class="table table-bordered table-sm mt-2" style="border: 1px solid #ddd;">
+        <table class="report-tbl  table table-bordered table-sm mt-2" style="border: 1px solid #ddd;">
           <thead class="table-light">
             <tr>
               <th>Type of Leave</th>
@@ -1262,7 +1262,7 @@
       </div>
       <div class="col-md-6">
         <h6 class="text-dark px-2 py-1 hader-style">Approval Panel</h6>
-        <table class="table table-bordered table-sm mt-2" style="border: 1px solid  #ddd;">
+        <table class="report-tbl table table-bordered table-sm mt-2" style="border: 1px solid  #ddd;">
           <thead class="table-light">
             <tr>
               <th>Position</th>
