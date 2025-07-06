@@ -209,12 +209,12 @@ namespace SigmaERP.attendance
                 {
                     ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
                 }
-                if (rblReportType.SelectedIndex == 0)
+                if (rblReportType.SelectedValue == "0")
                 {
                     dt = classes.BusinessLogic.get_MonthlyLoginLogOutTime(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName);
                     type = "Log InOut";
                 }
-                else if (rblReportType.SelectedIndex == 1)
+                else if (rblReportType.SelectedValue == "1")
                 {
                     dt = classes.BusinessLogic.get_Moanthly_Attendance_Sheet(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName);
                     type = "Att Status";

@@ -30,7 +30,7 @@
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
-                        <div class="card">
+                        <div class="card" id="unitSection">
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
@@ -579,8 +579,13 @@
                         if (response.statusCode === 200) {
                             var responseData = response.data;
                             console.log('Before table Data Bind', responseData);
+                             bindUnits(responseData);
+                             if (responseData.length > 1) {
+                                $('#unitSection').show();
+                            } else {
+                                $('#unitSection').hide();
+                            }
                            
-                            bindUnits(responseData);
 
                             console.log('after Table Data Bind ', responseData);
                         } else {
