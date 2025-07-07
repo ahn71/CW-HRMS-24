@@ -51,9 +51,9 @@ namespace SigmaERP.classes
                  "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
                  "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
                  "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
-                 ",DptId,DptName,SftId,SftName,PSftName as GName,CompanyName,Address " +
+                 ",DptId,DptName,PSftId as SftId,SftName,PSftName as GName,CompanyName,Address " +
                  "from v_tblAttendanceRecord " +
-                 "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,PSftName,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
+                 "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + "group by EmpCardNo, EmpId,EmpName,DptId,DptName,PSftId,SftName,PSftName,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                          " order by convert(int,DptCode), convert(int,SftId),CustomOrdering";
                     sqlDB.fillDataTable(cmd, dt = new DataTable());
                 }

@@ -48,6 +48,26 @@
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
+                         <div class="card" id="EmpTypeSection">
+                            <div id="toggleEmpType" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px; width: 16px;">
+                                        Filter by EmpType
+                                    </span>
+                                    <i id="arrowIconEmpType" class="fas fa-chevron-down"></i>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside>
+                                    <div class="card border-0 shadow-none mt-10 collapse show" id="multiCollapseExample4">
+                                        <div class="product-brands">
+                                            <ul id="empTypeList" class="list-unstyled mb-0"></ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
                         <div class="card" id="unitSection">
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
@@ -230,7 +250,7 @@
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
-
+            var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
 
 
             var token = '<%= Session["__UserToken__"] %>';
@@ -248,15 +268,29 @@
                 $('#toggleDepartment').on('click', function () {
                     DepartmentToggle();
                 });
-
+                $('#toggleEmpType').on('click', function () {
+                    EmpTypetToggle();
+                });
                 GetShifts();
                 GetNewShifts();
                 GetUnit();
                 GetDepartment();
-             
+                GetEmpType();
 
             });
 
+            function EmpTypetToggle() {
+                const unitList = $('#empTypeList');
+                const arrowIcon = $('#arrowIconEmpType');
+
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
 
             function unitToggle() {
                 const unitList = $('#UnitList');
@@ -270,6 +304,84 @@
                     arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
             }
+
+            function GetEmpType() {
+            ApiCall(getEmpTypeUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log('Before table Data Bind', responseData);
+
+                        bindEmpType(responseData);
+
+                        console.log('after Table Data Bind ', responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+        // Function to bind EmpType list
+        function bindEmpType(empTypeList) {
+            const $list = $('#empTypeList');
+            $list.empty();
+
+            // Add "Select All" option
+            const selectAllHTML = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllEmpTypes">
+                <label for="selectAllEmpTypes">
+                    <span class="checkbox-text" style="margin-left: 20px;">Select All</span>
+                </label>
+            </div>
+        </li>
+    `;
+            $list.append(selectAllHTML);
+
+            // Append each EmpType checkbox
+            empTypeList.forEach((empType, index) => {
+                const checkboxId = `empType-check-${index}`;
+                const itemHTML = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="empTypeCheckbox" id="${checkboxId}" value="${empType.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left: 20px;">${empType.name}</span>
+                    </label>
+                </div>
+            </li>
+        `;
+                $list.append(itemHTML);
+            });
+        }
+
+        // "Select All" checkbox behavior
+        $(document).on('change', '#selectAllEmpTypes', function () {
+            const isChecked = $(this).is(':checked');
+            $('.empTypeCheckbox').prop('checked', isChecked);
+        });
+
+        // Sync "Select All" checkbox based on individual checks
+        $(document).on('change', '.empTypeCheckbox', function () {
+            const total = $('.empTypeCheckbox').length;
+            const checked = $('.empTypeCheckbox:checked').length;
+            $('#selectAllEmpTypes').prop('checked', total === checked);
+        });
+
+        // Get selected EmpType query string
+        function getSelectedEmpTypeQuery() {
+            return $('.empTypeCheckbox:checked')
+                .map(function () {
+                    return 'EmpTypeIds=' + $(this).val();
+                })
+                .get()
+                .join('&');
+        }
+
 
 
             function DepartmentToggle() {
@@ -302,37 +414,55 @@
             function GetEmployees() {
                 const EmpCardNo = $('#txtEmpCardNo').val();
                 const Shift = $('#ddlShift').val();
-                const deptQuery = getSelectedDepartmentQuery(); // returns something like: "DptIds=1&"
-                const unitQuery = getSelectedUnitQuery(); // not used below — include if needed
 
-                let empCardNo = '';
-                if (EmpCardNo && EmpCardNo.length > 0) {
-                    empCardNo = `&EmpCardNo=${EmpCardNo}`;
+                const deptQuery = getSelectedDepartmentQuery(); // string: DptIds=0002&DptIds=0003
+                const empTypeQuery = getSelectedEmpTypeQuery(); // string: EmpTypeIds=2&EmpTypeIds=1
+                const unit = getSelectedUnitQuery(); // string: key=value
+
+                const params = new URLSearchParams();
+                params.append('CompanyId', CompanyID);
+
+                if (EmpCardNo) {
+                    params.append('EmpCardNo', EmpCardNo);
                 }
 
-                let shiftId = '';
-                if (Shift !== null && Shift !== 'null') {
-                    shiftId = `&SftId=${Shift}`;
+                if (Shift && Shift !== 'null') {
+                    params.append('SftId', Shift);
                 }
-               $('.loaderDaily').show();
-               $('.loaderparent').css('opacity', '0.5');
-                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${shiftId}&DeautyType=Roster`;
 
+                params.append('DeautyType', 'Roster');
+
+                // Show loader
+                $('.loaderDaily').show();
+                $('.loaderparent').css('opacity', '0.5');
+
+                // Build base URL with core params
+                let url = `${getEmployeeeUrl}?${params.toString()}`;
+
+                // Append additional query strings if available
+                if (deptQuery) {
+                    url += `&${deptQuery}`;
+                }
+                if (empTypeQuery) {
+                    url += `&${empTypeQuery}`;
+                }
+                if (unit) {
+                    url += `&${unit}`;
+                }
+
+                // API call
                 ApiCall(url, token)
                     .then(response => {
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+
                         if (response.statusCode === 200) {
-                            const message = `Weekend employee data loaded for the period:`;
                             $('#alertContainer').hide();
                             $('#DataSubmitContainer').show();
-                            $('.loaderDaily').hide();
-                            $('.loaderparent').css('opacity', '1');
                             bindTableData(response.data);
-                       
                         } else {
                             console.error('API Error:', response.message);
                             bindTableData([]);
-                            $('.loaderDaily').hide();
-                            $('.loaderparent').css('opacity', '1');
                         }
                     })
                     .catch(error => {
@@ -342,6 +472,56 @@
                         $('.loaderparent').css('opacity', '1');
                     });
             }
+
+
+
+
+            //function GetEmployees() {
+            //    const EmpCardNo = $('#txtEmpCardNo').val();
+            //    const Shift = $('#ddlShift').val();
+            //    const deptQuery = getSelectedDepartmentQuery(); 
+            //    const empTypeQuery = getSelectedEmpTypeQuery();
+            //    const unit = getSelectedUnitQuery();
+            //    let empCardNo = '';
+            //    if (EmpCardNo && EmpCardNo.length > 0) {
+            //        empCardNo = `&EmpCardNo=${EmpCardNo}`;
+            //    }
+
+            //    let shiftId = '';
+            //    if (Shift !== null && Shift !== 'null') {
+            //        shiftId = `&SftId=${Shift}`;
+            //    }
+
+            //    let dutyType = '&DeautyType=Roster';
+
+            //   $('.loaderDaily').show();
+            //   $('.loaderparent').css('opacity', '0.5');
+            //    const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${shiftId} ${dutyType}&${empTypeQuery}&${unit}`;
+
+            //    ApiCall(url, token)
+            //        .then(response => {
+            //            if (response.statusCode === 200) {
+            //                const message = `Weekend employee data loaded for the period:`;
+            //                $('#alertContainer').hide();
+            //                $('#DataSubmitContainer').show();
+            //                $('.loaderDaily').hide();
+            //                $('.loaderparent').css('opacity', '1');
+            //                bindTableData(response.data);
+                       
+            //            } else {
+            //                console.error('API Error:', response.message);
+            //                bindTableData([]);
+            //                $('.loaderDaily').hide();
+            //                $('.loaderparent').css('opacity', '1');
+            //            }
+            //        })
+            //        .catch(error => {
+            //            console.error('Network Error:', error);
+            //            bindTableData([]);
+            //            $('.loaderDaily').hide();
+            //            $('.loaderparent').css('opacity', '1');
+            //        });
+            //}
 
 
             let allEmployeeData = [];
