@@ -70,7 +70,7 @@ namespace SigmaERP.hrms.settings
                 if (permission.Contains(198))
                     ViewState["__DeletAction__"] = "1";
                 checkInitialPermission();
-                classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
+                //classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -83,11 +83,11 @@ namespace SigmaERP.hrms.settings
             try
             {
                 ViewState["__preRIndex__"] = "No";
-                string DptId = (dlDepartment.SelectedValue == "0") ? "" : "and DptId='" + dlDepartment.SelectedValue + "'";
+                //string DptId = (dlDepartment.SelectedValue == "0") ? "" : "and DptId='" + dlDepartment.SelectedValue + "'";
                 CompanyId = (ddlCompanyName.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue;
                 if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
                 {
-                    sqlcmd = "SELECT SL,CompanyId,CompanyName,DptId,DsgId, DptName, DsgName,DsgNameBn, DsgShortName, DsgStatus,Ordering FROM v_HRD_Designation where CompanyId='" + CompanyId + "' " + DptId + " Order by Ordering";
+                    sqlcmd = "SELECT SL,CompanyId,CompanyName,DptId,DsgId, DptName, DsgName,DsgNameBn, DsgShortName, DsgStatus,Ordering FROM v_HRD_Designation where CompanyId='" + CompanyId + "'  Order by Ordering";
                 }
                 else
                 {
@@ -146,11 +146,11 @@ namespace SigmaERP.hrms.settings
                 if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
                 {
                     ddlCompanyName.SelectedValue = getCompanyId;
-                    classes.commonTask.SearchDepartment(ddlCompanyName.SelectedValue, dlDepartment);
+                    //classes.commonTask.SearchDepartment(ddlCompanyName.SelectedValue, dlDepartment);
                 }
                 else
                 {
-                    classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
+                    //classes.commonTask.loadDepartmentListByCompanyWithCommonDpt(dlDepartment, ViewState["__CompanyId__"].ToString());
                   //  classes.commonTask.SearchDepartment(ViewState["__CompanyId__"].ToString(), dlDepartment);
 
                 }
@@ -158,7 +158,7 @@ namespace SigmaERP.hrms.settings
                 dt = commonTask.getDesignationAll(getSL);
                 if (dt != null && dt.Rows.Count > 0)
                 {
-                    dlDepartment.SelectedValue = getDptId;
+                    //dlDepartment.SelectedValue = getDptId;
                     txtDesignation.Text = dt.Rows[0]["DsgName"].ToString();
                     txtDesignationBn.Text = dt.Rows[0]["DsgNameBn"].ToString();
                     txtDesignationShortName.Text = dt.Rows[0]["DsgShortName"].ToString();
@@ -220,7 +220,7 @@ namespace SigmaERP.hrms.settings
                 using (SqlCommand cmd = new SqlCommand("INSERT INTO HRD_Designation (DsgId, DptId, DsgName, DsgNameBn, DsgShortName, DsgStatus, Ordering, CompanyId) VALUES (@DsgId, @DptId, @DsgName, @DsgNameBn, @DsgShortName, @DsgStatus, @Ordering, @CompanyId)", sqlDB.connection))
                 {
                     cmd.Parameters.AddWithValue("@DsgId", newDsgId);
-                    cmd.Parameters.AddWithValue("@DptId", dlDepartment.SelectedValue);
+                    cmd.Parameters.AddWithValue("@DptId", "0");
                     cmd.Parameters.AddWithValue("@DsgName", txtDesignation.Text);
                     cmd.Parameters.AddWithValue("@DsgNameBn", txtDesignationBn.Text);
                     cmd.Parameters.AddWithValue("@DsgShortName", txtDesignationShortName.Text);
@@ -261,9 +261,9 @@ namespace SigmaERP.hrms.settings
                     return false;
                 }
 
-                using (SqlCommand cmd = new SqlCommand("UPDATE HRD_Designation SET DptId=@DptId, DsgName=@DsgName, DsgNameBn=@DsgNameBn, DsgShortName=@DsgShortName, DsgStatus=@DsgStatus, Ordering=@Ordering, CompanyId=@CompanyId WHERE SL=@SL", sqlDB.connection))
+                using (SqlCommand cmd = new SqlCommand("UPDATE HRD_Designation SET  DsgName=@DsgName, DsgNameBn=@DsgNameBn, DsgShortName=@DsgShortName, DsgStatus=@DsgStatus, Ordering=@Ordering, CompanyId=@CompanyId WHERE SL=@SL", sqlDB.connection))
                 {
-                    cmd.Parameters.AddWithValue("@DptId", dlDepartment.SelectedValue);
+                    //cmd.Parameters.AddWithValue("@DptId", dlDepartment.SelectedValue);
                     cmd.Parameters.AddWithValue("@DsgName", txtDesignation.Text);
                     cmd.Parameters.AddWithValue("@DsgNameBn", txtDesignationBn.Text);
                     cmd.Parameters.AddWithValue("@DsgShortName", txtDesignationShortName.Text.Trim());
@@ -376,7 +376,7 @@ namespace SigmaERP.hrms.settings
   
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            classes.commonTask.SearchDepartment(ddlCompanyName.SelectedValue, dlDepartment);
+            //classes.commonTask.SearchDepartment(ddlCompanyName.SelectedValue, dlDepartment);
             loadDesignation();
         }
 
