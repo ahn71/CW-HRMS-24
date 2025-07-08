@@ -213,6 +213,8 @@ namespace SigmaERP.classes
                     //Payable amount calculation
                     salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction,payRollPolicy["AbsentDeduction"].ToString());
 
+                      salaryRecord.NightbilAmount = CalculatedNightBill(employee["EmpTypeId"].ToString(),payRollPolicy["NightAllowance"].ToString(),Convert.ToInt32(salaryRecord.NightBillDays));
+
                         if (saveSalary(salaryRecord))
                         {
                           //  countSuccess++;
@@ -323,7 +325,7 @@ namespace SigmaERP.classes
             //Attendance Summary 
             dt = new DataTable();
 
-            string query = "select EmpId,sum(case when ATTStatus In ('P','L') AND PaybleDays='1' then 1 else 0 end  ) as P,sum(case when ATTStatus In ('L') AND PaybleDays='1' then 1 else 0 end  ) as L, Sum(Case when ATTStatus='A' or  StateStatus='Leave Without Pay (LWP)' or (ATTStatus In ('P','L') AND PaybleDays='0' ) then 1 else 0 end ) as A,Sum(case when StateStatus='Casual Leave' then 1 else 0 end) as 'CL',Sum(case when StateStatus = 'Sick Leave' then 1 else 0 end) as 'SL',Sum(case when StateStatus = 'Annual Leave' then 1 else 0 end) as 'EL', Sum(case when StateStatus = 'Maternity Leave' then 1 else 0 end) as 'ML', Sum(case when StateStatus = 'Leave Without Pay (LWP)' then 1 else 0 end) as 'LWP',sum(case when ATTStatus ='Lv'then 1 else 0 end  )  as Lv from v_tblAttendanceRecord where  EmpId='" + salaryRecord.EmpId + "' And AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' group by EmpId";
+            string query = "select EmpId,sum(NightAllowCount) as NightAllowCount,sum(case when ATTStatus In ('P','L') AND PaybleDays='1' then 1 else 0 end  ) as P,sum(case when ATTStatus In ('L') AND PaybleDays='1' then 1 else 0 end  ) as L, Sum(Case when ATTStatus='A' or  StateStatus='Leave Without Pay (LWP)' or (ATTStatus In ('P','L') AND PaybleDays='0' ) then 1 else 0 end ) as A,Sum(case when StateStatus='Casual Leave' then 1 else 0 end) as 'CL',Sum(case when StateStatus = 'Sick Leave' then 1 else 0 end) as 'SL',Sum(case when StateStatus = 'Annual Leave' then 1 else 0 end) as 'EL', Sum(case when StateStatus = 'Maternity Leave' then 1 else 0 end) as 'ML', Sum(case when StateStatus = 'Leave Without Pay (LWP)' then 1 else 0 end) as 'LWP',sum(case when ATTStatus ='Lv'then 1 else 0 end  )  as Lv from v_tblAttendanceRecord where  EmpId='" + salaryRecord.EmpId + "' And AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' group by EmpId";
 
             dt = CRUD.ExecuteReturnDataTable(query);
             if (dt != null && dt.Rows.Count > 0)
@@ -338,6 +340,7 @@ namespace SigmaERP.classes
                 salaryRecord.ML = int.Parse(dt.Rows[0]["ML"].ToString());
                 salaryRecord.TotalLeave = int.Parse(dt.Rows[0]["Lv"].ToString());
                 salaryRecord.OthersLeave = salaryRecord.TotalLeave - (salaryRecord.CasualLeave + salaryRecord.SickLeave + salaryRecord.AnnualLeave + salaryRecord.LWP + salaryRecord.ML);
+                salaryRecord.NightBillDays = int.Parse(dt.Rows[0]["NightAllowCount"].ToString());
 
             }
             return salaryRecord;
@@ -566,42 +569,47 @@ namespace SigmaERP.classes
         private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType,string AttendanceBonus)
         {
 
-           
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                Dictionary<string, object> data = (Dictionary<string, object>)serializer.DeserializeObject(AttendanceBonus);
-                object[] rules = (object[])data["rules"];
-                foreach (object ruleObj in rules)
-                {
-                    Dictionary<string, object> rule = (Dictionary<string, object>)ruleObj;
-                    bool isValid = true;            
 
-                    if (rule.ContainsKey("emptype"))
-                    {
-                        int emptype = Convert.ToInt32(rule["emptype"]);
-                        if (salaryRecord.EmpTypeId != emptype)                       
-                            continue;                        
-                    }
-                    if (rule.ContainsKey("maxLeave"))
-                    {
-                        int maxLeave = Convert.ToInt32(rule["maxLeave"]);
-                        if (salaryRecord.TotalLeave > maxLeave)                    
-                            continue;  
-                    }
-                    if (rule.ContainsKey("maxLate"))
-                    {
-                        int maxLate = Convert.ToInt32(rule["maxLate"]);
-                        if (maxLate!=0 && salaryRecord.LateDays > maxLate)                      
-                            continue;                        
-                    }   
-                    if (isValid)
-                    {
-                        double bonus = Convert.ToDouble(rule["bonusAmount"]);
-                        salaryRecord.AttendanceBonus = bonus;
-                        break;
-                    }
-                }
+
+            if (salaryRecord.AbsentDay > 0)
+            {
                 return salaryRecord;
             }
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            Dictionary<string, object> data = (Dictionary<string, object>)serializer.DeserializeObject(AttendanceBonus);
+            object[] rules = (object[])data["rules"];
+            foreach (object ruleObj in rules)
+            {
+                Dictionary<string, object> rule = (Dictionary<string, object>)ruleObj;
+                bool isValid = true;            
+
+                if (rule.ContainsKey("emptype"))
+                {
+                    int emptype = Convert.ToInt32(rule["emptype"]);
+                    if (salaryRecord.EmpTypeId != emptype)                       
+                        continue;                        
+                }
+                if (rule.ContainsKey("maxLeave"))
+                {
+                    int maxLeave = Convert.ToInt32(rule["maxLeave"]);
+                    if (salaryRecord.TotalLeave > maxLeave)                    
+                        continue;  
+                }
+                if (rule.ContainsKey("maxLate"))
+                {
+                    int maxLate = Convert.ToInt32(rule["maxLate"]);
+                    if (maxLate!=0 && salaryRecord.LateDays > maxLate)                      
+                        continue;                        
+                }   
+                if (isValid)
+                {
+                    double bonus = Convert.ToDouble(rule["bonusAmount"]);
+                    salaryRecord.AttendanceBonus = bonus;
+                    break;
+                }
+            }
+            return salaryRecord;
+           }
 
 
         
@@ -921,6 +929,22 @@ namespace SigmaERP.classes
                 return dict;
             }
             catch (Exception ex) { return null; }
+        }
+
+        private double CalculatedNightBill(string empType,string nightBillAllowance,int NightBillDays)
+        {
+            JObject jObj = JObject.Parse(nightBillAllowance);
+            JArray rulesArray = (JArray)jObj["rules"];
+            double nightBillAmount = 0;
+            foreach(var rule in rulesArray)
+            {
+                if(empType== rule["empType"].ToString())
+                {
+                    nightBillAmount = Convert.ToInt32(rule["nightBill"].ToString()) * NightBillDays;
+                    return nightBillAmount;
+                }
+            }
+            return nightBillAmount;
         }
 
 
