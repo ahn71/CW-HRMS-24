@@ -39,6 +39,26 @@
          .user-role{
              font-size:10px !important;
          }
+
+             .modal-backdrop {
+                 position: fixed;
+                 top: 0;
+                 left: 0;
+                 right: 0;
+                 bottom: 0;
+                 background-color: rgba(0,0,0,0.4);
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 z-index: 9999;
+             }
+
+             .modal {
+                 background: #fff;
+                 padding: 20px;
+                 border-radius: 8px;
+                 width: 350px;
+             }
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -120,100 +140,80 @@
                                 <div class="card">
                                     <div class="card-body position-relative mt-3" style="padding-top: 15px !important;">
 
+                                        <%--start--%> 
                                         <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
-                                            <div class="loaderparent">
-                                                <div class="ad-table-table__header d-flex justify-content-between mb-15">
-                                                    <div class="container-fluid" style="padding-left:0px !important; padding-right:0px !important">
-                                                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 align-items-end">
+                                            <%--start--%> 
+                                           <div class="loaderparent">
+    <div class="ad-table-table__header mb-3">
+        <div class="container-fluid px-0">
+            <div class="row g-3 align-items-end">
 
-                                                            <div class="col-lg-9 d-flex">
-                                                                <div class="col-lg-3">
-                                                                    <label for="txtSearch" class="form-label mb-1 p-0">Permanent Shift</label>
-                                                                    <div class="input-group">
-                                                                        <select name="ddlShift" id="ddlShift" class="form-control me-2">
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
+                <!-- Search Filters -->
+                <div class="col-lg-9">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="ddlShift" class="form-label mb-1">Permanent Shift</label>
+                            <select name="ddlShift" id="ddlShift" class="form-control">
+                                <!-- Options -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="txtEmpCardNo" class="form-label mb-1">Employee ID</label>
+                            <input type="text" id="txtEmpCardNo" class="form-control" placeholder="Employee ID...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="txtStartDate" class="form-label mb-1">Start Date</label>
+                            <input type="date" id="txtStartDate" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="txtEndDate" class="form-label mb-1">End Date</label>
+                            <input type="date" id="txtEndDate" class="form-control">
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Search and Export -->
+                <div class="col-lg-3 d-flex justify-content-end align-items-end">
+                    <div class="me-2">
+                        <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()" class="btn-sm btn btn-primary">
+                            Search
+                        </button>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn-sm btn btn-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            Export
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="openExportColumnModal()">Excel</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="openExportColumnModal()">PDF</a></li>
+<%--                            <li><a class="dropdown-item" href="#" onclick="ExportToDoc()">Doc</a></li>--%>
+                        </ul>
+                    </div>
+                </div>
 
-                                                                <div class="col-lg-3">
-                                                                    <label for="txtSearch" class="form-label mb-1 p-0">Employee ID</label>
-                                                                    <div class="input-group">
-                                                                        
-                                                                          <%--  <i class="uil uil-search"></i>--%>
-                                                                        
-                                                                        <input type="text" id="txtEmpCardNo" class="form-control border-start-0" placeholder="Employee ID..." aria-describedby="searchIcon">
-                                                                    </div>
-                                                                </div>
+            </div>
+        </div>
+    </div>
 
-                                                                    <div class="col-lg-3">
-                                                                    <label for="txtStartDate" class="form-label mb-1 p-0">Start Date</label>
-                                                                    <input type="date" id="txtStartDate" class="form-control" aria-describedby="passwordHelpInline">
-                                                                </div>
-                                                                <div class="col-lg-3">
-                                                                    <label for="txtEndDate" class="form-label mb-1 p-0">End Date</label>
-                                                                    <input type="date" id="txtEndDate" class="form-control" aria-describedby="passwordHelpInline">
-                                                                </div>
+    <!-- Loader -->
+            <div class="loader-size loaderDaily" style="display:none">
+                <div class="dm-spin-dots dot-size spin-sm">
+                    <span class="spin-dot badge-dot dot-primary"></span>
+                    <span class="spin-dot badge-dot dot-primary"></span>
+                    <span class="spin-dot badge-dot dot-primary"></span>
+                    <span class="spin-dot badge-dot dot-primary"></span>
+                </div>
+            </div>
 
-                                                                <div class="col-lg-2" style="margin-left:5px">
-                                                                    <label for="txtSearch" class="form-label mb-1 p-0" style="opacity:0"> ID</label>
-                                                                    <div class="input-group">
-                                                                           <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
-                                                                        class="btn btn-primary text-center"
-                                                                        style="padding: 7px;">
-                                                                        <i class="fas fa-search" style="font-size: 18px"></i>
-                                                                    </button>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                          <%--  <div style="display:none" id="DataSubmitContainer" class="col-lg-8">
-                                                            <div  class=" d-flex">
-                                                            
-                                                                <div class="col-lg-4" style="margin-left:5px">
-                                                                    <label for="txtSearch" class="form-label mb-1 p-0">New Shift</label>
-                                                                    <div class="input-group">
-                                                                        <select name="ddlNewShift" id="ddlNewShift" class="form-control me-2">
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                              
+            <!-- Table Container -->
+            <div id="employeeContainer">
+                <table class="table mb-0 packagesTable table-borderless adv-table"
+                    data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="25">
+                    <!-- Table Data -->
+                </table>
+            </div>
+        </div>
 
-
-                                                            </div>
-
-                                                          </div>--%>
-    
-
-                                                        </div>
-                                                    </div>
-                                                    <%--Close--%>
-                                                </div>
-
-
-
-
-                                                <div class="loader-size loaderDaily" style="display:none">
-                                                    <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
-                                                        <span class="spin-dot badge-dot dot-primary"></span>
-                                                        <span class="spin-dot badge-dot dot-primary"></span>
-                                                        <span class="spin-dot badge-dot dot-primary"></span>
-                                                        <span class="spin-dot badge-dot dot-primary"></span>
-                                                    </div>
-                                                </div>
-
-                                                <div id="employeeContainer">
-                                                      <table class="table mb-0 packagesTable table-borderless adv-table"
-                                                    data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="25">
-                                                </table>
-                                                </div>
-
-                                
-
-            
-
-
-                                            </div>
                                         </div>
              
                                     </div>
@@ -228,10 +228,27 @@
                     </div>
                 </div>
             </div>
+                <div id="columnModal" style="display: none;" class="modal-backdrop">
+        <div class="modal">
+            <h3>Select Columns to Export</h3>
+            <form id="columnForm">
+                <div id="columnCheckboxes"></div>
+                <div style="margin-top: 10px;">
+                    <button type="button" onclick="confirmExport('excel')">Export to Excel</button>
+                    <button type="button" onclick="confirmExport('pdf')">Export to PDF</button>
+                    <button type="button" onclick="closeColumnModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
         </div>
          </div>
 
-        <script>
+
+
+
+
+    <script>
             var rootUrl = '<%= Session["__RootUrl__"]%>';
             var CompanyID = '<%= Session["__GetCompanyId__"]%>';
             var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
@@ -405,6 +422,8 @@
 
             function GetEmployees() {
                 const EmpCardNo = $('#txtEmpCardNo').val();
+                const FromDate = $('#txtStartDate').val();
+                const ToDate = $('#txtEndDate').val();
                 const Shift = $('#ddlShift').val();
 
                 const deptQuery = getSelectedDepartmentQuery(); // string: DptIds=0002&DptIds=0003
@@ -442,6 +461,13 @@
                     url += `&${unit}`;
                 }
 
+                if (FromDate) {
+                    url += `&JoiningStartDate=${FromDate}`;
+                }
+                if (ToDate) {
+                    url += `&JoiningEndDate=${ToDate}`;
+                }
+
                 // API call
                 ApiCall(url, token)
                     .then(response => {
@@ -452,6 +478,7 @@
                             $('#alertContainer').hide();
                             $('#DataSubmitContainer').show();
                             bindTableData(response.data);
+                             sessionStorage.setItem('__employeesData__', JSON.stringify(response.data));
                         } else {
                             console.error('API Error:', response.message);
                             bindTableData([]);
@@ -466,6 +493,125 @@
             }
 
 
+        const headerMap = {
+            empCardNo: 'Employee ID',
+            empName: 'Name',
+            dptName: 'Department',
+            dsgName: 'Designation',
+            empType: 'Emp Type',
+            joiningDate: 'Joining Date',
+            shift: 'Shift',
+            deautyType: 'Duty Type',
+            weekendType: 'Weekend Type',
+            empPresentSalary: 'Salary',
+            unitName: 'Unit'
+        };
+
+        // Fields always excluded (not exported or shown)
+        const excludedFields = [
+            'empId', 'gid', 'unitId', 'cSftId', 'dptId', 'perSftId', 'companyId',
+            'employeeImage', 'empImage', 'empSignature', 'customOrdering', 'sftId',
+            'fullName', 'empTypeId'
+        ];
+
+        // Open modal and generate checkboxes
+        function openExportColumnModal() {
+            const container = document.getElementById("columnCheckboxes");
+            container.innerHTML = '';
+            Object.entries(headerMap).forEach(([key, label]) => {
+                if (!excludedFields.includes(key)) {
+                    const checkbox = `<div><input type="checkbox" name="columns" value="${key}" checked> ${label}</div>`;
+                    container.insertAdjacentHTML('beforeend', checkbox);
+                }
+            });
+            document.getElementById("columnModal").style.display = "flex";
+        }
+
+        function closeColumnModal() {
+            document.getElementById("columnModal").style.display = "none";
+        }
+
+        function getSelectedColumnKeys() {
+            const checkedBoxes = document.querySelectorAll('input[name="columns"]:checked');
+            return Array.from(checkedBoxes).map(cb => cb.value);
+        }
+
+        function confirmExport(type) {
+            const selectedKeys = getSelectedColumnKeys();
+            closeColumnModal();
+            ExportEmployeeData(type, selectedKeys);
+        }
+
+        async function ExportEmployeeData(exportType, selectedKeys) {
+            const jsonData = sessionStorage.getItem('__employeesData__');
+            if (!jsonData) {
+                Swal.fire('No Data', 'No employee data found to export.', 'info');
+                return;
+            }
+
+            let data = JSON.parse(jsonData);
+            if (data.length === 0) {
+                Swal.fire('Empty', 'No data available to export.', 'warning');
+                return;
+            }
+
+            if (selectedEmployeeIds.size === 0) {
+                Swal.fire('Warning', 'Please select at least one employee before exporting.', 'warning');
+                return;
+            }
+
+            const filteredSelectedData = data.filter(row => selectedEmployeeIds.has(row.empId));
+
+            const exportData = filteredSelectedData.map(row => {
+                const newRow = {};
+                selectedKeys.forEach(key => {
+                    newRow[headerMap[key]] = row[key] ?? '';
+                });
+                return newRow;
+            });
+
+            if (exportData.length === 0) {
+                Swal.fire('Notice', 'No matching selected employee data to export.', 'info');
+                return;
+            }
+
+            const fileName = `Employee_Roster_${new Date().toISOString().slice(0, 10)}`;
+
+            if (exportType === 'excel') {
+                const worksheet = XLSX.utils.json_to_sheet(exportData, { origin: 'A2' });
+                XLSX.utils.sheet_add_aoa(worksheet, [['Roster Report']], { origin: 'A1' });
+
+                const totalColumns = selectedKeys.length;
+                worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: totalColumns - 1 } }];
+                worksheet['A1'].s = {
+                    font: { name: 'Arial', sz: 20, bold: true },
+                    alignment: { horizontal: 'center', vertical: 'center' }
+                };
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Employee Roster');
+                XLSX.writeFile(workbook, `${fileName}.xlsx`);
+            } else if (exportType === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFontSize(18);
+                doc.text('Roster Report', 105, 15, null, null, 'center');
+
+                const columns = selectedKeys.map(key => headerMap[key]);
+                const rows = exportData.map(row => columns.map(col => row[col]));
+
+                doc.autoTable({
+                    startY: 20,
+                    head: [columns],
+                    body: rows,
+                    styles: { fontSize: 9 },
+                    headStyles: { fillColor: [41, 128, 185] },
+                });
+
+                doc.save(`${fileName}.pdf`);
+            }
+        }
 
 
             //function GetEmployees() {
@@ -989,7 +1135,7 @@
         }
 
 
-        </script>
+    </script>
 <%--    <script src="../../assets/theme_assets/js/loadCompany.js"></script>
     <script src="../../assets/theme_assets/js/apiHelper.js"></script>--%>
 
@@ -999,5 +1145,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- SheetJS for Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- jsPDF + autoTable for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
 
 </asp:Content>
