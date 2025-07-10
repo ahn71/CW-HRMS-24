@@ -3909,7 +3909,9 @@ namespace SigmaERP.All_Report
                         if (EmpTypeId == "1")
                         {
                             //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
-                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_ABR.rpt"));
 
                         }
                         else
