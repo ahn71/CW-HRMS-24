@@ -164,8 +164,9 @@ namespace SigmaERP.payroll.salary
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
                 }
 
-                string Condition = (bool.Parse(ViewState["__IsGerments__"].ToString())) ? " And EmpTypeId=" + rblEmployeeType.SelectedValue + " And SalaryCount='" + rblPaymentType.SelectedValue + "'" : "";
-                Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
+                string empType = rblEmployeeType.SelectedValue == "0" ? "" : " And EmpTypeId = " + rblEmployeeType.SelectedValue + "";
+                string Condition = (bool.Parse(ViewState["__IsGerments__"].ToString())) ? " " + empType + "  And SalaryCount='" + rblPaymentType.SelectedValue + "'" : "";
+                Condition = $"{empType}";
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
@@ -455,5 +456,9 @@ pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmo
         {
             //rblAlll.Checked = false;
         }
+
+
+
+
     }
 }

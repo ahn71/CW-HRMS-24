@@ -1754,6 +1754,7 @@
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\packages\modules.aspx" />
     <Content Include="hrms\payroll\salary-entry.aspx" />
+    <Content Include="hrms\payroll\salary-sheet-html.aspx" />
     <Content Include="hrms\personnel\id_card.aspx" />
     <Content Include="hrms\settings\bankEntryPanelSetup.aspx" />
     <Content Include="hrms\settings\businessTypeSetup.aspx" />
@@ -3816,6 +3817,13 @@
     </Compile>
     <Compile Include="hrms\payroll\salary-entry.aspx.designer.cs">
       <DependentUpon>salary-entry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\payroll\salary-sheet-html.aspx.cs">
+      <DependentUpon>salary-sheet-html.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\payroll\salary-sheet-html.aspx.designer.cs">
+      <DependentUpon>salary-sheet-html.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\personnel\id_card.aspx.cs">
       <DependentUpon>id_card.aspx</DependentUpon>
