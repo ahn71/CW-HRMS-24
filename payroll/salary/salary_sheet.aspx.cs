@@ -164,8 +164,21 @@ namespace SigmaERP.payroll.salary
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
                 }
 
-                string Condition = (bool.Parse(ViewState["__IsGerments__"].ToString())) ? " And EmpTypeId=" + rblEmployeeType.SelectedValue + " And SalaryCount='" + rblPaymentType.SelectedValue + "'" : "";
-                Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
+                //string Condition = (bool.Parse(ViewState["__IsGerments__"].ToString())) ? " And EmpTypeId=" + rblEmployeeType.SelectedValue + " And SalaryCount='" + rblPaymentType.SelectedValue + "'" : "";
+                //Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
+
+                string Condition = "";
+
+                if (rblEmployeeType.SelectedValue != "0")
+                {
+                    Condition += " And EmpTypeId=" + rblEmployeeType.SelectedValue;
+                }
+
+                // Your other condition (unchanged)
+                if (bool.Parse(ViewState["__IsGerments__"].ToString()))
+                {
+                    Condition += " And SalaryCount='" + rblPaymentType.SelectedValue + "'";
+                }
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
