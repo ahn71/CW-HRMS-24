@@ -3890,7 +3890,7 @@ namespace SigmaERP.All_Report
        
             string rootUrl = Session["__RootUrl__"]?.ToString();
             string companyId = Session["__GetCompanyId__"].ToString();
-            string EmpImageurl = rootUrl + "//" + companyId + "//" + "EmployeeImage" + "//";
+            string EmpImageurl = "E:/CW-Official Project/CW-HRMS-API/wwwroot/0001/EmployeeImage/";
 
             if (Session["__Language__"].ToString() == "English")
             {
@@ -3953,7 +3953,9 @@ namespace SigmaERP.All_Report
                 }
 
                 rpd.SetDataSource(dt);
+                //rpd.SetParameterValue(0, EmpImageurl);
                 rpd.SetParameterValue(0, EmpImageurl);
+                //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
                 rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
                 if (dynamicSignature)
                 {
