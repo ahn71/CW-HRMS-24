@@ -36,6 +36,27 @@
             background: rgba(0, 0, 0, 0.1);
             border-radius:4px;
         }
+      
+        .hader-style {
+            font-weight: 600;
+            font-size: 11px;
+            background-color: #ddebf1eb;
+           
+        }
+       .report-tbl  th{
+          font-size: 11px;
+          padding: 1px 2px !important;
+          font-weight: 500;
+
+        }
+ 
+        .report-tbl td{
+           font-size: 11px;
+           padding: 1px 2px !important;
+        }
+        b, strong {
+            font-weight: 500;
+        }
 
     </style>
 </asp:Content>
@@ -314,7 +335,6 @@
               <div class="modal-dialog modal-lg">
                   <div class="modal-content" id="modalContent">
                       <div class="modal-header">
-                          <h5 class="modal-title" id="leaveApplicationModalLabel">Leave Application Details</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
@@ -347,7 +367,7 @@
         
         
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
-         var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication/${userId}?CompanyId=${CompanyID}`;
+         var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication`;
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
          var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
@@ -994,16 +1014,21 @@
             html2pdf()
                 .from(element)
                 .set({
-                    margin: 1,
+                    margin: 0.2167, // 40px in inches
                     filename: 'leave-application.pdf',
                     html2canvas: {
-                        scale: 2, 
-                        letterRendering: true 
+                        scale: 2,
+                        letterRendering: true
                     },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    jsPDF: {
+                        unit: 'in',
+                        format: 'a4',
+                        orientation: 'portrait'
+                    }
                 })
                 .save();
         }
+
         //function Delete(id) {
         //    Swal.fire({
         //        title: 'Are you sure?',
@@ -1115,45 +1140,179 @@
             });
         }
 
+function FetchDataForView(Id) {
+    ApiCall(`${getLeaveByIdUrl}/${Id}?CompanyId=${CompanyID}`, token)
+        .then(function (responseData) {
+            var data = responseData.data.leaveInfo;
+            var balance = responseData.data.balance;
+            var authority = responseData.data.authority;
+            var lastLave = responseData.data.lastLave;
 
+            // Build Leave Statement rows
+            let leaveStatementRows = '';
+            balance.forEach(item => {
+                leaveStatementRows += `
+                    <tr>
+                        <td>${item.typeOfLeave}</td>
+                        <td>${item.entitled}</td>
+                        <td>${item.availed}</td>
+                        <td>${item.balance}</td>
+                    </tr>`;
+            });
 
+            // Build Approval Panel rows
+            let approvalRows = '';
+            authority.forEach((item, index) => {
+                let decision = item.action === 0 ? 'Forward' :
+                    item.action === 1 ? 'Approved' :
+                    item.action === 2 ? 'Rejected' : 'Pending';
 
-        function FetchDataForView(Id) {
-            ApiCall(getLeaveByIdUrl, token)
-                .then(function (responseData) {
-                    var data = responseData.data[0]; 
-                    var leaveApplicationContent = `
-            <div class="row">
-              <div class="col-md-6">
-                <p><strong>Employee Name:</strong> ${data.empName}</p>
-                <p><strong>Designation:</strong> ${data.dsgName}</p>
-                <p><strong>Leave Type:</strong> ${data.leaveName}</p>
-                <p><strong>Leave Start Date:</strong> ${data.leaveStartDate}</p>
-                <p><strong>Leave End Date:</strong> ${data.leaveEndDate}</p>
-                <p><strong>Total Leave Days:</strong> ${data.totalLeaveDays}</p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>Remarks:</strong> ${data.remarks}</p>
-                <p><strong>Handed Over Employee ID:</strong> ${data.handedOverEmpName}</p>
-                <p><strong>Leave Address:</strong> ${data.lvAddress}</p>
-                <p><strong>Leave Contact:</strong> ${data.lvContact}</p>
-                <p><strong>Approval Status:</strong> ${data.approvalStatus ?? 'Pending'}</p>
-                <p><strong>Company ID:</strong> ${data.companyId}</p>
-              </div>
-            </div>
+                let actionDate = '';
+                if (item.actionTime) {
+                    const dateObj = new Date(item.actionTime);
+                    const dd = String(dateObj.getDate()).padStart(2, '0');
+                    const MM = String(dateObj.getMonth() + 1).padStart(2, '0');
+                    const yyyy = dateObj.getFullYear();
+                    let hours = dateObj.getHours();
+                    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12;
+                    const hh = String(hours).padStart(2, '0');
+                    actionDate = `${dd}/${MM}/${yyyy} ${hh}:${minutes} ${ampm}`;
+                }
+
+                approvalRows += `
+                    <tr>
+                        <td>${index + 1} Level</td>
+                        <td>${item.actionByName}</td>
+                        <td>${decision}</td>
+                        <td>${actionDate}</td>
+                        <td></td>
+                    </tr>`;
+            });
+
+            let pregnancySection = '';
+            if (data.pregnantDate || data.expectedDeliveryDate) {
+                pregnancySection = `
+                    <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Pregnancy Date:</strong> ${data.pregnantDate ?? '-'}</div>
+                    <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Expected Delivery Date:</strong> ${data.expectedDeliveryDate ?? '-'}</div>`;
+            }
+
+            // Build the full content first
+            var leaveApplicationContent = `
+                <div class="container-fluid px-2">
+                    <h5 class="text-text-info border-bottom pb-2 text-center">Leave Application Approval Form</h5>
+                    <p class="text-center mb-2" style="font-size:11px">
+                      <strong>Company Name:</strong>${data.companyName} &nbsp; | &nbsp;
+                      <strong>Company Address:</strong> ${data.companyAddress}
+                    </p>
+
+                    <h6 class="text-dark px-2 py-1 hader-style">Employee Information</h6>
+                    <div class="row mb-2">
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Employee ID:</strong> ${data.empCardNo}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Employee Name:</strong> ${data.empName}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Designation:</strong> ${data.dsgName}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Department:</strong> ${data.dptName}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Shift:</strong> ${data.sftName}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Employee Type:</strong> ${data.empType}</div>
+                    </div>
+
+                    <h6 class="text-dark px-2 py-1 mt-1 hader-style">Leave Details</h6>
+                    <div class="row mb-2">
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Application ID:</strong> ${data.applicationId}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Leave Type:</strong> ${data.leaveName}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Half-Day Leave:</strong> ${data.isHalfDayLeave ? 'Yes' : 'No'}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Leave Start Date:</strong> ${data.leaveStartDate}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Leave End Date:</strong> ${data.leaveEndDate}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Total Leave Days:</strong> ${data.totalLeaveDays}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Apply Date:</strong> ${data.applyDate}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Approval Status:</strong> ${
+                          data.approvalStatus === 0 ? 'Forward' :
+                          data.approvalStatus === 1 ? 'Approved' :
+                          data.approvalStatus === 2 ? 'Rejected' : 'Pending'
+                      }</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Leave Address:</strong> ${data.lvAddress}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Contact During Leave:</strong> ${data.lvContact}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Handed Over To:</strong> ${data.handedOverEmpName}</div>
+                      ${pregnancySection}
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Remarks:</strong> ${data.remarks}</div>
+                    </div>
+
+                    <h6 class="text-dark px-2 py-1 mt-1 hader-style">Last Leave Details</h6>
+                    <div id="lastLeaveContainer" class="row mb-2"></div>
+                    <div id="noLeaveMsg" class="text-danger px-2 py-1" style="font-size: 12px; display: none;">
+                        ⚠️ No previous leave record found for this employee.
+                    </div>
+
+                    <div class="row gx-2" >
+                        <div class="col-md-6">
+                            <h6 class="text-dark px-2 py-1 hader-style">Leave Statement</h6>
+                            <table class="report-tbl  table table-bordered table-sm mt-2" style="border: 1px solid #ddd;">
+                              <thead class="table-light">
+                                <tr>
+                                  <th>Type of Leave</th>
+                                  <th>Entitled</th>
+                                  <th>Availed</th>
+                                  <th>Balance</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                ${leaveStatementRows}
+                              </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-dark px-2 py-1 hader-style">Approval Panel</h6>
+                            <table class="report-tbl table table-bordered table-sm mt-2" style="border: 1px solid  #ddd;">
+                              <thead class="table-light">
+                                <tr>
+                                  <th>Position</th>
+                                  <th>Approver Name</th>
+                                  <th>Decision</th>
+                                  <th>Date</th>
+                                  <th>Signature</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                ${approvalRows}
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             `;
 
+            // ✅ Inject content
+            document.getElementById('leaveApplicationContent').innerHTML = leaveApplicationContent;
 
-                    document.getElementById('leaveApplicationContent').innerHTML = leaveApplicationContent;
+            // ✅ Now update #lastLeaveContainer
+            if (lastLave && lastLave.leaveStartDate && lastLave.leaveEndDate) {
+                $("#lastLeaveContainer").html(`
+                    <div class="col-md-4 text-dark" style="font-size: 11px;">
+                        <strong>Enjoyed Date:</strong> ${lastLave.leaveStartDate} - ${lastLave.leaveEndDate}
+                    </div>
+                    <div class="col-md-4 text-dark" style="font-size: 11px;">
+                        <strong>Leave Type:</strong> ${lastLave.leaveTypeName || '-'}
+                    </div>
+                    <div class="col-md-4 text-dark" style="font-size: 11px;">
+                        <strong>Total Days :</strong> ${lastLave.totalDays ?? '-'}
+                    </div>
+                `);
+                $("#noLeaveMsg").hide();
+            } else {
+                $("#lastLeaveContainer").html("");
+                $("#noLeaveMsg").show();
+            }
 
-                    var myModal = new bootstrap.Modal(document.getElementById('leaveApplicationModal'));
-                    myModal.show();
-                })
-                .catch(function (error) {
-                    console.error('Error:', error);
-                });
-        }
-        
+            // ✅ Show Modal
+            var myModal = new bootstrap.Modal(document.getElementById('leaveApplicationModal'));
+            myModal.show();
+        })
+        .catch(function (error) {
+            console.error('Error fetching leave application:', error);
+        });
+}
 
 
 

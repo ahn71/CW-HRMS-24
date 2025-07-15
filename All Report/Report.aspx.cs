@@ -13,7 +13,7 @@ using System.IO;
 using System.Globalization;
 using System.Data.SqlClient;
 using CrystalDecisions.Web;
-
+using SigmaERP.classes;
 namespace SigmaERP.All_Report
 {
     public partial class Repor : System.Web.UI.Page
@@ -3887,6 +3887,11 @@ namespace SigmaERP.All_Report
             dt = (DataTable)Session["__SalarySheet__"];
             rpd = new ReportDocument();
 
+       
+            string rootUrl = Session["__RootUrl__"]?.ToString();
+            string companyId = Session["__GetCompanyId__"].ToString();
+            string EmpImageurl = "E:/CW-Official Project/CW-HRMS-API/wwwroot/0001/EmployeeImage/";
+
             if (Session["__Language__"].ToString() == "English")
             {
                 if (IsSeparation == "0")
@@ -3906,10 +3911,19 @@ namespace SigmaERP.All_Report
                     }
                     else// This is for Actual Salary Sheet
                     {
+                        //string imagePath = commonTask.GetFullImagePath();
+
+                  
+
+
                         if (EmpTypeId == "1")
                         {
                             //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
-                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+
+
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_ABR.rpt"));
 
                         }
                         else
@@ -3939,7 +3953,10 @@ namespace SigmaERP.All_Report
                 }
 
                 rpd.SetDataSource(dt);
-                rpd.SetParameterValue(0, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
+                //rpd.SetParameterValue(0, EmpImageurl);
+                rpd.SetParameterValue(0, EmpImageurl);
+                //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+                rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
                 if (dynamicSignature)
                 {
                     try

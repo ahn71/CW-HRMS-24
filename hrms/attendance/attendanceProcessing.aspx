@@ -24,6 +24,49 @@
             text-decoration: underline;
         }
 
+
+        .w-100 {
+            width: 100%;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        i {
+            margin-right: 0 !important;
+        }
+
+        label {
+            margin-left: 0 !important;
+        }
+
+        /*.row > * {
+            margin-top: 0 !important;
+        }*/
+
+
+        .swal2-container {
+            z-index: 99999 !important;
+        }
+
+        .uil-money-insert {
+            margin-right: 5px;
+        }
+
+        label {
+            margin-bottom: 3px;
+        }
+
+        .form-control {
+            height: 40px !important;
+        }
+
+
     </style>
 
 
@@ -33,7 +76,79 @@
         <div class="products_page product_page--grid mb-30">
             <div class="container-fluid">
                 <div class="row justify-content-center">
-                    <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
+
+                        <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
+                        <div class="card" id="EmpTypeSection">
+                            <div id="toggleEmpType" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px; width: 16px;">
+                                        Filter by EmpType
+                                    </span>
+                                    <i id="arrowIconEmpType" class="fas fa-chevron-down"></i>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside>
+                                    <div class="card border-0 shadow-none mt-10 collapse show" id="multiCollapseExample4">
+                                        <div class="product-brands">
+                                            <ul id="empTypeList" class="list-unstyled mb-0"></ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+
+                        <div class="card" id="unitSection">
+                            <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size:16px; color:black";>
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter by Unit
+                                    </span>
+                                    <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample1">
+                                        <div class="product-brands" overflow-y: auto;">
+                                            <ul id="UnitList">
+                                              
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                        <div class="card mt-1">
+                            <div id="toggleDepartment" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
+                                        Filter by Department
+                                    </span>
+                                    <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
+                                    <!-- Arrow icon -->
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample2">
+                                        <div class="product-brands"  overflow-y: auto;">
+                                            <ul id="departmentList">
+                                                <!-- Checkboxes will be injected here -->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                    </div>
+
+                                          
+
+<%--                    <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
                         <div class="widget">
                             <div class="widget-header-title px-20 py-15">
                                 <h6 class="d-flex align-content-center fw-500">
@@ -53,7 +168,7 @@
                                 </aside>
                             </div>
                         </div>
-                    </div>
+                    </div>--%>
                     <div class=" col-lg-9 mt-xl-0 mt-lg-30">
 
                         <div class="row product-page-list justify-content-center">
@@ -194,6 +309,8 @@
         var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
+        var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+        var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
 
 
 
@@ -202,12 +319,30 @@
 
         $(document).ready(function () {
 
+            $('#toggleFilter').on('click', function () {
+                unitToggle();
+            });
+
+            $('#toggleDepartment').on('click', function () {
+                DepartmentToggle();
+            });
+
+            $('#toggleEmpType').on('click', function () {
+                EmpTypetToggle();
+            });
+
+
             const today = new Date();
             const formattedDate = formatDate(today);
+
+
 
             $('#txtStartDate').val(formattedDate);
             $('#txtEndDate').val(formattedDate);
 
+
+            GetEmpType();
+            GetUnit();
             GetEmployee();
             GetDepartment();
 
@@ -229,7 +364,204 @@
         }
 
 
+                    function unitToggle() {
+                const unitList = $('#UnitList');
+                const arrowIcon = $('#arrowIcon');
 
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+
+            function EmpTypetToggle() {
+                const unitList = $('#empTypeList');
+                const arrowIcon = $('#arrowIconEmpType');
+
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+
+            function DepartmentToggle() {
+                const unitList = $('#departmentList');
+                const arrowIcon = $('#arrowIcondpt');
+
+                unitList.toggle(); 
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+
+        function GetEmpType() {
+            ApiCall(getEmpTypeUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log('Before table Data Bind', responseData);
+
+                        bindEmpType(responseData);
+
+                        console.log('after Table Data Bind ', responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+        // Function to bind EmpType list
+        function bindEmpType(empTypeList) {
+            const $list = $('#empTypeList');
+            $list.empty();
+
+            // Add "Select All" option
+            const selectAllHTML = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllEmpTypes">
+                <label for="selectAllEmpTypes">
+                    <span class="checkbox-text" style="margin-left: 20px;">Select All</span>
+                </label>
+            </div>
+        </li>
+    `;
+            $list.append(selectAllHTML);
+
+            // Append each EmpType checkbox
+            empTypeList.forEach((empType, index) => {
+                const checkboxId = `empType-check-${index}`;
+                const itemHTML = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="empTypeCheckbox" id="${checkboxId}" value="${empType.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left: 20px;">${empType.name}</span>
+                    </label>
+                </div>
+            </li>
+        `;
+                $list.append(itemHTML);
+            });
+        }
+
+        // "Select All" checkbox behavior
+        $(document).on('change', '#selectAllEmpTypes', function () {
+            const isChecked = $(this).is(':checked');
+            $('.empTypeCheckbox').prop('checked', isChecked);
+        });
+
+        // Sync "Select All" checkbox based on individual checks
+        $(document).on('change', '.empTypeCheckbox', function () {
+            const total = $('.empTypeCheckbox').length;
+            const checked = $('.empTypeCheckbox:checked').length;
+            $('#selectAllEmpTypes').prop('checked', total === checked);
+        });
+
+        // Get selected EmpType query string
+        function getSelectedEmpTypeQuery() {
+            return $('.empTypeCheckbox:checked')
+                .map(function () {
+                    return 'EmpTypeIds=' + $(this).val();
+                })
+                .get()
+                .join('&');
+        }
+
+
+        function GetUnit() {
+            ApiCall(getUnitUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log('Before table Data Bind', responseData);
+
+                        bindUnits(responseData);
+                        if (responseData.length > 1) {
+                            $('#unitSection').show();
+                        } else {
+                            $('#unitSection').hide();
+                        }
+                        console.log('after Table Data Bind ', responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
+        function bindUnits(units) {
+            const $list = $('#UnitList');
+            $list.empty();
+
+
+            const selectAllItem = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllUnits">
+                <label for="selectAllUnits">
+                    <span class="checkbox-text" style="margin-left:20px">
+                        Select All
+                    </span>
+                </label>
+            </div>
+        </li>
+    `;
+            $list.append(selectAllItem);
+
+            units.forEach((unit, index) => {
+                const checkboxId = `unit-check-${index}`;
+                const listItem = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="unitCheckbox" id="${checkboxId}" value="${unit.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left:20px">
+                            ${unit.name}
+                        </span>
+                    </label>
+                </div>
+            </li>
+        `;
+                $list.append(listItem);
+            });
+        }
+
+        $(document).on('change', '#selectAllUnits', function () {
+            const isChecked = $(this).is(':checked');
+            $('.unitCheckbox').prop('checked', isChecked);
+        });
+
+        $(document).on('change', '.unitCheckbox', function () {
+            const total = $('.unitCheckbox').length;
+            const checked = $('.unitCheckbox:checked').length;
+            $('#selectAllUnits').prop('checked', total === checked);
+        });
+
+
+        function getSelectedUnitQuery() {
+            return $('.unitCheckbox:checked')
+                .map(function () {
+                    return 'UnitIds=' + $(this).val();
+                })
+                .get()
+                .join('&');
+        }
 
         function showAttendanceHideEmployee() {
             $('#attendanceContainer').hide();
@@ -334,7 +666,10 @@
                         resolve(data);
                     },
                     error: function (xhr, status, error) {
+                         console.log("Error Message for attendance proccess: ",xhrr)
+                         console.log("Error Message for attendance proccess",error)
                         Swal.fire({
+                           
                             icon: 'warning',
                             title: 'Almost There!',
                             text: 'Some issues occurred while processing attendance. Please retry or contact support if needed.',
@@ -427,7 +762,10 @@
             const startDate = $('#txtStartDate').val();
             const EmpCardNo = $('#txtEmpCardNo').val();
             const deptQuery = getSelectedDepartmentQuery();
-            const url = `${getEmployeeUrl}&${deptQuery}&startDate=${startDate}&endDate=${startDate}&EmpCardNo=${EmpCardNo}`;
+            const empTypeQuery = getSelectedEmpTypeQuery();
+            const unit = getSelectedUnitQuery();
+
+            const url = `${getEmployeeUrl}&${deptQuery}&startDate=${startDate}&endDate=${startDate}&EmpCardNo=${EmpCardNo}&${empTypeQuery}&${unit}`;
 
             ApiCall(url, token)
                 .then(response => {

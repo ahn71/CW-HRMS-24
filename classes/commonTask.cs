@@ -12,6 +12,7 @@ using SigmaERP.hrms.BLL;
 using System.Net;
 using Newtonsoft.Json;
 using System.IO;
+using System.Configuration;
 
 namespace SigmaERP.classes
 {
@@ -1429,6 +1430,16 @@ namespace SigmaERP.classes
             catch { }
         }
         // ----------------For Seperation--------------------
+
+        public static string GetFullImagePath()
+        {
+            string baseUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
+            string folder = ConfigurationManager.AppSettings["employeeImageFolder"];
+            string companyId = HttpContext.Current.Session["__GetCompanyId__"]?.ToString();
+
+            return $"{baseUrl}//{companyId}/{folder}/";
+        }
+
         public static void LoadMonthForSeperation(DropDownList dl, string CompanyId)
         {
             try

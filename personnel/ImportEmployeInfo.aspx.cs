@@ -88,7 +88,7 @@ namespace SigmaERP.personnel
         {
             try
             {
-
+                int totalRows = dtExcel.Rows.Count;
                 foreach (DataRow row in dtExcel.Rows)
                 {
                     string RegID = row["RegId"].ToString();
@@ -96,26 +96,26 @@ namespace SigmaERP.personnel
                     {
                         try { int a = int.Parse(RegID); } catch (Exception ex) { continue; }
                     }
-                    string Name = row["Name"].ToString();
-                    string NameBn = row["BanglaName"].ToString();
-                    string Department = row["Department"].ToString();
+                    string Name = row["Name"].ToString().Trim();
+                    string NameBn = row["BanglaName"].ToString().Trim();
+                    string Department = row["Department"].ToString().Trim();
                     string Group = Department;
-                    string Designation = row["Designation"].ToString();
-                    string EmpType = row["EmpType"].ToString();
-                    string JoiningDate = row["JoiningDate"].ToString();
-                    string Gender = row["Gender"].ToString();
-                    string NID = row["NID"].ToString();
-                    string SalaryType = row["SalaryType"].ToString();
-                    string Shift = row["Shift"].ToString();
+                    string Designation = row["Designation"].ToString().Trim();
+                    string EmpType = row["EmpType"].ToString().Trim();
+                    string JoiningDate = row["JoiningDate"].ToString().Trim();
+                    string Gender = row["Gender"].ToString().Trim();
+                    string NID = row["NID"].ToString().Trim();
+                    string SalaryType = row["SalaryType"].ToString().Trim();
+                    string Shift = row["Shift"].ToString().Trim();
                     string DutyType = row["DutyType"].ToString();
-                    string WeekendType = row["WeekendType"].ToString();
-                    string FathersName = row["FathersName"].ToString();
-                    string MothersName = row["MothersName"].ToString();
-                    string MaritialStatus = row["MaritialStatus"].ToString();
-                    string DateOfBirth = row["DateOfBirth"].ToString();
-                    string BloodGroup = row["BloodGroup"].ToString();
-                    string Religion = row["Religion"].ToString();
-                    string LastEducationqualification = row["LastEducationqualification"].ToString();
+                    string WeekendType = row["WeekendType"].ToString().Trim();
+                    string FathersName = row["FathersName"].ToString().Trim();
+                    string MothersName = row["MothersName"].ToString().Trim();
+                    string MaritialStatus = row["MaritialStatus"].ToString().Trim();
+                    string DateOfBirth = row["DateOfBirth"].ToString().Trim();
+                    string BloodGroup = row["BloodGroup"].ToString().Trim();
+                    string Religion = row["Religion"].ToString().Trim();
+                    string LastEducationqualification = row["LastEducationqualification"].ToString().Trim();
                     string TotalNumberOfExperience = row["TotalNumberOfExperience"].ToString();
                     string HusbandOrWifeName = row["HusbandOrWifeName"].ToString();
                     string TIN = row["TIN"].ToString();
@@ -172,8 +172,16 @@ namespace SigmaERP.personnel
                     ViewState["__bloodGroup__"] = BloodGroup;
                     ViewState["__religion__"] = getReligionId(Religion);
                     ViewState["__ReligionName"] = Religion;
-                    ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
-                    ViewState["__LastEducationName__"] = LastEducationqualification;
+                    if (LastEducationqualification == "")
+                    {
+                        ViewState["__lastEducationQualification__"] = "";
+                    }
+                    else
+                    {
+                        ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
+                        ViewState["__LastEducationName__"] = LastEducationqualification;
+                    }
+                   
                     ViewState["__totalNumberOfExperience__"] = TotalNumberOfExperience;
                     ViewState["__HusbandOrWifeName__"] = HusbandOrWifeName;
                     ViewState["__TIN__"] = TIN;
@@ -310,7 +318,7 @@ namespace SigmaERP.personnel
         {
 
             dt = new DataTable();
-            dt = CRUD.ExecuteReturnDataTable("select SftId from Hrd_shift where DptName='" + shfName + "' and DptId='" + DptId + "'");
+            dt = CRUD.ExecuteReturnDataTable("select SftId from Hrd_shift where SftName='" + shfName + "'");
             if (dt == null || dt.Rows.Count == 0)
             {
                 CRUD.Execute("insert into Hrd_shift(SftName,companyId,DptId) values('" + shfName + "','" + ddlBranch.SelectedValue + "','" + DptId + "') ");
@@ -351,12 +359,16 @@ namespace SigmaERP.personnel
         {
 
             dt = new DataTable();
-            dt = CRUD.ExecuteReturnDataTable("select DsgId from HRD_Designation where DptId='" + DptId + "' and  DsgName='" + DsgName + "'");
+            dt = CRUD.ExecuteReturnDataTable("select DsgId from HRD_Designation where  DsgName='" + DsgName + "'");
             if (dt == null || dt.Rows.Count == 0)
             {
-                CRUD.Execute("insert into HRD_Designation(DsgId, DptId, DsgName, DsgStatus, Ordering) values('" + classes.commonTask.LoadSL("Select Max(SL) as SL From HRD_Designation", "Designation") + "', '" + DptId + "','" + DsgName + "',1,0) ");
+                CRUD.Execute("insert into HRD_Designation(DsgId, DptId, DsgName, DsgStatus, Ordering) values('" + classes.commonTask.LoadSL("Select Max(SL) as SL From HRD_Designation", "Designation") + "', '0','" + DsgName + "',1,0) ");
                 dt = new DataTable();
                 dt = CRUD.ExecuteReturnDataTable("select DsgId from HRD_Designation where DptId='" + DptId + "' and  DsgName='" + DsgName + "'");
+            }
+            else
+            {
+                string query = "update HRD_Designation set DptId = '0' where DsgId = '"+ dt.Rows[0]["DsgId"].ToString() + "'";
             }
             return dt.Rows[0]["DsgId"].ToString();
         }
@@ -444,6 +456,9 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@EmpDutyType", ViewState["__dutyType__"].ToString());
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", true);
                 cmd.Parameters.AddWithValue("@WeekendType", ViewState["__weekendType__"].ToString());
+                cmd.Parameters.AddWithValue("@Weekend","");
+                cmd.Parameters.AddWithValue("@UnitId", 2);
+
 
                 int result = (int)cmd.ExecuteScalar();
 
@@ -543,44 +558,53 @@ namespace SigmaERP.personnel
 
         private void StoreDataInGridview(string EmpId,string status)
         {
-            if (dtNewEmployees.Columns.Count == 0)  // Ensure DataTable is initialized
+            try
             {
-                InitializeDataTable();
+                if (dtNewEmployees.Columns.Count == 0)  // Ensure DataTable is initialized
+                {
+                    InitializeDataTable();
+                }
+
+                DataRow row = dtNewEmployees.NewRow();
+                row["Status"] = status;
+                row["RegId"] = ViewState["__RegID__"].ToString();
+                row["Name"] = ViewState["__Name__"].ToString();
+                row["BanglaName"] = ViewState["__NameBn__"].ToString();
+                row["Department"] = ViewState["__DptName__"].ToString(); ;
+                row["Designation"] = ViewState["__DsgName__"].ToString();
+                row["EmpType"] = ViewState["__EmpTypename__"].ToString(); ;
+                row["SalaryType"] = ViewState["__SalaryTypenme__"].ToString();
+                row["Shift"] = ViewState["__ShfName__"].ToString();
+                row["DutyType"] = ViewState["__dutyTypename__"].ToString();
+                row["WeekendType"] = ViewState["__WeekendTypeName__"].ToString();
+                row["JoiningDate"] = ViewState["__JoiningDate__"].ToString();
+                row["Gender"] = ViewState["__Gender__"].ToString();
+                row["NID"] = ViewState["__NID__"].ToString();
+                row["FathersName"] = ViewState["__fatherName__"].ToString();
+                row["MothersName"] = ViewState["__mothersName__"].ToString();
+                row["MaritalStatus"] = ViewState["__maritialStatus__"].ToString(); ;
+                row["HusbandOrWifeName"] = ViewState["__HusbandOrWifeName__"].ToString();
+                row["DateOfBirth"] = ViewState["__dateOfBirth__"].ToString();
+                row["BloodGroup"] = ViewState["__bloodGroup__"].ToString();
+                row["Religion"] = ViewState["__ReligionName"].ToString();
+                row["LastEducationQualification"] = ViewState["__LastEducationName__"];
+                row["TotalNumberOfExperience"] =0;
+                row["ContactNumber"] = ViewState["__ContactNumber__"].ToString();
+                row["TIN"] = ViewState["__TIN__"].ToString();
+
+
+                dtNewEmployees.Rows.Add(row);  // ✅ Add row to DataTable
+
+                // Bind to GridView (Optional)
+                gvemployeList.DataSource = dtNewEmployees;
+                gvemployeList.DataBind();
             }
+            catch (Exception ex)
+            {
 
-            DataRow row = dtNewEmployees.NewRow();
-            row["Status"] = status;
-            row["RegId"] = ViewState["__RegID__"].ToString(); 
-            row["Name"] = ViewState["__Name__"].ToString();
-            row["BanglaName"] = ViewState["__NameBn__"].ToString(); 
-            row["Department"] = ViewState["__DptName__"].ToString(); ;
-            row["Designation"] = ViewState["__DsgName__"].ToString();
-            row["EmpType"] = ViewState["__EmpTypename__"].ToString(); ;  
-            row["SalaryType"] = ViewState["__SalaryTypenme__"].ToString();
-            row["Shift"] = ViewState["__ShfName__"].ToString();
-            row["DutyType"] = ViewState["__dutyTypename__"].ToString(); 
-            row["WeekendType"] = ViewState["__WeekendTypeName__"].ToString();
-            row["JoiningDate"] = ViewState["__JoiningDate__"].ToString(); 
-            row["Gender"] = ViewState["__Gender__"].ToString(); 
-            row["NID"] = ViewState["__NID__"].ToString(); 
-            row["FathersName"] =ViewState["__fatherName__"].ToString(); 
-            row["MothersName"] = ViewState["__mothersName__"].ToString(); 
-            row["MaritalStatus"] = ViewState["__maritialStatus__"].ToString(); ;
-            row["HusbandOrWifeName"] = ViewState["__HusbandOrWifeName__"].ToString(); 
-            row["DateOfBirth"] = ViewState["__dateOfBirth__"].ToString();
-            row["BloodGroup"] = ViewState["__bloodGroup__"].ToString(); 
-            row["Religion"] = ViewState["__ReligionName"].ToString(); 
-            row["LastEducationQualification"] = ViewState["__LastEducationName__"].ToString(); 
-            row["TotalNumberOfExperience"] = ViewState["__totalNumberOfExperience__"].ToString(); 
-            row["ContactNumber"] = ViewState["__ContactNumber__"].ToString(); 
-            row["TIN"] = ViewState["__TIN__"].ToString();  
-     
-
-            dtNewEmployees.Rows.Add(row);  // ✅ Add row to DataTable
-
-            // Bind to GridView (Optional)
-            gvemployeList.DataSource = dtNewEmployees;
-            gvemployeList.DataBind();
+                throw;
+            }
+         
         }
 
         protected void btnExport_Click(object sender, EventArgs e)

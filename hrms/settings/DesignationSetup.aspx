@@ -44,7 +44,7 @@
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="btnSave" />
                         <asp:AsyncPostBackTrigger ControlID="ddlCompanyName" />
-                        <asp:AsyncPostBackTrigger ControlID="dlDepartment" />                         
+                       <%-- <asp:AsyncPostBackTrigger ControlID="dlDepartment" />   --%>                      
                     </Triggers>
                     <ContentTemplate>
 
@@ -89,7 +89,7 @@
                                            </div>
                                        </div>
 
-                                       <div class="col-lg-4">
+<%--                                       <div class="col-lg-4">
                                            <div class="form-group">
                                                <label for="txtDepartment" class="color-dark fs-14 fw-500 align-center mb-10">
                                                    Department Name <span class="text-danger">*</span>
@@ -99,7 +99,7 @@
                                 </asp:DropDownList>
                                                <span class="text-danger" id="userNameError"></span>
                                            </div>
-                                       </div>     
+                                       </div>     --%>
                                        <div class="col-lg-4">
                                            <div class="form-group">
                                                <label for="txtDesignation" class="color-dark fs-14 fw-500 align-center mb-10">
@@ -193,9 +193,9 @@
                              <HeaderStyle HorizontalAlign="Left" />
                              <ItemStyle Height="28px" HorizontalAlign="Left"/>
                              </asp:BoundField>
-                            <asp:BoundField DataField="DptName" HeaderStyle-HorizontalAlign="center" ItemStyle-HorizontalAlign="center" HeaderText="Department" Visible="true" ItemStyle-Height="28px" >
+                            <%--<asp:BoundField DataField="DptName" HeaderStyle-HorizontalAlign="center" ItemStyle-HorizontalAlign="center" HeaderText="Department" Visible="true" ItemStyle-Height="28px" >
                              <ItemStyle Height="28px"  />
-                             </asp:BoundField>
+                             </asp:BoundField>--%>
                             <asp:BoundField DataField="DsgName" HeaderStyle-HorizontalAlign="center" ItemStyle-HorizontalAlign="center" HeaderText="Designation" Visible="true"  ItemStyle-Height="28px" >
                              <ItemStyle Height="28px"  />
                              </asp:BoundField>

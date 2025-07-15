@@ -45,21 +45,43 @@
             .form-control {
                 height: 40px !important;
             }
+            
         </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
+    
             <div class="mt-1">
         <div class="products_page product_page--grid mb-30">
             <div class="container-fluid">
                 <div class="row justify-content-center">
                     <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
-                        <div class="card">
+                        <div class="card" id="EmpTypeSection">
+                            <div id="toggleEmpType" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px; width: 16px;">
+                                        Filter by EmpType
+                                    </span>
+                                    <i id="arrowIconEmpType" class="fas fa-chevron-down"></i>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside>
+                                    <div class="card border-0 shadow-none mt-10 collapse show" id="multiCollapseExample4">
+                                        <div class="product-brands">
+                                            <ul id="empTypeList" class="list-unstyled mb-0"></ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+
+                        <div class="card" id="unitSection">
                             <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
-                                        Filter bye Unit
+                                        Filter by Unit
                                     </span>
                                     <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
                                 </h6>
@@ -81,7 +103,7 @@
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
-                                        Filter bye Department
+                                        Filter by Department
                                     </span>
                                     <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
                                     <!-- Arrow icon -->
@@ -116,70 +138,22 @@
 
                                                             <!-- Search Input -->
 
-                                                            <div class="col-lg-2">
-                                                                <label for="txtSearch" class="form-label mb-1 p-0">Search by</label>
-                                                                <div class="input-group">
-                                                                    <select name="ddlSearchType" id="ddlSearchBy" class="form-control me-2">
-                                                                        <option value="2">Staff </option>
-                                                                        <option value="1">Worker</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
 
 
-                                                            <div class="col-lg-2">
-                                                                <label for="txtSearch" class="form-label mb-1 p-0">Employee ID</label>
-                                                                <div class="input-group">
+                                                            <div class="col-lg-4">
+                                                                
+                                                                <div class="input-group mt-2">
                                                                     <span class="input-group-text bg-white border-end-0">
                                                                         <i class="uil uil-search"></i>
                                                                     </span>
-                                                                    <input type="text" id="txtEmpCardNo" class="form-control border-start-0" placeholder="Employee ID..." aria-describedby="searchIcon">
-                                                                </div>
-                                                            </div>
-
-                                                            <!-- Start Date -->
-                                                              <%--  <div class="col-lg-2 day-wise-field" >
-                                                                    <label for="txtStartDate" class="form-label mb-1 p-0">Start Date</label>
-                                                                    <input type="date" id="txtStartDate" class="form-control">
-                                                                </div>
-
-                                                                <div class="col-lg-2 day-wise-field" >
-                                                                    <label for="txtEndDate" class="form-label mb-1 p-0">End Date</label>
-                                                                    <input type="date" id="txtEndDate" class="form-control">
-                                                                </div>--%>
-
-                                                      
-
-
-
-
-
-                                                            <!-- End Date + Search Button -->
-                                                            <div class="col-lg-2 d-flex gap-2">
-                                                                    <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
+                                                                    <input type="text" id="txtEmpCardNo" class="form-control border-start-0" placeholder="Type Employee ID" aria-describedby="searchIcon">
+                                                                     <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
                                                                         class="btn btn-primary text-center"
                                                                         style="padding: 7px;">
                                                                         <i class="fas fa-search"  style="font-size: 18px"></i>
                                                                     </button>
-                                                           <%--      <button type="button" title="Search" id="btnProcessing" onclick="onClickSaveWeekend()"
-                                                                        class="btn btn-success text-center"
-                                                                        style="padding: 7px;">
-                                                                        <i class="fas fa-save"  style="font-size: 18px"></i>
-                                                                    </button>
-                                                                 <button type="button" title="Search" id="btnDelete" onclick="Delete()"
-                                                                        class="btn btn-danger text-center"
-                                                                        style="padding: 7px;">
-                                                                        <i class="fas fa-trash"  style="font-size: 18px"></i>
-                                                                    </button>--%>
-                                                               
-                                                                
-                                                                
+                                                                </div>
                                                             </div>
-
-
-
-                                                       
-    
 
                                                         </div>
                                                     </div>
@@ -238,7 +212,8 @@
                                                                                     <option value="">---Select---</option>
                                                                                     <option value="0">Cash</option>
                                                                                     <option value="1">Bank</option>
-                                                                                    <option value="2">Check</option>
+                                                                                    <option value="2">Bkash</option>
+                                                                                    <option value="3">Check</option>
                                                                                 </select>
                                                                             </div>
                                                                             <span class="text-danger" id="errorDataAccessLevel"></span>
@@ -321,9 +296,9 @@
                                                                                    class="rounded-circle mb-3" width="100" height="100" />
 
                                                                               <!-- Employee Info -->
-                                                                              <h5 id="empName" class="mb-1 fw-bold">John Doe</h5>
-                                                                              <p id="empDesignation" class="mb-1 text-muted">Senior Accountant</p>
-                                                                              <p id="empDepartment" class="mb-1 text-muted">Finance Department</p>
+                                                                              <h5 id="empName" class="mb-1 fw-bold"></h5>
+                                                                              <p id="empDesignation" class="mb-1 text-muted"></p>
+                                                                              <p id="empDepartment" class="mb-1 text-muted"></p>
 
                                                                               <!-- Details -->
                                                                               <ul class="list-group list-group-flush mt-3 text-start">
@@ -333,14 +308,6 @@
                                                                             </div>
                                                                           </div>
                                                                         </div>
-
-
-
-
-                                                                   
-
-                                                                      
-
 
                                                                     </div>
 
@@ -394,6 +361,7 @@
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+            var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
             var PostSalarySaveURL = `${rootUrl}/api/Salary/salary-save`;
 
 
@@ -404,9 +372,6 @@
             $(document).ready(function () {
 
                 GetEmployees();
-
-
-
                 $('#toggleFilter').on('click', function () {
                     unitToggle();
                 });
@@ -415,18 +380,20 @@
                     DepartmentToggle();
                 });
 
+                $('#toggleEmpType').on('click', function () {
+                    EmpTypetToggle();
+                });
+
                 const today = new Date();
                 const formattedDate = formatDate(today);
 
                 $('#txtStartDate').val(formattedDate);
                 $('#txtEndDate').val(formattedDate);
-
+          
                 GetUnit();
                 GetDepartment();
                 GetSalaryStracture();
-                //model Bank Info
-                //GetBankInfo();
-
+                GetEmpType();
             });
 
 
@@ -443,12 +410,24 @@
                 }
             }
 
+            function EmpTypetToggle() {
+                const unitList = $('#empTypeList');
+                const arrowIcon = $('#arrowIconEmpType');
+
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
 
             function DepartmentToggle() {
                 const unitList = $('#departmentList');
                 const arrowIcon = $('#arrowIcondpt');
 
-                unitList.toggle(); // Corrected variable
+                unitList.toggle(); 
 
                 if (unitList.is(':visible')) {
                     arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
@@ -471,38 +450,33 @@
 
             }
 
-
-
-
             function showAttendanceHideEmployee() {
                 $('#attendanceContainer').hide();
             }
 
 
             function GetEmployees() {
-                const EmpCardNo = $('#txtEmpCardNo').val();
+                  const EmpCardNo = $('#txtEmpCardNo').val();
+                const EmpType = $('#ddlSearchType').val();
+
                 const deptQuery = getSelectedDepartmentQuery();
                 const unitQuery = getSelectedUnitQuery();
-                const empCardNo = '';
-                if (EmpCardNo.length > 0) {
+                const empTypeQuery = getSelectedEmpTypeQuery();
+
+                let empCardNo = '';
+               
+
+                if (EmpCardNo && EmpCardNo.length > 0) {
                     empCardNo = `&EmpCardNo=${EmpCardNo}`;
                 }
 
-
-
-                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}${deptQuery}${empCardNo}`;
+             
+                const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}&${empTypeQuery}`;
 
                 ApiCall(url, token)
                     .then(response => {
                         if (response.statusCode === 200) {
-                            //$('#alertContainer').hide();
-
-                            //$('#dateWiseAlert').show();
-                            //$('#dateWiseAlert').html = '';
                             const message = `Weekend employee data loaded for the period:`;
-
-
-
                             bindTableData(response.data);
 
                         } else {
@@ -557,27 +531,15 @@
                 </div>
             </div>
         `.trim();
-
-        //            row.select = `
-        //    <input type="checkbox" class="EmployeerowCheckbox" data-id="${row.empId}" value="${row.empId}"
-        //        ${selectedEmployeeIds.has(row.empId) ? 'checked' : ''} />
-        //`;
                 });
 
                 const columns = [
-                    {
-                        name: "select",
-                        title: `<input type="checkbox" id="selectAllEmployee" />`,
-                        className: "text-center",
-                        sortable: false,
-                        type: "html"
-                    },
                     { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                     { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                     { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
                     { name: "empType", title: "Emp Type", className: "userDatatable-content" },
+                    { name: "empPresentSalary", title: "Salary", className: "userDatatable-content" },
                     { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
-                    //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
                     { name: "action", title: "Action", className: "userDatatable-content" }
                 ];
 
@@ -590,7 +552,6 @@
                         sorting: true
                     }).on('postinit.ft.table', function () {
                         $('.footable-loader').hide();
-                        updateSelectAllCheckbox();
                     });
 
 
@@ -607,7 +568,6 @@
 
                     $('#empIdField').val(selectedEmpId);
 
-                    // Optional: You can store the empType in a hidden field too
                     $('#empTypeField').val(selectedEmpType); 
 
                     console.log(selectedEmpType)
@@ -627,44 +587,83 @@
 
                       GetEmployeeInfoByeId(selectedEmpId);
                 });
-
-
-
-
             }
 
+            function GetEmpType() {
+                ApiCall(getEmpTypeUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                            console.log('Before table Data Bind', responseData);
 
-            $(document).on('change', '#selectAllEmployee', function () {
-                const isChecked = $(this).is(':checked');
-                allEmployeeData.forEach(emp => {
-                    if (isChecked) {
-                        selectedEmployeeIds.add(emp.empId);
-                    } else {
-                        selectedEmployeeIds.delete(emp.empId);
-                    }
+                            bindEmpType(responseData);
+
+                            console.log('after Table Data Bind ', responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+            // Function to bind EmpType list
+            function bindEmpType(empTypeList) {
+                const $list = $('#empTypeList');
+                $list.empty();
+
+                // Add "Select All" option
+                const selectAllHTML = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllEmpTypes">
+                <label for="selectAllEmpTypes">
+                    <span class="checkbox-text" style="margin-left: 20px;">Select All</span>
+                </label>
+            </div>
+        </li>
+    `;
+                $list.append(selectAllHTML);
+
+                // Append each EmpType checkbox
+                empTypeList.forEach((empType, index) => {
+                    const checkboxId = `empType-check-${index}`;
+                    const itemHTML = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="empTypeCheckbox" id="${checkboxId}" value="${empType.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left: 20px;">${empType.name}</span>
+                    </label>
+                </div>
+            </li>
+        `;
+                    $list.append(itemHTML);
                 });
-                bindTableData(allEmployeeData);
-            });
-
-            $(document).on('change', '.EmployeerowCheckbox', function () {
-                const empId = $(this).val();
-                if ($(this).is(':checked')) {
-                    selectedEmployeeIds.add(empId);
-                } else {
-                    selectedEmployeeIds.delete(empId);
-                }
-
-                updateSelectAllCheckbox();
-            });
-
-            function updateSelectAllCheckbox() {
-                const allIds = allEmployeeData.map(emp => emp.empId);
-                const isAllSelected = allIds.every(id => selectedEmployeeIds.has(id));
-                $('#selectAllEmployee').prop('checked', isAllSelected);
             }
 
-            function getSelectedEmployeeQuery() {
-                return Array.from(selectedEmployeeIds).map(id => `empIds=${id}`).join('&');
+            // "Select All" checkbox behavior
+            $(document).on('change', '#selectAllEmpTypes', function () {
+                const isChecked = $(this).is(':checked');
+                $('.empTypeCheckbox').prop('checked', isChecked);
+            });
+
+            // Sync "Select All" checkbox based on individual checks
+            $(document).on('change', '.empTypeCheckbox', function () {
+                const total = $('.empTypeCheckbox').length;
+                const checked = $('.empTypeCheckbox:checked').length;
+                $('#selectAllEmpTypes').prop('checked', total === checked);
+            });
+
+            // Get selected EmpType query string
+            function getSelectedEmpTypeQuery() {
+                return $('.empTypeCheckbox:checked')
+                    .map(function () {
+                        return 'EmpTypeIds=' + $(this).val();
+                    })
+                    .get()
+                    .join('&');
             }
 
 
@@ -676,7 +675,11 @@
                             console.log('Before table Data Bind', responseData);
 
                             bindUnits(responseData);
-
+                            if (responseData.length > 1) {
+                                $('#unitSection').show();
+                            } else {
+                                $('#unitSection').hide();
+                            }
                             console.log('after Table Data Bind ', responseData);
                         } else {
                             console.error('Error occurred while fetching data:', response.message);
@@ -690,9 +693,9 @@
 
             function bindUnits(units) {
                 const $list = $('#UnitList');
-                $list.empty(); // Clear existing list
+                $list.empty();
 
-                // Add "Select All" checkbox
+
                 const selectAllItem = `
         <li>
             <div class="checkbox-theme-default custom-checkbox">
@@ -707,7 +710,6 @@
     `;
                 $list.append(selectAllItem);
 
-                // Add unit checkboxes
                 units.forEach((unit, index) => {
                     const checkboxId = `unit-check-${index}`;
                     const listItem = `
@@ -726,20 +728,18 @@
                 });
             }
 
-            // Event listener for "Select All" functionality
             $(document).on('change', '#selectAllUnits', function () {
                 const isChecked = $(this).is(':checked');
                 $('.unitCheckbox').prop('checked', isChecked);
             });
 
-            // Sync "Select All" when individual checkboxes are clicked
             $(document).on('change', '.unitCheckbox', function () {
                 const total = $('.unitCheckbox').length;
                 const checked = $('.unitCheckbox:checked').length;
                 $('#selectAllUnits').prop('checked', total === checked);
             });
 
-            // Optional: function to get selected unit IDs as query string
+
             function getSelectedUnitQuery() {
                 return $('.unitCheckbox:checked')
                     .map(function () {
@@ -838,10 +838,9 @@
                         if (response.statusCode === 200) {
                             var data = response.data;
 
-                            // Flatten and cache with keys like "worker basic", "staff medical"
                             for (var role in data) {
                                 for (var key in data[role]) {
-                                    var cleanKey = key.trim(); // Removes newline characters
+                                    var cleanKey = key.trim(); 
                                     var cacheKey = role + " " + cleanKey;
                                     salaryStructureCache[cacheKey] = data[role][key];
                                 }
@@ -985,7 +984,6 @@
 
                 let structure = salaryStructureCache[roleKey];
 
-                // Try grouping if structure is undefined
                 if (!structure) {
                     structure = groupSalaryStructure(roleKey); // fallback
                 }
@@ -1002,8 +1000,6 @@
                     const calculationType = fieldData.calculationType || '';
                     const id = `txt${capitalize(fieldKey)}`;
                     const msgId = `${id}Msg`;
-
-                    // For formula fields, display formula and tooltip msg
                     let msgHtml = '';
                     if (calculationType === 'formula') {
                         msgHtml = ` <small class="text-info fs-12" title="${msg}" style="font-size:10px; cursor: help; margin-left:5px;" >Formula </small> `;
@@ -1055,7 +1051,6 @@
                 const grossValue = parseFloat($(this).val()) || 0;
                 const inputs = {};
 
-                // Collect current values
                 $('#salaryFieldsContainer input').each(function () {
                     const name = $(this).attr('name');
                     const val = parseFloat($(this).val()) || 0;
@@ -1063,7 +1058,6 @@
                 });
                 inputs.gross = grossValue;
 
-                // Recalculate fields with formulas
                 $('#salaryFieldsContainer input').each(function () {
                     const type = $(this).data('calculation-type');
                     const formula = $(this).data('formula');
@@ -1087,8 +1081,8 @@
 
                 for (const key in salaryStructureCache) {
                     if (key.startsWith(roleKey)) {
-                        const fieldName = key.replace(`${roleKey} `, ''); // e.g., 'staff basic' -> 'basic'
-                        const item = salaryStructureCache[key]; // Expected: { calculationType, value }
+                        const fieldName = key.replace(`${roleKey} `, '');
+                        const item = salaryStructureCache[key];
                         formulas[fieldName] = item;
                     }
                 }
@@ -1115,26 +1109,24 @@
                 };
 
                 try {
-                    // First pass: assign fixed values
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'fixed') {
-                            scope[key] = formula.value;
+                            scope[key] = Math.round(formula.value);
                         }
                     }
 
-                    // Second pass: evaluate formulas
          
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'percentage') {
-                            scope[key] = math.evaluate(formula.value, scope);
+                           scope[key] = Math.round(math.evaluate(formula.value, scope));
                         }
                     }
                     for (const [key, formula] of Object.entries(formulas)) {
                         if (formula.calculationType === 'formula') {
-                            scope[key] = math.evaluate(formula.value, scope);
+                            scope[key] = Math.round(math.evaluate(formula.value, scope));
                         }
                     }
-                    // Dynamic field update
+
                     for (const key in formulas) {
                         if (key === 'house_rent')
                         {
@@ -1169,10 +1161,15 @@
 
 
             function SaveSalary() {
-                // Determine empType based on selectedEmpType value
-                const empType = selectedEmpType === 'Worker' ? 1 : 2;
+                let empType = '';
 
-                // Initialize salaryData object with basic fields
+                if (selectedEmpType === 'Worker') {
+                    empType = '1';
+                } else if (selectedEmpType === 'Staff') {
+                    empType = '2';
+                } else {
+                    empType = '3';
+                }
                 const salaryData = {
                     empId: selectedEmpId,
                     empType: empType,
@@ -1186,31 +1183,24 @@
                     companyId: CompanyID
                 };
 
-                // Conditionally add medicalAllowance if element exists
                 const txtMedical = document.getElementById('txtMedical');
                 if (txtMedical) {
                     salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
                 }
-
-                // Conditionally add conveyanceAllowance if element exists
                 const txtConveyance = document.getElementById('txtConveyance');
                 if (txtConveyance) {
                     salaryData.conveyanceAllowance = parseFloat(txtConveyance.value) || 0;
                 }
 
-                // Conditionally add houseRent if element exists
                 const txtHouseRent = document.getElementById('txtHouse_rent');
                 if (txtHouseRent) {
                     salaryData.houseRent = parseFloat(txtHouseRent.value) || 0;
                 }
-
-                // Conditionally add foodAllowance if element exists
                 const txtFood = document.getElementById('txtFood');
                 if (txtFood) {
                     salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
                 }
 
-                // Call API to save salary data
                 ApiCallPost(PostSalarySaveURL, token, salaryData)
                     .then(response => {
                         if (response.statusCode === 200) {
@@ -1220,6 +1210,22 @@
                                 text: 'Thank you!',
                                 confirmButtonText: 'OK'
                             });
+                            const newSalary = parseInt($('#txtGross').val()) || 0;
+                            const empId = selectedEmpId; 
+
+                            const index = allEmployeeData.findIndex(emp => emp.empId == empId);
+                            if (index !== -1) {
+                                allEmployeeData[index].empPresentSalary = newSalary;
+                            }
+                            const row = $(`.adv-table tbody tr`).filter(function () {
+                                return $(this).find('a.user-name').data('id') == empId;
+                            });
+
+                            if (row.length) {
+                                row.find('td').eq(4).text(newSalary);
+                            }
+                                $('#salaryModal').modal('hide');
+                            
                         } else {
                             Swal.fire({
                                 icon: 'error',

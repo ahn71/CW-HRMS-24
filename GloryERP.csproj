@@ -1754,6 +1754,7 @@
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\packages\modules.aspx" />
     <Content Include="hrms\payroll\salary-entry.aspx" />
+    <Content Include="hrms\personnel\employee-list.aspx" />
     <Content Include="hrms\settings\bankEntryPanelSetup.aspx" />
     <Content Include="hrms\settings\businessTypeSetup.aspx" />
     <Content Include="hrms\settings\companySetup.aspx" />
@@ -3815,6 +3816,13 @@
     </Compile>
     <Compile Include="hrms\payroll\salary-entry.aspx.designer.cs">
       <DependentUpon>salary-entry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\personnel\employee-list.aspx.cs">
+      <DependentUpon>employee-list.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\personnel\employee-list.aspx.designer.cs">
+      <DependentUpon>employee-list.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\repo\implementations\Zk.cs" />
     <Compile Include="hrms\repo\implementations\ZkBiotime.cs" />
