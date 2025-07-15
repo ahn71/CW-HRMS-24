@@ -3890,7 +3890,7 @@ namespace SigmaERP.All_Report
        
             string rootUrl = Session["__RootUrl__"]?.ToString();
             string companyId = Session["__GetCompanyId__"].ToString();
-            string EmpImageurl = "E:/CW-Official Project/CW-HRMS-API/wwwroot/0001/EmployeeImage/";
+            string EmpImageurl = rootUrl + "/" + companyId + "/" + "EmployeeImage" + "/";
 
             if (Session["__Language__"].ToString() == "English")
             {
