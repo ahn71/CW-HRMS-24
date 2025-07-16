@@ -168,9 +168,11 @@ namespace SigmaERP.classes
                     // check git
                     //check Attendance bonus
                     salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString(), payRollPolicy["AttendanceBonus"].ToString());
+                    //Night Bill 
+                    salaryRecord.NightbilAmount = CalculatedNightBill(employee["EmpTypeId"].ToString(), payRollPolicy["NightAllowance"].ToString(), Convert.ToInt32(salaryRecord.NightBillDays));
 
-                    //get Others Pay
-                    salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
+                        //get Others Pay
+                        salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
 
                     //get Others Deduction
                     salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
@@ -210,10 +212,9 @@ namespace SigmaERP.classes
                     }
                     //Payable days calculations 
                     salaryRecord = getPayableDaysCalculation(salaryRecord, hasSpesialGross, PersentOfGross);
+
                     //Payable amount calculation
                     salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction,payRollPolicy["AbsentDeduction"].ToString());
-
-                      salaryRecord.NightbilAmount = CalculatedNightBill(employee["EmpTypeId"].ToString(),payRollPolicy["NightAllowance"].ToString(),Convert.ToInt32(salaryRecord.NightBillDays));
 
                         if (saveSalary(salaryRecord))
                         {
@@ -468,9 +469,9 @@ namespace SigmaERP.classes
             // Attendance Bonus
 
             //NetPayable (with normal OT)
-            salaryRecord.NetPayable = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.OverTimeAmount+ salaryRecord.OthersPay;
+            salaryRecord.NetPayable = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.OverTimeAmount+ salaryRecord.OthersPay +salaryRecord.NightbilAmount;
             //NetPayable (with actual OT)
-            salaryRecord.TotalSalary = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.TotalOTAmount+ salaryRecord.OthersPay;
+            salaryRecord.TotalSalary = salaryRecord.Payable + salaryRecord.AttendanceBonus + salaryRecord.TotalOTAmount+ salaryRecord.OthersPay+ salaryRecord.NightbilAmount;
             if (salaryRecord.NetPayable > 0)
             {
                 salaryRecord.NetPayable -= salaryRecord.Stampdeduct;
