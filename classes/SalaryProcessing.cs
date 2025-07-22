@@ -14,7 +14,7 @@ namespace SigmaERP.classes
         string query = "";
         DataTable dt;
         SalaryRecord salaryRecord;
-        public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,bool hasLateDeduction,string ExceptedEmpCardNo)
+        public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,bool hasLateDeduction,string ExceptedEmpCardNo,string generateFor)
         {
             //Note: ProcessNo is 1 for Separation Employees and 0 for Regular Employees
             try
@@ -24,7 +24,8 @@ namespace SigmaERP.classes
             DateTime FromDate=DateTime.Parse( getDays[2] + "-" + getDays[1] + "-01");
             DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
 
-               var payRollPolicy=getPayrollPolicy(CompanyId);
+               
+               var payRollPolicy=getPayrollPolicy(CompanyId, generateFor);
                   // getting selected employees 
                   DataTable dtEmployees = new DataTable();
                 if (IsSeperationGeneration == "0")// regular employee 
@@ -213,23 +214,48 @@ namespace SigmaERP.classes
                     //Payable amount calculation
                     salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction,payRollPolicy["AbsentDeduction"].ToString());
 
-                      salaryRecord.NightbilAmount = CalculatedNightBill(employee["EmpTypeId"].ToString(),payRollPolicy["NightAllowance"].ToString(),Convert.ToInt32(salaryRecord.NightBillDays));
-
-                        if (saveSalary(salaryRecord))
+                       if(employee["DsgId"].ToString()== "0005" && generateFor== "compliance")
                         {
-                          //  countSuccess++;
-
-                            if (salaryRecord.ProvidentFund > 0)
-                                savePFRecord(salaryRecord.EmpId, salaryRecord.ToDate.ToString("yyyy-MM") + "-01", salaryRecord.ProvidentFund);
-                            if (salaryRecord.ProfitTax > 0)
-                                updateTaxRecord(salaryRecord.EmpId, salaryRecord.ToDate.ToString("yyyy-MM") + "-01");
-                            if (salaryRecord.AdvanceDeduction > 0)
-                                updateLoanStatus(salaryRecord.EmpId, salaryRecord.ToDate.ToString("yyyy-MM") + "-01");
+                            salaryRecord.NightbilAmount = 0;
+                            salaryRecord.NightBillDays = 0;
+                            
                         }
                         else
                         {
-                            errorData += "," + salaryRecord.EmpId;
+                            salaryRecord.NightbilAmount = CalculatedNightBill(employee["EmpTypeId"].ToString(), payRollPolicy["NightAllowance"].ToString(), Convert.ToInt32(salaryRecord.NightBillDays));
                         }
+                        if (generateFor == "compliance")
+                        {
+                            if (saveSalaryComplaince(salaryRecord))
+                            {
+
+                            }
+                            else
+                            {
+                                errorData += "," + salaryRecord.EmpId;
+                            }
+                        }
+                            
+                        else
+                        {
+                            if (saveSalary(salaryRecord))
+                            {
+                                //  countSuccess++;
+
+                                if (salaryRecord.ProvidentFund > 0)
+                                    savePFRecord(salaryRecord.EmpId, salaryRecord.ToDate.ToString("yyyy-MM") + "-01", salaryRecord.ProvidentFund);
+                                if (salaryRecord.ProfitTax > 0)
+                                    updateTaxRecord(salaryRecord.EmpId, salaryRecord.ToDate.ToString("yyyy-MM") + "-01");
+                                if (salaryRecord.AdvanceDeduction > 0)
+                                    updateLoanStatus(salaryRecord.EmpId, salaryRecord.ToDate.ToString("yyyy-MM") + "-01");
+                            }
+                            else
+                            {
+                                errorData += "," + salaryRecord.EmpId;
+                            }
+                        }
+                  
+                
 
                        // countPost++;
                 }
@@ -276,6 +302,7 @@ namespace SigmaERP.classes
         }
         private DataTable getMonthInfo(string  CompanyId,string Month)
         {
+            string jjj = "select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'";
             return CRUD.ExecuteReturnDataTable("select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'"); 
             
         }
@@ -757,6 +784,33 @@ namespace SigmaERP.classes
             
          
         }
+
+
+
+        private bool saveSalaryComplaince(SalaryRecord salaryRecord)
+        {
+            return CRUD.Execute(@"insert into Payroll_monthlysalarysheet_Compliances(CompanyId,SftId,EmpId,EmpCardNo,YearMonth,DaysInMonth,Activeday,WeekendHoliday,PayableDays,CasualLeave,SickLeave,
+                            AnnualLeave,OthersLeave,FestivalHoliday,AbsentDay,PresentDay,EmpPresentSalary,BasicSalary,HouseRent,MedicalAllownce,ConvenceAllownce,FoodAllownce,TechnicalAllowance,
+                            OthersAllownce,AdvanceDeduction,AbsentDeduction,AttendanceBonus,Payable,OverTime,OverTimeAmount,TotalOTHour,OTRate,TotalOTAmount,NetPayable,Stampdeduct,
+                            TotalSalary,DptId,DsgId,GrdName,EmpTypeId,EmpStatus,UserId,IsSeperationGeneration,GenerateDate,LateDays,LateFine,TiffinDays,TiffinTaka,TiffinBillAmount,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount,ProvidentFund,
+                            OthersPay,OthersDeduction,ProfitTax,NightbilAmount,NightBillDays,EmpNetGross,FromDate,ToDate,LWP,EmpSeparationId)
+                            values('" + salaryRecord.CompanyId + @"'," + salaryRecord.SftId + @",'" + salaryRecord.EmpId + @"','" + salaryRecord.EmpCardNo + @"','" + salaryRecord.YearMonth.ToString("yyyy-MM-dd") +
+                             @"'," + salaryRecord.DaysInMonth + @"," + salaryRecord.Activeday + @"," + salaryRecord.WeekendHoliday + @"," + salaryRecord.PayableDays + @"," + salaryRecord.CasualLeave +
+                             @"," + salaryRecord.SickLeave + @"," + salaryRecord.AnnualLeave + @"," + salaryRecord.OthersLeave + @"," + salaryRecord.FestivalHoliday + @"," + salaryRecord.AbsentDay +
+                             @"," + salaryRecord.PresentDay + @",'" + salaryRecord.EmpPresentSalary + @"','" + salaryRecord.BasicSalary + @"','" + salaryRecord.HouseRent +
+                             @"','" + salaryRecord.MedicalAllownce + @"','" + salaryRecord.ConvenceAllownce + @"','" + salaryRecord.FoodAllownce +
+                             @"','" + salaryRecord.TechnicalAllowance + @"','" + salaryRecord.OthersAllownce + @"','" + salaryRecord.AdvanceDeduction + @"','" + salaryRecord.AbsentDeduction +
+                             @"','" + salaryRecord.AttendanceBonus + @"','" + salaryRecord.Payable + "','" + salaryRecord.OverTime + @"','" + salaryRecord.OverTimeAmount + @"','" + salaryRecord.TotalOverTime + @"','" + salaryRecord.OTRate + @"','" + salaryRecord.TotalOTAmount +
+                             @"','" + salaryRecord.NetPayable + @"','" + salaryRecord.Stampdeduct + @"','" + salaryRecord.TotalSalary + @"','" + salaryRecord.DptId + @"','" + salaryRecord.DsgId + @"','" + salaryRecord.GrdName +
+                             @"','" + salaryRecord.EmpTypeId + @"','" + salaryRecord.EmpStatus + @"','" + salaryRecord.UserId + @"'," + salaryRecord.IsSeperationGeneration + ",'" + salaryRecord.GenerateDate.ToString("yyyy-MM-dd") +
+                             @"','" + salaryRecord.LateDays + @"','" + salaryRecord.LateFine + @"','" + salaryRecord.TiffinDays + @"','" + salaryRecord.TiffinTaka +
+                             @"','" + salaryRecord.TiffinBillAmount + @"','" + salaryRecord.HolidayWorkingDays + @"','" + salaryRecord.HolidayTaka + @"','" + salaryRecord.HoliDayBillAmount + @"','" + salaryRecord.ProvidentFund +
+                             @"','" + salaryRecord.OthersPay + @"','" + salaryRecord.OthersDeduction + @"','" + salaryRecord.ProfitTax + @"','" + salaryRecord.NightbilAmount +
+                             @"','" + salaryRecord.NightBillDays + @"','" + salaryRecord.EmpNetGross + @"','" + salaryRecord.FromDateForAll.ToString("yyyy-MM-dd") + @"','" + salaryRecord.ToDateForAll.ToString("yyyy-MM-dd") + @"','" + salaryRecord.LWP + @"'," + salaryRecord.EmpSeparationId + ")");
+
+
+
+        }
         private void savePFRecord(string EmpId, string YearMonth,double PFAmount)
         {
             try
@@ -806,11 +860,11 @@ namespace SigmaERP.classes
 
 
 
-        private Dictionary<string,string> getPayrollPolicy(string companyId)
+        private Dictionary<string,string> getPayrollPolicy(string companyId,string compailance)
         {
             Dictionary<string, string> payrollPolicyDict = new Dictionary<string, string>();
 
-            string query = "select PolicyType,PolicyJson from Payroll_Policies where CompanyId='"+ companyId + "'";
+            string query = "select PolicyType,PolicyJson from Payroll_Policies where CompanyId='"+ companyId + "' and PolicyCategory like '%"+ compailance + "%'";
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(query);
             foreach (DataRow row in dt.Rows)

@@ -906,6 +906,15 @@
                                                 </li>
                                                 <% } %>
 
+                                                <% if (IsRouteExists("salary/regular/salary-process"))
+                                                    { %>
+                                                <li>
+                                                    <a class="" href="salary/regular/salary-process" runat="server">Salary Processing(Regular)</a>
+                                                </li>
+                                                <% } %>
+
+
+
                                                 <% if (IsRouteExists("salary/salary-report"))
                                                     { %>
                                                 <li>
