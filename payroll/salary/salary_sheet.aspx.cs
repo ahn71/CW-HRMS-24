@@ -219,9 +219,27 @@ namespace SigmaERP.payroll.salary
                     Session["__salarySheetExcel__"] = dt;
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx?for=SalarySheet&&company=" + ddlCompanyName.SelectedItem.Text + "&&month=" + ddlSelectMonth.SelectedItem.Text.Trim() + "');", true);
                 }
+
+                else if (chkBKashForwardingLetterXL.Checked)
+                {
+                    getSQLCMD = @"select  SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bkash' AND IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                          " ORDER BY CONVERT(int,DptId), CustomOrdering ";
+                    sqlDB.fillDataTable(getSQLCMD, dt);
+                    if (dt.Rows.Count == 0)
+                    {
+                        lblMessage.InnerText = "warning->Data not found."; return;
+                    }
+                    Session["__salarySheetExcel__"] = dt;
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me",
+            "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx?for=SalaryBankForwardingSheet&&company="
+            + ddlCompanyName.SelectedItem.Text
+            + "&&month=" + ddlSelectMonth.SelectedItem.Text.Trim()
+            + "&&PaymentType=Bkash');", true);
+                }
+
                 else if (chkBankForwardingLetterXL.Checked)
                 {
-                    getSQLCMD = @"select 'All' as [Department], SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bank' AND IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                    getSQLCMD = @"select SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bank' AND IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
                            " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     sqlDB.fillDataTable(getSQLCMD, dt);
                     if (dt.Rows.Count == 0)
@@ -229,7 +247,11 @@ namespace SigmaERP.payroll.salary
                         lblMessage.InnerText = "warning->Data not found."; return;
                     }
                     Session["__salarySheetExcel__"] = dt;
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx?for=SalaryBankForwardingSheet&&company=" + ddlCompanyName.SelectedItem.Text + "&&month=" + ddlSelectMonth.SelectedItem.Text.Trim() + "');", true);
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me",
+                  "goToNewTabandWindow('/payroll/salary/salary_sheet_excel.aspx?for=SalaryBankForwardingSheet&&company="
+                  + ddlCompanyName.SelectedItem.Text
+                  + "&&month=" + ddlSelectMonth.SelectedItem.Text.Trim()
+                  + "&&PaymentType=Bank');", true);
                 }
                 else if (rblReportType.SelectedValue == "sheet" || rblReportType.SelectedValue == "slip")
                 {

@@ -65,7 +65,9 @@
         .form-control {
             height: 40px !important;
         }
-
+        .table-responsive{
+            overflow-x: hidden;
+        }
 
     </style>
 

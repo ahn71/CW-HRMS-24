@@ -48,7 +48,7 @@
                             <div class="ap-po-details ap-po-details--luodcy  overview-card-shape radius-xl d-flex justify-content-between">
                                 <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                     <div class="ap-po-details__titlebar">
-                                        <p class="fs-6 fw-bold">Total Employee</p>
+                                        <p class="fs-6 fw-bold">Today's Employees</p>
                                            <div class="loader-size loaderDaily">
                                         <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
                                             <span class="spin-dot badge-dot dot-primary"></span>

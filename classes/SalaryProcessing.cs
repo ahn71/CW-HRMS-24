@@ -194,13 +194,16 @@ namespace SigmaERP.classes
                         //get Tax Deduction
                     salaryRecord.ProfitTax =Round(double.Parse(employee["TaxAmount"].ToString()));
                     // get Late Deduction
-                    if (hasLateDeduction)
-                        salaryRecord.LateFine = getLateFine(payRollPolicy["LateDeduction"].ToString());
+                   
+                    if (hasLateDeduction && payRollPolicy.TryGetValue("LateDeduction", out var lateDeduction))
+                    {
+                        salaryRecord.LateFine = getLateFine(lateDeduction.ToString());
+                    }
 
-                    //get Punishment Deduction
-                    //salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
+                        //get Punishment Deduction
+                        //salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
 
-                    if (allPunishmentDeductions.TryGetValue(salaryRecord.EmpId, out DataRow punishmentDeduction))
+                        if (allPunishmentDeductions.TryGetValue(salaryRecord.EmpId, out DataRow punishmentDeduction))
                     {
                         salaryRecord.OthersDeduction = double.Parse(punishmentDeduction["PAmount"].ToString());
                     }
