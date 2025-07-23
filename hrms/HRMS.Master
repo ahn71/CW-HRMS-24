@@ -922,6 +922,13 @@
                                                 </li>
                                                 <% } %>
 
+                                               <% if (IsRouteExists("salary/regular/salary-report"))
+                                                    { %>
+                                                <li>
+                                                    <a class="" href="salary/regular/salary-report" runat="server">Salary Sheet(Regular)</a>
+                                                </li>
+                                                <% } %>
+
 
                                                 <li>
                                                     <a class="" href="../payroll/salary/IncrementEntitleReport.aspx" runat="server">Increment Entitled Report</a>

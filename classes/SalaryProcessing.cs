@@ -221,7 +221,7 @@ namespace SigmaERP.classes
                     salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction,payRollPolicy["AbsentDeduction"].ToString());
 
 
-                        if (saveSalary(salaryRecord))
+       
 
                        if(employee["DsgId"].ToString()== "0005" && generateFor== "compliance")
 

@@ -26,7 +26,7 @@
        </div>
         <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Salary Processing </h2>
+            <h2 runat="server" id="heading">Salary Processing </h2>
         </div>
     	<div class="main_box_body Pbody">
             <div class="main_box_content">
