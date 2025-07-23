@@ -135,50 +135,45 @@ namespace SigmaERP.payroll.salary
                 {
                     yearMonth = " AND YearMonth='" + monthInfo[0] + "'";
                 }
-                    
+               
 
-                if (!Page.IsValid)   // If Java script are desible then 
+                if (!Page.IsValid)  
                 {
                     lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
                 }
-                if (chkForAllCompany.Checked)
+   
+                string Condition = "";
+
+                if (rblGenerateType.SelectedValue == "1")
                 {
-                    CompanyList = classes.Payroll.getCompanyList(ddlCompanyName);
-                    DepartmentList = classes.commonTask.getDepartmentList();
+                    // Only search by EmpCardNo and CompanyId (ignore all other filters)
+                    string empCardNo = txtEmpCardNo.Text.Trim();
+                    string companyId = ddlCompanyName.SelectedValue.Equals("0000")
+                                        ? ViewState["__CompanyId__"].ToString()
+                                        : ddlCompanyName.SelectedValue.ToString();
+
+                    Condition = " AND EmpCardNo LIKE '%" + empCardNo + "' AND CompanyId = '" + companyId + "'";
                 }
                 else
                 {
-                    CompanyList = (ddlCompanyName.SelectedValue.Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
-
-                    //if (ddlShiftName.SelectedItem.ToString().Equals("All"))
-                    //{
-
-                    //    ShiftList = classes.Payroll.getSftIdList(ddlShiftName);
-                    //    DepartmentList = classes.commonTask.getDepartmentList();
-                    //}
-                    //else
-                    //{
-                    //    ShiftList = ddlShiftName.SelectedValue.ToString();
-                    //    DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
-                    //}
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+                    string companyId = ddlCompanyName.SelectedValue.Equals("0000")
+                    ? ViewState["__CompanyId__"].ToString()
+                    : ddlCompanyName.SelectedValue.ToString();
+                    if (rblEmployeeType.SelectedValue != "0")
+                    {
+                        Condition += " AND EmpTypeId = " + rblEmployeeType.SelectedValue;
+                    }
+
+                    if (bool.Parse(ViewState["__IsGerments__"].ToString()))
+                    {
+                        Condition += " AND SalaryCount = '" + rblPaymentType.SelectedValue + "'";
+                    }
+
+                    Condition += " AND CompanyId = '" + companyId + "' and DptId " + DepartmentList + " ";
+
                 }
 
-                //string Condition = (bool.Parse(ViewState["__IsGerments__"].ToString())) ? " And EmpTypeId=" + rblEmployeeType.SelectedValue + " And SalaryCount='" + rblPaymentType.SelectedValue + "'" : "";
-                //Condition = " And EmpTypeId=" + rblEmployeeType.SelectedValue + "";
-
-                string Condition = "";
-
-                if (rblEmployeeType.SelectedValue != "0")
-                {
-                    Condition += " And EmpTypeId=" + rblEmployeeType.SelectedValue;
-                }
-
-                // Your other condition (unchanged)
-                if (bool.Parse(ViewState["__IsGerments__"].ToString()))
-                {
-                    Condition += " And SalaryCount='" + rblPaymentType.SelectedValue + "'";
-                }
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
@@ -209,7 +204,7 @@ namespace SigmaERP.payroll.salary
                 else if (chkExcel.Checked)
                 {
                     getSQLCMD = @"select SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],DptName as [Department],DsgName as [Designation],PresentDay as [Present] ,AbsentDay as [Absent],(CasualLeave + SickLeave + AnnualLeave) as [Leave],(WeekendHoliday+FestivalHoliday
-) as [W&H],EmpPresentSalary as [Gross Salary],AbsentDeduction as [Absent Deduction],AdvanceDeduction as [Advance],ProfitTax as [Tax],OthersDeduction as [Others Deduction],(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as [Total Deduction],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+) as [W&H],EmpPresentSalary as [Gross Salary],AbsentDeduction as [Absent Deduction],AdvanceDeduction as [Advance],ProfitTax as [Tax],OthersDeduction as [Others Deduction],(AbsentDeduction + AdvanceDeduction + OthersDeduction + ProfitTax) as [Total Deduction],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where IsActive='1' " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
                            " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     sqlDB.fillDataTable(getSQLCMD, dt);
                     if (dt.Rows.Count == 0)
@@ -222,7 +217,7 @@ namespace SigmaERP.payroll.salary
 
                 else if (chkBKashForwardingLetterXL.Checked)
                 {
-                    getSQLCMD = @"select  SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bkash' AND IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                    getSQLCMD = @"select  SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bkash' AND IsActive='1' " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
                           " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     sqlDB.fillDataTable(getSQLCMD, dt);
                     if (dt.Rows.Count == 0)
@@ -239,7 +234,7 @@ namespace SigmaERP.payroll.salary
 
                 else if (chkBankForwardingLetterXL.Checked)
                 {
-                    getSQLCMD = @"select SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bank' AND IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                    getSQLCMD = @"select SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  v_MonthlySalarySheet where SalaryCount='Bank' AND IsActive='1' " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
                            " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     sqlDB.fillDataTable(getSQLCMD, dt);
                     if (dt.Rows.Count == 0)
@@ -264,7 +259,7 @@ namespace SigmaERP.payroll.salary
                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                 " FROM   v_MonthlySalarySheet " +
                                 " where " +
-                                " IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + "  " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " +
+                                " IsActive='1' " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " +
                                 " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "";
                         }
@@ -275,7 +270,7 @@ namespace SigmaERP.payroll.salary
                                  " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable, NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                  " FROM   v_MonthlySalarySheet " +
                                  " where " +
-                                 " IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + "  " + yearMonth + " " + Condition + " AND IsSeperationGeneration='1' " +
+                                 " IsActive='1' " + yearMonth + " " + Condition + " AND IsSeperationGeneration='1' " +
                                  " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
@@ -297,7 +292,7 @@ namespace SigmaERP.payroll.salary
                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                " FROM   v_MonthlySalarySheet " +
                                " where " +
-                               " IsActive='1' AND CompanyId in(" + CompanyList + ") " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='0' " +
+                               " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='0' " +
                                " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "";
                         }
@@ -308,7 +303,7 @@ namespace SigmaERP.payroll.salary
                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                 " FROM   v_MonthlySalarySheet " +
                                 " where " +
-                                " IsActive='1' AND CompanyId in(" + CompanyList + ") " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " +
+                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " +
                                 " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
@@ -345,7 +340,7 @@ namespace SigmaERP.payroll.salary
                     {
                         getSQLCMD = "SELECT count(Empid) as ActiveDay,sum(round(ProfitTax,0)) as ProfitTax, sum(round(AbsentDeduction,0)) as AbsentDeduction,sum(round(ProvidentFund,0)) as ProvidentFund , sum(EmpNetGross) as EmpNetGross, sum(round(Payable,0)) as Payable, sum(round(NetPayable,0)) as NetPayable,sum(round( OverTimeAmount,0)) as TotalOTAmount , sum(AttendanceBonus) as AttendanceBonus,sum(AdvanceDeduction) as AdvanceDeduction,sum(Stampdeduct) as Stampdeduct,  CompanyId, CompanyName, Address, DptName,CONVERT(int,DptId), case when FromDate is null then FORMAT(YearMonth,'MMMM-yyyy') else FORMAT(YearMonth,'MMMM-yyyy')+' ['+ convert(varchar(10), FromDate,105)+' to '+convert(varchar(10), ToDate,105) +']' end as YearMonth" +
                             " From v_MonthlySalarySheet where " +
-                            " IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + "  " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " +
+                            " IsActive='1' " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " +
                             " group by CompanyId, CompanyName, Address, DptName,CONVERT(int,DptId),case when FromDate is null then FORMAT(YearMonth,'MMMM-yyyy') else FORMAT(YearMonth,'MMMM-yyyy')+' ['+ convert(varchar(10), FromDate,105)+' to '+convert(varchar(10), ToDate,105) +']' end" +
                             " ORDER BY CONVERT(int,DptId)";
                         Session["__SummaryReportTitle__"] = "";
@@ -354,7 +349,7 @@ namespace SigmaERP.payroll.salary
                     {
                         getSQLCMD = "SELECT count(Empid) as ActiveDay,sum(round(ProfitTax,0)) as ProfitTax, sum(round(AbsentDeduction,0)) as AbsentDeduction,sum(round(ProvidentFund,0)) as ProvidentFund , sum(EmpNetGross) as EmpNetGross, sum(round(Payable,0)) as Payable, sum(round(NetPayable,0)) as NetPayable,sum(round( OverTimeAmount,0)) as TotalOTAmount , sum(AttendanceBonus) as AttendanceBonus,sum(AdvanceDeduction) as AdvanceDeduction,sum(Stampdeduct) as Stampdeduct,  CompanyId, CompanyName, Address, DptName,CONVERT(int,DptId), case when FromDate is null then FORMAT(YearMonth,'MMMM-yyyy') else FORMAT(YearMonth,'MMMM-yyyy')+' ['+ convert(varchar(10), FromDate,105)+' to '+convert(varchar(10), ToDate,105) +']' end as YearMonth" +
                              " From v_MonthlySalarySheet where " +
-                             " IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + "  " + yearMonth + " " + Condition + " AND IsSeperationGeneration='1' " +
+                             " IsActive='1' " + yearMonth + " " + Condition + " AND IsSeperationGeneration='1' " +
                              " group by CompanyId, CompanyName, Address, DptName,CONVERT(int,DptId),case when FromDate is null then FORMAT(YearMonth,'MMMM-yyyy') else FORMAT(YearMonth,'MMMM-yyyy')+' ['+ convert(varchar(10), FromDate,105)+' to '+convert(varchar(10), ToDate,105) +']' end" +
                              " ORDER BY CONVERT(int,DptId)";
                         Session["__SummaryReportTitle__"] = "[Separation]";
@@ -373,7 +368,11 @@ namespace SigmaERP.payroll.salary
 
                 }
             }
-            catch { }
+            catch ( Exception ex)
+            {
+                 string test = ex.Message;
+
+            }
         }
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)
         {
