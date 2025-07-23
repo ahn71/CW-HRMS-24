@@ -42,9 +42,22 @@ namespace SigmaERP.classes
                     
                     /// deleteing existing salary 
                     if (IsSeperationGeneration == "1")
-                        salarySheetClearForSeparation(ToDate, CompanyId, EmpId);
+                    {
+                        if (generateFor == "regular")
+                            salarySheetClearForSeparation(ToDate, CompanyId, EmpId);
+                        else
+                            salarySheetClearForSeparation_complaince(ToDate, CompanyId, EmpId);
+
+                    }
+
                     else
-                        salarySheetClear(ToDate, CompanyId, EmpId);
+                    {
+                        if (generateFor == "regular")
+                            salarySheetClear(ToDate, CompanyId, EmpId);
+                        else
+                            salarySheetClear_Complaince(ToDate, CompanyId, EmpId);
+                    }
+                        
 
                 // getting month info 
                 dt = new DataTable();
@@ -858,12 +871,35 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+
+        private void salarySheetClear_Complaince(DateTime ToDate, string CompanyId, string EmpId)
+        {
+            try
+            {
+                EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
+                CRUD.Execute("delete from Payroll_monthlysalarysheet_Compliances where CompanyId='" + CompanyId + "'  AND YearMonth='" + ToDate.ToString("yyyy-MM") + "-01' And ToDate='" + ToDate.ToString("yyyy-MM-dd") + "' AND EmpStatus in ('1','8') AND IsSeperationGeneration='0' " + EmpId);
+            }
+            catch { }
+        }
+
         private void salarySheetClearForSeparation(DateTime ToDate, string CompanyId, string EmpId)
         {
             try
             {
                 EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
                 CRUD.Execute("delete from Payroll_MonthlySalarySheet where CompanyId='" + CompanyId + "'  AND YearMonth='" + ToDate.ToString("yyyy-MM") + "-01'  AND IsSeperationGeneration='1' " + EmpId);
+            }
+            catch { }
+        }
+
+
+        private void salarySheetClearForSeparation_complaince(DateTime ToDate, string CompanyId, string EmpId)
+        {
+            try
+            {
+                EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
+                CRUD.Execute("delete from Payroll_monthlysalarysheet_Compliances where CompanyId='" + CompanyId + "'  AND YearMonth='" + ToDate.ToString("yyyy-MM") + "-01'  AND IsSeperationGeneration='1' " + EmpId);
             }
             catch { }
         }
