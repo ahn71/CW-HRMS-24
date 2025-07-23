@@ -209,7 +209,7 @@ namespace SigmaERP.payroll.salary
                 if (chkBankForwardingLetter.Checked)
                 {
                     getSQLCMD = "SELECT  EmpProximityNo as Sl,EmpId, EmpName, Substring(EmpCardNo,10,6) as EmpCardNo, DptName, DptId, CompanyId, TotalSalary, MobileNo,Format(YearMonth,'MMMM-yyyy') as YearMonth ,CompanyName ,EmpAccountNo  FROM   "+ tableName + " where " +
-                           " IsActive='1' and CompanyId  in(" + CompanyList + ") and DptId " + DepartmentList + " " + yearMonth + " " + Condition + "  AND SalaryCount='Bank' and IsSeperationGeneration='0' " +
+                           " IsActive='1' " + yearMonth + " " + Condition + "  AND SalaryCount='Bank' and IsSeperationGeneration='0' " +
                            " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     Session["__ReportTitle__"] = "";
                     sqlDB.fillDataTable(getSQLCMD, dt);
