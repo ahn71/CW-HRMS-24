@@ -58,14 +58,19 @@ namespace SigmaERP.payroll.salary
                     else
                         txtNotTiffinCardno.Text = "0069,0037";
                 }
-                loadExistingSalary();
+           
                 ViewState["__salaryGenerateFor__"] = "compliance";
                 string url = Request.Url.ToString();
                 string[] parts = url.Split('/');
                 string value = parts[5];
-                if (value=="regular")
+                if (value == "regular")
+                {
                     ViewState["__salaryGenerateFor__"] = value;
+                    heading.InnerText = "Salary Processing(Regular)";
+                }
+                    
                 string jjjj = ViewState["__salaryGenerateFor__"].ToString();
+                loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
 
 
             }
@@ -113,7 +118,7 @@ namespace SigmaERP.payroll.salary
             }
 
             sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, ckbLateDeduction.Checked, txtExceptedEmpCardNo.Text.Trim(), ViewState["__salaryGenerateFor__"].ToString());
-            loadExistingSalary();
+            loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
             return;
             string[] getDays = txtGenerateMonth.Text.Trim().Split('-');
             int DaysInMonth = DateTime.DaysInMonth(int.Parse(getDays[2]), int.Parse(getDays[1]));
@@ -125,7 +130,7 @@ namespace SigmaERP.payroll.salary
 
 
             generateMonthlySalarySheet(getDays[1] + "-" + getDays[2], getDays[1], getDays[2], DaysInMonth, getDays[0]);
-            loadExistingSalary();
+            loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
         }
         private void setFromDateToDate(string sy, string sm, string sd)
         {
@@ -1435,7 +1440,7 @@ namespace SigmaERP.payroll.salary
                 else
                     txtNotTiffinCardno.Text = "0069,0037";
             }
-            loadExistingSalary();
+            loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
         }
         private void removeTiffinCount(string Month)
@@ -1465,13 +1470,17 @@ namespace SigmaERP.payroll.salary
             }
             catch { }
         }
-        private void loadExistingSalary()
+        private void loadExistingSalary(string generateFor)
         {
             try
             {
-                
+                string tableName = "Payroll_MonthlySalarySheet";
+                if (generateFor == "compliance")
+                {
+                    tableName = "Payroll_monthlysalarysheet_Compliances";
+                }
                 DataTable dtExSalary = new DataTable();
-                sqlDB.fillDataTable("select distinct top(4) IsSeperationGeneration,convert(varchar(10), FromDate,120) as FromDate,convert(varchar(10), ToDate,120) as ToDate,format(FromDate,'MMM-yyyy')+' ['+case when IsSeperationGeneration=1 then 'Separation' else 'Regular' end+']' as MonthYear  , count(EmpId) as Total,sum( case when EmpTypeId=1 then 1 else 0 end) as Worker,sum( case when EmpTypeId=2 then 1 else 0 end) as Staff  from Payroll_MonthlySalarySheet where  FromDate is not null and CompanyId='" + ddlCompanyList.SelectedValue + "' group by  convert(varchar(10), FromDate,120),convert(varchar(10), ToDate,120),format(FromDate,'MMM-yyyy'),IsSeperationGeneration order by ToDate desc", dtExSalary);// this line add for RSS ,Date: 05-02-2018
+                sqlDB.fillDataTable("select distinct top(4) IsSeperationGeneration,convert(varchar(10), FromDate,120) as FromDate,convert(varchar(10), ToDate,120) as ToDate,format(FromDate,'MMM-yyyy')+' ['+case when IsSeperationGeneration=1 then 'Separation' else 'Regular' end+']' as MonthYear  , count(EmpId) as Total,sum( case when EmpTypeId=1 then 1 else 0 end) as Worker,sum( case when EmpTypeId=2 then 1 else 0 end) as Staff  from "+ tableName + " where  FromDate is not null and CompanyId='" + ddlCompanyList.SelectedValue + "' group by  convert(varchar(10), FromDate,120),convert(varchar(10), ToDate,120),format(FromDate,'MMM-yyyy'),IsSeperationGeneration order by ToDate desc", dtExSalary);// this line add for RSS ,Date: 05-02-2018
                 gvSalaryList.DataSource = dtExSalary;
                 gvSalaryList.DataBind();
             }
