@@ -13,7 +13,7 @@ namespace SigmaERP.classes
 {
     public class mManually_Attendance_Count
     {
-       
+  
         public static string []  Find_IsRunningEmployee(string CompanyId,string EmpCardNo )
         {
             try
@@ -21,9 +21,12 @@ namespace SigmaERP.classes
                 DataTable dt;                          
                 dt = new DataTable();
                 string [] EmployeeInfo = new string[1];
-                SqlDataAdapter da = new SqlDataAdapter("select EmpId,EmpName,DptName from v_Personnel_EmpCurrentStatus where EmpCardNo like '%" + EmpCardNo + "'" +
-                         " AND IsActive='1' AND  EmpStatus in ('1','8')  " +
-                         " AND CompanyId='" + CompanyId + "'", sqlDB.connection);
+                string query = "";
+
+                query = "select EmpId,EmpName,DptName from v_Personnel_EmpCurrentStatus where (EmpCardNo like '%" + EmpCardNo + "'" +
+                         " OR EmpProximityNo='"+EmpCardNo+"') AND IsActive='1' AND  EmpStatus in ('1','8')  " +
+                         " AND CompanyId='" + CompanyId + "'";
+                SqlDataAdapter da = new SqlDataAdapter(query, sqlDB.connection);
                 da.Fill(dt);
                 //sqlDB.fillDataTable("select EmpId,EmpName,DptName from v_Personnel_EmpCurrentStatus where EmpCardNo like '%" + EmpCardNo + "'" +
                 //         " AND IsActive='1' AND  EmpStatus in ('1','8')  " +
@@ -52,8 +55,8 @@ namespace SigmaERP.classes
                 DataTable dt;
                 dt = new DataTable();
                 string[] EmployeeInfo = new string[10];
-                sqlDB.fillDataTable("select EmpId,DptId,DsgId,GID,CompanyId,EmpDutyType,SftId,EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus where EmpCardNo like '%" + EmpCardNo + "'" +
-                         " AND IsActive='1' AND  EmpStatus in ('1','8')  " +
+                sqlDB.fillDataTable("select EmpId,DptId,DsgId,GID,CompanyId,EmpDutyType,SftId,EmpTypeId,Format(EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,IsDelivery,WeekendType from v_Personnel_EmpCurrentStatus where (EmpCardNo like '%" + EmpCardNo + "'"+
+                         " OR EmpProximityNo ='"+ EmpCardNo + "') AND IsActive='1' AND  EmpStatus in ('1','8')  " +
                          " AND CompanyId='" + CompanyId + "'", dt);
 
                 if (dt.Rows.Count > 0)

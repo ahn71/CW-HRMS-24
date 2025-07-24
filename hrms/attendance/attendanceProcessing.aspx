@@ -622,8 +622,9 @@
                         } else {
                             $('#totalMessingRoster').show();
                         }
-
-
+                        selectedEmployeeIds.clear();
+                        $('#selectAllEmployee').prop('checked', false);
+                        $('.EmployeerowCheckbox').prop('checked', false);
                     } else {
                         console.error('API Error:', response.message);
                         $('.footable-loader').hide();

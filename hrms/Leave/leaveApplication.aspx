@@ -816,7 +816,12 @@
               });
 
         }
-
+        function formatLocalDate(dateObj) {
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
         async function PostLeave(IsSave) {
             var referenceEmp = $('#ddlReferenceEmp').val();
 
@@ -840,14 +845,13 @@
             var startDateObj = new Date(startDate);
             var endDateObj = new Date(endDate);
 
-            var formattedStartDate = startDateObj.toISOString().split('T')[0];
-            var formattedEndDate = endDateObj.toISOString().split('T')[0];
+            var formattedStartDate = formatLocalDate(startDateObj);
+            var formattedEndDate = formatLocalDate(endDateObj);
 
             var pregnantDate = $('#datepicker3').val();
             var deliveryDate = $('#datepicker4').val();
       
-            var formattedDeliveryDate = null;
-            var formattedPregnantDate = null;
+   
 
 
             var applyDate = $('#datepicker5').val();
@@ -855,19 +859,20 @@
 
             if ($('#divapplyDate').is(':visible')) {
                 var applyDateObj = new Date(applyDate);
-                formattedApplyDate = applyDateObj.toISOString().split('T')[0];
+                formattedApplyDate = formatLocalDate(applyDateObj);
             } else {
                 var now = new Date();
-                formattedApplyDate = now.toISOString().split('T')[0]; 
+                formattedApplyDate = formatLocalDate(now);
             }
 
-
+            var formattedDeliveryDate = null;
+            var formattedPregnantDate = null;
             if (pregnantDate.trim() !== '' && deliveryDate.trim() !== '') {
                 var pregnantDateObj = new Date(pregnantDate);
                 var deliveryDateObj = new Date(deliveryDate);
 
-                formattedDeliveryDate = deliveryDateObj.toISOString().split('T')[0];
-                formattedPregnantDate = pregnantDateObj.toISOString().split('T')[0];
+               formattedPregnantDate = formatLocalDate(pregnantDateObj);
+                formattedDeliveryDate = formatLocalDate(deliveryDateObj);
             }
 
             var chargeHandoverTo = $('#ddlChargeHandOverTo').val();
