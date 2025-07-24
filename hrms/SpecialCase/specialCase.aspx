@@ -665,15 +665,15 @@
                         return true;
                     } else if (response && response.statusCode === 400) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Validation Error',
+                            icon: 'warning',
+                            title: 'Validation Problem',
                             text: 'Please check your input and try again.'
                         });
                         return false;
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
+                            icon: 'warning',
+                            title: 'Warning',
                             text: 'An error occurred. Please try again.'
                         });
                         return false;
@@ -681,8 +681,8 @@
                 } catch (error) {
                     loaderLeaveSave.hide();
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
+                        icon: 'warning',
+                        title: 'Warning',
                         text: 'Failed to submit the case. Please try again.'
                     });
                     console.error("Case Entry API Error:", error);
@@ -718,9 +718,9 @@
                             }
                             else if (response.statusCode === 401) {
                                 Swal.fire({
-                                    title: 'Error!',
+                                    title: 'Warning!',
                                     text: 'The Case is already being processed, so it cannot be deleted.',
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
                                     GetLeaves();
@@ -728,9 +728,9 @@
                             }
                             else if (response.statusCode === 402) {
                                 Swal.fire({
-                                    title: 'Error!',
+                                    title: 'Warning!',
                                     text: 'The Case is already being Approved, so it cannot be deleted.',
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
                                     GetLeaves();
@@ -738,9 +738,9 @@
                             }
                             else if (response.statusCode === 403) {
                                 Swal.fire({
-                                    title: 'Error!',
+                                    title: 'Warning!',
                                     text: 'The Case is already being Rejected, so it cannot be deleted.',
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
                                     GetSpacialCase();
@@ -751,16 +751,16 @@
                             // Handle different status codes
                             if (error.response && error.response.statusCode === 400) {
                                 Swal.fire({
-                                    title: 'Error!',
+                                    title: 'Warning!',
                                     text: error.response.data.message || 'Bad request while deleting the package.',
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonText: 'OK'
                                 });
                             } else {
                                 Swal.fire({
-                                    title: 'Error!',
+                                    title: 'Warning!',
                                     text: 'An unexpected error occurred while deleting the package.',
-                                    icon: 'error',
+                                    icon: 'warning',
                                     confirmButtonText: 'OK'
                                 });
                             }

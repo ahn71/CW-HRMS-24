@@ -376,13 +376,12 @@ function ApiCallPost(url, token, postData) {
             },
             error: function (xhr, status, error) {
                 //console.error('Error occurred while fetching data:', status, error);
-                var message = xhr.responseText;
-                console.log(message)
+                var response = JSON.parse(xhr.responseText);
 
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: message
+                    icon: 'warning',
+                    title: 'Warning',
+                    text: response.message
                 });
 
                 //reject(error);
