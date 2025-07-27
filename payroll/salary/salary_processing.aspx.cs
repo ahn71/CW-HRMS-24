@@ -1497,12 +1497,24 @@ namespace SigmaERP.payroll.salary
                     int rIndex = Convert.ToInt32(e.CommandArgument.ToString());
                     string ToDate = gvSalaryList.DataKeys[rIndex].Values[0].ToString();
                     string IsSeperationGeneration = gvSalaryList.DataKeys[rIndex].Values[1].ToString();
-                    if (deleteExSalary(ToDate, IsSeperationGeneration))
+                    if(ViewState["__salaryGenerateFor__"].ToString()== "regular")
                     {
-                        lblMessage.InnerText = "warning-> Successfully Deleted.";
-                        gvSalaryList.Rows[rIndex].Visible = false;
+                        if (deleteExSalary(ToDate, IsSeperationGeneration))
+                        {
+                            lblMessage.InnerText = "warning-> Successfully Deleted.";
+                            gvSalaryList.Rows[rIndex].Visible = false;
+                        }
                     }
-
+                    else
+                    {
+                        if (deleteExSalaryComplaince(ToDate, IsSeperationGeneration))
+                        {
+                            lblMessage.InnerText = "warning-> Successfully Deleted.";
+                            gvSalaryList.Rows[rIndex].Visible = false;
+                        }
+                    }
+                   
+                    
                 }
             }
             catch { }
@@ -1518,6 +1530,21 @@ namespace SigmaERP.payroll.salary
             catch (Exception ex) { lblMessage.InnerText = "error-> " + ex.Message; return false; }
 
         }
+
+
+        private bool deleteExSalaryComplaince(string ToDate, string IsSeperationGeneration)
+        {
+            try
+            {
+                query = "delete Payroll_monthlysalarysheet_Compliances where IsSeperationGeneration=" + IsSeperationGeneration + " and ToDate='" + ToDate + "' and CompanyId='" + ddlCompanyList.SelectedValue + "'";
+                return CRUD.Execute(query, sqlDB.connection);
+
+            }
+            catch (Exception ex) { lblMessage.InnerText = "error-> " + ex.Message; return false; }
+
+        }
+
+
         protected void ddlMonthID_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
