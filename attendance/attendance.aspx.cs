@@ -12,6 +12,12 @@ using ComplexScriptingSystem;
 using System.Globalization;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
+using Newtonsoft.Json;
+using System.Net;
+using System.IO;
+using System.Configuration;
+using System.Collections.Specialized;
+using System.Text;
 
 namespace SigmaERP.attendance
 {
@@ -23,6 +29,7 @@ namespace SigmaERP.attendance
         SqlDataAdapter da;
         SqlCommand cmd;
         DataTable dt; DataTable dtEmpInfo;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
@@ -658,16 +665,35 @@ namespace SigmaERP.attendance
                                     DayStatus = classes.mManually_Attendance_Count.getTotalOverTime(TimeSpan.Parse(InHur + ":" + txtInMin.Text + ":"+txtInSec.Text), TimeSpan.Parse(OutHur + ":" + txtOutMin.Text + ":"+txtOutSec.Text), TimeSpan.Parse(rosterInfo[1].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]),"0", rosterInfo[6], false, TimeSpan.Parse(tiffin), TimeSpan.Parse(othersetting[5]), TimeSpan.Parse(othersetting[7]), BreakBeforeStartOTAsMin);
                         }
                         }
-                        classes.
-                            mManually_Attendance_Count.
-                        SaveAttendance_Status(Get_Needed_EmployeeInfo[0], AttDate.ToString("dd-MM-yyyy"), Get_Needed_EmployeeInfo[6],
-                                                  (InHur.Length == 1) ? "0" + InHur : InHur,
-                                                  (txtInMin.Text.Trim().Length == 1) ? "0" + txtInMin.Text.Trim() : txtInMin.Text.Trim(), (txtInSec.Text.Trim().Length == 1) ? "0" + txtInSec.Text.Trim() : txtInSec.Text.Trim(),
-                                                  (OutHur.Length == 1) ? "0" + OutHur : OutHur,
-                                                  (txtOutMin.Text.Trim().Length == 1) ? "0" + txtOutMin.Text.Trim() : txtOutMin.Text.Trim(), (txtOutSec.Text.Trim().Length == 1) ? "0" + txtOutSec.Text.Trim() : txtOutSec.Text.Trim(),
-                                                  DayStatus[0], DayStatus[1], DayStatus[2], rosterInfo, Get_Needed_EmployeeInfo[1],
-                                                  Get_Needed_EmployeeInfo[2], ddlCompanyList.SelectedValue, Get_Needed_EmployeeInfo[3],
-                                                  DayStatus[3], DayStatus[4], rosterInfo[1].Split(' ')[1] + ":" + rosterInfo[6] + ":" + rosterInfo[2].Split(' ')[1], "MC", DayStatus[5], holidaycount, DayStatus[6], DayStatus[7], DayStatus[8], (ckbOutPunch.Checked) ? "1" : "0", txtReferencId.Text.Trim(), ViewState["__getUserId__"].ToString(),txtRemark.Text.Trim(), Get_Needed_EmployeeInfo[8], DutyType);
+                        //classes.
+                        //    mManually_Attendance_Count.
+                        //SaveAttendance_Status(Get_Needed_EmployeeInfo[0], AttDate.ToString("dd-MM-yyyy"), Get_Needed_EmployeeInfo[6],
+                        //                          (InHur.Length == 1) ? "0" + InHur : InHur,
+                        //                          (txtInMin.Text.Trim().Length == 1) ? "0" + txtInMin.Text.Trim() : txtInMin.Text.Trim(), (txtInSec.Text.Trim().Length == 1) ? "0" + txtInSec.Text.Trim() : txtInSec.Text.Trim(),
+                        //                          (OutHur.Length == 1) ? "0" + OutHur : OutHur,
+                        //                          (txtOutMin.Text.Trim().Length == 1) ? "0" + txtOutMin.Text.Trim() : txtOutMin.Text.Trim(), (txtOutSec.Text.Trim().Length == 1) ? "0" + txtOutSec.Text.Trim() : txtOutSec.Text.Trim(),
+                        //                          DayStatus[0], DayStatus[1], DayStatus[2], rosterInfo, Get_Needed_EmployeeInfo[1],
+                        //                          Get_Needed_EmployeeInfo[2], ddlCompanyList.SelectedValue, Get_Needed_EmployeeInfo[3],
+                        //                          DayStatus[3], DayStatus[4], rosterInfo[1].Split(' ')[1] + ":" + rosterInfo[6] + ":" + rosterInfo[2].Split(' ')[1], "MC", DayStatus[5], holidaycount, DayStatus[6], DayStatus[7], DayStatus[8], (ckbOutPunch.Checked) ? "1" : "0", txtReferencId.Text.Trim(), ViewState["__getUserId__"].ToString(),txtRemark.Text.Trim(), Get_Needed_EmployeeInfo[8], DutyType);
+
+
+
+                        string inHour = txtInHur.Text;
+                        string inMin = txtInMin.Text;
+                        string inAmPm = ddlInTimeAMPM.SelectedValue;
+
+                        string outHour = txtOutHur.Text;
+                        string outMin = txtOutMin.Text;
+                        string outAmPm = ddlOutTimeAMPM.SelectedValue;
+
+                        string inPunchVal = ConvertTo24Hour(inHour, inMin, inAmPm);   
+                        string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
+
+                        
+
+                        var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal);
+
+
                         lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
                        DataTable dt= classes.mCommon_Module_For_AttendanceProcessing.Load_Process_AttendanceData(ddlCompanyList.SelectedValue,"0", AttDate.ToString("yyyy-MM-dd"), false, txtEmpCardNo.Text.Trim());
                         gvAttendance.DataSource = dt;
@@ -685,8 +711,70 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
+        private string ConvertTo24Hour(string hourStr, string minuteStr, string amPm)
+        {
+            int hour = int.Parse(hourStr.Trim());
+            int minute = int.Parse(minuteStr.Trim());
 
-        
+            if (amPm.ToUpper() == "PM" && hour != 12)
+            {
+                hour += 12;
+            }
+            else if (amPm.ToUpper() == "AM" && hour == 12)
+            {
+                hour = 0;
+            }
+
+            return $"{hour.ToString("D2")}:{minute.ToString("D2")}";
+        }
+        public string RootUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
+        private readonly string endpoint = "/api/Attendance/attendance/manual-process";
+
+        public string PostManualAttendance(List<string> empIds, string fromDate, string toDate, string companyId, string inPunch, string outPunch)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string requestUrl = RootUrl + endpoint;
+
+                using (var client = new WebClient())
+                {
+                    // ✅ Get token from session and add to header
+                    string token = Session["___token___"]?.ToString();
+                    if (!string.IsNullOrEmpty(token))
+                        client.Headers.Add("Authorization", "Bearer " + token);
+
+                    // ❌ DO NOT SET Content-Type manually — causes error
+                    // client.Headers[HttpRequestHeader.ContentType] = "multipart/form-data"; // REMOVE THIS LINE
+
+                    // ✅ Prepare form data
+                    NameValueCollection formData = new NameValueCollection();
+                    formData["EmpIds"] = JsonConvert.SerializeObject(empIds);  // send as JSON string
+                    formData["FromDate"] = fromDate;
+                    formData["ToDate"] = toDate;
+                    formData["CompanyId"] = companyId;
+                    formData["Inpunch"] = inPunch;
+                    formData["Outpunch"] = outPunch;
+
+                    // ✅ Send form-encoded POST request
+                    byte[] responseBytes = client.UploadValues(requestUrl, "POST", formData);
+                    return Encoding.UTF8.GetString(responseBytes);
+                }
+            }
+            catch (WebException ex)
+            {
+                using (Stream stream = ex.Response?.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream ?? Stream.Null))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
+
+
 
         protected void rblAttendanceCountType_SelectedIndexChanged(object sender, EventArgs e)
         {
