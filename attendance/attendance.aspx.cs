@@ -362,14 +362,40 @@ namespace SigmaERP.attendance
                     string InHur = "00"; string OutHur = "00";
                     DateTime AttDate = DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim()));
                     // to get needed employee information for count employee attendance 
+
+
+
                     string [] Get_Needed_EmployeeInfo = classes.mManually_Attendance_Count.Get_Needed_EmployeeeInfo(ddlCompanyList.SelectedValue, txtEmpCardNo.Text.Trim());
                     DateTime joindate = DateTime.ParseExact(Get_Needed_EmployeeInfo[7], "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
                     if (joindate > AttDate)
                     {
                         lblMessage.InnerText = "error->Attendace date must be largest or equal to Joining Date (" + Get_Needed_EmployeeInfo[7] + ") ";
                         return;
                     }
-                 //   string[] Shift_Roster_InfoList = new string[10];
+
+
+                    string inHour = txtInHur.Text;
+                    string inMin = txtInMin.Text;
+                    string inAmPm = ddlInTimeAMPM.SelectedValue;
+
+                    string outHour = txtOutHur.Text;
+                    string outMin = txtOutMin.Text;
+                    string outAmPm = ddlOutTimeAMPM.SelectedValue;
+
+                    string inPunchVal = ConvertTo24Hour(inHour, inMin, inAmPm);
+                    string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
+
+
+
+                    var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal);
+
+
+                    lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
+
+                    return;
+
+                    //   string[] Shift_Roster_InfoList = new string[10];
                     DataTable dtOtherSettings = mZK_Shrink_Data_SqlServer.LoadOTherSettings(ddlCompanyList.SelectedValue);
                     string[] othersetting = new string[9];
                     if (dtOtherSettings.Rows.Count > 0)
@@ -678,23 +704,7 @@ namespace SigmaERP.attendance
 
 
 
-                        string inHour = txtInHur.Text;
-                        string inMin = txtInMin.Text;
-                        string inAmPm = ddlInTimeAMPM.SelectedValue;
-
-                        string outHour = txtOutHur.Text;
-                        string outMin = txtOutMin.Text;
-                        string outAmPm = ddlOutTimeAMPM.SelectedValue;
-
-                        string inPunchVal = ConvertTo24Hour(inHour, inMin, inAmPm);   
-                        string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
-
-                        
-
-                        var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal);
-
-
-                        lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
+             
                        DataTable dt= classes.mCommon_Module_For_AttendanceProcessing.Load_Process_AttendanceData(ddlCompanyList.SelectedValue,"0", AttDate.ToString("yyyy-MM-dd"), false, txtEmpCardNo.Text.Trim());
                         gvAttendance.DataSource = dt;
                         gvAttendance.DataBind();
