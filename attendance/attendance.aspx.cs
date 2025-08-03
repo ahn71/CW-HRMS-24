@@ -855,7 +855,10 @@ namespace SigmaERP.attendance
                     lblMessage.InnerText = "warning-> You have no access for this EmpCard !";
                     return;
                 }
-                string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim());
+                string dateyy = txtFromDate.Text;
+                DateTime df = Convert.ToDateTime(dateyy);
+                DateTime parsedDate = DateTime.ParseExact(date, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim(),DateTime.Parse(txtFromDate.Text.ToString()));
                 if (EmployeeInfos == null) lblMessage.InnerText = "error->Please type valid employee card no";
                 else
                 {
@@ -928,7 +931,7 @@ namespace SigmaERP.attendance
                     }
                 }
             }
-            catch { }            
+            catch (Exception ex){ }            
         }
 
         protected void btnClear_Click(object sender, EventArgs e)
