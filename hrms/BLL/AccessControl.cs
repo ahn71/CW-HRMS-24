@@ -244,7 +244,7 @@ namespace SigmaERP.hrms.BLL
             {
                 conditon += " and DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") ";
             }
-            string query = "select DptId,EmpcardNO from  v_Personnel_EmpCurrentStatus where EmpcardNO like '%"+ empCard + "' and "+ conditon + "";
+            string query = "select DptId,EmpcardNO from  v_Personnel_EmpCurrentStatus where (EmpcardNO like '%"+ empCard + "' OR EmpProximityNo ='"+empCard+"') and " + conditon + "";
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             if (dt.Rows.Count > 0)
             {
