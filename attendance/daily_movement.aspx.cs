@@ -34,6 +34,7 @@ namespace SigmaERP.attendance
                     Response.Redirect(Routing.defualtUrl);
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
+                //txtTodate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 setPrivilege();               
               if (!classes.commonTask.HasBranch()) 
                   ddlCompany.Enabled = false;
@@ -84,9 +85,30 @@ namespace SigmaERP.attendance
             else
             {
                 if (rblLanguage.SelectedValue == "EN")
-                    GenerateReportInEnglish();
+                {
+                    bool hasStartDate = !string.IsNullOrWhiteSpace(txtDate.Text);
+                    bool hasEndDate = !string.IsNullOrWhiteSpace(txtTodate.Text);
+
+                    if (hasStartDate && hasEndDate)
+                    {
+                        if (txtDate.Text.Trim() == txtTodate.Text.Trim())
+                            GenerateReportInEnglish();
+                        else
+                            GenerateReportInEnglishByDateRange();
+                    }
+                    else
+                    {
+                        GenerateReportInEnglish();
+                    }
+                  
+                   
+                }
+
                 else
+                {
                     GenerateReportInBangla();
+                }
+                   
             }
           
         }
@@ -187,6 +209,110 @@ namespace SigmaERP.attendance
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=DailyMovement-" + txtDate.Text + "-" + rblPrintType.SelectedValue + "- Daily Out Time Missing Report');", true);  //Open New Tab for Sever side code
 
         }
+
+
+        private void GenerateOutTimeMissingReportDateRange()
+        {
+            if (lstSelected.Items.Count == 0 && txtCardNo.Text.Trim().Length == 0)
+            {
+                lblMessage.InnerText = "warning-> Please Select Any Department!";
+                lstSelected.Focus();
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                return;
+            }
+            string unitCondition = "";
+            if (ddlUnit.SelectedValue != "0")
+            {
+                unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+            }
+
+
+            string ShiftName = "";
+
+            if (ddlShift.SelectedValue != "0")
+            {
+                ShiftName += " and SftId='" + ddlShift.SelectedValue + "' ";
+            }
+
+            if (ddlPermanentShift.SelectedValue != "0")
+            {
+                ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
+            }
+            string[] dmy = txtDate.Text.Split('-');
+            string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
+            string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
+            if (classes.commonTask.IsWeekendORHoliday(y + "-" + m + "-" + d))
+            {
+                if (rblAttStatus.SelectedValue == "P")
+
+                    AttStatus = " and InHour<>'00' ";
+                else if (rblAttStatus.SelectedValue == "A")
+                    AttStatus = " and InHour='00'  ";
+                else if (rblAttStatus.SelectedValue == "Lv")
+                    AttStatus = " and AttStatus='Lv'  ";
+                else
+                    AttStatus = "";
+            }
+
+            string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and EmpTypeId=" + rblEmpType.SelectedValue + " ";
+            CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue.ToString();
+
+
+            string CompanyList = "";
+            string ShiftList = "";
+            string DepartmentList = "";
+
+            if (!Page.IsValid)   // If Java script are desible then 
+            {
+                lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
+            }
+
+            string formDate = commonTask.ddMMyyyyTo_yyyyMMdd(txtDate.Text.Trim().ToString());
+            string toDate = commonTask.ddMMyyyyTo_yyyyMMdd(txtTodate.Text.Trim().ToString());
+
+
+            CompanyList = "in ('" + CompanyId + "')";
+
+
+
+            DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+            if (txtCardNo.Text.Trim().Length == 0)
+            {
+                string cQuery = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate>='" + formDate + "' and ATTDate<='" + toDate + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "  ANd InHour<>'00' and OutHour='00'  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " " + unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering";
+
+                sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate>='" + formDate + "' and ATTDate<='" + toDate + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "  ANd InHour<>'00' and OutHour='00'  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " " + unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ", dt = new DataTable());
+            }
+            else
+            {
+                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyList);
+                if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
+                {
+                    lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
+                    txtCardNo.Focus();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+                if (!hasEmpCard)
+                {
+                    lblMessage.InnerText = "warning-> You have no permission on this Employee";
+                    txtCardNo.Focus();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+                sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and InHour<>'00' and OutHour='00' And ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " " + unitCondition + " ", dt = new DataTable());
+            }
+
+            if (dt.Rows.Count == 0)
+            {
+                lblMessage.InnerText = "warning->No Attendance Available";
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                return;
+            }
+            Session["__DailyMovement__"] = dt;
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=DailyMovement-" + txtDate.Text + "-" + rblPrintType.SelectedValue + "- Daily Out Time Missing Report');", true);  //Open New Tab for Sever side code
+
+        }
+
         private void GenerateReportInEnglish() 
         {
             if (lstSelected.Items.Count == 0 && txtCardNo.Text.Trim().Length == 0)
@@ -292,6 +418,181 @@ namespace SigmaERP.attendance
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=DailyMovement-" + txtDate.Text + "-" + rblPrintType.SelectedValue + "- Daily Attendance Report');", true);  //Open New Tab for Sever side code
         
         }
+
+
+        private void GenerateReportInEnglishByDateRange()
+        {
+            if (lstSelected.Items.Count == 0 && txtCardNo.Text.Trim().Length == 0)
+            {
+                lblMessage.InnerText = "warning-> Please Select Any Department!";
+                lstSelected.Focus();
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                return;
+            }
+
+            string unitCondition = "";
+            if (ddlUnit.SelectedValue != "0")
+            {
+                unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+            }
+            string ShiftName = "";
+
+            if (ddlShift.SelectedValue != "0")
+            {
+                ShiftName += " and SftId='" + ddlShift.SelectedValue + "' ";
+            }
+
+            if (ddlPermanentShift.SelectedValue != "0")
+            {
+                ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
+            }
+            string formDate=commonTask.ddMMyyyyTo_yyyyMMdd(txtDate.Text.Trim().ToString());
+            string toDate=commonTask.ddMMyyyyTo_yyyyMMdd(txtTodate.Text.Trim().ToString());
+           
+            string[] dmy = txtDate.Text.Split('-');
+            string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
+            string AttStatus = "";
+
+            //if (classes.commonTask.IsWeekendORHoliday(y + "-" + m + "-" + d))
+            //{
+            //    if (rblAttStatus.SelectedValue == "not_payable")
+            //    {
+            //        lblMessage.InnerText = "warning->This criteria ('Not Payalbe') is not applicable for weekend/holiday!";
+            //        return;
+            //    }
+            //    else if (rblAttStatus.SelectedValue == "P")
+            //        AttStatus = " and InHour<>'00' ";
+            //    else if (rblAttStatus.SelectedValue == "A")
+            //        AttStatus = " and InHour='00'  ";
+            //    else if (rblAttStatus.SelectedValue == "Lv")
+            //        AttStatus = " and AttStatus='Lv'  ";
+            //    else
+            //        AttStatus = "";
+            //}
+            //else
+            //{
+            if (rblAttStatus.SelectedValue == "WH")
+            {
+                AttStatus = " and AttStatus  in('H','W')";
+            }
+            else if (rblAttStatus.SelectedValue == "not_payable")
+                AttStatus = " and AttStatus not in('Lv','H','W') and PaybleDays=0";
+            else
+                AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
+            //}
+
+            string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and EmpTypeId=" + rblEmpType.SelectedValue + " ";
+            CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue.ToString();
+
+
+            string CompanyList = "";
+            string ShiftList = "";
+            string DepartmentList = "";
+
+            if (!Page.IsValid)   // If Java script are desible then 
+            {
+                lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
+            }
+
+
+            CompanyList = "in ('" + CompanyId + "')";
+
+
+
+            DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+            if (txtCardNo.Text.Trim().Length == 0)
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName,StayTime,EmpId From v_tblAttendanceRecord where ATTDate>='" + formDate + "' and ATTDate<='" + toDate + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "   AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " " + unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ";
+
+            else
+            {
+                if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
+                {
+                    lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
+                    txtCardNo.Focus();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName,StayTime,EmpId From v_tblAttendanceRecord where ATTDate>='" + formDate + "' and ATTDate<='" + toDate + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " " + unitCondition + "";
+
+            }
+            sqlDB.fillDataTable(query, dt = new DataTable());
+            if (dt.Rows.Count == 0)
+            {
+                lblMessage.InnerText = "warning->No Attendance Available";
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                return;
+            }
+            Session["__DailyMovementDateRange__"] = dt;
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=DailyMovementDateRange-" + (txtDate.Text + " to " + txtTodate.Text).Replace('-', '/') + "-" + rblPrintType.SelectedValue + "- Daily Attendance Report');", true);  //Open New Tab for Sever side code
+
+        }
+        private void GenerateReportInBanglaByDateRange()
+        {
+            if (lstSelected.Items.Count == 0 && txtCardNo.Text.Trim().Length == 0)
+            {
+                lblMessage.InnerText = "warning-> Please Select Any Department!";
+                lstSelected.Focus();
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                return;
+            }
+
+            string unitCondition = "";
+            if (ddlUnit.SelectedValue != "0")
+            {
+                unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+            }
+
+            string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
+            string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
+            string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and EmpTypeId=" + rblEmpType.SelectedValue + " ";
+            CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue.ToString();
+            string[] dmy = txtDate.Text.Split('-');
+            string d = dmy[0]; string m = dmy[1]; string y = dmy[2];
+
+            string CompanyList = "";
+            string ShiftList = "";
+            string DepartmentList = "";
+
+            if (!Page.IsValid)   // If Java script are desible then 
+            {
+                lblMessage.InnerText = "erroe->Please Select From Date And To Date"; return;
+            }
+            string formDate = commonTask.ddMMyyyyTo_yyyyMMdd(txtDate.Text.Trim().ToString());
+            string toDate = commonTask.ddMMyyyyTo_yyyyMMdd(txtTodate.Text.Trim().ToString());
+
+            CompanyList = "in ('" + CompanyId + "')";
+
+            //if (ddlShiftList.SelectedItem.ToString().Equals("All"))
+            //ShiftList = classes.commonTask.getShiftList(ddlShiftList);          
+            //else
+            //ShiftList = "in ('" + ddlShiftList.SelectedValue.ToString() + "')";
+
+            DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+            if (txtCardNo.Text.Trim().Length == 0) sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15) as EmpCardNo,EmpNameBn EmpName,DsgNameBn DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyNameBangla CompanyName,DptNameBn DptName,SftNameBangla SftName,AddressBangla Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate>='" + formDate + "' and ATTDate<='" + toDate + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + " " + ShiftName + "  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " "+ unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ", dt = new DataTable());
+            else
+            {
+                if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
+                {
+                    lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
+                    txtCardNo.Focus();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+                sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15) as EmpCardNo,EmpNameBn EmpName,DsgNameBn DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyNameBangla CompanyName,DptNameBn DptName,SftNameBangla SftName,AddressBangla Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate>='" + formDate + "' and ATTDate<='" + toDate + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + "  "+ unitCondition + "", dt = new DataTable());
+            }
+
+            if (dt.Rows.Count == 0)
+            {
+                lblMessage.InnerText = "warning->No Attendance Available";
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                return;
+            }
+            Session["__DailyMovementBanglaDateRange__"] = dt;
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=DailyMovementBangla-" + txtDate.Text + "-" + rblPrintType.SelectedValue + "');", true);  //Open New Tab for Sever side code
+
+        }
+
+
         private void GenerateReportInBangla()
         {
             if (lstSelected.Items.Count == 0 && txtCardNo.Text.Trim().Length == 0)
@@ -333,7 +634,7 @@ namespace SigmaERP.attendance
             //ShiftList = "in ('" + ddlShiftList.SelectedValue.ToString() + "')";
 
             DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
-            if (txtCardNo.Text.Trim().Length == 0) sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15) as EmpCardNo,EmpNameBn EmpName,DsgNameBn DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyNameBangla CompanyName,DptNameBn DptName,SftNameBangla SftName,AddressBangla Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + " " + ShiftName + "  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " "+ unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ", dt = new DataTable());
+            if (txtCardNo.Text.Trim().Length == 0) sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15) as EmpCardNo,EmpNameBn EmpName,DsgNameBn DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyNameBangla CompanyName,DptNameBn DptName,SftNameBangla SftName,AddressBangla Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + " " + ShiftName + "  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ", dt = new DataTable());
             else
             {
                 if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
@@ -343,7 +644,7 @@ namespace SigmaERP.attendance
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
-                sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15) as EmpCardNo,EmpNameBn EmpName,DsgNameBn DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyNameBangla CompanyName,DptNameBn DptName,SftNameBangla SftName,AddressBangla Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + "  "+ unitCondition + "", dt = new DataTable());
+                sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15) as EmpCardNo,EmpNameBn EmpName,DsgNameBn DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyNameBangla CompanyName,DptNameBn DptName,SftNameBangla SftName,AddressBangla Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + "  " + unitCondition + "", dt = new DataTable());
             }
 
             if (dt.Rows.Count == 0)
@@ -356,6 +657,9 @@ namespace SigmaERP.attendance
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=DailyMovementBangla-" + txtDate.Text + "-" + rblPrintType.SelectedValue + "');", true);  //Open New Tab for Sever side code
 
         }
+
+
+
         protected void btnAddItem_Click(object sender, EventArgs e)
         {
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
