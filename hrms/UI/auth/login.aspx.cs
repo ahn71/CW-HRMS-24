@@ -180,7 +180,7 @@ namespace SigmaERP.hrms.UI.auth
                         delcmd.ExecuteNonQuery();
                     }
                 }
-            }
+            } 
             catch(Exception ex) { }
 
         }

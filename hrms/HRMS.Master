@@ -1790,6 +1790,8 @@
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         $(document).ready(function () {
+             
+            GetLeavesNotification();
             var userImage = '<%= Session["__UserImageLink__"] %>';
 
             if (userImage) {
@@ -1800,8 +1802,7 @@
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');
             }
-         
-            GetLeavesNotification();
+        
         });
  
  
