@@ -4921,7 +4921,6 @@
     </Compile>
     <Compile Include="payroll\advance\advance_monthly_installment_setup.aspx.cs">
       <DependentUpon>advance_monthly_installment_setup.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="payroll\advance\advance_monthly_installment_setup.aspx.designer.cs">
       <DependentUpon>advance_monthly_installment_setup.aspx</DependentUpon>

@@ -75,6 +75,7 @@ namespace SigmaERP.payroll.advance
                         }
                         
                     }
+                   
                     classes.Employee.LoadEmpCardNoForPayroll_EmpID(ddlEmpCardNo, ViewState["__CompanyId__"].ToString(), EmpId);
                     ddlCompanyList.Enabled = false;
                     ddlEmpCardNo.SelectedValue = EmpId;
@@ -97,10 +98,11 @@ namespace SigmaERP.payroll.advance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserId__"] = getCookies["__getUserId__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
                 if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
                 {
-                    classes.commonTask.LoadBranch(ddlCompanyList);
+                   
                     // classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
                     return;
                 }
@@ -219,11 +221,7 @@ namespace SigmaERP.payroll.advance
         private void loadRunningAdvance(string EmpId)
         {
             DataTable dtEx = new DataTable();
-            //dtEx = CRUD.ExecuteReturnDataTable("select l.LoanID,l.LoanAmount,ISNULL(l.PaidAmount,0) as PaidAmount,l.InstallmentAmount,format( l.DeductFrom,'MM-yyyy') as DeductFrom, IsNull(l.PaidInstallmentNo,0) as PaidInstallmentNo,ld.LoanDetailsID,convert(varchar(10), ld.LoanTakeDate,105) as LoanTakeDate,ld.ParticularAmount,ld.ParticularRemarks from Payroll_LoanInfo l left join Payroll_LoanDetails ld on l.LoanID=ld.LoanID and ISNULL(ld.IsDeleted,0)=0 where l.Status=0 and ISNULL(l.IsDeleted,0)=0 and l.EmpId='" + EmpId + "' order by ld.LoanDetailsID");
-            dtEx = CRUD.ExecuteReturnDataTable(@"with l as (
- select li.LoanID,li.LoanAmount,DeductFrom,sum(lmd.Amount) as PaidAmount,li.InstallmentAmount  from Payroll_LoanInfo li LEFT JOIN Payroll_LoanMonthlySetup AS lmd ON li.LoanID = lmd.LoanID and lmd.IsPaid = 1 where  li.Status=0 and ISNULL(li.IsDeleted,0)=0 and li.EmpId='" + EmpId + @"' group by li.LoanID,li.LoanAmount,DeductFrom,li.InstallmentAmount)
-select l.LoanID,l.LoanAmount,ISNULL(l.PaidAmount,0) as PaidAmount,l.InstallmentAmount,format( l.DeductFrom,'MM-yyyy') as DeductFrom,ld.LoanDetailsID,convert(varchar(10), ld.LoanTakeDate,105) as LoanTakeDate,ld.ParticularAmount,ld.ParticularRemarks from l left join Payroll_LoanDetails ld on l.LoanID=ld.LoanID and ISNULL(ld.IsDeleted,0)=0 
-  order by ld.LoanDetailsID");
+            dtEx = CRUD.ExecuteReturnDataTable("select l.LoanID,l.LoanAmount,ISNULL(l.PaidAmount,0) as PaidAmount,l.InstallmentAmount,format( l.DeductFrom,'MM-yyyy') as DeductFrom, IsNull(l.PaidInstallmentNo,0) as PaidInstallmentNo,ld.LoanDetailsID,convert(varchar(10), ld.LoanTakeDate,105) as LoanTakeDate,ld.ParticularAmount,ld.ParticularRemarks from Payroll_LoanInfo l left join Payroll_LoanDetails ld on l.LoanID=ld.LoanID and ISNULL(ld.IsDeleted,0)=0 where l.Status=0 and ISNULL(l.IsDeleted,0)=0 and l.EmpId='" + EmpId + "' order by ld.LoanDetailsID");
             if (dtEx != null && dtEx.Rows.Count > 0)
             {
                 ViewState["__LoanID__"] = dtEx.Rows[0]["LoanID"].ToString();
