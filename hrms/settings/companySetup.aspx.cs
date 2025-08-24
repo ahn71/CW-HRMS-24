@@ -196,7 +196,6 @@ namespace SigmaERP.hrms.settings
                 else
                 {
                     rblCardNoType.SelectedValue = "0";
-
                     txtFladCode.Text = dt.Rows[0]["FlatCode"].ToString().Equals("") ? "99" : dt.Rows[0]["FlatCode"].ToString();
                     txtFladCode.Visible = true;
                     txtStartCardNo.Style.Add("Width", "71%");
