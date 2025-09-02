@@ -28,7 +28,7 @@ namespace SigmaERP.attendance
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                int[] pagePermission = { 264 };
+                int[] pagePermission = { 265 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);

@@ -26,12 +26,12 @@ namespace SigmaERP.classes
                          " AND IsActive='1' AND  EmpStatus in ('1','8')  " +
                          " AND CompanyId='" + CompanyId + "'";
 
-                string query2 = "select cs.EmpId,pei.EmpName,Dpt.DptName,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(pei.EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,cs.GId,cs.DptId,cs.DsgId,cs.EmpDutyType,pei.EmpProximityNo as RegId from Personnel_EmployeeInfo pei inner join Personnel_EmpCurrentStatus cs on  pei.EmpId=cs.EmpId and  cs.IsActive=1 left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and  cs.IsActive=1  and IsLastSeparation=1 and cs.EmpStatus=sp.SeparationType  left join Hrd_Department as Dpt on dpt.DptId =cs.DptId   where  cs.CompanyId='" + CompanyId + "' and (cs.EmpStatus in ('1','8') or sp.EffectiveDate>='"+ date.ToString("yyyy-MM-dd")+ "' )  AND pei.EmpProximityNo !='' and cs.EmpCardNo like '%"+ EmpCardNo + "'";
+                string query2 = "select cs.EmpId,pei.EmpName,Dpt.DptName,Convert(int,Right(cs.EmpCardNo,LEN(cs.EmpCardNo)-7)) as EmpCardNo,cs.EmpTypeId,Format(pei.EmpJoiningDate,'dd-MM-yyyy')as EmpJoiningDate,cs.GId,cs.DptId,cs.DsgId,cs.EmpDutyType,pei.EmpProximityNo as RegId from Personnel_EmployeeInfo pei inner join Personnel_EmpCurrentStatus cs on  pei.EmpId=cs.EmpId and  cs.IsActive=1 left join Personnel_EmpSeparation sp on cs.EmpId=sp.EmpId and  cs.IsActive=1  and IsLastSeparation=1 and cs.EmpStatus=sp.SeparationType  left join Hrd_Department as Dpt on dpt.DptId =cs.DptId   where  cs.CompanyId='" + CompanyId + "' and (cs.EmpStatus in ('1','8') or sp.EffectiveDate>='"+ date.ToString("yyyy-MM-dd")+ "' )  AND pei.EmpProximityNo !='' and (cs.EmpCardNo like '%"+ EmpCardNo + "' or pei.EmpProximityNo='"+ EmpCardNo + "')";
                 DataTable dt;                          
                 dt = new DataTable();
                 string [] EmployeeInfo = new string[1];
                 SqlDataAdapter da = new SqlDataAdapter(query2, sqlDB.connection);
-
+                da.Fill(dt);
                 //sqlDB.fillDataTable("select EmpId,EmpName,DptName from v_Personnel_EmpCurrentStatus where EmpCardNo like '%" + EmpCardNo + "'" +
                 //         " AND IsActive='1' AND  EmpStatus in ('1','8')  " +
                 //         " AND CompanyId='" + CompanyId + "'", dt);
