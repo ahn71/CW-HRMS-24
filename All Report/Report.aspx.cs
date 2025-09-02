@@ -225,6 +225,9 @@ namespace SigmaERP.All_Report
                 //------------------------------For Attendance reports----------------------------------------------
                 else if (query[0].Equals("TodaysAttStatus")) TodaysAttendanceStatus(query[1]);
                 else if (query[0].Equals("DailyMovement")) ShowDailyMovement(query[1] + "-" + query[2] + "-" + query[3], query[4], query[5]);
+
+                else if (query[0].Equals("DailyMovementDateRange")) ShowDailyMovementDateRange(query[1]);
+
                 else if (query[0].Equals("AttManpowerStatement")) AttManpowerStatement(query[1]);
                 else if (query[0].Equals("ManualAttReprot")) ShowManualAttendanceReport(query[1], query[2]);
                 else if (query[0].Equals("DailyOTReport")) Daily_OT_Report(query[1] + "-" + query[2] + "-" + query[3]);
@@ -2697,6 +2700,25 @@ namespace SigmaERP.All_Report
                 dt = (DataTable)Session["__DailyMovement__"];
                 rpd.SetDataSource(dt);
                 rpd.SetParameterValue(0, Date);
+                rpd.SetParameterValue(1, Title);
+
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
+
+        private void ShowDailyMovementDateRange(string Date)
+        {
+            try
+            {
+                rpd = new ReportDocument();
+                rpd.Load(Server.MapPath("//All Report//Attendance//DailyMovementReportByDateRangeIndividualV1.rpt"));
+                dt = new DataTable();
+                dt = (DataTable)Session["__DailyMovementDateRange__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Date.Replace('/', '-'));
                 rpd.SetParameterValue(1, Title);
 
                 CrystalReportViewer1.ReportSource = rpd;

@@ -108,7 +108,28 @@
 
                             </td>
                         </tr>
+                        <tr>
+                            <td>From Date
+                            </td>
+                          
+                            <td>:</td>
+                            <td>
+                                <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+                                <asp:CalendarExtender
+                                    ID="TextBoxDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtDate">
+                                </asp:CalendarExtender>
+                            </td>
+                        
 
+                            <td>To Date</td>
+                            <td>:</td>
+                            <td>
+                                <asp:TextBox ID="txtTodate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+                                <asp:CalendarExtender
+                                    ID="TextBoxToDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtTodate">
+                                </asp:CalendarExtender>
+                            </td>
+                        </tr>
                         <tr>
                             <td>Employee Type
                             </td>
@@ -117,15 +138,19 @@
                                 <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal">
                                 </asp:RadioButtonList>
                             </td>
-                            <td>Date
+
+                            <td>Card No
                             </td>
                             <td>:</td>
                             <td>
-                                <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
-                                <asp:CalendarExtender
-                                    ID="TextBoxDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtDate">
-                                </asp:CalendarExtender>
+                                <asp:TextBox ID="txtCardNo" ClientIDMode="Static" runat="server" PlaceHolder=" For Individual" CssClass="form-control text_box_width"></asp:TextBox>
+
                             </td>
+                            <td>
+                                <asp:LinkButton ID="lnkNew" Text="Clear" runat="server" OnClientClick="InputBoxNew()"></asp:LinkButton>
+
+                            </td>
+
                         </tr>
                         <tr>
                             <td>Status</td>
@@ -141,16 +166,8 @@
                                     <asp:ListItem Value="WH">W&H</asp:ListItem>
                                 </asp:RadioButtonList>
                             </td>
-                            <td>Card No
-                            </td>
-                            <td>:</td>
-                            <td>
-                                <asp:TextBox ID="txtCardNo" ClientIDMode="Static" runat="server" PlaceHolder=" For Individual" CssClass="form-control text_box_width"></asp:TextBox>
-
-                            </td>
-                            <td>
-                                <asp:LinkButton ID="lnkNew" Text="New" runat="server" OnClientClick="InputBoxNew()"></asp:LinkButton></td>
-
+                            
+                            
                         </tr>
 
 
@@ -190,7 +207,7 @@
                 </div>
                         
                         <div class="job_card_button_area">
-                            <div>
+                            <div runat="server" id="dvFooter" visible="false">
                                 <center>
                               <asp:RadioButtonList class="rb" ID="rblPrintType" runat="server"  RepeatDirection="Horizontal" >
                                     <asp:ListItem Text="For View" Value="0"  ></asp:ListItem>

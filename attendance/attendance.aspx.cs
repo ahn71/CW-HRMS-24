@@ -385,10 +385,10 @@ namespace SigmaERP.attendance
 
                     string inPunchVal = ConvertTo24Hour(inHour, inMin, inAmPm);
                     string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
+                    string attStatus = ddlAttendanceTemplate.SelectedValue.ToString();
 
 
-
-                    var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal);
+                    var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal, AttStatus: attStatus);
 
 
                     lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
@@ -740,7 +740,7 @@ namespace SigmaERP.attendance
         public string RootUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
         private readonly string endpoint = "/api/Attendance/attendance/manual-process";
 
-        public string PostManualAttendance(List<string> empIds, string fromDate, string toDate, string companyId, string inPunch, string outPunch)
+        public string PostManualAttendance(List<string> empIds, string fromDate, string toDate, string companyId, string inPunch, string outPunch,string AttStatus)
         {
             try
             {
@@ -765,6 +765,7 @@ namespace SigmaERP.attendance
                     formData["CompanyId"] = companyId;
                     formData["Inpunch"] = inPunch;
                     formData["Outpunch"] = outPunch;
+                    formData["AttStatus"] = AttStatus;
 
                     // ✅ Send form-encoded POST request
                     byte[] responseBytes = client.UploadValues(requestUrl, "POST", formData);
@@ -933,9 +934,9 @@ namespace SigmaERP.attendance
         {
             try
             {
-               
 
-                if (txtEmpCardNo.Text.Trim().Length<5) 
+                int lenght = txtEmpCardNo.Text.Trim().Length;
+                if (txtEmpCardNo.Text.Trim().Length<3) 
                 {
                     lblMessage.InnerText = "warning-> Please type valid Card No !";
                     txtEmpCardNo.Focus();
@@ -953,7 +954,12 @@ namespace SigmaERP.attendance
                     lblMessage.InnerText = "warning-> You have no access for this EmpCard !";
                     return;
                 }
-                string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim());
+
+                string jjj = txtFromDate.Text.ToString();
+                //string dateyy = txtFromDate.Text;
+                //DateTime df = Convert.ToDateTime(dateyy);
+                DateTime parsedDate = DateTime.ParseExact(txtFromDate.Text.ToString(), "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim(),parsedDate);
                 if (EmployeeInfos == null) lblMessage.InnerText = "error->Please type valid employee card no";
                 else
                 {
@@ -1026,7 +1032,7 @@ namespace SigmaERP.attendance
                     }
                 }
             }
-            catch { }            
+            catch (Exception ex){ }            
         }
 
         protected void btnClear_Click(object sender, EventArgs e)

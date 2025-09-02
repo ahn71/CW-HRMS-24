@@ -130,15 +130,6 @@ namespace SigmaERP.attendance {
         protected global::System.Web.UI.WebControls.DropDownList ddlShift;
         
         /// <summary>
-        /// rblEmpType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblEmpType;
-        
-        /// <summary>
         /// txtDate control.
         /// </summary>
         /// <remarks>
@@ -157,13 +148,31 @@ namespace SigmaERP.attendance {
         protected global::AjaxControlToolkit.CalendarExtender TextBoxDate_CalendarExtender;
         
         /// <summary>
-        /// rblAttStatus control.
+        /// txtTodate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblAttStatus;
+        protected global::System.Web.UI.WebControls.TextBox txtTodate;
+        
+        /// <summary>
+        /// TextBoxToDate_CalendarExtender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.CalendarExtender TextBoxToDate_CalendarExtender;
+        
+        /// <summary>
+        /// rblEmpType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rblEmpType;
         
         /// <summary>
         /// txtCardNo control.
@@ -182,6 +191,15 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkNew;
+        
+        /// <summary>
+        /// rblAttStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList rblAttStatus;
         
         /// <summary>
         /// workerlist control.
@@ -245,6 +263,15 @@ namespace SigmaERP.attendance {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListBox lstSelected;
+        
+        /// <summary>
+        /// dvFooter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvFooter;
         
         /// <summary>
         /// rblPrintType control.
