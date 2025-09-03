@@ -375,9 +375,21 @@
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
 
-        var empUrl = '/api/Employee/EmployeeName';
-        var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
+        //var empUrl = '/api/Employee/EmployeeName';
+        //var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
 
+
+            var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+
+            // Parse back to array if stored as JSON, else leave as string
+            var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+
+            // Serialize department IDs to JSON string for API
+            var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
+
+            // Build API URL with CompanyId + DptIds
+            var empUrl = '/api/Employee/EmployeeName';
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
 
         var getLeaveTypeUrl = rootUrl + '/api/Leave/LeaveType';
 
@@ -543,6 +555,10 @@
 
           
         });
+
+       
+
+
         function GetEmployee() {
             ApiCall(getEmployeeUrl, token)
                 .then(function (response) {

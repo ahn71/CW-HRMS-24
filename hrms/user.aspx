@@ -309,8 +309,21 @@
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesWithGuestUrl = rootUrl + `/api/UserRoles/userRolesWithGuestUser`;
          var getInfoViewUrl = rootUrl + '/api/User/users';
+         //var empUrl = '/api/Employee/EmployeeName';
+         //var getEmployeeUrl = `${rootUrl}${empUrl}`;
+
+          var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+
+            // Parse back to array if stored as JSON, else leave as string
+            var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+
+            // Serialize department IDs to JSON string for API
+            var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
+
+            // Build API URL with CompanyId + DptIds
          var empUrl = '/api/Employee/EmployeeName';
-         var getEmployeeUrl = `${rootUrl}${empUrl}`;
+         var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
+
 
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
@@ -624,7 +637,7 @@
             
          }
          function GetEmployee(companyId) {
-             ApiCall(getEmployeeUrl + '?CompanyId=' + companyId, token)
+             ApiCall(getEmployeeUrl, token)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;
