@@ -259,24 +259,22 @@
          var getSpcDeleteUrl = rootUrl + '/api/SpecialCase/delete';
          var getSpCApplicationUrl = rootUrl + `/api/SpecialCase/SpecialCases?CompnayId=${CompanyID}&EmpId=${loginempId}`;
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+         var empUrl = '/api/Employee/EmployeeName';
 
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var PostCaseUrl =rootUrl+`/api/SpecialCase/create`;  // Pass userId in the URL
 
-        //var empUrl = '/api/Employee/EmployeeName';
-        //var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
+         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
-         var dptIds = '<%=Session["__DptAccessPermission__"]%>';
-
-            // Parse back to array if stored as JSON, else leave as string
-            var departmentIds = dptIds ? JSON.parse(dptIds) : [];
-
-            // Serialize department IDs to JSON string for API
-            var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
-
-            // Build API URL with CompanyId + DptIds
-            var empUrl = '/api/Employee/EmployeeName';
+        var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+        var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+        var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
+        if (DataAccessLevel == 2) {
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=["${dptId}"]`;
+        }
+        else {
             var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
+        }
 
 
         var getLeaveTypeUrl = rootUrl + '/api/Leave/LeaveType';
