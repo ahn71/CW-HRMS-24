@@ -261,6 +261,9 @@
                                             </li>
                                             <% } %>
 
+
+
+
                                             <% if (IsRouteExists("attendance/month-setup"))
                                                 { %>
                                             <li class="l_sidebar">
@@ -321,6 +324,19 @@
                                                 </a>
                                             </li>
                                             <% } %>
+
+
+                                            
+                                            <% if (IsRouteExists("attendance/monthly-report-regular"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/monthly-report-regular" class="">
+                                                    <span class="menu-text">Monthly Status(Regular)</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+
                                             
                                             <% if (IsRouteExists("attendance/daily-in-out-report"))
                                                 { %>

@@ -40,7 +40,7 @@
     </asp:UpdatePanel>
     <div class="main_box Mbox">
         <div class="main_box_header MBoxheader">
-            <h2>Monthly Attendance Status Report</h2>
+            <h2 runat="server" id="hdMenu">Monthly Attendance Status Report</h2>
         </div>
         <div class="employee_box_body">
             <div class="employee_box_content">
@@ -119,7 +119,7 @@
                        </tr>
                                 <caption>
                                     <br />
-                                    <tr>
+                                    <tr runat="server" id="trReportType">
                                         <td>Report Type </td>
                                         <td>&nbsp;:&nbsp;</td>
                                         <td colspan="5">
