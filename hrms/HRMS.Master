@@ -331,7 +331,7 @@
                                                 { %>
                                             <li class="l_sidebar">
                                                 <a href="/hrms/attendance/monthly-report-regular" class="">
-                                                    <span class="menu-text">Monthly Status(Regular)</span>
+                                                    <span class="menu-text">Job Card Actual</span>
                                                 </a>
                                             </li>
                                             <% } %>
