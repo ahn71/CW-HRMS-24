@@ -369,15 +369,25 @@
          var getLeavesApplicationUrl = rootUrl + '/api/Leave/lvApplications';
          var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication`;
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
-         var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
+        var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
+         var empUrl = '/api/Employee/EmployeeName';
+
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         //var createLvUrl = rootUrl + '/api/Leave/create/${userId}';
         var createLvUrl =rootUrl+`/api/Leave/create/${userId}`;  // Pass userId in the URL
 
-        var empUrl = '/api/Employee/EmployeeName';
-        var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
 
+
+        var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+        var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+        var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
+        if (DataAccessLevel == 2) {
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=["${dptId}"]`;
+        }
+        else {
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
+        }
 
         var getLeaveTypeUrl = rootUrl + '/api/Leave/LeaveType';
 
@@ -543,6 +553,10 @@
 
           
         });
+
+       
+
+
         function GetEmployee() {
             ApiCall(getEmployeeUrl, token)
                 .then(function (response) {

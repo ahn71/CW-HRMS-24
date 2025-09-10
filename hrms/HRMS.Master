@@ -331,7 +331,7 @@
                                                 { %>
                                             <li class="l_sidebar">
                                                 <a href="/hrms/attendance/monthly-report-regular" class="">
-                                                    <span class="menu-text">Monthly Status(Regular)</span>
+                                                    <span class="menu-text">Job Card Actual</span>
                                                 </a>
                                             </li>
                                             <% } %>
@@ -1806,6 +1806,8 @@
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         $(document).ready(function () {
+             
+            GetLeavesNotification();
             var userImage = '<%= Session["__UserImageLink__"] %>';
 
             if (userImage) {
@@ -1816,8 +1818,7 @@
                 $('#UserProfileImageMenu').attr('src', '/hrms/user_img_default.jpg');
                 $('#userProfileImage').attr('src', '/hrms/user_img_default.jpg');
             }
-         
-            GetLeavesNotification();
+        
         });
  
  

@@ -205,9 +205,8 @@ namespace SigmaERP.classes
             try
             {
                 string query = "";
-                DataTable dt=new DataTable ();
-                if (index == 0)
-                {
+               
+                if (index == 0)                
                     query = "SELECT  EmpId, substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo, PSftName as SftName,EmpName,Address,GId,GName,PSftId as SftId, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," +
                          "SUM(CASE DATEPART(day, AttDate) WHEN 3 THEN code ELSE 0 END) AS [3], SUM(CASE DATEPART(day, AttDate) WHEN 4 THEN code ELSE 0 END) AS [4], SUM(CASE DATEPART(day, AttDate) " +
                          "WHEN 5 THEN code ELSE 0 END) AS [5], SUM(CASE DATEPART(day, AttDate) WHEN 6 THEN code ELSE 0 END) AS [6], SUM(CASE DATEPART(day, AttDate) WHEN 7 THEN code ELSE 0 END) AS [7]," +
@@ -227,8 +226,7 @@ namespace SigmaERP.classes
                          "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + " " +
                          "   GROUP BY EmpId, EmpCardNo,EmpProximityNo,PSftId, EmpName,PSftName ,DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
                         " order by PSftName, convert(int,DptId), convert(int,GId),CustomOrdering";
-                    sqlDB.fillDataTable(query, dt);
-                }
+                
                 else
                     query = "SELECT EmpId, substring(EmpCardNo,8,15) + ' (' + EmpProximityNo + ')' AS EmpCardNo, PSftName as SftName,PSftId as SftId, EmpName,Address,GId,GName, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," +
                         "SUM(CASE DATEPART(day, AttDate) WHEN 3 THEN code ELSE 0 END) AS [3], SUM(CASE DATEPART(day, AttDate) WHEN 4 THEN code ELSE 0 END) AS [4], SUM(CASE DATEPART(day, AttDate) " +
@@ -248,7 +246,8 @@ namespace SigmaERP.classes
                         "   FROM dbo.v_tblAttendanceRecord " +
                         "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" + unitCondition + " " +
                         "    GROUP BY EmpId, EmpCardNo,EmpProximityNo, PSftId,EmpName, DsgName,PSftName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering";
-                    sqlDB.fillDataTable(query, dt);
+                DataTable dt = new DataTable();
+                sqlDB.fillDataTable(query, dt);
                 return dt;
             }
             catch {return null; }

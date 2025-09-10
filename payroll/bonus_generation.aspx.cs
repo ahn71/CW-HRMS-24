@@ -363,7 +363,7 @@ namespace SigmaERP.payroll
 
         bool isGenerated;
         private static void saveBonusInfo(string setSN, string setEmpCardNo, string setBasicSalary, double setBonus, string Percentage, string PresentSalary, string generateOn, string TotalDays,string BId,string smonth,bonus_generation bg)
-        {
+        { 
             try
             {
                 DataTable dtCertainEmp = new DataTable();

@@ -309,8 +309,20 @@
          var getRolesUrl = rootUrl + '/api/UserRoles/userRoles';
          var getRolesWithGuestUrl = rootUrl + `/api/UserRoles/userRolesWithGuestUser`;
          var getInfoViewUrl = rootUrl + '/api/User/users';
-         var empUrl = '/api/Employee/EmployeeName';
-         var getEmployeeUrl = `${rootUrl}${empUrl}`;
+         var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+
+        var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+        var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+        var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
+        var empUrl = '/api/Employee/EmployeeName';
+        if (DataAccessLevel == 2) {
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=["${dptId}"]`;
+        }
+        else {
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
+        }
+
+
 
          var GetFeturesUrl = rootUrl + '/api/UserModules/Packages';
          var getRolesByIdUrl = rootUrl + '/api/UserRoles/userRoles';
@@ -624,7 +636,7 @@
             
          }
          function GetEmployee(companyId) {
-             ApiCall(getEmployeeUrl + '?CompanyId=' + companyId, token)
+             ApiCall(getEmployeeUrl, token)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;

@@ -180,7 +180,7 @@ namespace SigmaERP.hrms.UI.auth
                         delcmd.ExecuteNonQuery();
                     }
                 }
-            }
+            } 
             catch(Exception ex) { }
 
         }
@@ -337,6 +337,7 @@ namespace SigmaERP.hrms.UI.auth
                     Session["__UserImageLink__"] = userData.userImage;
                     Session["__RootUrl__"] = ApiConnector.RootUrl;
                     Session["__UserDataAccessLevel__"] = userData.dataAccessLevel.ToString();
+                    Session["__DptAccessPermission__"] = userData.dptAccessPermission.ToString();
                     Session["__DevloperPassword__"] = "A#s#7&80)(^@7)&$$$%%%%++***%%%";
                     Session["__GetISAdministetor__"] = userData.isAdministrator;
                   

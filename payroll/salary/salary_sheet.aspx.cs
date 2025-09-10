@@ -192,7 +192,10 @@ namespace SigmaERP.payroll.salary
                     Condition += " AND CompanyId = '" + companyId + "' and DptId " + DepartmentList + " ";
 
                 }
-
+                 if(rblSheet.SelectedValue == "1")
+                    {
+                        Condition += "and IsSeperationGeneration='1'";
+                    }
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
@@ -236,7 +239,7 @@ namespace SigmaERP.payroll.salary
 
                 else if (chkBKashForwardingLetterXL.Checked)
                 {
-                    getSQLCMD = @"select  SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  " + tableName + " where SalaryCount='Bkash' AND IsActive='1' " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                    getSQLCMD = @"select  SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  " + tableName + " where SalaryCount='Bkash' AND IsActive='1' " + yearMonth + " " + Condition + " " +
                           " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     sqlDB.fillDataTable(getSQLCMD, dt);
                     if (dt.Rows.Count == 0)
@@ -253,7 +256,8 @@ namespace SigmaERP.payroll.salary
 
                 else if (chkBankForwardingLetterXL.Checked)
                 {
-                    getSQLCMD = @"select SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  " + tableName + " where SalaryCount='Bank' AND IsActive='1' " + yearMonth + " " + Condition + "  and IsSeperationGeneration='0' " +
+                  
+                    getSQLCMD = @"select SUBSTRING(EmpCardNo,8,6) as [Card No],EmpName as [Name],EmpAccountNo as[Account No],TotalSalary as [Net Payable] from  " + tableName + " where SalaryCount='Bank' AND IsActive='1' " + yearMonth + " " + Condition + " " +
                            " ORDER BY CONVERT(int,DptId), CustomOrdering ";
                     sqlDB.fillDataTable(getSQLCMD, dt);
                     if (dt.Rows.Count == 0)
@@ -284,12 +288,12 @@ namespace SigmaERP.payroll.salary
                         }
                         else
                         {
-                            getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId, Substring(EmpCardNo,10,6) as EmpCardNo , AbsentDay, BasicSalary, HouseRent, MedicalAllownce, AbsentDeduction, " +
+                            getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId,EmpPicture, Substring(EmpCardNo,10,6) as EmpCardNo , AbsentDay, BasicSalary,PaymentMethod, HouseRent, MedicalAllownce, AbsentDeduction, " +
                                  " OverTime as TotalOTHour, OTRate, round(OverTimeAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftId,SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount," +
                                  " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable, NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                  " FROM   " + tableName + " " +
                                  " where " +
-                                 " IsActive='1' " + yearMonth + " " + Condition + " AND IsSeperationGeneration='1' " +
+                                 " IsActive='1' " + yearMonth + " " + Condition + " " +
                                  " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
