@@ -293,7 +293,7 @@ namespace SigmaERP.payroll.salary
                                  " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable, NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                  " FROM   " + tableName + " " +
                                  " where " +
-                                 " IsActive='1' " + yearMonth + " " + Condition + " AND IsSeperationGeneration='1' " +
+                                 " IsActive='1' " + yearMonth + " " + Condition + " " +
                                  " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
