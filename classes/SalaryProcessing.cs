@@ -621,7 +621,11 @@ namespace SigmaERP.classes
         private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType,string AttendanceBonus)
         {
 
+              
+              
 
+            if (!HasCompleteDutyDays())
+                return salaryRecord;
 
             if (salaryRecord.AbsentDay > 0)
             {
@@ -1050,7 +1054,23 @@ namespace SigmaERP.classes
         }
 
 
+        private bool HasCompleteDutyDays()
+        {
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where  ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM") + "-" + "01" + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and ATTStatus in('W','H') ");
+            int totalDays = dt.Rows.Count;
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select distinct SftId, EmpId,Convert(varchar(11),ATTDate,111) as ATTDate,InHour,InMin,InSec,OutHour,OutMin,OutSec,ATTStatus from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND ATTStatus In ('P','L')  AND AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM") + '-' + "01" + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' AND PaybleDays='1' ");
+            totalDays += dt.Rows.Count;
+            if (totalDays != salaryRecord.DaysInMonth)
+                return false;
+            else
+              return true;
+        }
 
-  
+
+
+
+
     }
 }
