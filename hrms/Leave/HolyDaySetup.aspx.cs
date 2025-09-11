@@ -89,9 +89,11 @@ namespace SigmaERP.hrms.Leave
             try
             {
                 string[] d = txtDate.Text.Trim().Split('-');
+                string  isOpen = chkIsRegular.Checked?"1":"0";
+
                 string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
-                string[] getColumns = { "CompanyId", "HDate", "Description" };
-                string[] getValues = { CompanyId, d[2] + "-" + d[1] + "-" + d[0], txtDescription.Text.Trim() };
+                string[] getColumns = { "CompanyId", "HDate", "Description", "IsOpen" };
+                string[] getValues = { CompanyId, d[2] + "-" + d[1] + "-" + d[0], txtDescription.Text.Trim(), isOpen };
                 if (SQLOperation.forSaveValue("tblHolydayWork", getColumns, getValues, sqlDB.connection) == true)
                 {
                     lblMessage.InnerText = "success->Successfully saved";
@@ -108,9 +110,10 @@ namespace SigmaERP.hrms.Leave
             try
             {
                 string[] d = txtDate.Text.Trim().Split('-');
+                string isOpen = chkIsRegular.Checked ? "1" : "0";
                 string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
-                string[] getColumns = { "CompanyId", "HDate", "Description" };
-                string[] getValues = { CompanyId, d[2] + "-" + d[1] + "-" + d[0], txtDescription.Text.Trim() };
+                string[] getColumns = { "CompanyId", "HDate", "Description", "IsOpen" };
+                string[] getValues = { CompanyId, d[2] + "-" + d[1] + "-" + d[0], txtDescription.Text.Trim(), isOpen };
                 if (SQLOperation.forUpdateValue("tblHolydayWork", getColumns, getValues, "HCode", HCode, sqlDB.connection) == true)
                 {
                     lblMessage.InnerText = "success->Successfully updated";
@@ -189,7 +192,7 @@ namespace SigmaERP.hrms.Leave
 
         private void SetValueToControl(string hid)
         {
-            string strSQL = @"select HCode, CONVERT(varchar(10), [HDate],105) as HDate, [Description]  from [tblHolydayWork]
+            string strSQL = @"select HCode, CONVERT(varchar(10), [HDate],105) as HDate, [Description],isOpen  from [tblHolydayWork]
                                 where HCode='" + hid + "'";
             DataTable DTLocal = new DataTable();
 
@@ -198,6 +201,8 @@ namespace SigmaERP.hrms.Leave
 
             txtDate.Text = DTLocal.Rows[0]["HDate"].ToString();
             txtDescription.Text = DTLocal.Rows[0]["Description"].ToString();
+            bool isOpen = Convert.ToBoolean(DTLocal.Rows[0]["isOpen"]);
+            chkIsRegular.Checked = isOpen;
             if (ViewState["__UpdateAction__"].Equals("0"))
             {
                 btnSave.Enabled = false;

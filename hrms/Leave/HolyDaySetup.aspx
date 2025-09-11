@@ -57,64 +57,56 @@
     </div>
     <div class="main_box_body_leave Lbody">
         <div class="main_box_content_leave" id="divElementContainer" runat="server">
-    <div class="input_division_info">
-        <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="form-group">
-
-                    <label for="ddlCompanyList" class="color-dark fs-14 fw-500 align-center mb-10">Company Name<span class="requerd1">*</span></label>
-                    <div class="support-form__input-id">
-                      <div class="dm-select ">
-                            <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control select_width" Width="96%" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
-                        </asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-            </div>
-             <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="form-group">
-
-                    <label for="ddlCompanyList" class="color-dark fs-14 fw-500 align-center mb-10">Date<span class="requerd1">*</span></label>
-                    <div class="support-form__input-id">
-                        
-                            <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" Width="96%" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
-                            <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
-                                PopupButtonID="imgDate" Enabled="True"
-                                TargetControlID="txtDate" ID="CExtApplicationDate">
-                            </asp:CalendarExtender>
-
-                     <%--       <asp:RegularExpressionValidator ID="RegularExpressionValida" runat="server"
-                                ControlToValidate="txtDate" ValidationExpression="^(([1-9])|(0[1-9])|(1[0-2]))\/((0[1-9])|([1-31]))\/((19|20)\d\d)$" Display="Dynamic" ValidationGroup="save" SetFocusOnError="true" ErrorMessage="invalid date">*</asp:RegularExpressionValidator>--%>
-
-                    </div>
-                </div>
-            </div>
-             <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="form-group">
-
-                    <label for="ddlCompanyList" class="color-dark fs-14 fw-500 align-center mb-10">Description<span class="requerd1">*</span></label>
-                    <div class="support-form__input-id">
-                        
-                         <asp:TextBox ID="txtDescription" ClientIDMode="Static" runat="server" Width="96%" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
-                        <asp:RequiredFieldValidator ForeColor="Red" ValidationGroup="save" ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDescription" ErrorMessage="*"></asp:RequiredFieldValidator>
-
-                        
-                    </div>
-                </div>
-            </div>
-
-                         <div class="col-lg-3 col-md-6 col-sm-12">
-                <div class="form-group">
-
-                    <label for="ddlCompanyList" style="visibility:hidden" class="color-dark fs-14 fw-500 align-center mb-10"><span class="requerd1"></span>Save</label>
-                    <div class="support-form__input-id">
-       <asp:Button ID="btnSave" CssClass="btn btn-primary btn-default btn-squared px-30 m-2" ValidationGroup="save" runat="server" Text="Save" OnClick="btnSave_Click" />
-                    </div>
-                </div>
+ <div class="input_division_info container-fluid">
+    <div class="row g-3">
+        
+        <!-- Company Name -->
+        <div class="col-xl col-lg col-md-6 col-sm-12">
+            <div class="form-group">
+                <label for="ddlCompanyList" class="color-dark fs-14 fw-500 mb-2">Company Name<span class="requerd1">*</span></label>
+                <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged"></asp:DropDownList>
             </div>
         </div>
-  
+
+        <!-- Date -->
+        <div class="col-xl col-lg col-md-6 col-sm-12">
+            <div class="form-group">
+                <label for="txtDate" class="color-dark fs-14 fw-500 mb-2">Date<span class="requerd1">*</span></label>
+                <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                <asp:CalendarExtender runat="server" Format="dd-MM-yyyy"
+                    TargetControlID="txtDate" ID="CExtApplicationDate" Enabled="True">
+                </asp:CalendarExtender>
+            </div>
         </div>
+
+        <!-- Description -->
+        <div class="col-xl col-lg col-md-6 col-sm-12">
+            <div class="form-group">
+                <label for="txtDescription" class="color-dark fs-14 fw-500 mb-2">Description<span class="requerd1">*</span></label>
+                <asp:TextBox ID="txtDescription" ClientIDMode="Static" runat="server" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                <asp:RequiredFieldValidator ForeColor="Red" ValidationGroup="save" ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDescription" ErrorMessage="*"></asp:RequiredFieldValidator>
+            </div>
+        </div>
+
+        <!-- Is Regular -->
+        <div class="col-xl col-lg col-md-6 col-sm-12 d-flex align-items-center">
+            <div class="form-group">
+                <%--<label for="txtDescription" class="color-dark fs-14 d-block fw-500 mb-2">Status<span class="requerd1">*</span></label>--%>
+                <asp:CheckBox runat="server" ID="chkIsRegular" Text="Is Regular" CssClass="form-check-input me-2" />
+            </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="col-xl col-lg col-md-6 col-sm-12  d-flex align-items-center">
+            <div class="form-group">
+                <label style="visibility:hidden" class="mb-2">Save</label>
+                <asp:Button ID="btnSave" CssClass="btn btn-primary w-100" ValidationGroup="save" runat="server" Text="Save" OnClick="btnSave_Click" />
+            </div>
+        </div>
+
+    </div>
+</div>
+
 
         <div class="show_division_info">
             <%--<div id="ShiftConfig" class="datatables_wrapper" runat="server" style="width:100%; height:auto; max-height:500px;overflow:auto;overflow-x:hidden;"></div>--%>
