@@ -200,7 +200,7 @@ namespace SigmaERP.classes
             catch { return null; }
         }
 
-        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
+        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition,string pSftCondition)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace SigmaERP.classes
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +
                          "   FROM            dbo.v_tblAttendanceRecord " +
-                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + " " +
+                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + " " + pSftCondition + " " +
                          "   GROUP BY EmpId, EmpCardNo,EmpProximityNo,PSftId, EmpName,PSftName ,DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
                         " order by PSftName, convert(int,DptId), convert(int,GId),CustomOrdering";
                 
@@ -244,7 +244,7 @@ namespace SigmaERP.classes
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +
                         "   FROM dbo.v_tblAttendanceRecord " +
-                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" + unitCondition + " " +
+                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" + unitCondition + " "+ pSftCondition + " " +
                         "    GROUP BY EmpId, EmpCardNo,EmpProximityNo, PSftId,EmpName, DsgName,PSftName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering";
                 DataTable dt = new DataTable();
                 sqlDB.fillDataTable(query, dt);

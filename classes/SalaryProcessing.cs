@@ -178,10 +178,16 @@ namespace SigmaERP.classes
                             continue;
                         }
                     //getting Attendance Status (Leave,Absent,Present,Late) 
-                    salaryRecord = getAttendanceStatus(salaryRecord);
-                    // check git
-                    //check Attendance bonus
-                    salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString(), payRollPolicy["AttendanceBonus"].ToString());
+                    if(generateFor == "regular")
+                            salaryRecord = getAttendanceStatus(salaryRecord);
+                    else
+                            salaryRecord = getAttendanceStatus_Complaince(salaryRecord);
+
+
+
+                        // check git
+                        //check Attendance bonus
+                        salaryRecord = checkAttendanceBonus(salaryRecord, employee["EmpDutyType"].ToString(), payRollPolicy["AttendanceBonus"].ToString());
                     //Night Bill 
                     salaryRecord.NightbilAmount = CalculatedNightBill(employee["EmpTypeId"].ToString(), payRollPolicy["NightAllowance"].ToString(), Convert.ToInt32(salaryRecord.NightBillDays));
 
@@ -227,16 +233,28 @@ namespace SigmaERP.classes
                     {
                         salaryRecord = getOverTime(salaryRecord, employee);
                     }
-                    //Payable days calculations 
-                    salaryRecord = getPayableDaysCalculation(salaryRecord, hasSpesialGross, PersentOfGross);
+                        //Payable days calculations 
+                        if (generateFor == "regular")
+                            salaryRecord = getPayableDaysCalculation(salaryRecord, hasSpesialGross, PersentOfGross);
+                        else
+                            salaryRecord = getPayableDaysCalculation_Complaince(salaryRecord, hasSpesialGross, PersentOfGross);
 
-                    //Payable amount calculation
-                    salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction,payRollPolicy["AbsentDeduction"].ToString());
 
 
-       
 
-                       if(employee["DsgId"].ToString()== "0005" && generateFor== "compliance")
+                        //Payable amount calculation
+
+                        //if(generateFor == "regular")
+                            salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction, payRollPolicy["AbsentDeduction"].ToString());
+                        
+
+
+
+
+
+
+
+                        if (employee["DsgId"].ToString()== "0005" && generateFor== "compliance")
 
                         {
                             salaryRecord.NightbilAmount = 0;
@@ -370,7 +388,37 @@ namespace SigmaERP.classes
         }
 
 
+        private SalaryRecord getAttendanceStatus_Complaince(SalaryRecord salaryRecord)
+        {
+            //Attendance Summary 
+            dt = new DataTable();
 
+            string query = @"WITH h AS
+                    (
+                    SELECT CompanyId, HDate, 'H' AS AttStatus, 'Holiday' AS StateStatus
+                    FROM dbo.tblHolydayWork
+                    )
+                    select EmpId, sum(NightAllowCount) as NightAllowCount,sum(case  when h.HDate is null and v.ATTStatus In('P', 'L') AND PaybleDays = '1' and Isnull(isweekend, 0) = 0    then 1 else 0 end) as P,
+                    sum(case when h.HDate is null and  v.ATTStatus In('L') AND PaybleDays = '1' then 1 else 0 end) as L, Sum(Case when(h.HDate is null and v.ATTStatus = 'A' and Isnull(isweekend, 0) = 0) or  v.StateStatus = 'Leave Without Pay (LWP)' or(v.ATTStatus In('P', 'L') AND PaybleDays = '0')  then 1 else 0 end) as A,Sum(case when v.StateStatus = 'Casual Leave' then 1 else 0 end) as 'CL',Sum(case when v.StateStatus = 'Sick Leave' then 1 else 0 end) as 'SL',Sum(case when v.StateStatus = 'Annual Leave' then 1 else 0 end) as 'EL', Sum(case when v.StateStatus = 'Maternity Leave' then 1 else 0 end) as 'ML', Sum(case when v.StateStatus = 'Leave Without Pay (LWP)' then 1 else 0 end) as 'LWP',sum(case when v.ATTStatus = 'Lv'then 1 else 0 end) as Lv from v_tblAttendanceRecord v left outer join h on v.ATTDate=h.HDate  where  EmpId='" + salaryRecord.EmpId + "' And AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' group by EmpId";
+
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                salaryRecord.PresentDay = int.Parse(dt.Rows[0]["P"].ToString());
+                salaryRecord.LateDays = int.Parse(dt.Rows[0]["L"].ToString());
+                salaryRecord.AbsentDay = int.Parse(dt.Rows[0]["A"].ToString());
+                salaryRecord.CasualLeave = int.Parse(dt.Rows[0]["CL"].ToString());
+                salaryRecord.SickLeave = int.Parse(dt.Rows[0]["SL"].ToString());
+                salaryRecord.AnnualLeave = int.Parse(dt.Rows[0]["EL"].ToString());
+                salaryRecord.LWP = int.Parse(dt.Rows[0]["LWP"].ToString());
+                salaryRecord.ML = int.Parse(dt.Rows[0]["ML"].ToString());
+                salaryRecord.TotalLeave = int.Parse(dt.Rows[0]["Lv"].ToString());
+                salaryRecord.OthersLeave = salaryRecord.TotalLeave - (salaryRecord.CasualLeave + salaryRecord.SickLeave + salaryRecord.AnnualLeave + salaryRecord.LWP + salaryRecord.ML);
+                salaryRecord.NightBillDays = int.Parse(dt.Rows[0]["NightAllowCount"].ToString());
+
+            }
+            return salaryRecord;
+        }
 
         private SalaryRecord getAttendanceStatus(SalaryRecord salaryRecord)
         {
@@ -438,6 +486,55 @@ namespace SigmaERP.classes
 
             return salaryRecord;
         }
+
+
+        private SalaryRecord getPayableDaysCalculation_Complaince(SalaryRecord salaryRecord, bool hasSpesialGross, string PersentOfGross)
+        {
+            //WeekendHoliday
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and (ATTStatus='W' or isWeekend=1)");
+            salaryRecord.WeekendHoliday = dt.Rows.Count;
+
+            
+
+            //FestivalHoliday
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(@"WITH h AS(SELECT CompanyId, HDate, 'H' AS AttStatus, 'Holiday' AS StateStatus
+             FROM dbo.tblHolydayWork)
+            select distinct format(ATTDate, 'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord v left outer join h on v.ATTDate = h.HDate where ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and(h.HDate is not null or v.ATTStatus='H' )");
+            salaryRecord.FestivalHoliday = dt.Rows.Count;
+
+            
+
+            double PresentSalary = salaryRecord.EmpPresentSalary;
+            if (salaryRecord.FromDate.Day > 1 || salaryRecord.ToDate.Day < salaryRecord.DaysInMonth)
+            {
+
+                int TotalDays = (salaryRecord.ToDate.Day - salaryRecord.FromDate.Day) + 1;  // this line find out active days
+
+                salaryRecord.Activeday = TotalDays - salaryRecord.WeekendHoliday - salaryRecord.FestivalHoliday;
+
+                //-----------Get NetGross--------------------                
+                PresentSalary = Round((salaryRecord.EmpPresentSalary / salaryRecord.DaysInMonth) * TotalDays);
+
+                //-----------End Get NetGross----------------
+            }  // else part is commented. becouse Active days for all regular employee is same, comes from Month setup.
+            //else
+            //{
+            //    salaryRecord.Activeday = salaryRecord.DaysInMonth - salaryRecord.WeekendHoliday - salaryRecord.FestivalHoliday;
+            //}
+            if (hasSpesialGross)
+            {
+                double percent = double.Parse(PersentOfGross);
+                PresentSalary = PresentSalary * (percent / 100);
+            }
+
+            salaryRecord.EmpNetGross = PresentSalary;
+            salaryRecord.PayableDays = salaryRecord.CasualLeave + salaryRecord.AnnualLeave + salaryRecord.SickLeave + salaryRecord.PresentDay + salaryRecord.WeekendHoliday + salaryRecord.FestivalHoliday;
+
+            return salaryRecord;
+        }
+
         private Double Round(Double Amount)
         {
             double frac = Amount % 1;
@@ -621,7 +718,11 @@ namespace SigmaERP.classes
         private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType,string AttendanceBonus)
         {
 
+              
+              
 
+            if (!HasCompleteDutyDays())
+                return salaryRecord;
 
             if (salaryRecord.AbsentDay > 0)
             {
@@ -1050,7 +1151,23 @@ namespace SigmaERP.classes
         }
 
 
+        private bool HasCompleteDutyDays()
+        {
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where  ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM") + "-" + "01" + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and ATTStatus in('W','H') ");
+            int totalDays = dt.Rows.Count;
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select distinct SftId, EmpId,Convert(varchar(11),ATTDate,111) as ATTDate,InHour,InMin,InSec,OutHour,OutMin,OutSec,ATTStatus from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND ATTStatus In ('P','L')  AND AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM") + '-' + "01" + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' AND PaybleDays='1' ");
+            totalDays += dt.Rows.Count;
+            if (totalDays != salaryRecord.DaysInMonth)
+                return false;
+            else
+              return true;
+        }
 
-  
+
+
+
+
     }
 }
