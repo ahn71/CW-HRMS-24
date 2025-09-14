@@ -715,7 +715,7 @@ WHERE v.CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Mont
     SELECT CompanyId, HDate, 'H' AS AttStatus, 'Holiday' AS StateStatus
     FROM dbo.tblHolydayWork
 )
-Select EmpId, SUM(CASE WHEN v.StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN v.StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN v.StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN v.StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN v.StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',
+Select EmpId, SUM(CASE WHEN  h.HDate is null and v.StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN v.StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN v.StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN v.StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN v.StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',
 
  SUM(CASE WHEN h.HDate IS NOT NULL THEN 1  ELSE 0 END) AS Holiday,
  SUM(CASE WHEN h.HDate IS NULL AND ISNULL(v.IsWeekend, 0) = 0 AND v.StateStatus = 'Present' THEN 1  ELSE 0 END) AS Present,
