@@ -1,8 +1,11 @@
 ﻿using ComplexScriptingSystem;
+using SigmaERP.classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
+using System.Web.Routing;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -13,24 +16,32 @@ namespace SigmaERP.hrms
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+
+
             if (!IsPostBack)
             {
                 try
                 {
+                    //string url = "attendance/month-setup";
+
+
                     HttpCookie getCookies = Request.Cookies["userInfo"];
                     if (getCookies == null || getCookies.Value == "")
                     {
                         // Response.Redirect("~/ControlPanel/Login.aspx");
-                        Response.Redirect("~/hrms/UI/auth/login.aspx");
+                        // Response.Redirect("~/hrms/UI/auth/login.aspx");                        
+                        Response.RedirectToRoute(Routing.LoginRouteName);
                     }
                     else
                     {
 
-                        UserName.InnerText = getCookies["__getFirstName__"].ToString();
+                        ////UserName.InnerText = getCookies["__getFirstName__"].ToString();
+                        UserName.InnerText = Session["__GetUserFullName__"].ToString();
                         ViewState["__getUserId__"] = getCookies["__getUserId__"].ToString();
                         Session["__GetUID__"] = ViewState["__getUserId__"].ToString();
-                        UserType.InnerText = "  " + ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString());
-                      //  GSName.InnerText = getCookies["__CompanyName__"].ToString();
+                        UserEmail.InnerText = Session["__UserEmailText__"].ToString();
+                        //UserType.InnerText = "  " + ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString());
+                        //  GSName.InnerText = getCookies["__CompanyName__"].ToString();
 
                         Session["__GetCompanyId__"] = ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
@@ -85,18 +96,52 @@ namespace SigmaERP.hrms
                         }
 
 
-                      
+
                     }
-               
+
 
                 }
                 catch (Exception ex)
                 {
                     //Response.Redirect("~/ControlPanel/Login.aspx");
-                    Response.Redirect("~/hrms/UI/auth/login.aspx");
+                    // Response.Redirect("~/hrms/UI/auth/login.aspx");
+                    Response.RedirectToRoute(Routing.LoginRouteName);
                 }
             }
-        }      
+        }
+
+        //        public bool IsRouteExists(string url)
+        //        {
+        ///*            url = url.().ToLower(); */ // Normalize the input URL
+        //            foreach (Route route in RouteTable.Routes)
+        //            {
+        //                var routeUrl = route.Url?.Trim().ToLower();  // Normalize each route URL
+        //                if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Equals(url))  // Use Equals instead of Contains
+        //                {
+        //                    return true;
+        //                }
+        //            }
+        //            return false;
+        //        }
+        //public bool IsRouteExists(string url)
+        //{
+        //    foreach (Route route in RouteTable.Routes)
+        //    {
+        //        var routeUrl = route.Url?.ToLower();
+        //        if (!string.IsNullOrEmpty(routeUrl) && routeUrl.Contains(url.ToLower()))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+
+        public bool IsRouteExists(string url)
+        {
+            return PermissionManager.IsUrlAllowed(url);
+        }
+
+
 
         protected void btnLogout_Click(object sender, EventArgs e)
         {
@@ -110,7 +155,8 @@ namespace SigmaERP.hrms
                 Response.Cookies.Add(setCookies);
                 FormsAuthentication.SignOut();
                 // Response.Redirect("~/ControlPanel/Login.aspx",false);
-                Response.Redirect("~/hrms/UI/auth/login.aspx", false);
+                Response.Redirect("~/hrms/login", false);
+
             }
             catch (Exception ex) { }
         }

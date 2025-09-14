@@ -1,0 +1,1129 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="employee-list.aspx.cs" Inherits="SigmaERP.hrms.personnel.employee_list" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+         <style>
+            .packagesTable {
+                padding: 0 !important;
+            }
+
+            td {
+                text-align: left;
+            }
+
+            .w-100 {
+                width: 100%;
+            }
+
+            .justify-between {
+                justify-content: space-between;
+            }
+
+            .me-2 {
+                margin-right: 0.5rem;
+            }
+
+            i {
+                margin-right: 0 !important;
+            }
+             label{
+                 margin-left: 0 !important;
+             }
+             .row > *{
+                 margin-top: 0 !important;
+             }
+         .loaderDaily {
+             position: absolute;
+             left: 50%;
+             top: 8%;
+
+         }
+         .user-role{
+             font-size:10px !important;
+         }
+
+             .modal-backdrop {
+                 position: fixed;
+                 top: 0;
+                 left: 0;
+                 right: 0;
+                 bottom: 0;
+                 background: rgba(0,0,0,0.4);
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+                 z-index: 9999;
+             }
+
+             .modal {
+                 background: #fff;
+                 padding: 20px;
+                 border-radius: 8px;
+                 width: 350px;
+                 box-shadow: 0 0 10px rgba(0,0,0,0.3);
+             }
+
+
+        </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+            <div class="mt-1">
+        <div class="products_page product_page--grid mb-30">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
+                         <div class="card" id="EmpTypeSection">
+                            <div id="toggleEmpType" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px; width: 16px;">
+                                        Filter by EmpType
+                                    </span>
+                                    <i id="arrowIconEmpType" class="fas fa-chevron-down"></i>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside>
+                                    <div class="card border-0 shadow-none mt-10 collapse show" id="multiCollapseExample4">
+                                        <div class="product-brands">
+                                            <ul id="empTypeList" class="list-unstyled mb-0"></ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                        <div class="card" id="unitSection">
+                            <div id="toggleFilter" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size:16px; color:black";>
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter bye Unit
+                                    </span>
+                                    <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample1">
+                                        <div class="product-brands" overflow-y: auto;">
+                                            <ul id="UnitList">
+                                              
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                        <div class="card mt-1">
+                            <div id="toggleDepartment" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
+                                        Filter bye Department
+                                    </span>
+                                    <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample2">
+                                        <div class="product-brands"  overflow-y: auto;">
+                                            <ul id="departmentList">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                    </div>
+                    <div class=" col-lg-9 mt-xl-0 mt-lg-30">
+
+                        <div class="row product-page-list justify-content-center">
+                            <div class="col-12 mb-25 px-10">
+                                <div class="card">
+                                    <div class="card-body position-relative mt-3" style="padding-top: 15px !important;">
+
+                                        <%--start--%> 
+                                        <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
+                                            <%--start--%>
+                                            <div class="loaderparent">
+                                                <div class="ad-table-table__header mb-3">
+                                                    <div class="container-fluid px-0">
+                                                        <div class="row g-3 align-items-end">
+
+                                                            <!-- Search Filters -->
+                                                            <div class="col-lg-9">
+                                                                <div class="row g-3">
+                                                                    <div class="col-md-3">
+                                                                        <label for="ddlShift" class="form-label mb-1">Permanent Shift</label>
+                                                                        <select name="ddlShift" id="ddlShift" class="form-control">
+                                                                            <!-- Options -->
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <label for="txtEmpCardNo" class="form-label mb-1">Employee ID</label>
+                                                                        <input type="text" id="txtEmpCardNo" class="form-control" placeholder="Employee ID...">
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <label for="txtStartDate" class="form-label mb-1">Start Date</label>
+                                                                        <input type="date" id="txtStartDate" class="form-control">
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <label for="txtEndDate" class="form-label mb-1">End Date</label>
+                                                                        <input type="date" id="txtEndDate" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Search and Export -->
+                                                            <div class="col-lg-3 d-flex justify-content-end align-items-end">
+                                                                <div class="me-2">
+                                                                    <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()" class="btn-sm btn btn-primary">
+                                                                        Search
+                                                                    </button>
+                                                                </div>
+                                                                <div class="dropdown">
+                                                                    <!-- Export Dropdown Button -->
+                                                                    <button class="btn-sm btn btn-success dropdown-toggle" type="button" data-bs-toggle="modal" data-bs-target="#columnModal">
+                                                                        Export
+                                                                    </button>
+
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Loader -->
+                                                <div class="loader-size loaderDaily" style="display: none">
+                                                    <div class="dm-spin-dots dot-size spin-sm">
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Table Container -->
+                                                <div id="employeeContainer">
+                                                    <table class="table mb-0 packagesTable table-borderless adv-table"
+                                                        data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="25">
+                                                        <!-- Table Data -->
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div>
+             
+                                    </div>
+
+     
+                             
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+         </div>
+
+
+
+
+
+    <script>
+            var rootUrl = '<%= Session["__RootUrl__"]%>';
+            var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+            var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
+            var getEmployeeeUrl = `${rootUrl}/api/Employee/employees`;
+
+            var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
+            var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+            var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
+            var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
+            var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
+
+
+            var token = '<%= Session["__UserToken__"] %>';
+
+
+            $(document).ready(function () {
+
+               // GetEmployees();
+
+               // $('#DataSubmitContainer').hide();
+                $('#toggleFilter').on('click', function () {
+                    unitToggle();
+                });
+
+                $('#toggleDepartment').on('click', function () {
+                    DepartmentToggle();
+                });
+                $('#toggleEmpType').on('click', function () {
+                    EmpTypetToggle();
+                });
+                GetShifts();
+                GetNewShifts();
+                GetUnit();
+                GetDepartment();
+                GetEmpType();
+                GetEmployees();
+
+            });
+
+            function EmpTypetToggle() {
+                const unitList = $('#empTypeList');
+                const arrowIcon = $('#arrowIconEmpType');
+
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+
+            function unitToggle() {
+                const unitList = $('#UnitList');
+                const arrowIcon = $('#arrowIcon');
+
+                unitList.toggle();
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+
+            function GetEmpType() {
+            ApiCall(getEmpTypeUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        console.log('Before table Data Bind', responseData);
+
+                        bindEmpType(responseData);
+
+                        console.log('after Table Data Bind ', responseData);
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+        // Function to bind EmpType list
+        function bindEmpType(empTypeList) {
+            const $list = $('#empTypeList');
+            $list.empty();
+
+            // Add "Select All" option
+            const selectAllHTML = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllEmpTypes">
+                <label for="selectAllEmpTypes">
+                    <span class="checkbox-text" style="margin-left: 20px;">Select All</span>
+                </label>
+            </div>
+        </li>
+    `;
+            $list.append(selectAllHTML);
+
+            // Append each EmpType checkbox
+            empTypeList.forEach((empType, index) => {
+                const checkboxId = `empType-check-${index}`;
+                const itemHTML = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="empTypeCheckbox" id="${checkboxId}" value="${empType.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left: 20px;">${empType.name}</span>
+                    </label>
+                </div>
+            </li>
+        `;
+                $list.append(itemHTML);
+            });
+        }
+
+        // "Select All" checkbox behavior
+        $(document).on('change', '#selectAllEmpTypes', function () {
+            const isChecked = $(this).is(':checked');
+            $('.empTypeCheckbox').prop('checked', isChecked);
+        });
+
+        // Sync "Select All" checkbox based on individual checks
+        $(document).on('change', '.empTypeCheckbox', function () {
+            const total = $('.empTypeCheckbox').length;
+            const checked = $('.empTypeCheckbox:checked').length;
+            $('#selectAllEmpTypes').prop('checked', total === checked);
+        });
+
+        // Get selected EmpType query string
+        function getSelectedEmpTypeQuery() {
+            return $('.empTypeCheckbox:checked')
+                .map(function () {
+                    return 'EmpTypeIds=' + $(this).val();
+                })
+                .get()
+                .join('&');
+        }
+
+
+
+            function DepartmentToggle() {
+                const unitList = $('#departmentList');
+                const arrowIcon = $('#arrowIcondpt');
+
+                unitList.toggle(); // Corrected variable
+
+                if (unitList.is(':visible')) {
+                    arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+                } else {
+                    arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+                }
+            }
+
+
+            function formatDate(date) {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${year}-${month}-${day}`;
+            }
+            function SearchEmployee() {
+
+
+                GetEmployees();
+
+            }
+
+            function GetEmployees() {
+                const EmpCardNo = $('#txtEmpCardNo').val();
+                const FromDate = $('#txtStartDate').val();
+                const ToDate = $('#txtEndDate').val();
+                const Shift = $('#ddlShift').val();
+
+                const deptQuery = getSelectedDepartmentQuery(); // string: DptIds=0002&DptIds=0003
+                const empTypeQuery = getSelectedEmpTypeQuery(); // string: EmpTypeIds=2&EmpTypeIds=1
+                const unit = getSelectedUnitQuery(); // string: key=value
+
+                const params = new URLSearchParams();
+                params.append('CompanyId', CompanyID);
+
+                if (EmpCardNo) {
+                    params.append('EmpCardNo', EmpCardNo);
+                }
+
+                if (Shift && Shift !== 'null') {
+                    params.append('SftId', Shift);
+                }
+
+                params.append('DeautyType', 'Roster');
+
+                // Show loader
+                $('.loaderDaily').show();
+                $('.loaderparent').css('opacity', '0.5');
+
+                // Build base URL with core params
+                let url = `${getEmployeeeUrl}?${params.toString()}`;
+
+                // Append additional query strings if available
+                if (deptQuery) {
+                    url += `&${deptQuery}`;
+                }
+                if (empTypeQuery) {
+                    url += `&${empTypeQuery}`;
+                }
+                if (unit) {
+                    url += `&${unit}`;
+                }
+
+                if (FromDate) {
+                    url += `&JoiningStartDate=${FromDate}`;
+                }
+                if (ToDate) {
+                    url += `&JoiningEndDate=${ToDate}`;
+                }
+
+                // API call
+                ApiCall(url, token)
+                    .then(response => {
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+
+                        if (response.statusCode === 200) {
+                            $('#alertContainer').hide();
+                            $('#DataSubmitContainer').show();
+                            bindTableData(response.data);
+                             sessionStorage.setItem('__employeesData__', JSON.stringify(response.data));
+                        } else {
+                            console.error('API Error:', response.message);
+                            bindTableData([]);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Network Error:', error);
+                        bindTableData([]);
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+                    });
+        }
+
+        async function ExportEmployeeData(exportType) {
+            const jsonData = sessionStorage.getItem('__employeesData__');
+            if (!jsonData) {
+                Swal.fire('No Data', 'No employee data found to export.', 'info');
+                return;
+            }
+
+            let data = JSON.parse(jsonData);
+            if (data.length === 0) {
+                Swal.fire('Empty', 'No data available to export.', 'warning');
+                return;
+            }
+
+            if (selectedEmployeeIds.size === 0) {
+                Swal.fire('Warning', 'Please select at least one employee before exporting.', 'warning');
+                return;
+            }
+
+            const excludedFields = [
+                'empId', 'gid', 'unitId', 'cSftId', 'dptId', 'perSftId', 'companyId',
+                'employeeImage', 'empImage', 'empSignature', 'customOrdering', 'sftId', 'empTypeId'
+            ];
+
+            const headerMap = {
+                empCardNo: 'Employee ID',
+                empName: 'Employee Name',
+                fullName: 'Full Name',
+                dptName: 'Department',
+                dsgName: 'Designation',
+                empType: 'Employee Type',
+                joiningDate: 'Joining Date',
+                shift: 'Shift',
+                deautyType: 'Duty Type',
+                weekendType: 'Weekend Type',
+                empPresentSalary: 'Present Salary',
+                unitName: 'Unit Name'
+            };
+
+            const filteredSelectedData = data.filter(row => selectedEmployeeIds.has(row.empId));
+
+            const exportData = filteredSelectedData.map(row => {
+                const newRow = {};
+                Object.keys(headerMap).forEach(key => {
+                    if (!excludedFields.includes(key)) {
+                        newRow[headerMap[key]] = row[key] ?? '';
+                    }
+                });
+                return newRow;
+            });
+
+            if (exportData.length === 0) {
+                Swal.fire('Notice', 'No matching selected employee data to export.', 'info');
+                return;
+            }
+
+            const fileName = `Employee_Roster_${new Date().toISOString().slice(0, 10)}`;
+
+            if (exportType === 'excel') {
+                const worksheet = XLSX.utils.json_to_sheet(exportData, { origin: 'A2' });
+                XLSX.utils.sheet_add_aoa(worksheet, [['Roster Report']], { origin: 'A1' });
+
+                const totalColumns = Object.keys(headerMap).length;
+                worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: totalColumns - 1 } }];
+                worksheet['A1'].s = {
+                    font: { name: 'Arial', sz: 20, bold: true },
+                    alignment: { horizontal: 'center', vertical: 'center' }
+                };
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Employee Roster');
+
+                XLSX.writeFile(workbook, `${fileName}.xlsx`, {
+                    bookType: 'xlsx',
+                    type: 'binary',
+                    cellStyles: true
+                });
+
+            } else if (exportType === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                doc.setFontSize(18);
+                doc.text('Roster Report', 105, 15, null, null, 'center');
+
+                const columns = Object.values(headerMap).filter(h => !excludedFields.includes(h));
+                const rows = exportData.map(row => columns.map(col => row[col]));
+
+                doc.autoTable({
+                    startY: 20,
+                    head: [columns],
+                    body: rows,
+                    styles: { fontSize: 9 },
+                    headStyles: { fillColor: [41, 128, 185] },
+                });
+
+                doc.save(`${fileName}.pdf`);
+            } else {
+                Swal.fire('Invalid Format', 'Please specify either "excel" or "pdf" as export type.', 'error');
+            }
+        }
+
+
+
+
+            //function GetEmployees() {
+            //    const EmpCardNo = $('#txtEmpCardNo').val();
+            //    const Shift = $('#ddlShift').val();
+            //    const deptQuery = getSelectedDepartmentQuery(); 
+            //    const empTypeQuery = getSelectedEmpTypeQuery();
+            //    const unit = getSelectedUnitQuery();
+            //    let empCardNo = '';
+            //    if (EmpCardNo && EmpCardNo.length > 0) {
+            //        empCardNo = `&EmpCardNo=${EmpCardNo}`;
+            //    }
+
+            //    let shiftId = '';
+            //    if (Shift !== null && Shift !== 'null') {
+            //        shiftId = `&SftId=${Shift}`;
+            //    }
+
+            //    let dutyType = '&DeautyType=Roster';
+
+            //   $('.loaderDaily').show();
+            //   $('.loaderparent').css('opacity', '0.5');
+            //    const url = `${getEmployeeeUrl}?CompanyId=${CompanyID}&${deptQuery}${empCardNo}${shiftId} ${dutyType}&${empTypeQuery}&${unit}`;
+
+            //    ApiCall(url, token)
+            //        .then(response => {
+            //            if (response.statusCode === 200) {
+            //                const message = `Weekend employee data loaded for the period:`;
+            //                $('#alertContainer').hide();
+            //                $('#DataSubmitContainer').show();
+            //                $('.loaderDaily').hide();
+            //                $('.loaderparent').css('opacity', '1');
+            //                bindTableData(response.data);
+                       
+            //            } else {
+            //                console.error('API Error:', response.message);
+            //                bindTableData([]);
+            //                $('.loaderDaily').hide();
+            //                $('.loaderparent').css('opacity', '1');
+            //            }
+            //        })
+            //        .catch(error => {
+            //            console.error('Network Error:', error);
+            //            bindTableData([]);
+            //            $('.loaderDaily').hide();
+            //            $('.loaderparent').css('opacity', '1');
+            //        });
+            //}
+
+
+            let allEmployeeData = [];
+            const selectedEmployeeIds = new Set();
+
+            function bindTableData(data) {
+                const $table = $('.adv-table');
+                const defaultImage = '/hrms/user_img_default.jpg';
+
+                allEmployeeData = data;
+                if ($table.data('footable')) {
+                    $table.data('footable').destroy();
+                }
+
+                $table.html('');
+                data.forEach((row, index) => {
+                    row.serial = index + 1;
+                    row.userImage = null;
+                    const userImage = row.empImage || defaultImage;
+
+            //        row.action = `
+            //<div class="actions">
+            //    <ul class="">
+            //        <li>
+            //            <a href="javascript:void(0)"
+            //             data-emp-id="${row.empId}" 
+            //             data-emp-type="${row.empType}" 
+            //             class="btn btn-primary btn-sm text-white delete-btn remove">
+            //                <i class="uil uil-money-insert"></i>Set Salary
+            //            </a>
+            //        </li>
+            //    </ul>
+            //</div>`;
+                    row.userImage = `
+            <div class="user-details-container d-flex align-items-center">
+                <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
+                <div>
+                    <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.empName}</a>
+                    <div class="user-role">${row.dptName},${row.dsgName}</div>
+                    <div class="user-role"></div>
+                </div>
+            </div>
+        `.trim();
+
+                    row.select = `
+            <input type="checkbox" class="EmployeerowCheckbox" data-id="${row.empId}" value="${row.empId}"
+                ${selectedEmployeeIds.has(row.empId) ? 'checked' : ''} />
+        `;
+                });
+
+                const columns = [
+                    {
+                        name: "select",
+                        title: `<input type="checkbox" id="selectAllEmployee" />`,
+                        className: "text-center",
+                        sortable: false,
+                        type: "html"
+                    },
+                    { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
+                    { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
+                    { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
+                    { name: "empType", title: "Emp Type", className: "userDatatable-content" },
+                    { name: "shift", title: "P. Shift", className: "userDatatable-content" },
+                    { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
+                    //{ name: "deautyType", title: "D. Type", className: "userDatatable-content" },
+                    //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
+                    //{ name: "action", title: "Action", className: "userDatatable-content" }
+                ];
+
+                try {
+                    $table.footable({
+                        columns: columns,
+                        rows: data,
+                        filtering: { enabled: false },
+                        paging: { enabled: true, size: 25 },
+                        sorting: true
+                    }).on('postinit.ft.table', function () {
+                        $('.footable-loader').hide();
+                        updateSelectAllCheckbox();
+                    });
+
+
+                } catch (error) {
+                    console.error("Error initializing table:", error);
+
+                }
+
+                let selectedEmpId = null;
+                let selectedEmpType = null;
+
+                $(document).off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                    selectedEmpId = $(this).data('emp-id');
+                    selectedEmpType = $(this).data('emp-type');
+
+                    $('#empIdField').val(selectedEmpId);
+
+                    // Optional: You can store the empType in a hidden field too
+                    $('#empTypeField').val(selectedEmpType); 
+
+                    console.log(selectedEmpType)
+                    console.log(selectedEmpId)
+
+                    $('#salaryModal').modal('show');
+                });
+
+           
+
+
+
+            }
+
+
+            $(document).on('change', '#selectAllEmployee', function () {
+                const isChecked = $(this).is(':checked');
+                allEmployeeData.forEach(emp => {
+                    if (isChecked) {
+                        selectedEmployeeIds.add(emp.empId);
+                       
+                    } else {
+                        selectedEmployeeIds.delete(emp.empId);
+                         
+                    }
+                });
+                bindTableData(allEmployeeData);
+            });
+
+            $(document).on('change', '.EmployeerowCheckbox', function () {
+                const empId = $(this).val();
+                if ($(this).is(':checked')) {
+                    selectedEmployeeIds.add(empId);
+                   
+                } else {
+                    selectedEmployeeIds.delete(empId);
+                }
+
+                updateSelectAllCheckbox();
+            });
+
+            function updateSelectAllCheckbox() {
+                const allIds = allEmployeeData.map(emp => emp.empId);
+                const isAllSelected = allIds.every(id => selectedEmployeeIds.has(id));
+                $('#selectAllEmployee').prop('checked', isAllSelected);
+               
+
+            }
+
+            function getSelectedEmployeeQuery() {
+                return Array.from(selectedEmployeeIds).map(id => `empIds=${id}`).join('&');
+            }
+
+
+            function GetUnit() {
+                ApiCall(getUnitUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                            console.log('Before table Data Bind', responseData);
+                             bindUnits(responseData);
+                            if (responseData.length > 1) {
+                                $('#unitSection').show();
+                            } else {
+                                $('#unitSection').hide();
+                            }
+
+
+                            console.log('after Table Data Bind ', responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+
+            function bindUnits(units) {
+                const $list = $('#UnitList');
+                $list.empty(); // Clear existing list
+
+                // Add "Select All" checkbox
+                const selectAllItem = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllUnits">
+                <label for="selectAllUnits">
+                    <span class="checkbox-text" style="margin-left:20px">
+                        Select All
+                    </span>
+                </label>
+            </div>
+        </li>
+    `;
+                $list.append(selectAllItem);
+
+                // Add unit checkboxes
+                units.forEach((unit, index) => {
+                    const checkboxId = `unit-check-${index}`;
+                    const listItem = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="unitCheckbox" id="${checkboxId}" value="${unit.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left:20px">
+                            ${unit.name}
+                        </span>
+                    </label>
+                </div>
+            </li>
+        `;
+                    $list.append(listItem);
+                });
+            }
+
+            // Event listener for "Select All" functionality
+            $(document).on('change', '#selectAllUnits', function () {
+                const isChecked = $(this).is(':checked');
+                $('.unitCheckbox').prop('checked', isChecked);
+            });
+
+            // Sync "Select All" when individual checkboxes are clicked
+            $(document).on('change', '.unitCheckbox', function () {
+                const total = $('.unitCheckbox').length;
+                const checked = $('.unitCheckbox:checked').length;
+                $('#selectAllUnits').prop('checked', total === checked);
+            });
+
+            // Optional: function to get selected unit IDs as query string
+            function getSelectedUnitQuery() {
+                return $('.unitCheckbox:checked')
+                    .map(function () {
+                        return 'UnitIds=' + $(this).val();
+                    })
+                    .get()
+                    .join('&');
+            }
+
+
+
+            function GetDepartment() {
+                ApiCall(getDepartmentUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                            console.log('Before table Data Bind', responseData);
+
+                            bindDepartments(responseData);
+
+                            console.log('after Table Data Bind ', responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+
+
+
+            function bindDepartments(departments) {
+                const $list = $('#departmentList');
+                $list.empty();
+                const selectAllItem = `
+                <li>
+                    <div class="checkbox-theme-default custom-checkbox">
+                        <input type="checkbox" id="selectAllRows">
+                        <label for="selectAllRows">
+                            <span class="checkbox-text" style="margin-left:20px">
+                               Select All 
+                            </span>
+                        </label>
+                    </div>
+                </li>
+            `;
+                $list.append(selectAllItem);
+                departments.forEach((dept, index) => {
+                    const checkboxId = `dept-check-${index}`;
+                    const listItem = `
+                    <li>
+                        <div class="checkbox-theme-default custom-checkbox">
+                            <input type="checkbox" class="rowCheckbox" id="${checkboxId}" value="${dept.dptId}">
+                            <label for="${checkboxId}">
+                                <span class="checkbox-text" style="margin-left:20px">
+                                    ${dept.dptName}
+                                </span>
+                            </label>
+                        </div>
+                    </li>
+                `;
+                    $list.append(listItem);
+                });
+            }
+            $(document).on('change', '#selectAllRows', function () {
+                const isChecked = $(this).is(':checked');
+                $('.rowCheckbox').prop('checked', isChecked);
+            });
+
+            $(document).on('change', '.rowCheckbox', function () {
+                const total = $('.rowCheckbox').length;
+                const checked = $('.rowCheckbox:checked').length;
+                $('#selectAllRows').prop('checked', total === checked);
+            });
+
+
+            function getSelectedDepartmentQuery() {
+                return $('.rowCheckbox:checked')
+                    .map(function () {
+                        return 'DptIds=' + $(this).val();
+                    })
+                    .get()
+                    .join('&');
+            }
+
+
+
+            function GetShifts() {
+                ApiCall(getShiftsUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                             PopulateDropdown(responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+
+
+            function PopulateDropdown(data) {
+                const dropdown = document.getElementById('ddlShift');
+                dropdown.innerHTML = '<option value="null">---Select---</option>';
+
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id; 
+                    option.textContent = item.name; 
+                    dropdown.appendChild(option);
+                });
+
+            }
+
+            function GetNewShifts() {
+                ApiCall(getShiftsUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            var responseData = response.data;
+                            PopulateNewDropdown(responseData);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+
+
+            function PopulateNewDropdown(data) {
+                const dropdown = document.getElementById('ddlNewShift');
+                dropdown.innerHTML = '<option value="null">---Select---</option>';
+
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    dropdown.appendChild(option);
+                });
+
+            }
+
+           function RosterSubmit() {
+            const startDate = $('#txtStartDate').val();
+            const endDate = $('#txtEndDate').val();
+            const Shift  = $('#ddlNewShift').val();
+           // const employeeQuery = getSelectedEmployeeQuery();
+
+           //const urlParams = new URLSearchParams(employeeQuery);
+           //const empIds = urlParams.getAll('empIds');
+
+           const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
+           
+
+           const formData = new FormData();
+           formData.append('fromDate', startDate);
+           formData.append('toDate', endDate);
+           formData.append('shiftId', Shift);
+           formData.append('companyId', CompanyID);
+           formData.append('empIds', employeeQuery);
+           
+               if (!startDate) {
+                   Swal.fire({
+                       icon: 'warning',
+                       title: 'Start Date Required',
+                       text: 'Please select a Start Date.',
+                       confirmButtonText: 'OK'
+                   });
+                   return;
+               }
+
+               if (!endDate) {
+                   Swal.fire({
+                       icon: 'warning',
+                       title: 'End Date Required',
+                       text: 'Please select an End Date.',
+                       confirmButtonText: 'OK'
+                   });
+                   return;
+               }
+
+               if (Shift=='null') {
+                   Swal.fire({
+                       icon: 'warning',
+                       title: 'Shift Required',
+                       text: 'Please select New Shift.',
+                       confirmButtonText: 'OK'
+                   });
+                   return;
+               }
+
+               if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Employee Selected',
+                    text: 'Please select Employee.',
+                    confirmButtonText: 'OK'
+                });
+                return;
+               }
+               $('.loaderDaily').show();
+               $('.loaderparent').css('opacity', '0.5');
+            ApiCallPostForm(
+                PostRosterURL,
+                token,
+                formData
+            )
+                .then(response => {
+                    if (response.statusCode === 200) {
+                        console.log('Roster Create Success');
+                        selectedEmployeeIds.clear();
+                        $('#selectAllEmployee').prop('checked', false);
+                        $('.EmployeerowCheckbox').prop('checked', false);
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: `The roster has been successfully created from ${startDate} to ${endDate}.`,
+                            confirmButtonText: 'OK'
+                        });
+
+                    } else {
+                        console.error('API Error:', response.message);
+                        $('.footable-loader').hide();
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+                        //$('#progress-section').hide();
+
+                    }
+                })
+                .catch(error => {
+                    console.error('Network Error:', error);
+                    $('.footable-loader').hide();
+                    $('.loaderparent').css('opacity', '1');
+                    //$('#progress-section').hide();
+                });
+        }
+
+
+    </script>
+<%--    <script src="../../assets/theme_assets/js/loadCompany.js"></script>
+    <script src="../../assets/theme_assets/js/apiHelper.js"></script>--%>
+
+    
+    <script src="../assets/theme_assets/js/loadCompany.js"></script>
+    <script src="../assets/theme_assets/js/apiHelper.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- SheetJS for Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- jsPDF + autoTable for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+</asp:Content>

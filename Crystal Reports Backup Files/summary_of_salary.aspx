@@ -77,14 +77,16 @@
                                         
                                     </asp:RadioButtonList>
                                 </td>
-                             <td>Payment Type</td>                                
+                           
+                             <%--<td>Payment Type</td>                                
                                 <td>                                   
                                     <asp:RadioButtonList ID="rblPaymentType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
                                                         <asp:ListItem Value="Cash" Selected="True">Cash</asp:ListItem>
                                                         <asp:ListItem Value="Bank">Bank</asp:ListItem>
                                                         <asp:ListItem Value="Check">Check</asp:ListItem>
                                     </asp:RadioButtonList>
-                                </td>
+                                </td>--%>
+                           
                             </tr>
                      </table>
                    

@@ -6,10 +6,11 @@
         #ContentPlaceHolder1_ContentPlaceHolder1_gvAdvaceList th, td {
             text-align:center;
         }
-           #ContentPlaceHolder1_ContentPlaceHolder1_gvAdvaceList th:nth-child(2), td:nth-child(2) {
+           #ContentPlaceHolder1_ContentPlaceHolder1_gvAdvaceList th:nth-child(3), td:nth-child(3) {
             text-align:left;
             padding-left:3px;
         }
+          
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -86,31 +87,58 @@
             <br />
               <asp:GridView ID="gvAdvaceList" runat="server" AutoGenerateColumns="false" HeaderStyle-Height="26px" HeaderStyle-Font-Bold="false" HeaderStyle-ForeColor="White" HeaderStyle-BackColor="#ffa500" DataKeyNames="AdvanceId" Width="100%" OnRowCommand="gvAdvaceList_RowCommand">
             <Columns>
+                <asp:TemplateField HeaderText="SL">
+                                <ItemTemplate>
+                                     <%# Container.DataItemIndex + 1 %>                                  
+                                </ItemTemplate>
+                                <ItemStyle HorizontalAlign="Center" />
+                            </asp:TemplateField>
                 <asp:TemplateField Visible="false">
                     <ItemTemplate>
                         <asp:HiddenField ID="HiddenField1" runat="server" Value='<%# Bind("AdvanceId") %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
                 <asp:BoundField DataField="EmpCardNo" HeaderText="EmpCardNo" Visible="true" ItemStyle-Width="100px" itemstyle-horizontalalign="center" ItemStyle-Height="26px" />
-                <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true" ItemStyle-Width="100px" itemstyle-horizontalalign="center" ItemStyle-Height="26px" />
+                <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true"  itemstyle-horizontalalign="center" ItemStyle-Height="26px" />               
                 <asp:BoundField DataField="AdvanceAmount" HeaderText="Advance" Visible="true" ItemStyle-Width="100px" itemstyle-horizontalalign="center" />
-                <asp:BoundField DataField="InstallmentNo" HeaderText="Ins.No." Visible="true" ItemStyle-Width="100px"  itemstyle-horizontalalign="center" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="red"/>
-                 <asp:BoundField DataField="InstallmentAmount" HeaderText="Ins.Amount" Visible="true" ItemStyle-Width="100px" itemstyle-horizontalalign="center" />
-               
+                  <asp:TemplateField  >
+                    <ItemStyle ForeColor="red" Font-Bold="true" Width="100px"/>
+                    <HeaderTemplate>
+                        Ins.No.
+                    </HeaderTemplate>
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="lblInstallmentNo" ClientIDMode="Static" Text='<%# Bind("InstallmentNo") %>'></asp:Label>                     
+                    </ItemTemplate>
+                </asp:TemplateField>
+                 <asp:TemplateField>  
+                     <ItemStyle Width="100px"/>
+                    <HeaderTemplate>
+                        Ins.Amount
+                    </HeaderTemplate>
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="lblInstallmentAmount" ClientIDMode="Static" Text='<%# Bind("InstallmentAmount") %>'></asp:Label>                     
+                    </ItemTemplate>
+                </asp:TemplateField>         
                 <asp:BoundField DataField="StartMonth" HeaderText="StartM." Visible="true" ItemStyle-Width="100px" itemstyle-horizontalalign="center" />
                 <asp:BoundField DataField="EntryDate" HeaderText="Date" Visible="true" ItemStyle-Width="100px" itemstyle-horizontalalign="center"/>
 
                 <asp:BoundField DataField="EmpType" HeaderText="EmpType" Visible="true" itemstyle-horizontalalign="center" />
-
-                <asp:BoundField DataField="PaidInstallmentNo" HeaderText="P.Ins.No" Visible="true" ItemStyle-Font-Bold="true" ItemStyle-ForeColor="green" itemstyle-horizontalalign="center" />
+                <asp:TemplateField  >
+                    <ItemStyle ForeColor="Green" Font-Bold="true"/>
+                    <HeaderTemplate>
+                        P.Ins.No
+                    </HeaderTemplate>
+                    <ItemTemplate>
+                        <asp:Label runat="server" ID="lblPaidInstallmentNo" ClientIDMode="Static" Text='<%# Bind("PaidInstallmentNo") %>'></asp:Label>                     
+                    </ItemTemplate>
+                </asp:TemplateField>   
                 <asp:TemplateField HeaderText="Cut Ins.No.">
                     <ItemTemplate>
                         <asp:TextBox ID="txtInstallmentNo" runat="server" Enabled="false" Text="1" Font-Bold="true" ForeColor="black" Height="20px" Width="40px" style="text-align: center; margin-left: 4px; autocomplete:off"  ></asp:TextBox>
                     </ItemTemplate>
-                </asp:TemplateField>           
-              
+                </asp:TemplateField>         
                  <asp:TemplateField HeaderText="Choose" ItemStyle-Width="100px" itemstyle-horizontalalign="center">
-                    <ItemTemplate   >
+                    <ItemTemplate>
                     <asp:CheckBox ID="SelectCheckBox" runat="server" ItemStyle-Width="100px" Checked="true"  />   
                     </ItemTemplate>
                 </asp:TemplateField>

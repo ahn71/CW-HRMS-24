@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,14 +16,20 @@ namespace SigmaERP.personnel
 {
     public partial class roster_missing : System.Web.UI.Page
     {
+        //permission=435
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 435 };
+            
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;                
@@ -41,12 +48,12 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "roster_missing.aspx",ddlCompanyList,gvEmpList);
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "roster_missing.aspx",ddlCompanyList,gvEmpList);
-
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];   
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];   
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                // classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);
@@ -82,15 +89,21 @@ namespace SigmaERP.personnel
             }
             catch { }
         }
-
+        string sqlCmd = "";
+        string condition = "";
         private void loadRoster_MissingList(DateTime RosterDate)
         {
             try
             {
-               
+                if (ddlGroupList.SelectedIndex >0)
+                {
+                    condition += "And GId='" + ddlGroupList.SelectedValue + "'";
+                }
                 DataTable dt = new DataTable();
-                sqlDB.fillDataTable("select pes.EmpCardNo+' ('+ pes.EmpProximityNo+')' as EmpCardNo,pes.EmpName,pes.DsgName,pes.EmpId,pes.DptId,pes.DsgId,pes.EmpTypeId,pes.GId,pes.EmpType from v_Personnel_EmpCurrentStatus as pes where pes.IsActive=1 and DptId='" + ddlDepartmentList.SelectedValue+"' And GId='"+ddlGroupList.SelectedValue+"' AND EmpDutyType='Roster' And EmpStatus in(1,8) AND EmpId  " +
-                    " not in  (select EmpId from ShiftTransferInfoDetails where DptId='" + ddlDepartmentList.SelectedValue + "' And GId='" + ddlGroupList.SelectedValue + "' AND SDate='" + RosterDate.ToString("yyyy-MM-dd") + "')", dt);
+                sqlCmd = "select pes.EmpCardNo+' ('+ pes.EmpProximityNo+')' as EmpCardNo,pes.EmpName,pes.DsgName,pes.EmpId,pes.DptId,pes.DsgId,pes.EmpTypeId,pes.GId,pes.EmpType from v_Personnel_EmpCurrentStatus as pes where pes.IsActive=1 and DptId='" + ddlDepartmentList.SelectedValue + "' "+ condition + " AND EmpDutyType='Roster' And EmpStatus in(1,8) AND EmpId  " +
+                    " not in  (select EmpId from ShiftTransferInfoDetails where DptId='" + ddlDepartmentList.SelectedValue + "' "+ condition + " AND SDate='" + RosterDate.ToString("yyyy-MM-dd") + "')";
+
+               sqlDB.fillDataTable(sqlCmd, dt);
                 gvEmpList.DataSource = dt;
                 gvEmpList.DataBind();
             }
@@ -165,7 +178,7 @@ namespace SigmaERP.personnel
         {
             try
             {
-                classes.commonTask.loadDepartmentListByCompanyAndGroup(ddlDepartmentList, ddlCompanyList.SelectedValue, ddlGroupList.SelectedValue);
+                //classes.commonTask.loadDepartmentListByCompanyAndGroup(ddlDepartmentList, ddlCompanyList.SelectedValue, ddlGroupList.SelectedValue);
             }
             catch { }
         }

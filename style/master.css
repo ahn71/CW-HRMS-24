@@ -159,7 +159,8 @@ element.style {
 }
 
 .profileImage {
-    height:145px;
+    height: 145px;
+    width: 130px !important;
 }
 .profileImage3 {
     height:118px;
@@ -201,5 +202,11 @@ element.style {
 }
 
 .monthly_table_setup table tr td {
-    padding:5px 0;
+    padding: 12px 0;
+    border-right: 0 !important;
+    border-left: 0 !important;
+    border-bottom: 1px solid #ddd;
+    color: #000000;
+    font-size: 14px;
+    font-weight: 500;
 }

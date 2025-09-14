@@ -65,9 +65,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                       <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Employees Details</a></li>
                    </ul>
@@ -113,7 +111,7 @@
                     
                     <table border="0" cellpadding="4" width="99%" cellspacing="0" style="margin:0 0 5px 6px; border-collapse: collapse;">
                         <tr>
-                            <td>Com</td>
+                            <td>Unit</td>
                             <td>Depertment</td>
                             <td>Shift</td>
                             <td>Line / Grp</td>
@@ -125,8 +123,12 @@
                         </tr>
                         <tr>
                             <td>
-                                <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
+                                <asp:DropDownList ID="ddlCompanyList" Visible="false" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
                                 </asp:DropDownList>
+
+                                   <asp:DropDownList ID="ddlUnit"  ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
+                                </asp:DropDownList>
+
                             </td>
                             <td>
                                 <asp:DropDownList ID="ddlDepartmentList" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged"></asp:DropDownList>
@@ -189,12 +191,24 @@
                            <asp:BoundField DataField="EmpCardNo" HeaderText="Card No (Reg.)" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="EmpName" HeaderText="Name" />
                                  <asp:BoundField DataField="EmpJoiningDate" HeaderText="Join Date" ItemStyle-HorizontalAlign="Center" />
+                              <asp:BoundField DataField="UnitName" HeaderText="Unit" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="DptName" HeaderText="Department" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="DsgName" HeaderText="Designation" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="SftName" HeaderText="Shift" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="EmpType" HeaderText="Type" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="EmpDutyType" HeaderText="Duty Type" ItemStyle-HorizontalAlign="Center" />   
                               <asp:BoundField DataField="WeekendType" HeaderText="Weekend Type" ItemStyle-HorizontalAlign="Center" />
+                              <asp:TemplateField HeaderText="Profile" HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
+                                  <ItemTemplate>
+                                      <asp:LinkButton ID="lnkProfile" runat="server"
+                                          CommandName="Profile"
+                                          CommandArgument='<%#((GridViewRow)Container).RowIndex%>'
+                                          Font-Bold="true" ForeColor="Green">
+                                          <i class="fa fa-user"></i> 
+                                      </asp:LinkButton>
+
+                                  </ItemTemplate>
+                              </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Change"  HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
                                   <ItemTemplate >
                                       <asp:Button ID="btnEdit" runat="server" CommandName="Edit" Width="55px" Height="30px" Font-Bold="true" ForeColor="green" Text="Edit" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />
@@ -232,6 +246,10 @@
 
                });
            });
+           function goToNewTabandWindow(url) {
+               window.open(url);
+               loadcardNo();
+           }
            function loadEmpInfo(e) {              
                if (e.keyCode == 13) {                   
                    //jQuery.ajax({
@@ -281,5 +299,5 @@
                    // return false;
                }
            }
-    </script>
+       </script>
 </asp:Content>

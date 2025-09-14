@@ -19,7 +19,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li>/</li>
-                    <li><a href="/attendance_default.aspx">Attendance</a></li>
+                   <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li>/</li>
                     <li><a href="#" class="ds_negevation_inactive Mactive">Daily In-Out Report</a></li>
                 </ul>
@@ -56,23 +56,28 @@
                     
                     <table runat="server" visible="true" id="tblGenerateType" class="division_table_leave1">
 
-                        <tr id="trCompanyName" runat="server" visible="true">
-                            <td>Company
+                        <tr runat="server" id="trUnit">
+                            <td>Unit
+
                             </td>
                             <td>:</td>
                             <td>
-                                <asp:DropDownList ID="ddlCompany" runat="server" AutoPostBack="true" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
+                                <asp:DropDownList ID="ddlUnit" runat="server" AutoPostBack="true" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
                                 </asp:DropDownList>
                             </td>
-                            <td>Shift 
-                            </td>
-                            <td>:
-                            </td>
+                        </tr>
+
+                        <tr id="trCompanyName" runat="server" visible="false">
+                            
+                            
                             <td>
-                                <asp:DropDownList ID="ddlShift" ClientIDMode="Static" CssClass="form-control select_width" runat="server">
+                                <asp:DropDownList  ID="ddlCompany" runat="server" AutoPostBack="true" ClientIDMode="Static" Visible="false" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
                                 </asp:DropDownList>
 
+                           
+
                             </td>
+                            
                             <%--   <td>
                                 Shift
                             </td>
@@ -83,15 +88,30 @@
                             </td>--%>
                         </tr>
                         <tr>
-                            <td>Employee Type
+                               <td>Permanent Shift 
                             </td>
-                            <td>:</td>
+                            <td>:
+                            </td>
                             <td>
-                                <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal">
-                                </asp:RadioButtonList>
+                                <asp:DropDownList ID="ddlPermanentShift" ClientIDMode="Static" CssClass="form-control select_width" runat="server">
+                                </asp:DropDownList>
+
                             </td>
-                            <td>Date
+
+                            <td>Current Shift 
                             </td>
+                            <td>:
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="ddlShift" ClientIDMode="Static" CssClass="form-control select_width" runat="server">
+                                </asp:DropDownList>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>From Date
+                            </td>
+                          
                             <td>:</td>
                             <td>
                                 <asp:TextBox ID="txtDate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
@@ -99,6 +119,38 @@
                                     ID="TextBoxDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtDate">
                                 </asp:CalendarExtender>
                             </td>
+                        
+
+                            <td>To Date</td>
+                            <td>:</td>
+                            <td>
+                                <asp:TextBox ID="txtTodate" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" autocomplete="off"></asp:TextBox>
+                                <asp:CalendarExtender
+                                    ID="TextBoxToDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtTodate">
+                                </asp:CalendarExtender>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Employee Type
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal">
+                                </asp:RadioButtonList>
+                            </td>
+
+                            <td>Card No
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <asp:TextBox ID="txtCardNo" ClientIDMode="Static" runat="server" PlaceHolder=" For Individual" CssClass="form-control text_box_width"></asp:TextBox>
+
+                            </td>
+                            <td>
+                                <asp:LinkButton ID="lnkNew" Text="Clear" runat="server" OnClientClick="InputBoxNew()"></asp:LinkButton>
+
+                            </td>
+
                         </tr>
                         <tr>
                             <td>Status</td>
@@ -114,16 +166,8 @@
                                     <asp:ListItem Value="WH">W&H</asp:ListItem>
                                 </asp:RadioButtonList>
                             </td>
-                            <td>Card No
-                            </td>
-                            <td>:</td>
-                            <td>
-                                <asp:TextBox ID="txtCardNo" ClientIDMode="Static" runat="server" PlaceHolder=" For Individual" CssClass="form-control text_box_width"></asp:TextBox>
-
-                            </td>
-                            <td>
-                                <asp:LinkButton ID="lnkNew" Text="New" runat="server" OnClientClick="InputBoxNew()"></asp:LinkButton></td>
-
+                            
+                            
                         </tr>
 
 
@@ -163,11 +207,11 @@
                 </div>
                         
                         <div class="job_card_button_area">
-                            <div>
+                            <div runat="server" id="dvFooter" visible="false">
                                 <center>
                               <asp:RadioButtonList class="rb" ID="rblPrintType" runat="server"  RepeatDirection="Horizontal" >
-                                    <asp:ListItem Text="For View" Value="0" Selected="True" ></asp:ListItem>
-                                     <asp:ListItem Text="For Print" Value="1"></asp:ListItem>
+                                    <asp:ListItem Text="For View" Value="0"  ></asp:ListItem>
+                                     <asp:ListItem Text="For Print" Value="1" Selected="True"></asp:ListItem>
                                 </asp:RadioButtonList>                                    
                                     <asp:RadioButtonList class="rb" ID="rblLanguage" runat="server"  RepeatDirection="Horizontal" >
                                     <asp:ListItem Text="English" Value="EN" Selected="True" ></asp:ListItem>

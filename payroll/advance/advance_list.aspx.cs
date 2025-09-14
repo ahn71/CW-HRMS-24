@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,13 +18,20 @@ namespace SigmaERP.payroll.advance
         DataTable dt;
         DataTable dtSetPrivilege;
         string query = "";
+
+        //permission=358;
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+            int[] pagePermission = { 357 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 //txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 //txtToDate.Text = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month) + "-" + DateTime.Now.ToString("MM-yyyy");
                 commonTask.LoadEmpTypeWithAll(rblEmpType,"");
@@ -46,13 +54,14 @@ namespace SigmaERP.payroll.advance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 string DptId = getCookies["__DptId__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
+                //string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
 
 
 
@@ -73,7 +82,7 @@ namespace SigmaERP.payroll.advance
 
                 //string query = @"select SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' as EmpCardNo,ei.EmpId,ei.EmpName, li.LoanID,LoanAmount,InstallmentAmount,format(DeductFrom,'MM-yyyy') as DeductFrom,Isnull(li.PaidAmount,0) as PaidAmount,li.LoanAmount- Isnull(li.PaidAmount,0) as DueAmount, ads.Status,convert(varchar(10),li.StatusDate,105) as StatusDate ,li.StatusNote,format( max(ins.Month),'MM-yyyy') as LastInstallmentMonth,max(ins.Month) from Payroll_LoanInfo as li inner join Personnel_EmployeeInfo as ei on li.EmpId=ei.EmpId left join HRD_AdvanceStatus ads on li.Status=ads.StatusID left join Payroll_LoanMonthlySetup ins on li.LoanID=ins.LoanID and ins.IsPaid=1 where li.CompanyId='" + CompanyId + "' " + Status + "  and ISNULL(IsDeleted,0)=0  group by SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' ,ei.EmpId,ei.EmpName, li.LoanID,LoanAmount,InstallmentAmount,format(DeductFrom,'MM-yyyy'),Isnull(li.PaidAmount,0) ,li.LoanAmount- Isnull(li.PaidAmount,0) , ads.Status,convert(varchar(10),li.StatusDate,105)  ,li.StatusNote order by max(ins.Month) Desc";
 
-                string query = @"select SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' as EmpCardNo,ei.EmpId,ei.EmpName, li.LoanID,LoanAmount,InstallmentAmount,format(DeductFrom,'MM-yyyy') as DeductFrom, ISNULL(sum(ins.Amount),0) as PaidAmount, li.LoanAmount- ISNULL(sum(ins.Amount),0) as DueAmount, ads.Status,convert(varchar(10),li.StatusDate,105) as StatusDate ,li.StatusNote,format( max(ins.Month),'MM-yyyy') as LastInstallmentMonth,max(ins.Month) from Payroll_LoanInfo as li inner join Personnel_EmployeeInfo as ei on li.EmpId=ei.EmpId left join HRD_AdvanceStatus ads on li.Status=ads.StatusID left join Payroll_LoanMonthlySetup ins on li.LoanID=ins.LoanID and ins.IsPaid=1 where li.CompanyId='" + CompanyId + "' and  li.Status<>0  and ISNULL(IsDeleted,0)=0  group by SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' ,ei.EmpId,ei.EmpName, li.LoanID,LoanAmount,InstallmentAmount,format(DeductFrom,'MM-yyyy'),Isnull(li.PaidAmount,0) ,li.LoanAmount- Isnull(li.PaidAmount,0) , ads.Status,convert(varchar(10),li.StatusDate,105)  ,li.StatusNote order by max(ins.Month) Desc";
+                string query = @"select SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' as EmpCardNo,ei.EmpId,ei.EmpName, li.LoanID,LoanAmount,InstallmentAmount,format(DeductFrom,'MM-yyyy') as DeductFrom, ISNULL(sum(ins.Amount),0) as PaidAmount, li.LoanAmount- ISNULL(sum(ins.Amount),0) as DueAmount, ads.Status,convert(varchar(10),li.StatusDate,105) as StatusDate ,li.StatusNote,format( max(ins.Month),'MM-yyyy') as LastInstallmentMonth,max(ins.Month) from Payroll_LoanInfo as li inner join Personnel_EmployeeInfo as ei on li.EmpId=ei.EmpId left join HRD_AdvanceStatus ads on li.Status=ads.StatusID left join Payroll_LoanMonthlySetup ins on li.LoanID=ins.LoanID and ins.IsPaid=1 where li.CompanyId='" + CompanyId + "' "+ Status + "  and ISNULL(IsDeleted,0)=0  group by SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' ,ei.EmpId,ei.EmpName, li.LoanID,LoanAmount,InstallmentAmount,format(DeductFrom,'MM-yyyy'),Isnull(li.PaidAmount,0) ,li.LoanAmount- Isnull(li.PaidAmount,0) , ads.Status,convert(varchar(10),li.StatusDate,105)  ,li.StatusNote order by max(ins.Month) Desc";
 
                 sqlDB.fillDataTable(query, dt = new DataTable());
                 gvAdvanceInfo.DataSource = dt;

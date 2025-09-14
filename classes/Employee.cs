@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Data;
 using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.classes
 {
@@ -47,8 +48,9 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where CompanyId='" + CompanyId + "' and EmpTypeId in(" + EmpType + ") and EmpStatus in ('1','8')  Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
+                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where " + condition + " and EmpTypeId in(" + EmpType + ") and EmpStatus in ('1','8')  Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "EmpId";
@@ -144,6 +146,21 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadEmpCardNoForEntry(DropDownList dl, string EmpType, string CompanyId, string NewCardNo)
+        {
+            try
+            {
+                dt = new DataTable();
+                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and CompanyId='" + CompanyId + "' Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
+                dl.DataSource = dt;
+                dl.DataTextField = "EmpCardNo";
+                dl.DataValueField = "EmpId";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(NewCardNo, "0"));
+            }
+            catch { }
+        }
+
         public static void LoadEmpCardNo(DropDownList dl, string EmpType, string CompanyId, string NewCardNo)
         {
             try
@@ -163,13 +180,14 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select  SN, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where IsActive=1 and CompanyId=" + CompanyId + " and EmpStatus in ('1','8')  order by EmpCardNo", dt);
+                sqlDB.fillDataTable("Select  SN, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where IsActive=1 and " + condition + " and EmpStatus in ('1','8')  order by EmpCardNo", dt);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "SN";
                 dl.DataBind();
-                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+                dl.Items.Insert(0, new ListItem("---Select One---", "0"));
             }
             catch { }
         }
@@ -322,8 +340,9 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),SubString(EmpCardNo,8,16))+' '+EmpName) as EmpCardNo,EmpId From v_Promotion_Increment where TypeOfChange='" + TypeOfChange + "' and CompanyId='"+CompanyId+"'  Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
+                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),SubString(EmpCardNo,8,16))+' '+EmpName) as EmpCardNo,EmpId From v_Promotion_Increment where TypeOfChange='" + TypeOfChange + "' and "+ condition + "  Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "EmpId";
@@ -356,8 +375,11 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
+
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and CompanyId='"+ CompanyId + "' and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='"+ CompanyId + "' and IsActive=0) and IsActive=1 order by EmpCardNo", dt);
+                sqlDB.fillDataTable("Select  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and "+ condition + " and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='"+ CompanyId + "' and IsActive=0) and IsActive=1 order by EmpCardNo", dt);
+                string jjjj = "elect  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and " + condition + " and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='" + CompanyId + "' and IsActive=0) and IsActive=1 order by EmpCardNo";
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "EmpId";

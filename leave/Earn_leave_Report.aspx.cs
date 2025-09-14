@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,13 +17,20 @@ namespace SigmaERP.leave
         DataTable dt;
         string companyId = "";
         string sqlCmd = "";
+        //permission=450
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 449 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 setPrivilege();
                 loadYear();
@@ -56,11 +64,11 @@ namespace SigmaERP.leave
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
-                string[] AccessPermission = new string[0];
-                //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "yearly_leaveStatus_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                ////System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "yearly_leaveStatus_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
                 commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
 
 

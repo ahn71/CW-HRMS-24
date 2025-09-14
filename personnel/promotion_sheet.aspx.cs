@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,16 +14,21 @@ namespace SigmaERP.personnel
 {
     public partial class promotion_sheet : System.Web.UI.Page
     {
+        //Permissiion=342
         DataTable dt;
         DataTable dtSetPrivilege;
         string CompanyId = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 342 };
             lblMessage.InnerText = "";
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
-            {               
+            {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 classes.commonTask.loadEmpTye(rbEmpList);
                 if (!classes.commonTask.HasBranch())
@@ -41,11 +47,11 @@ namespace SigmaERP.personnel
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
-
-                //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "promotion_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                ////------------load privilege setting inof from db------
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "promotion_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
                 classes.commonTask.LoadMonthForPromotion(ddlMonthName, ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
        
@@ -173,9 +179,12 @@ namespace SigmaERP.personnel
              //............................End.................................
                 
                  HttpCookie getCookies = Request.Cookies["userInfo"];
-                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;           
+                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 DataTable dtRunning = new DataTable();
-                sqlDB.fillDataTable("Select EmpName,PreGrdName,PreDsgName,PreDptName,GrdName,DsgName,DptName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,SftName,Address From v_Promotion_Increment  where TypeOfChange='p' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and CompanyId='" + CompanyId + "' order by SN", dtRunning);                                                                   
+                sqlDB.fillDataTable("Select EmpName,PreGrdName,PreDsgName,PreDptName,GrdName,DsgName,DptName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,SftName,Address From v_Promotion_Increment  where TypeOfChange='p' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and " + condition + " order by SN", dtRunning);
+
+                string yty = "Select EmpName,PreGrdName,PreDsgName,PreDptName,GrdName,DsgName,DptName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,SftName,Address From v_Promotion_Increment  where TypeOfChange='p' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and " + condition + " order by SN";
                     Session["__PromotionSheet__"] = dtRunning;
                     if (dtRunning.Rows.Count > 0)
                     {

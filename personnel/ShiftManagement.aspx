@@ -68,9 +68,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                       <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Roster Create Panel</a></li>
                    </ul>
@@ -158,10 +156,10 @@
                    
                       <table class="employee_table">               
                           <tr>
-                              <td class="shift_manage_headar_label_color">
+                              <td class="shift_manage_headar_label_color" runat="server" visible="false">
                                        Company
                                       </td>
-                                       <td>
+                                       <td runat="server" visible="false">
                                            <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged" ></asp:DropDownList>
                                      
                                  </td>
@@ -176,7 +174,11 @@
                                   <asp:DropDownList runat="server" ID="ddlGroupList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlGroupList_SelectedIndexChanged"></asp:DropDownList>
                               </td>
 
-                              
+                                <td class="shift_manage_headar_label_color">Permanent Shift
+                              </td>
+                              <td>
+                                  <asp:DropDownList runat="server" ID="ddlPermanentShift" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True"  OnSelectedIndexChanged="ddlPermanentShift_SelectedIndexChanged"></asp:DropDownList>
+                              </td>
 
                               <td class="shift_manage_headar_label_color" style="display:none">Current Shift
                               </td>
@@ -266,7 +268,8 @@
                                      <%-- <asp:Button ID="btnEdit" runat="server" CommandName="Edit" Width="55px" Height="30px" Font-Bold="true" ForeColor="green" Text="Edit" CommandArgument='<%#((GridViewRow)Container).RowIndex%>' />--%>
                                   </ItemTemplate>
                               </asp:TemplateField> 
-                               <asp:TemplateField HeaderText="Duty Place"  ItemStyle-Width="100px">
+<%--                               <asp:BoundField DataField="perSftName" HeaderText="Permanent Shift"  />    --%>
+                               <asp:TemplateField HeaderText="Duty Place"  ItemStyle-Width="100px" runat="server" Visible="false">
                                   <ItemTemplate >
                                    <asp:DropDownList ID="ddlFloorList" runat="server"  AppendDataBoundItems="true" CssClass="form-control text_box_width style"  ForeColor="Red" ></asp:DropDownList> 
                                   </ItemTemplate>

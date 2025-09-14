@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,9 +17,10 @@ namespace SigmaERP.personnel
 {
     public partial class ShiftManagement : System.Web.UI.Page
     {
+        //perission=431;
         string SqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
-        { 
+        {
 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
@@ -32,6 +34,10 @@ namespace SigmaERP.personnel
             lblErrorMessage.Text = "";
             if (!IsPostBack)
             {
+                int[] pagePermission = { 431 };
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 lblErrorMessage.Text = "";
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
@@ -55,20 +61,21 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "ShiftManagement.aspx", ddlCompanyList, gvEmpList, btnSubmit);
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "ShiftManagement.aspx", ddlCompanyList, gvEmpList, btnSubmit);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];           
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];           
 
-                          
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
-                classes.commonTask.LoadGrouping(ddlGroupList,ddlCompanyList.SelectedValue);  
+                classes.commonTask.LoadGroupingAll(ddlGroupList,ddlCompanyList.SelectedValue);  
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);
                 classes.commonTask.LoadShiftForSMOperation(ddlNewShift, ddlCompanyList.SelectedValue);
+                classes.commonTask.LoadPermanentShiftShift(ddlPermanentShift, ddlCompanyList.SelectedValue);
             }
             catch { }
 
@@ -96,6 +103,10 @@ namespace SigmaERP.personnel
                 {
                     
                     lblMessage.InnerText = "warning-> Already this roster created for " + dt.Rows[0]["Info"].ToString();
+                    lblErrorMessage.Text = "warning-> Already this roster created for " + dt.Rows[0]["Info"].ToString(); ;
+
+                    divRecordMessage.Visible = true;
+                    divRecordMessage.InnerText = "Already this roster created for " + dt.Rows[0]["Info"].ToString();
                     return false;               
                 }
                 else return true;
@@ -110,22 +121,36 @@ namespace SigmaERP.personnel
             try
             {
                 dtShiftInfoDetails = new DataTable();
+
+                string condition = "";
+               
+               
                 if (!ForJustDepartment)  // if for just department is true then execut else block.else execute if block 
                 {
+                    string condition2 = "";
+                    //if (ddlGroupList.SelectedIndex > 0)
+                    //{
+                        condition += " and GId='" + ddlGroupList.SelectedValue + "' ";
+                        condition2 += " and s.GId='" + ddlGroupList.SelectedValue + "' ";
+                    //}
+                    if (ddlPermanentShift.SelectedValue != "0")
+                    {
+                        condition += " and Sftid='" + ddlPermanentShift.SelectedValue + "'";
+                        condition2 += " and cs.Sftid='" + ddlPermanentShift.SelectedValue + "'";
+                    }
                     DateTime TFromDate = DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim())); 
                     DateTime TToDate = DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(txtToDate.Text.Trim()));
                     if (!CheckDateRangeBasket(TFromDate, TToDate,ddlGroupList.SelectedValue)) return;
 
                      SqlCmd = " Select Distinct EmpId,EmpCardNo+' ('+ EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,CAST('' as varchar(30)) as SftName,EmpType,Format(GETDATE()+1,'yyyy-MM-dd') as EntryDate,CAST(0 AS bit) AS Status,CAST(0 AS bit) AS Assigned," +
                         "CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,SftId From v_Personnel_EmpCurrentStatus where IsActive=1 and DptId ='" + ddlDepartmentList.SelectedItem.Value + "' " +
-                        " AND GId=" + ddlGroupList.SelectedValue + " AND  EmpDutyType='Roster' AND EmpStatus in (1,8) AND   EmpId not in (Select Distinct EmpId From v_ShiftTransferInfoDetails " +
-                        " where DptId ='" + ddlDepartmentList.SelectedItem.Value + "'AND Format(EntryDate,'yyyy-MM-dd')='" + DateTime.Now.ToString("yyyy-MM-dd") + "' AND TFromDate='" + TFromDate.ToString("yyyy-MM-dd") + "' AND TToDate='" + TToDate.ToString("yyyy-MM-dd") + "' AND GId=" + ddlGroupList.SelectedValue + " )   " +
+                        " "+ condition + " AND  EmpDutyType='Roster' AND EmpStatus in (1,8) AND   EmpId not in (Select Distinct s.EmpId From v_ShiftTransferInfoDetails s left join v_Personnel_EmpCurrentStatus cs on s.EmpId=cs.EmpId and cs.IsActive=1  " +
+                        " where s.DptId ='" + ddlDepartmentList.SelectedItem.Value + "'AND Format(EntryDate,'yyyy-MM-dd')='" + DateTime.Now.ToString("yyyy-MM-dd") + "' AND TFromDate='" + TFromDate.ToString("yyyy-MM-dd") + "' AND TToDate='" + TToDate.ToString("yyyy-MM-dd") + "' " + condition2 + " )   " +
                         " union "+
-                        " Select Distinct  EmpId,EmpCardNo+' ('+ EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,SftName,EmpType,Format(GETDATE()+1,'yyyy-MM-dd') as EntryDate,CAST(0 AS bit) AS Status,CAST(1 AS bit) AS Assigned," +
-                        " CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,SftId From v_ShiftTransferInfoDetails "+
-                        " where DptId ='" + ddlDepartmentList.SelectedItem.Value + "'AND Format(EntryDate,'yyyy-MM-dd')='" + DateTime.Now.ToString("yyyy-MM-dd") + "' AND TFromDate='" + TFromDate.ToString("yyyy-MM-dd") + "' AND TToDate='" + TToDate.ToString("yyyy-MM-dd") + "'" +
-                        " and SftId <> " + ddlNewShift.SelectedItem.Value + " AND GId=" + ddlGroupList.SelectedValue + " " +
-                        "order by EmpCardNo";
+                        " Select Distinct  s.EmpId,s.EmpCardNo+' ('+ s.EmpProximityNo+')' as EmpCardNo,s.EmpName,s.DsgName,s.SftName,s.EmpType,Format(GETDATE()+1,'yyyy-MM-dd') as EntryDate,CAST(0 AS bit) AS Status,CAST(1 AS bit) AS Assigned, CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,s.SftId From v_ShiftTransferInfoDetails s left join v_Personnel_EmpCurrentStatus cs on s.EmpId=cs.EmpId and cs.IsActive=1 " +
+                        " where s.DptId ='" + ddlDepartmentList.SelectedItem.Value + "'AND Format(EntryDate,'yyyy-MM-dd')='" + DateTime.Now.ToString("yyyy-MM-dd") + "' AND TFromDate='" + TFromDate.ToString("yyyy-MM-dd") + "' AND TToDate='" + TToDate.ToString("yyyy-MM-dd") + "'" +
+                        " and s.SftId <> " + ddlNewShift.SelectedItem.Value + " "+condition2 +
+                        " order by EmpCardNo";
                     
 
 
@@ -136,8 +161,20 @@ namespace SigmaERP.personnel
                 }
                 else
                 {
-                    SqlCmd = " Select Distinct EmpId,EmpCardNo+' ('+ EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,CAST('' as varchar(30)) as SftName,EmpType,CAST(0 AS bit) AS Status,CAST(0 AS bit) AS Assigned,CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,SftId From v_Personnel_EmpCurrentStatus where IsActive=1 and DptId ='" + ddlDepartmentList.SelectedItem.Value + "' AND CompanyId='" + ddlCompanyList.SelectedValue + "' AND  GId=" + ddlGroupList.SelectedValue + "" +
-                     " AND EmpDutyType='Roster' And EmpStatus in (1,8) order by EmpCardNo";
+                    //if (ddlGroupList.SelectedIndex > 0)
+                    //{
+                        condition += " and pecs.GId='" + ddlGroupList.SelectedValue + "' ";
+                  //  }
+                    if (ddlPermanentShift.SelectedIndex>0)
+                    {
+                        condition += " and pecs.sftid='" + ddlPermanentShift.SelectedValue + "' ";
+                    }
+                    //SqlCmd = " Select Distinct EmpId,EmpCardNo+' ('+ EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,CAST('' as varchar(30)) as SftName,EmpType,CAST(0 AS bit) AS Status,CAST(0 AS bit) AS Assigned,CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,SftId From v_Personnel_EmpCurrentStatus where IsActive=1 and DptId ='" + ddlDepartmentList.SelectedItem.Value + "' AND CompanyId='" + ddlCompanyList.SelectedValue + "' AND  GId=" + ddlGroupList.SelectedValue + "" +
+                    // " AND EmpDutyType='Roster' And EmpStatus in (1,8) order by EmpCardNo";
+
+
+                    SqlCmd = " select  Distinct pecs.EmpId,RIGHT(pecs.EmpCardNo, 6) + ' (' + RIGHT(pei.EmpProximityNo, 6) + ')' AS EmpCardNo,Pei.EmpName,dsg.DsgName,CAST('' as varchar(30)) as SftName,perSft.sftName as perSftName ,etype.EmpType,CAST(0 AS bit) AS Status, CAST(0 AS bit) AS Assigned, CAST(NULL as int) as FId,CAST('' as varchar(30)) as Notes,pecs.SftId from Personnel_EmpCurrentStatus as pecs left join Personnel_employeeInfo as pei on pei.EmpId = pecs.EmpId left join Hrd_Designation as dsg on dsg.DsgId = pecs.DsgId Left Join HRD_EmployeeType as etype on pecs.EmpTypeId = etype.EmpTypeId left join Hrd_shift as perSft on perSft.SftId = pecs.sftId where pecs.IsActive = 1 and pecs.DptId = '"+ddlDepartmentList.SelectedItem.Value+"' AND pecs.CompanyId = '"+ddlCompanyList.SelectedValue+"' AND pecs.EmpDutyType = 'Roster' And pecs.EmpStatus in (1, 8) "+condition+" order by EmpCardNo";
+
                 }
                 sqlDB.fillDataTable(SqlCmd, dtShiftInfoDetails);
 
@@ -151,7 +188,6 @@ namespace SigmaERP.personnel
                 }
                 else {
                     divRecordMessage.Visible = false;
-                    if (!ViewState["__ReadAction__"].ToString().Equals("0"))
                     gvEmpList.Visible = true; 
                     lblTotalRow.Text = "Total Employee = " + dtShiftInfoDetails.Rows.Count.ToString();
                     DataTable dtSelected = dtShiftInfoDetails.Select("status='true'", null).CopyToDataTable();
@@ -161,8 +197,9 @@ namespace SigmaERP.personnel
 
               //  ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+            }
         }
         private void shiftTransfer()
         {
@@ -489,7 +526,7 @@ INSERT INTO [dbo].[ShiftTransferInfo]
                 classes.commonTask.LoadShiftForSMOperation(ddlNewShift, ddlCompanyList.SelectedValue,ddlDepartmentList.SelectedValue);
 
                 commonTask.loadGroupByDepartment(ddlGroupList, ddlDepartmentList.SelectedValue);
-
+                if(ddlGroupList.SelectedValue!="0")
                 ddlGroupList_SelectedIndexChanged(sender,e);
 
 
@@ -619,6 +656,18 @@ INSERT INTO [dbo].[ShiftTransferInfo]
             }
 
             catch { }
+        }
+
+        protected void ddlPermanentShift_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadAllEmployeeList(true);
+                System.Threading.Thread.Sleep(1000);
+            }
+
+            catch { }
+
         }
     }
 }

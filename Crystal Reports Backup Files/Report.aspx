@@ -1,5 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Report.aspx.cs" Inherits="SigmaERP.All_Report.Repor" %>
 <%@ Register Assembly="CrystalDecisions.Web, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" Namespace="CrystalDecisions.Web" TagPrefix="CR" %>
+<%--<%@ Register Assembly="CrystalDecisions.Web, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304" Namespace="CrystalDecisions.Web" TagPrefix="CR" %>--%>
 
 <!DOCTYPE html>
 
@@ -17,7 +18,7 @@
     </asp:ScriptManager>  
      <asp:UpdatePanel runat="server" ID="up1">
         <ContentTemplate>
-    
+    <div runat="server" id="divError"></div>
     <div>
         <CR:CrystalReportViewer ID="CrystalReportViewer1" runat="server"  AutoDataBind="true" ToolPanelView="None" PrintMode="ActiveX"   />
     </div>

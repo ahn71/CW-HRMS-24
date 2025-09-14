@@ -1,6 +1,13 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="dashboard.aspx.cs" Inherits="SigmaERP.hrms.dashboard" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="dashboard.aspx.cs" Inherits="SigmaERP.hrms.dashboard" EnableEventValidation="false"  %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <style>
+        .ui-datepicker {
+            position: fixed !important;
+            top: 108px !important;
+        }
+
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -41,7 +48,7 @@
                             <div class="ap-po-details ap-po-details--luodcy  overview-card-shape radius-xl d-flex justify-content-between">
                                 <div class=" ap-po-details-content d-flex flex-wrap justify-content-between w-100">
                                     <div class="ap-po-details__titlebar">
-                                        <p class="fs-6 fw-bold">Total Employee</p>
+                                        <p class="fs-6 fw-bold">Today's Employees</p>
                                            <div class="loader-size loaderDaily">
                                         <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
                                             <span class="spin-dot badge-dot dot-primary"></span>
@@ -262,7 +269,7 @@
                 </div>
                 <!---Today Costing Over time start---->
                 <!---Attendance Summary start---->
-                <div class="col-lg-12 col-md-12 col-sm-12 mb-25">
+<div class="col-lg-12 col-md-12 col-sm-12 mb-25">
 
                     <div class="card border-0 px-25 position-relative">
                         <div class="card-header px-0 border-0">
@@ -971,12 +978,13 @@
 
     <script>
 
-        var rootUrl = 'http://cw-hrms-api.codehosting.xyz';
+        //var rootUrl = 'http://cw-hrms-api.codehosting.xyz';
+          var rootUrl = '<%= Session["__RootUrl__"]%>';
         //var rootUrl = 'http://localhost:8081';
 
         var DailyAttUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceStatus';
         var DailyAttSumUrl = rootUrl + '/api/DailyAttendance/dailyAttendanceSummary';
-        var CurrentEmpStatusUrl = rootUrl + '/api/DailyAttendance/currentEmployeeStaus';
+        var CurrentEmpStatusUrl = rootUrl + '/api/DailyAttendance/currentEmployeeStatus';
         var GetTodaysCostingUrl = rootUrl + '/api/DailyAttendance/getTodaysCosting';
         var GetMonthlyCostingUrl = rootUrl + '/api/DailyAttendance/getlastMonthCosting';
         var GetLast7DaysPARatioUrl = rootUrl + '/api/DailyAttendance/dailyAttendancehistory';
@@ -987,8 +995,8 @@
         var GetDailyOtCalculationUrl = rootUrl + '/api/DailyAttendance/dailyOtCalculation';
 
         var companyId = '<%= Session["__GetCompanyId__"] %>';
-      
-        var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
+        var token = '<%= Session["__UserToken__"] %>';
+        //var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJpYXQiOjE3MTQ2MjQ5MjYsImV4cCI6MTc0NjE2MDkyNiwiYXVkIjoiIiwic3ViIjoiSldUU2VydmljZUFjY2Vzc1Rva2VuIn0.tVlIuOLas2VxEnBohuaIXXQR2Lju_2h8yVjCDizQh9o';
 
         function SearchData() {
             var formattedDate = $(".hasDatepicker").val();
@@ -1701,8 +1709,6 @@
                 });
             });
         }
-
-        
 
     </script>
 

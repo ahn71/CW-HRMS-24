@@ -34,7 +34,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li>/</li>
-                    <li><a href="/attendance_default.aspx">Attendance</a></li>
+                   <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li>/</li>
                     <li><a href="#" class="ds_negevation_inactive Mactive">Absent Notification List</a></li>
                 </ul>
@@ -75,7 +75,9 @@
                                     ID="CalendarExtender1" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtToDate">
                                 </asp:CalendarExtender></td>
                                 <td>
-                                    <asp:Button ID="btnSearch" CssClass="Mbutton" runat="server" Text="Search" OnClick="btnSearch_Click"   />
+                                    <asp:Button ID="btnSearch" CssClass="
+                                        
+                                        " runat="server" Text="Search" OnClick="btnSearch_Click"   />
                                 </td>
                                 <td>
                                     <asp:Button ID="btnPrint" CssClass="Mbutton" runat="server" Text="Print"  OnClientClick="portraitPrintHTML('divAbsentNotificationList')"  />

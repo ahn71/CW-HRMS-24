@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,14 +17,20 @@ namespace SigmaERP.personnel
     public partial class ShiftManageRemove : System.Web.UI.Page
     {
         DataTable dt;
+        //permission=433
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 433 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
 
             if(!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
 
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
@@ -42,13 +49,14 @@ namespace SigmaERP.personnel
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
 
-                string[] AccessPermission = new string[0];
-                
-AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyDeleteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "ShiftManageRemove.aspx",ddlCompanyList,gvEmpList,btnDelete);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //                string[] AccessPermission = new string[0];
 
-                ViewState["__ReadAction__"] = AccessPermission[0];             
-                ViewState["__DeletAction__"] = AccessPermission[3];                                
-                
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyDeleteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "ShiftManageRemove.aspx",ddlCompanyList,gvEmpList,btnDelete);
+
+                //                ViewState["__ReadAction__"] = AccessPermission[0];             
+                //                ViewState["__DeletAction__"] = AccessPermission[3];                                
+
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
 
                 classes.commonTask.loadDepartmentListByCompanyWithAll(ddlDepartment, ddlCompanyList.SelectedValue);

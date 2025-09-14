@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,11 +20,17 @@ namespace SigmaERP.personnel
         string Cmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+       
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] pagePermission = { 275 };
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 setPrivilege();                
                 if (!classes.commonTask.HasBranch())
@@ -38,14 +45,15 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "EmpContactReport.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "EmpContactReport.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
 
                
-                classes.commonTask.LoadInitialShift(ddlShiftList, ViewState["__CompanyId__"].ToString());  
-                addAllTextInShift();
+              //classes.commonTask.LoadInitialShift(ddlShiftList, ViewState["__CompanyId__"].ToString());  
+                //addAllTextInShift();
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.LoadDepartment(ddlCompany.SelectedValue, lstAll);               
                 classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, ddlCompany.SelectedValue, rblEmpType.SelectedValue);
@@ -54,18 +62,13 @@ namespace SigmaERP.personnel
             }
             catch { }
         }
-        private void addAllTextInShift()
-        {
-            ddlShiftList.Items.RemoveAt(0);
-            if (ddlShiftList.Items.Count > 1)
-                ddlShiftList.Items.Insert(0, new ListItem("All", "00"));
-        }
+
 
         protected void ddlCompany_SelectedIndexChanged(object sender, EventArgs e)
         {
             CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-            classes.commonTask.LoadInitialShift(ddlShiftList, CompanyId);
-            addAllTextInShift();
+            //classes.commonTask.LoadInitialShift(ddlShiftList, CompanyId);
+            //addAllTextInShift();
             lstSelected.Items.Clear();
             classes.commonTask.LoadDepartment(CompanyId, lstAll); 
             classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, CompanyId, rblEmpType.SelectedValue);
@@ -107,14 +110,9 @@ namespace SigmaERP.personnel
 
         private void gererateContactReport() 
         {
+            string ownempId = AccessControl.hasOwnEmpIdWithOtherDepartment();
             if (ddlCardNo.SelectedValue=="0") { 
-            if (ddlShiftList.SelectedItem.Text.Trim() == "")
-            {
-                lblMessage.InnerText = "warning-> Please Select Any Shift!";
-                ddlShiftList.Focus();
-                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true); 
-                return;
-            }
+     
             if (lstSelected.Items.Count == 0)
             {
                 lblMessage.InnerText = "warning-> Please Select Any Department!";
@@ -126,19 +124,17 @@ namespace SigmaERP.personnel
             string ShiftList = "";
             string DepartmentList = "";
             CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-            if (ddlShiftList.SelectedItem.ToString().Equals("All"))
-                ShiftList = classes.commonTask.getShiftList(ddlShiftList);
-            else
-                ShiftList = "in ('" + ddlShiftList.SelectedValue.ToString() + "')";
+          
 
             DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
+                
                 string EmpTypeID=(rblEmpType.SelectedValue.ToString().Equals("All"))?"":" and EmpTypeId="+ rblEmpType.SelectedValue+"";
             if(rblReportType.SelectedValue=="0")
             Cmd = "select CompanyId,CompanyName,Address,DptId,DptName,SftId,SftName,DsgName, EmpId, SUBSTRING(EmpCardNo,8,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,MobileNo,convert(varchar(10),EmpJoiningDate,105) as EmpJoiningDate from v_EmployeeDetails " +
-                "where IsActive=1 and CompanyId='" + CompanyId + "' and SftId " + ShiftList + " and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " order by CustomOrdering";
+                "where IsActive=1 and CompanyId='" + CompanyId + "' and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " "+ ownempId + " order by CustomOrdering";
             else
                 Cmd = "select CompanyId,CompanyName,Address,DptId,DptName,SftId,SftName, EmpId, SUBSTRING(EmpCardNo,8,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,ContactName,EmergencyAddress, EmergencyPhoneNo from V_EmpContactInfo " +
-                "where IsActive=1 and CompanyId='" + CompanyId + "' and SftId " + ShiftList + " and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " order by CustomOrdering";
+                "where IsActive=1 and CompanyId='" + CompanyId + "' and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " "+ ownempId + " order by CustomOrdering";
             }
             else
             {
@@ -146,10 +142,10 @@ namespace SigmaERP.personnel
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
                 if (rblReportType.SelectedValue == "0")
                     Cmd = "select CompanyId,CompanyName,Address,DptId,DptName,SftId,SftName,DsgName, EmpId, SUBSTRING(EmpCardNo,8,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,MobileNo,convert(varchar(10),EmpJoiningDate,105) as EmpJoiningDate from v_EmployeeDetails " +
-                        "where  IsActive=1 and CompanyId='" + CompanyId + "' and SN="+ddlCardNo.SelectedValue+" and EmpStatus in(1,8)";
+                        "where  IsActive=1 and CompanyId='" + CompanyId + "' and SN="+ddlCardNo.SelectedValue+" and EmpStatus in(1,8) "+ ownempId + "";
                 else
                     Cmd = "select CompanyId,CompanyName,Address,DptId,DptName,SftId,SftName, EmpId, SUBSTRING(EmpCardNo,8,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,ContactName,EmergencyAddress, EmergencyPhoneNo from V_EmpContactInfo " +
-                    "where  IsActive=1 and CompanyId='" + CompanyId + "'  and SN=" + ddlCardNo.SelectedValue + " and EmpStatus in(1,8)";
+                    "where  IsActive=1 and CompanyId='" + CompanyId + "'  and SN=" + ddlCardNo.SelectedValue + " and EmpStatus in(1,8) "+ ownempId + "";
                
             }
             sqlDB.fillDataTable(Cmd, dt = new DataTable());
@@ -167,37 +163,21 @@ namespace SigmaERP.personnel
         {
             if (ddlCardNo.SelectedValue == "0")
             {
-                if (ddlShiftList.SelectedItem.Text.Trim() == "")
-                {
-                    lblMessage.InnerText = "warning-> Please Select Any Shift!";
-                    ddlShiftList.Focus();
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
-                    return;
-                }
-                if (lstSelected.Items.Count == 0)
-                {
-                    lblMessage.InnerText = "warning-> Please Select Any Department!";
-                    lstSelected.Focus();
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
-                    return;
-                }
+        
                 //  string CompanyList = "";
                 string ShiftList = "";
                 string DepartmentList = "";
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-                if (ddlShiftList.SelectedItem.ToString().Equals("All"))
-                    ShiftList = classes.commonTask.getShiftList(ddlShiftList);
-                else
-                    ShiftList = "in ('" + ddlShiftList.SelectedValue.ToString() + "')";
+            
 
                 DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
                 string EmpTypeID = (rblEmpType.SelectedValue.ToString().Equals("All")) ? "" : " and EmpTypeId=" + rblEmpType.SelectedValue + "";
                 if (rblReportType.SelectedValue == "0")
                     Cmd = "select CompanyId,CompanyNameBangla CompanyName,AddressBangla Address,DptId,DptNameBn DptName,SftId, SftName,DsgNameBn DsgName, EmpId, SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpNameBn EmpName,MobileNo from v_EmployeeDetails " +
-                        "where  IsActive=1 and CompanyId='" + CompanyId + "' and SftId " + ShiftList + " and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " order by CustomOrdering";
+                        "where  IsActive=1 and CompanyId='" + CompanyId + "' and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " order by CustomOrdering";
                 else
                     Cmd = "select CompanyId,CompanyName,Address,DptId,DptName,SftId,SftName, EmpId, SUBSTRING(EmpCardNo,8,15) as EmpCardNo,EmpName,ContactName,EmergencyAddress, EmergencyPhoneNo from v_EmployeeDetails " +
-                    "where IsActive=1 and CompanyId='" + CompanyId + "' and SftId " + ShiftList + " and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " order by CustomOrdering";
+                    "where IsActive=1 and CompanyId='" + CompanyId + "' and DptId " + DepartmentList + " and EmpStatus in(1,8) " + EmpTypeID + " order by CustomOrdering";
             }
             else
             {

@@ -35,10 +35,9 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
+
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li>  <a href="/payroll/salary_index.aspx">Salary</a></li>
+                    <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                      <li> <a href="#" class="ds_negevation_inactive Pactive">Salary Entry Panel (Actual)</a></li>
                 </ul>
@@ -206,8 +205,48 @@
 
                                                 </td>
                                             </tr>
+
+
+
+                                               <tr>
+                                                
+                                                
+                                                <td>Is Vacation</td>
+                                                <td>:
+                                                </td>
+                                                <td>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                      <asp:CheckBox runat="server" ID="chkIsvacation" Text="IsVacation" />
+                                                            </td>
+                                                      
+                                                          
+                                                           
+                                                            
+                                                        </tr>
+                                                    </table>
+                                                    
+
+                                                </td>
+                                            </tr>
+
+
+
+
+                                             <tr runat="server" id="tr5">
+                                                <td>Payer Bank
+                                                </td>
+                                                <td>:
+                                                </td>
+                                                <td>
+                                                    <asp:DropDownList runat="server" ID="ddlPayerBank" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
+                                                </td>
+                                            </tr>
+
+
                                             <tr runat="server" id="trBank">
-                                                <td>Bank Name
+                                                <td>Salary Bank
                                                 </td>
                                                 <td>:
                                                 </td>
@@ -215,6 +254,9 @@
                                                     <asp:DropDownList runat="server" ID="ddlBankList" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
                                                 </td>
                                             </tr>
+
+
+                                            
 
                                             <tr runat="server" id="trAccount">
                                                 <td>Account No
@@ -265,7 +307,7 @@
                                                 </td>
                                                 <td>
 
-                                                    <asp:TextBox ID="txtMedical" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="False">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtMedical" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"  onKeyUp="SalaryCalculation();" Enabled="False">0</asp:TextBox>
 
                                                 </td>
                                             </tr>
@@ -276,7 +318,7 @@
                                                 </td>
                                                 <td>
 
-                                                    <asp:TextBox ID="txtFoodAllowance" runat="server"  ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="false">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtFoodAllowance" runat="server"  ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="false" onKeyUp="SalaryCalculation();">0</asp:TextBox>
 
                                                 </td>
                                             </tr>
@@ -287,7 +329,7 @@
                                                 </td>
                                                 <td>
 
-                                                    <asp:TextBox ID="txtConveyanceAllow" runat="server"  ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="False">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtConveyanceAllow" runat="server"  ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="False" onKeyUp="SalaryCalculation();">0</asp:TextBox>
 
                                                 </td>
                                             </tr>
@@ -300,7 +342,7 @@
                                                 </td>
                                                 <td>
 
-                                                    <asp:TextBox ID="txtTechnicalAllow"  runat="server" ClientIDMode="Static" Enabled="false" CssClass="form-control text_box_width">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtTechnicalAllow"  runat="server" ClientIDMode="Static"  onKeyUp="SalaryCalculation();" Enabled="false" CssClass="form-control text_box_width">0</asp:TextBox>
 
                                                 </td>
                                             </tr>
@@ -311,7 +353,7 @@
                                                 <td>:
                                                 </td>
                                                 <td>
-                                                    <asp:TextBox ID="txtHouseRent" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="False">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtHouseRent" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="False" onKeyUp="SalaryCalculation();">0</asp:TextBox>
                                                 </td>
                                             </tr>
                                             <tr id="tr3">
@@ -320,7 +362,7 @@
                                                 <td>:
                                                 </td>
                                                 <td>
-                                                    <asp:TextBox ID="txtOthers" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Enabled="False">0</asp:TextBox>
+                                                    <asp:TextBox ID="txtOthers" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" onKeyUp="SalaryCalculation();" Enabled="False">0</asp:TextBox>
                                                 </td>
                                             </tr>
                                             <tr id="ha" runat="server" visible="false">
@@ -454,6 +496,17 @@
 
                                                 </td>
                                             </tr>
+                                            <tr id="tr4" runat="server" visible="true">
+                                                <td>TDS
+                                                </td>
+                                                <td>:
+                                                </td>
+                                                <td>
+
+                                                    <asp:TextBox ID="txtTDS" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
+
+                                                </td>
+                                            </tr>
                                         </table>
                                         <table class="em_button_table">
                                             <tr>
@@ -506,7 +559,11 @@
                                                  <asp:BoundField DataField="BasicSalary" HeaderText="Basic" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="MedicalAllownce" HeaderText="Medical" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="HouseRent" HeaderText="House" ItemStyle-HorizontalAlign="Center"/>
-                                                 <asp:BoundField DataField="PFAmount" HeaderText="PF.Amount" ItemStyle-HorizontalAlign="Center"/>
+                
+                                                 <asp:BoundField DataField="FoodAllownce" HeaderText="Food" ItemStyle-HorizontalAlign="Center"/>
+                                                 <asp:BoundField DataField="ConvenceAllownce" HeaderText="Convence" ItemStyle-HorizontalAlign="Center"/>
+                                                <asp:BoundField DataField="TechnicalAllownce" HeaderText="Technical" ItemStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="PFAmount" HeaderText="PF.Amount" ItemStyle-HorizontalAlign="Center" />
                                                  <asp:BoundField DataField="EmpPresentSalary" HeaderText="Gross" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:BoundField DataField="SalaryCount" HeaderText="S.Count" ItemStyle-HorizontalAlign="Center"/>
                                                  <asp:TemplateField HeaderText="Change"  HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
@@ -586,84 +643,91 @@
                 
                 if (salary_type.trim() == "Scale")
                 {
-                    alert("Scall123");
+                   
                     basic = $('#txtBasic').val();
                     //-------------------End Basic Allowance Part-----------------------------------------------------------------------------
-
-                    if (('#<%=hfMedicalStatus.ClientID%>').val() = "0") // 0=%
+                    var ms = $('#hfMedicalStatus').val();
+                    if (ms== "0") // 0=%
                     {
                         var MP = ($('#<%=lblMedical.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblMedical.ClientID%>').val();
                         medical = Math.round(parseFloat(basic) * parseFloat(MP) / 100, 0);
                     }
-                    else if (('#<%=hfMedicalStatus.ClientID%>').val() = "1") // 1=৳ 
-                        medical = ('#<%=txtMedical.ClientID%>').val();
+                    else if (ms == "1") // 1=৳ 
+                        medical = $('#txtMedical').val();
                     else medical = "0";
 
                     //-------------------End Medical Allowance Part-----------------------------------------------------------------------------
-
-                    if (('#<%=hfFoodStatus.ClientID%>').val() = "0") // 0=%
+                    var foodStatus = $('#hfFoodStatus').val();
+                    if (foodStatus== "0") // 0=%
                     {
                         var FP = ($('#<%=lblFood.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblFood.ClientID%>').val(); 
                         food = Math.round(parseFloat(basic) * parseFloat(FP) / 100, 0);
                     }
-                    else if (('#<%=hfFoodStatus.ClientID%>').val() = "1") // 1=৳ 
-                        food = ('#<%=txtFoodAllowance.ClientID%>').val();
+                    else if (foodStatus == "1") // 1=৳ 
+                        food =$('#txtFoodAllowance').val(); 
                     else food = "0";
 
                     //-------------------End Food Allowance Part-----------------------------------------------------------------------------
-
-                    if (('#<%=hfConveyanceStatus.ClientID%>').val() = "0") // 0=%
+                    var conveyanceStatus = $('#hfConveyanceStatus').val();
+                    if (conveyanceStatus== "0") // 0=%
                     {
                         var CP = ($('#<%=lblConveyance.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblConveyance.ClientID%>').val(); 
                         convayance = Math.round(parseFloat(basic) * parseFloat(CP) / 100, 0);
                     }
-                    else if (('#<%=hfConveyanceStatus.ClientID%>').val() = "1") // 1=৳ 
-                        convayance = ('#<%=txtConveyanceAllow.ClientID%>').val();
+                    else if (conveyanceStatus== "1") // 1=৳ 
+                        convayance = $('#txtConveyanceAllow').val();
                     else convayance = "0";
 
                     //-------------------End Conveyance Allowance Part-----------------------------------------------------------------------------
 
-                    if (('#<%=hfTechnicalStatus.ClientID%>').val() = "0") // 0=%
+                    var technicalStatus = $('#hfTechnicalStatus').val();
+                    if (technicalStatus == "0") // 0=% 
                     {
-                        var TP = ($('#<%=lblTechnical.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblTechnical.ClientID%>').val(); 
+                        var TP = ($('#<%=lblTechnical.ClientID%>').val().trim().length <= 0) ? 0 : $('#<%=lblTechnical.ClientID%>').val();
                         technical = Math.round(parseFloat(basic) * parseFloat(TP) / 100, 0);
                     }
-                    else if (('#<%=hfTechnicalStatus.ClientID%>').val() = "1") // 1=৳ 
-                        technical = ('#<%=txtTechnicalAllow.ClientID%>').val();
-                    else technical = "0";
+                    else if (technicalStatus == "1") // 1=৳ 
+                    {
+                        technical = $('#txtTechnicalAllow').val();
+                    }
+                    else {
+                        technical = "0";
+                    }
+
 
                     //-------------------End Technical Allowance Part-----------------------------------------------------------------------------
-
-                    if (('#<%=hfHouseStatus.ClientID%>').val() = "0") // 0=%
+                    var houseRentStatus = $('#hfHouseStatus').val();
+                    if (houseRentStatus== "0") // 0=%
                     {
                         var HP = ($('#<%=lblHouseRent.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblHouseRent.ClientID%>').val(); 
                         houseRent = Math.round(parseFloat(basic) * parseFloat(HP) / 100, 0);
                     }
-                    else if (('#<%=hfHouseStatus.ClientID%>').val() = "1") // 1=৳ 
-                        houseRent = ('#<%=txtHouseRent.ClientID%>').val();
+                    else if (houseRentStatus== "1") // 1=৳ 
+                        houseRent = $('#txtHouseRent').val();
                     else houseRent = "0";
 
                     //-------------------End House Allowance Part-----------------------------------------------------------------------------
+                    var othersPayStatus = $('#hfOthersStatus').val();
 
-                    if (('#<%=hfOthersStatus.ClientID%>').val() = "0") // 0=%
-                    {
-                        var OP = ($('#<%=lblOthers.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblOthers.ClientID%>').val(); 
+                    if (othersPayStatus == "0") { // 0=%
+                        var OP = ($('#<%=lblOthers.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblOthers.ClientID%>').val();
                         others = Math.round(parseFloat(basic) * parseFloat(OP) / 100, 0);
+                    } else if (othersPayStatus == "1") { // 1=৳
+                        others = $('#txtOthers').val();
+                    } else {
+                        others = "0";
                     }
-                    else if (('#<%=hfOthersStatus.ClientID%>').val() = "1") // 1=৳ 
-                        others = ('#<%=txtOthers.ClientID%>').val();
-                    else others = "0";
 
                     //-------------------End Others Allowance Part-----------------------------------------------------------------------------
 
-                     if (('#<%=hfPFStatus.ClientID%>').val() = "0") // 0=%
+<%--                     if (('#<%=hfPFStatus.ClientID%>').val() = "0") // 0=%
                     {
                         var PFP = ($('#<%=lblPF.ClientID%>').val().trim().length < 0) ? 0 : $('#<%=lblPF.ClientID%>').val(); 
                          pf = Math.round(parseFloat(basic) * parseFloat(PFP) / 100, 0);
                     }
                     else if (('#<%=hfPFStatus.ClientID%>').val() = "1") // 1=৳ 
                         pf = ('#<%=txtPFAmount.ClientID%>').val();
-                    else pf = "0";
+                    else pf = "0";--%>
 
                     //-------------------End Provident Fund Allowance Part-----------------------------------------------------------------------------
 
@@ -808,15 +872,17 @@
                             others = $('#txtOthers').val();
                         else {
                             others = "0";
-                            others = Math.round(parseFloat(GetGross) - (parseFloat(basic) + parseFloat(houseRent) + parseFloat(medical)), 0);
-                            if (parseFloat(others) < 0) {
-                                houseRent = parseFloat(houseRent) + parseFloat(others);
-                                $('#txtHouseRent').val(houseRent);
-                                $('#txtOthers').val('0');
-                            }
-                            else {
-                                $('#txtOthers').val(others);
-                            }
+                            $('#txtOthers').val(houseRent);
+                            //others = "0";
+                            //others = Math.round(parseFloat(GetGross) - (parseFloat(basic) + parseFloat(houseRent) + parseFloat(medical)), 0);
+                            //if (parseFloat(others) < 0) {
+                            //    houseRent = parseFloat(houseRent) + parseFloat(others);
+                            //    $('#txtHouseRent').val(houseRent);
+                            //    $('#txtOthers').val('0');
+                            //}
+                            //else {
+                            //    $('#txtOthers').val(others);
+                            //}
                             
                         }
 
@@ -980,15 +1046,42 @@
                         }
                             
                         //-------------------End Technical Allowance Part-----------------------------------------------------------------------------
-                      
+
+                        //var ha = $('#hfHouseStatus').val();
+                        //if (ha == "0") // 0=% ppp
+                        //{
+                        //    var HP = ($('#hdfhouserent').val().trim().length < 0) ? 0 : $('#hdfhouserent').val();
+                        //    if ($('#hfEmpTypeId').val() == '1')
+                        //    houseRent = Math.round(parseFloat(basic) * parseFloat(HP) / 100, 0);
+                        //    else
+                        //        houseRent = Math.round(parseFloat(GetGross) * parseFloat(HP) / 100, 0);
+                        //    $('#txtHouseRent').val(houseRent);
+                        //}
+                        //else if (ha == "1") // 1=৳ 
+                        //    houseRent = $('#txtHouseRent').val();
+                        //else {
+                        //    houseRent = "0";
+                        //    $('#txtHouseRent').val(houseRent);
+                        //}
+
+
+
                       
 
                         var oa = $('#hfOthersStatus').val();
                         if (oa == "0") // 0=%
                         {
                             var OP = ($('#hdfOthers').val().trim().length < 0) ? 0 : $('#hdfOthers').val();
-                            others = Math.round(parseFloat(GetGross) * parseFloat(OP) / 100, 0);
-                            $('#txtOthers').val(others);
+
+                            if ($('#hfEmpTypeId').val() == '1')
+                                others = Math.round(parseFloat(basic) * parseFloat(HP) / 100, 0);
+                            else
+                                others = Math.round(parseFloat(GetGross) * parseFloat(HP) / 100, 0);
+                            $('#txtOthers').val(houseRent);
+
+
+                            //others = Math.round(parseFloat(GetGross) * parseFloat(OP) / 100, 0);
+                            //$('#txtOthers').val(others);
                         }
                         else if (oa == "1") // 1=৳ 
                             others = $('#txtOthers').val();
@@ -1141,6 +1234,6 @@
 
 
                
-        </script>
+    </script>
 
 </asp:Content>

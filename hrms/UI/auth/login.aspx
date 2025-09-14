@@ -3,7 +3,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head runat="server">
       <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +17,9 @@
     <!-- Popper.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <!-- Latest compiled JavaScript -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/favicon.png" />
@@ -27,8 +30,6 @@
             display: block;
             margin: 0 auto;
         }
-
-
 
         body {
             font-family: sans-serif;
@@ -111,11 +112,19 @@
             line-height: 20px;
             background: #f6921e;
             color: white;
+            text-align:center;
+            text-decoration:none;
 
+        }
+        .button:hover{
+            color:#fff;
+            text-decoration:none;
+            background-color:coral;
         }
 
         .button:focus {
             outline: none;
+            text-decoration:none;
         }
 
         .forgot-password {
@@ -176,15 +185,26 @@
             width: 50%;
         }
         .select-input {
-    width: 100%;
-    padding: 10px 3px;
-    border: 0;
-    box-shadow: 0 0 10px white;
-    background-color: transparent;
-    line-height: 20px;
-}
-.copyright p{
-    font-size: 12px;
+        width: 100%;
+        padding: 10px 3px;
+        border: 0;
+        box-shadow: 0 0 10px white;
+        background-color: transparent;
+        line-height: 20px;
+    }
+    .copyright p{
+        font-size: 12px;
+    }
+
+    .text-lighten {
+        color: #A0A0A0 !important;
+    }
+     .fs-15 {
+
+        margin-top:5px;
+    }
+.toggle-password2 {
+    cursor: pointer;
 }
     </style>
 </head>
@@ -194,14 +214,14 @@
         <div class="row gx-0">
             <div class="col-lg-4 p-0">
                 <div class="sign-in-form">
-                    <img class="login-logo" src="./logo.png" alt="logo">
+                    <img class="login-logo" src="/hrms/UI/auth/logo.png" alt="logo">
                     <p class="text-center fw-bold mt-2 mb-4 welcome-text">Welcome to CW-HRMS</p>
 
                     <form class="mt-3" id="form1" runat="server">
                         <div class="form-group">
 
 
-                            <div class="password-wrapper input2 mb-3 d-flex">
+                <%--            <div class="password-wrapper input2 mb-3 d-flex">
                                 <div class="icon1">
                                     <i class="fa fa-home" aria-hidden="true"></i>
                                 </div>
@@ -210,9 +230,9 @@
                                     <option>Company 2</option>
                                     <option>Company 3</option>
                                 </select>--%>
-                                <asp:DropDownList ID="ddlCompany" runat="server" CssClass="select-input">
-                                                                </asp:DropDownList>
-                            </div>
+                                <%--<asp:DropDownList ID="ddlCompany" runat="server" CssClass="select-input">
+                                                                </asp:DropDownList>--%>
+                            <%--</div>--%>
                             <!-- <label for="username" class="label">Username</label> -->
                             <div class="password-wrapper input2 d-flex">
                                 <div class="icon1">
@@ -221,6 +241,7 @@
                                 <asp:TextBox ID="txtUsername" runat="server" ClientIDMode="Static" CssClass="input" placeholder="Username"></asp:TextBox>
                                 <%--<input type="text" id="username" name="username" class="input" placeholder="Username">--%>
                             </div>
+                            <span class="text-danger" id="txtUserNameError"></span>
                         </div>
                         <div class="form-group">
 
@@ -230,20 +251,27 @@
                                 <div class="icon">
                                     <i class="fas fa-lock" aria-hidden="true"></i>
                                 </div>
-                                <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="border-0 input" placeholder="Password" TextMode="Password"></asp:TextBox>
-                              <%--  <input class="border-0 input" type="password" id="password" name="password"
-                                    placeholder="Password">--%>
+                                <asp:TextBox ID="txtPassword" runat="server" ClientIDMode="Static" CssClass="border-0 input" placeholder="Password" type="Password"></asp:TextBox>
+
+
+                                <%--<span class="uil uil-eye text-lighten fs-15 field-icon toggle-password2"></span>--%>
+                                <span class="uil uil-eye-slash text-lighten fs-15 field-icon toggle-password2"></span>
                             </div>
+                            <span class="text-danger" id="txtUserPasswordError"></span>
 
                         </div>
                         <div class="btn-wrapper">
-                            <asp:Button ID="btnLogin" runat="server" CssClass="button" OnClick="btnLogin_Click" OnClientClick="return validateLogIn();" Text="Sign In" />
-                            <%--<button type="submit" class="button">Sign In</button>--%>
+                            <asp:LinkButton ID="btnLogin" runat="server" CssClass="button" OnClick="btnLogin_Click" OnClientClick="return validateLogIn();">Sign In</asp:LinkButton>
+
                         </div>
 
-                        <div class="copyright mt-3">
-                            <p class="text-center">2024 &copy; <a href="https://www.codewareltd.com">Codeware LTD</a></p>
-                        </div>
+                   <div class="copyright mt-3">
+                        <p class="text-center">
+                            <span id="year"></span> &copy; 
+                            <a href="https://www.codewareltd.com">Codeware LTD</a>
+                        </p>
+                    </div>
+
 
                         <!--         
                         <div class="forgot-password">
@@ -256,7 +284,7 @@
             </div>
 
             <div class="col-lg-8 d-lg-flex justify-content-center align-items-center login-bg d-none  p-0">
-                <img class="login-image" src="cw-hrms.png" alt="image">
+                <img class="login-image" src="/hrms/UI/auth/cw-hrms.png" alt="image">
             </div>
         </div>
 
@@ -266,4 +294,63 @@
     </div>
 </body>
   
+    <script>
+          document.getElementById("year").textContent = new Date().getFullYear();
+        function validateLogIn() {
+            var isValid = true;  // Assume the form is valid by default
+
+            // Validate Username
+            var username = $('#txtUsername').val().trim();
+            if (username === "") {
+                $('#txtUserNameError').html("User Name is required.");
+                $("#txtUsername").focus();
+                isValid = false;
+            } else if (username.length < 6) {
+                $('#txtUserNameError').html("User Name must be at least 6 characters.");
+                $("#txtUsername").focus();
+                isValid = false;
+            } else {
+                $('#txtUserNameError').html(""); // Clear any previous errors
+            }
+
+
+            var password = $('#txtPassword').val().trim();
+            if (password === "") {
+                $('#txtUserPasswordError').html("Password is required.");
+                $("#txtPassword").focus();
+                isValid = false;
+            } else if (password.length < 6) {
+                $('#txtUserPasswordError').html("Password must be at least 6 characters.");
+                $("#txtPassword").focus();
+                isValid = false;
+            } else {
+                $('#txtUserPasswordError').html(""); // Clear any previous errors
+            }
+
+            return isValid; // Return whether the form is valid or not
+        }
+
+
+        function eye_Loginpass() {
+            $(".toggle-password2").click(function () {
+                let input = $(this).parent().find("#txtPassword");
+                let icon = $(this);
+
+                if (input.attr("type") === "password") {
+                    input.attr("type", "text");
+                    icon.removeClass("uil-eye-slash").addClass("uil-eye"); // Show eye-slash icon when password is visible
+                } else {
+                    input.attr("type", "password");
+
+                    icon.removeClass("uil-eye").addClass("uil-eye-slash");  // Show eye-slash icon when password is visible
+
+                    // Show normal eye icon when password is hidden
+                }
+            });
+        }
+
+
+        eye_Loginpass();
+
+    </script>
 </html>

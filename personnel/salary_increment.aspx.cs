@@ -9,22 +9,37 @@ using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using System.Data;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class salary_increment : System.Web.UI.Page
     {
         DataTable dt;
+        //View=343,Add=344,Delete=345
         protected void Page_Load(object sender, EventArgs e)
         {
+       
+
+
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] pagePermission = { 343, 344, 345 };
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 ViewState["__AttBonusWorker__"] = "0";
                 ViewState["__AttBonusStaff__"] = "0";
-                setPrivilege();                
+                setPrivilege(userPagePermition);                
                 loadSalaryInfo();               
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;
@@ -34,7 +49,7 @@ namespace SigmaERP.personnel
             }
             
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permissions)
         {
             try
             {               
@@ -42,22 +57,32 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+               // string[] AccessPermission = new string[0];
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "salary_increment.aspx", ddlCompany, divSalaryIncrementList, btnSave);
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "salary_increment.aspx", ddlCompany, divSalaryIncrementList, btnSave);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
 
-                if (ViewState["__ReadAction__"].ToString().Equals("0")) 
-                {
-                    ddlCompany.Enabled = false;
-                    btnIncrementInfo.Enabled = false;
-                    ddlEmpCardNo.Enabled = false;
-                    btnIncrementInfo.CssClass = "";
-                }
+
+                if (permissions.Contains(343))
+                    ViewState["__ReadAction__"] = "1";
+                if (permissions.Contains(344))
+                    ViewState["__WriteAction__"] = "1";
+                if (permissions.Contains(345))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
+
+                //if (ViewState["__ReadAction__"].ToString().Equals("0")) 
+                //{
+                //    ddlCompany.Enabled = false;
+                //    btnIncrementInfo.Enabled = false;
+                //    ddlEmpCardNo.Enabled = false;
+                //    btnIncrementInfo.CssClass = "";
+                //}
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
 
             
@@ -494,8 +519,8 @@ namespace SigmaERP.personnel
             try
             {
                 DataTable dtPreStatus = new DataTable();
-                sqlDB.fillDataTable("Select TiffinAllownce,NightAllownce,AttendanceBonus,  convert(varchar(10),EarnLeaveDate,120) as EarnLeaveDate, LunchAllownce, LunchCount, PreDptId, PreDsgId, PreGrdName, CompanyId, EmpId, EmpCardNo, PreEmpTypeId, EmpTypeId, PreSalaryType, SalaryType, EmpPresentSalary, IncrementAmount, BasicSalary, MedicalAllownce, FoodAllownce, ConvenceAllownce, HouseRent, PreTechnicalAllownce, TechnicalAllownce, DptId, DsgId, EmpStatus, GrdName, OthersAllownce, convert(varchar(10), EarnLeaveDate, 120) as EarnLeaveDate, PreShiftTransferDate, convert(varchar(10), ShiftTransferDate, 120) as ShiftTransferDate, ShiftTransferToDate, SftId, GId, PreGId, SalaryCount, BankId, EmpAccountNo, PfMember, convert(varchar(10), PfDate, 120) as PfDate, PFAmount, CustomOrdering, OverTime, PreEmpDutyType, EmpDutyType, EmpJoinigSalary, DormitoryRent, PreIncomeTax, IncomeTax From Personnel_EmpCurrentStatus where  SN='" + ddlEmpCardNo.SelectedValue + "' ", dtPreStatus);
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpCurrentStatus (EmpId, PreCompanyId, CompanyId, EmpCardNo, PreEmpTypeId, EmpTypeId, PreSalaryType, SalaryType, PreEmpSalary, EmpPresentSalary, PreIncrementAmount, IncrementAmount, PreBasicSalary, BasicSalary,PreMedicalAllownce, MedicalAllownce,PreFoodAllownce, FoodAllownce,PreConvenceAllownce, ConvenceAllownce, PreHouseRent, HouseRent,PreTechnicalAllownce,TechnicalAllownce, PreDptId, DptId, PreDsgId, DsgId, PreEmpStatus, EmpStatus, PreGrdName, GrdName, PreOthersAllownce, OthersAllownce, HolidayAllownce, TiffinAllownce, NightAllownce, AttendanceBonus, LunchAllownce, LunchCount, DateofUpdate, TypeOfChange, EffectiveMonth, OrderRefNo, OrderRefDate, Remarks, ActiveSalary, EarnLeaveDate, IsActive,PreShiftTransferDate,ShiftTransferDate,ShiftTransferToDate,SftId,GId,PreGId,SalaryCount,BankId,EmpAccountNo,PfMember,PfDate,PFAmount,CustomOrdering,OverTime,PreEmpDutyType,EmpDutyType,EmpJoinigSalary,DormitoryRent,PreIncomeTax,IncomeTax)  values (@EmpId, @PreCompanyId, @CompanyId, @EmpCardNo, @PreEmpTypeId, @EmpTypeId, @PreSalaryType, @SalaryType, @PreEmpSalary, @EmpPresentSalary, @PreIncrementAmount, @IncrementAmount, @PreBasicSalary, @BasicSalary,@PreMedicalAllownce, @MedicalAllownce,@PreFoodAllownce,@FoodAllownce,@PreConvenceAllownce, @ConvenceAllownce, @PreHouseRent, @HouseRent,@PreTechnicalAllownce,@TechnicalAllownce, @PreDptId, @DptId, @PreDsgId, @DsgId, @PreEmpStatus, @EmpStatus, @PreGrdName, @GrdName, @PreOthersAllownce, @OthersAllownce, @HolidayAllownce, @TiffinAllownce, @NightAllownce, @AttendanceBonus, @LunchAllownce, @LunchCount, @DateofUpdate, @TypeOfChange, @EffectiveMonth, @OrderRefNo, @OrderRefDate, @Remarks, @ActiveSalary, @EarnLeaveDate, @IsActive,@PreShiftTransferDate,@ShiftTransferDate,@ShiftTransferToDate,@SftId,@GId,@PreGId,@SalaryCount,@BankId,@EmpAccountNo,@PfMember,@PfDate,@PFAmount,@CustomOrdering,@OverTime,@PreEmpDutyType,@EmpDutyType,@EmpJoinigSalary,@DormitoryRent,@PreIncomeTax,@IncomeTax) ", sqlDB.connection);
+                sqlDB.fillDataTable("Select TiffinAllownce,NightAllownce,AttendanceBonus,  convert(varchar(10),EarnLeaveDate,120) as EarnLeaveDate, LunchAllownce, LunchCount, PreDptId, PreDsgId, CompanyId, EmpId, EmpCardNo, PreEmpTypeId, EmpTypeId, PreSalaryType, SalaryType, EmpPresentSalary, IncrementAmount, BasicSalary, MedicalAllownce, FoodAllownce, ConvenceAllownce, HouseRent, PreTechnicalAllownce, TechnicalAllownce, DptId, DsgId, EmpStatus,GrdId,PreGrdId, OthersAllownce, convert(varchar(10), EarnLeaveDate, 120) as EarnLeaveDate, PreShiftTransferDate, convert(varchar(10), ShiftTransferDate, 120) as ShiftTransferDate, ShiftTransferToDate, SftId, GId, PreGId, SalaryCount, BankId, EmpAccountNo, PfMember, convert(varchar(10), PfDate, 120) as PfDate, PFAmount, CustomOrdering, OverTime, PreEmpDutyType, EmpDutyType, EmpJoinigSalary, DormitoryRent, PreIncomeTax, IncomeTax From Personnel_EmpCurrentStatus where  SN='" + ddlEmpCardNo.SelectedValue + "' ", dtPreStatus);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpCurrentStatus (EmpId, PreCompanyId, CompanyId, EmpCardNo, PreEmpTypeId, EmpTypeId, PreSalaryType, SalaryType, PreEmpSalary, EmpPresentSalary, PreIncrementAmount, IncrementAmount, PreBasicSalary, BasicSalary,PreMedicalAllownce, MedicalAllownce,PreFoodAllownce, FoodAllownce,PreConvenceAllownce, ConvenceAllownce, PreHouseRent, HouseRent,PreTechnicalAllownce,TechnicalAllownce, PreDptId, DptId, PreDsgId, DsgId, PreEmpStatus, EmpStatus, PreGrdId, GrdId, PreOthersAllownce, OthersAllownce, HolidayAllownce, TiffinAllownce, NightAllownce, AttendanceBonus, LunchAllownce, LunchCount, DateofUpdate, TypeOfChange, EffectiveMonth, OrderRefNo, OrderRefDate, Remarks, ActiveSalary, EarnLeaveDate, IsActive,PreShiftTransferDate,ShiftTransferDate,ShiftTransferToDate,SftId,GId,PreGId,SalaryCount,BankId,EmpAccountNo,PfMember,PfDate,PFAmount,CustomOrdering,OverTime,PreEmpDutyType,EmpDutyType,EmpJoinigSalary,DormitoryRent,PreIncomeTax,IncomeTax)  values (@EmpId, @PreCompanyId, @CompanyId, @EmpCardNo, @PreEmpTypeId, @EmpTypeId, @PreSalaryType, @SalaryType, @PreEmpSalary, @EmpPresentSalary, @PreIncrementAmount, @IncrementAmount, @PreBasicSalary, @BasicSalary,@PreMedicalAllownce, @MedicalAllownce,@PreFoodAllownce,@FoodAllownce,@PreConvenceAllownce, @ConvenceAllownce, @PreHouseRent, @HouseRent,@PreTechnicalAllownce,@TechnicalAllownce, @PreDptId, @DptId, @PreDsgId, @DsgId, @PreEmpStatus, @EmpStatus, @PreGrdId, @GrdId, @PreOthersAllownce, @OthersAllownce, @HolidayAllownce, @TiffinAllownce, @NightAllownce, @AttendanceBonus, @LunchAllownce, @LunchCount, @DateofUpdate, @TypeOfChange, @EffectiveMonth, @OrderRefNo, @OrderRefDate, @Remarks, @ActiveSalary, @EarnLeaveDate, @IsActive,@PreShiftTransferDate,@ShiftTransferDate,@ShiftTransferToDate,@SftId,@GId,@PreGId,@SalaryCount,@BankId,@EmpAccountNo,@PfMember,@PfDate,@PFAmount,@CustomOrdering,@OverTime,@PreEmpDutyType,@EmpDutyType,@EmpJoinigSalary,@DormitoryRent,@PreIncomeTax,@IncomeTax) ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", dtPreStatus.Rows[0]["EmpId"].ToString());
                 cmd.Parameters.AddWithValue("@PreCompanyId", dtPreStatus.Rows[0]["CompanyId"].ToString());
                 if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Master Admin"))
@@ -528,8 +553,8 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@DsgId", dtPreStatus.Rows[0]["DsgId"].ToString());
                 cmd.Parameters.AddWithValue("@PreEmpStatus", dtPreStatus.Rows[0]["EmpStatus"].ToString());
                 cmd.Parameters.AddWithValue("@EmpStatus", "1");
-                cmd.Parameters.AddWithValue("@PreGrdName", dtPreStatus.Rows[0]["PreGrdName"].ToString());
-                cmd.Parameters.AddWithValue("@GrdName", dtPreStatus.Rows[0]["GrdName"].ToString());
+                cmd.Parameters.AddWithValue("@PreGrdId", dtPreStatus.Rows[0]["PreGrdId"].ToString());
+                cmd.Parameters.AddWithValue("@GrdId", dtPreStatus.Rows[0]["GrdId"].ToString());
                 cmd.Parameters.AddWithValue("@PreOthersAllownce", dtPreStatus.Rows[0]["OthersAllownce"].ToString());
                 cmd.Parameters.AddWithValue("@OthersAllownce",txtNewTransportOthers.Text.Trim());
                 cmd.Parameters.AddWithValue("@HolidayAllownce", "0");
@@ -810,9 +835,21 @@ namespace SigmaERP.personnel
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "ClearInputBox();", true);
         }
 
-       
 
-        
-        
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Pbutton";
+            }
+        }
+
+
     }
 }

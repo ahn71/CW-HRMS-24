@@ -75,6 +75,7 @@ namespace SigmaERP.payroll.advance
                         }
                         
                     }
+                   
                     classes.Employee.LoadEmpCardNoForPayroll_EmpID(ddlEmpCardNo, ViewState["__CompanyId__"].ToString(), EmpId);
                     ddlCompanyList.Enabled = false;
                     ddlEmpCardNo.SelectedValue = EmpId;
@@ -97,10 +98,11 @@ namespace SigmaERP.payroll.advance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserId__"] = getCookies["__getUserId__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
                 if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin"))
                 {
-                    classes.commonTask.LoadBranch(ddlCompanyList);
+                   
                     // classes.commonTask.LoadShift(ddlShiftList, ViewState["__CompanyId__"].ToString());
                     return;
                 }

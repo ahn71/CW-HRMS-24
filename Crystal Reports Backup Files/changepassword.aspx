@@ -41,7 +41,7 @@
             <div class="ds_nagevation_bar">
                 <div style="margin-top: 5px">
                     <ul>
-                        <li><a href="/default.aspx">Dasboard</a></li>
+                        <li><a href="/default.aspx">Dashboard</a></li>
                         <li>/</li>
                         <li><a href="/tools_default.aspx">Tools</a></li>
                         <li>/</li>
@@ -262,7 +262,7 @@
                         </div>                                      
                                      
                                       
-                                      <asp:GridView BackColor="White" ID="gvAccountList" DataKeyNames="UserId" runat="server"  HeaderStyle-ForeColor="White" HeaderStyle-BackColor="#0000ff" HeaderStyle-Height="28px" AllowPaging="True" CssClass="table_access_control" Width="100%" AutoGenerateColumns="False" PageSize="50" OnRowCommand="gvAccountList_RowCommand" OnRowDataBound="gvAccountList_RowDataBound">
+                                      <asp:GridView BackColor="White" ID="gvAccountList" DataKeyNames="UserId" runat="server"  HeaderStyle-ForeColor="White" HeaderStyle-BackColor="#0000ff" HeaderStyle-Height="28px" CssClass="table_access_control" Width="100%" AutoGenerateColumns="False" OnRowCommand="gvAccountList_RowCommand" OnRowDataBound="gvAccountList_RowDataBound">
                                             <Columns>
                                               <asp:BoundField DataField="EmpName" HeaderText="Full Name" Visible="true" ItemStyle-HorizontalAlign="left" ItemStyle-Height="26px"/>
                                                 <asp:BoundField DataField="LvAuthorityOrder" HeaderStyle-HorizontalAlign="Center" HeaderText="Leave Autority Position"  Visible="true" ItemStyle-HorizontalAlign="Center" />

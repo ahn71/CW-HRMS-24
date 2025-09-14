@@ -15,10 +15,9 @@
                <div style="margin-top: 5px">
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
-                       <li> <a class="seperator" href="#"></a>/</li>
-                       <li> <a href="/payroll_default.aspx">Payroll</a></li>   
+                    
                        <li> <a class="seperator" href="#"></a>/</li>                  
-                        <li> <a href="/payroll/salary_index.aspx">Salary</a></li>
+                        <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                         <li> <a class="seperator" href="#"></a>/</li>
                        <li> <a href="#" class="ds_negevation_inactive Pactive">Salary Processing</a></li>
                    </ul>               
@@ -27,7 +26,7 @@
        </div>
         <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Salary Processing </h2>
+            <h2 runat="server" id="heading">Salary Processing </h2>
         </div>
     	<div class="main_box_body Pbody">
             <div class="main_box_content">
@@ -144,10 +143,7 @@
                                 </table>
 
                                <div style="display:flex; justify-content:flex-end; margin-top:10px;width:89%">
-                                   <asp:Button ID="btnGenerate" CssClass="Pbutton" ClientIDMode="Static" runat="server" Text="Process Salary" OnClientClick="return processing();"  OnClick="btnGenerate_Click" />
-                               </div>
-
-                                
+                                   <asp:Button ID="btnGenerate" CssClass="Pbutton" ClientIDMode="Static" runat="server" Text="Process Salary" OnClientClick="return processing();"  OnClick="btnGenerate_Click" />                               </div>                                
   
                             </div>                  
                             <div  style="width: 61%; margin: 0px auto; overflow: hidden;display:none">
@@ -165,7 +161,7 @@
                      <asp:Label ID="lblM" runat="server" ClientIDMode="Static" Text="" style=" font-weight:bold; position: absolute; margin-top: -23px; margin-left: 22%;"  ></asp:Label>
 
                             <div class="bonus_generation" style="width: 66%; margin: 0px auto;">   
-                            <asp:GridView runat="server" ID="gvSalaryList" CssClass="gvdisplay1" DataKeyNames="ToDate,IsSeperationGeneration" AutoGenerateColumns="false" HeaderStyle-BackColor="#ffa500" HeaderStyle-Height="28px" HeaderStyle-ForeColor="White" Width="100%" OnRowCommand="gvSalaryList_RowCommand">
+                            <asp:GridView runat="server" ID="gvSalaryList" CssClass="gvdisplay1" DataKeyNames="ToDate,IsSeperationGeneration" AutoGenerateColumns="false" HeaderStyle-BackColor="#ffa500" HeaderStyle-Height="28px" HeaderStyle-ForeColor="White" Width="100%" OnRowCommand="gvSalaryList_RowCommand" OnRowDataBound="gvSalaryList_RowDataBound">
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <HeaderTemplate>SL</HeaderTemplate>

@@ -53,7 +53,12 @@
             margin-top: -37px;
             font: bold;
         }
-          
+         .Mbody {
+  background: #c6c6b4 none repeat scroll 0 0;
+  border-bottom: 2px solid #2B5E4E !important;
+  border-left: 2px solid #2B5E4E !important;
+  border-right: 2px solid #2B5E4E !important;
+}
     </style>
   <script type="text/javascript">
       //$(function () {
@@ -72,7 +77,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li>/</li>
-                    <li><a href="/attendance_default.aspx">Attendance</a></li>
+                   <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li>/</li>
                     <li><a href="#" class="ds_negevation_inactive Mactive">Attendance List</a></li>
                 </ul>
@@ -107,7 +112,7 @@
                  <h2></h2>
                  <h2 class="emp_header_right">
                      <!--<a href="/leave/aplication.aspx">Close</a>-->
-                     <asp:Button ID="Button1" runat="server" CssClass="Mbutton" Height="34px"  PostBackUrl="~/attendance_default.aspx" Style="border: 1px solid;" Text="Close" Width="75px" />
+                     <asp:Button ID="Button1" runat="server" CssClass="Mbutton" Height="34px"  PostBackUrl="~/attendance_default.aspx"  Style="border: 1px solid;" Text="Close" Width="75px" />
                      <asp:Button ID="btnRefresh" runat="server" CssClass="Mbutton" Height="34px" OnClick="btnRefresh_Click" Text="Refresh" Width="75px" />
                      <asp:Button ID="btnClear" runat="server" CssClass="Mbutton" Height="34px" OnClick="btnClear_Click" Text="Clear" Width="75px" />
                  </h2>
@@ -117,7 +122,7 @@
         <div style="width: 100%;">
              <table style="margin: 0 0 5px 6px; border-collapse: collapse;" width="99%">
                      <tr>
-                         <td>Company</td>                        
+                         <td>Unit</td>                        
                          <td>Depertment</td>
                           <td>Shift</td>
                          <td>Line / Grp</td>
@@ -129,7 +134,10 @@
                      </tr>
                      <tr>
                            <td>
-                             <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
+                             <asp:DropDownList ID="ddlCompanyList" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" Visible="false" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
+                             </asp:DropDownList>
+
+                                 <asp:DropDownList ID="ddlUnit" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server"  AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
                              </asp:DropDownList>
                          </td>  
 

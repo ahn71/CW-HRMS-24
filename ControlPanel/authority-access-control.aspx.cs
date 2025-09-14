@@ -21,8 +21,20 @@ namespace SigmaERP.ControlPanel
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 createBlankdt();
+                if (Request.Url.AbsoluteUri.ToLower().Contains("out-duty-authority"))
+                {
+                    rblAutoritySetupType.SelectedValue = "OD";
+                }
+                else
+                {
+                    rblAutoritySetupType.SelectedValue = "Lv";
+                }
                 setPrivilege();
             }
         }
@@ -35,12 +47,13 @@ namespace SigmaERP.ControlPanel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "authority_access_control.aspx", ddlCompany, gvEmployeeList, btnSubmit);
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "authority_access_control.aspx", ddlCompany, gvEmployeeList, btnSubmit);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                 loadAllAuthority();
            //     classes.commonTask.getAuthorityList(ViewState["__CompanyId__"].ToString(),ckblAuthorityList);
@@ -58,11 +71,94 @@ namespace SigmaERP.ControlPanel
         {
             try {
                 string EmpType = rblEmpType.SelectedValue == "All" ? "" : " and e.EmpTypeId=" + rblEmpType.SelectedValue;
-                CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue; 
-                if(rblAutoritySetupType.SelectedValue=="Lv")
-                sqlCmd = "select e.EmpId,substring(e.EmpCardNo,8,6) as EmpCardNo, e.EmpName,e.DsgName,e.DptName,e.DptId, CustomOrdering,case when a.IsDirectApprove=1 then 'This employee is allowed for direct approval' else  STRING_AGG( u.EmpName + case when a.AuthorityAction is null then '' else  '('+convert(varchar,a.AuthorityPosition)+')'+' ['+case when  a.AuthorityAction=0 then 'Forward & Approve' else case when  a.AuthorityAction=1 then 'Forward' else 'Approve' end end+']' end,', ') end as Authority,e.EmpType from v_EmployeeDetails e left join tblLeaveAuthorityAccessControl a on e.EmpId=a.EmpID and e.IsActive=1 left join v_UserAccount u on a.AuthorityID=u.UserId  where e.CompanyId='" + CompanyId + "' and e.EmpStatus=1 and e.DptId " + classes.commonTask.getDepartmentList(lstSelected) + " and IsActive=1 "+ EmpType + "  group by e.EmpId,e.EmpCardNo, e.EmpName,e.DsgName,e.DptName,e.DptId, CustomOrdering,a.IsDirectApprove,e.EmpType order by e.DptId, CustomOrdering";
+                CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
+                if (rblAutoritySetupType.SelectedValue == "Lv")
+                    sqlCmd = @"SELECT 
+                        pei.EmpId,
+                        SUBSTRING(pei.EmpCardNo, 8, 6) AS EmpCardNo,
+                        pei.EmpName,
+                        dsg.DsgName,
+                        dpt.DptName,
+                        pecs.DptId,
+                        es.EmpType,
+                        CASE 
+                            WHEN upa.IsDirectApprove = 1 THEN 'This employee is allowed for direct approval'
+                            ELSE STRING_AGG(
+                                Auth.EmpName + 
+                                CASE 
+                                    WHEN upa.AuthorityAction IS NULL THEN '' 
+                                    ELSE '(' + CONVERT(VARCHAR, upa.AuthorityPosition) + ') [' + 
+                                        CASE 
+                                            WHEN upa.AuthorityAction = 0 THEN 'Forward & Approve' 
+                                            WHEN upa.AuthorityAction = 1 THEN 'Forward' 
+                                            ELSE 'Approve' 
+                                        END + ']' 
+                                END, ', '
+                            ) 
+                        END AS Authority
+                    FROM 
+                        Personnel_EmployeeInfo AS pei
+                    INNER JOIN 
+                        Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId 
+                        AND pecs.IsActive = 1
+                    INNER JOIN 
+                        HRD_EmployeeType AS es ON pei.EmpTypeId = es.EmpTypeId
+                    LEFT JOIN 
+                        Hrd_Department AS dpt ON pecs.DptId = dpt.DptId
+                    LEFT JOIN 
+                        HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId
+                    LEFT JOIN 
+                        UserApprovalAuthorityPanels AS upa ON pei.EmpId = upa.EmpID AND upa.ApprovalFor='LV'
+                        AND pecs.IsActive = 1
+                    LEFT JOIN users as u ON upa.AuthorityID = u.UserId
+                    left join Personnel_EmployeeInfo as Auth on u.ReferenceID=Auth.EmpID
+                    WHERE 
+                        pecs.CompanyId = '" + CompanyId+ "'  AND pecs.EmpStatus IN (1, 8) AND pecs.DptId " + classes.commonTask.getDepartmentList(lstSelected) + " GROUP BY   pei.EmpId, pei.EmpCardNo, pei.EmpName, dsg.DsgName, dpt.DptName, pecs.DptId, es.EmpType, upa.IsDirectApprove ORDER BY  pecs.DptId, pei.EmpCardNo";
                 else
-                    sqlCmd = "select e.EmpId,substring(e.EmpCardNo,8,6) as EmpCardNo, e.EmpName,e.DsgName,e.DptName,e.DptId, CustomOrdering,case when a.IsDirectApprove=1 then 'This employee is allowed for direct approval' else  STRING_AGG( u.EmpName + case when a.AuthorityAction is null then '' else  '('+convert(varchar,a.AuthorityPosition)+')'+' ['+case when  a.AuthorityAction=0 then 'Forward & Approve' else case when  a.AuthorityAction=1 then 'Forward' else 'Approve' end end+']' end,', ') end as Authority,e.EmpType from v_EmployeeDetails e left join tblOutDutyAuthorityAccessControl a on e.EmpId=a.EmpID and e.IsActive=1 left join v_UserAccount u on a.AuthorityID=u.UserId  where e.CompanyId='" + CompanyId + "' and e.EmpStatus=1 and e.DptId " + classes.commonTask.getDepartmentList(lstSelected) + " and IsActive=1 " + EmpType + " group by e.EmpId,e.EmpCardNo, e.EmpName,e.DsgName,e.DptName,e.DptId, CustomOrdering,a.IsDirectApprove,e.EmpType order by e.DptId, CustomOrdering";
+                    sqlCmd = @"SELECT 
+                        pei.EmpId,
+                        SUBSTRING(pei.EmpCardNo, 8, 6) AS EmpCardNo,
+                        pei.EmpName,
+                        dsg.DsgName,
+                        dpt.DptName,
+                        pecs.DptId,
+                        es.EmpType,
+                        CASE 
+                            WHEN upa.IsDirectApprove = 1 THEN 'This employee is allowed for direct approval'
+                            ELSE STRING_AGG(
+                                Auth.EmpName + 
+                                CASE 
+                                    WHEN upa.AuthorityAction IS NULL THEN '' 
+                                    ELSE '(' + CONVERT(VARCHAR, upa.AuthorityPosition) + ') [' + 
+                                        CASE 
+                                            WHEN upa.AuthorityAction = 0 THEN 'Forward & Approve' 
+                                            WHEN upa.AuthorityAction = 1 THEN 'Forward' 
+                                            ELSE 'Approve' 
+                                        END + ']' 
+                                END, ', '
+                            ) 
+                        END AS Authority
+                    FROM 
+                        Personnel_EmployeeInfo AS pei
+                    INNER JOIN 
+                        Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId 
+                        AND pecs.IsActive = 1
+                    INNER JOIN 
+                        HRD_EmployeeType AS es ON pei.EmpTypeId = es.EmpTypeId
+                    LEFT JOIN 
+                        Hrd_Department AS dpt ON pecs.DptId = dpt.DptId
+                    LEFT JOIN 
+                        HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId
+                    LEFT JOIN 
+                        UserApprovalAuthorityPanels AS upa ON pei.EmpId = upa.EmpID and upa.ApprovalFor='SC'
+                        AND pecs.IsActive = 1
+                    LEFT JOIN users as u ON upa.AuthorityID = u.UserId
+                    left join Personnel_EmployeeInfo as Auth on u.ReferenceID=Auth.EmpID
+                    WHERE 
+                        pecs.CompanyId = '" + CompanyId + "' AND pecs.EmpStatus IN (1, 8) AND pecs.DptId " + classes.commonTask.getDepartmentList(lstSelected) + " GROUP BY   pei.EmpId, pei.EmpCardNo, pei.EmpName, dsg.DsgName, dpt.DptName, pecs.DptId, es.EmpType, upa.IsDirectApprove ORDER BY  pecs.DptId, pei.EmpCardNo";
+
+
+                //sqlCmd = "select e.EmpId,substring(e.EmpCardNo,8,6) as EmpCardNo, e.EmpName,e.DsgName,e.DptName,e.DptId, CustomOrdering,case when a.IsDirectApprove=1 then 'This employee is allowed for direct approval' else  STRING_AGG( u.EmpName + case when a.AuthorityAction is null then '' else  '('+convert(varchar,a.AuthorityPosition)+')'+' ['+case when  a.AuthorityAction=0 then 'Forward & Approve' else case when  a.AuthorityAction=1 then 'Forward' else 'Approve' end end+']' end,', ') end as Authority,e.EmpType from v_EmployeeDetails e left join tblOutDutyAuthorityAccessControl a on e.EmpId=a.EmpID and e.IsActive=1 left join v_UserAccount u on a.AuthorityID=u.UserId  where e.CompanyId='" + CompanyId + "' and e.EmpStatus=1 and e.DptId " + classes.commonTask.getDepartmentList(lstSelected) + " and IsActive=1 " + EmpType + " group by e.EmpId,e.EmpCardNo, e.EmpName,e.DsgName,e.DptName,e.DptId, CustomOrdering,a.IsDirectApprove,e.EmpType order by e.DptId, CustomOrdering";
                 DataTable dt = new DataTable();
                 sqlDB.fillDataTable(sqlCmd, dt);
                 gvEmployeeList .DataSource = dt;
@@ -78,7 +174,37 @@ namespace SigmaERP.ControlPanel
 
                 
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-                sqlCmd = "select UserId,EmpId,EmpCardNo,EmpName,DptName,DsgName,LvAuthorityOrder from v_UserAccount where CompanyId='" + CompanyId + "' and( isLvAuthority=1 or isODAuthority=1) and UserId in(" + UserIDList + ") order by LvAuthorityOrder";
+                //sqlCmd = "select UserId,EmpId,EmpCardNo,EmpName,DptName,DsgName,LvAuthorityOrder from v_UserAccount where CompanyId='" + CompanyId + "' and( isLvAuthority=1 or isODAuthority=1) and UserId in(" + UserIDList + ") order by LvAuthorityOrder";
+
+                sqlCmd = @"
+                        SELECT 
+                        UserId,
+                        us.IsGuestUser,
+                        ReferenceID,
+                        pei.EmpCardNo,
+                        pei.EmpName,
+						us.FirstName,
+						us.LastName,
+                        pecs.DptID,
+                        pecs.DsgId,
+                        dpt.DptName,
+                        CASE 
+                            WHEN us.IsGuestUser = 1 THEN 'GuestUse'
+                            ELSE dsg.dsgName 
+                        END AS dsgName,
+                        CASE 
+                            WHEN us.IsGuestUser = 1 THEN us.FirstName + ' ' + us.LastName
+                            ELSE pei.EmpName 
+                        END AS EmpName
+                    FROM users AS us
+                    LEFT JOIN Personnel_EmployeeInfo AS pei ON us.ReferenceID = pei.EmpId
+                    LEFT JOIN Personnel_EmpCurrentStatus AS pecs ON us.ReferenceID = pecs.EmpId 
+                        AND pecs.IsActive = 1
+                    LEFT JOIN Hrd_Department AS dpt ON pecs.DptId = dpt.DptId
+                    LEFT JOIN HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId
+                    WHERE us.CompanyId = '"+CompanyId+ "' and UserId in(" + UserIDList + ") AND IsApprovingAuthority = 1 AND (us.Deleted IS NULL OR us.Deleted = 0) ";
+
+
                 DataTable dt = new DataTable();
                 sqlDB.fillDataTable(sqlCmd, dt);
                 gvSelectedAuthorityList.DataSource = dt;
@@ -122,7 +248,36 @@ namespace SigmaERP.ControlPanel
             {                
 
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-                sqlCmd = "select UserId,EmpId, substring(EmpCardNo,8,6) as EmpCardNo,EmpName,DptName,DsgName,LvAuthorityOrder from v_UserAccount where CompanyId='" + CompanyId + "' and( isLvAuthority=1)  order by LvAuthorityOrder";
+                sqlCmd = @"SELECT 
+                        UserId,
+                        us.IsGuestUser,
+                        ReferenceID,
+                        pei.EmpCardNo,
+                        pei.EmpName,
+						us.FirstName,
+						us.LastName,
+                        pecs.DptID,
+                        pecs.DsgId,
+                        dpt.DptName,
+                        CASE 
+                            WHEN us.IsGuestUser = 1 THEN 'GuestUse'
+                            ELSE dsg.dsgName 
+                        END AS dsgName,
+                        CASE 
+                            WHEN us.IsGuestUser = 1 THEN us.FirstName + ' ' + us.LastName
+                            ELSE pei.EmpName 
+                        END AS EmpName
+                    FROM users AS us
+                    LEFT JOIN Personnel_EmployeeInfo AS pei ON us.ReferenceID = pei.EmpId
+                    LEFT JOIN Personnel_EmpCurrentStatus AS pecs ON us.ReferenceID = pecs.EmpId 
+                        AND pecs.IsActive = 1
+                    LEFT JOIN Hrd_Department AS dpt ON pecs.DptId = dpt.DptId
+                    LEFT JOIN HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId
+                    WHERE us.CompanyId = '"+CompanyId+"' AND IsApprovingAuthority = 1 AND (us.Deleted IS NULL OR us.Deleted = 0)";
+
+                //sqlCmd = "select UserId,EmpId, substring(EmpCardNo,8,6) as EmpCardNo,EmpName,DptName,DsgName,LvAuthorityOrder from v_UserAccount where CompanyId='" + CompanyId + "' and( isLvAuthority=1)  order by LvAuthorityOrder";
+
+
                 DataTable dt = new DataTable();
                 sqlDB.fillDataTable(sqlCmd, dt);
                 gvAllAuthorityList.DataSource = dt;
@@ -290,10 +445,11 @@ namespace SigmaERP.ControlPanel
                 if (gvEmployeeList != null && gvEmployeeList.Rows.Count > 0)
                 {
                     string tbl = "";
-                    if (rblAutoritySetupType.SelectedValue == "Lv")
-                        tbl = "tblLeaveAuthorityAccessControl";
-                    else
-                        tbl = "tblOutDutyAuthorityAccessControl";
+                    //if (rblAutoritySetupType.SelectedValue == "Lv")
+                        tbl = "UserApprovalAuthorityPanels";
+                    //else
+                    //    tbl = "tblOutDutyAuthorityAccessControl";
+                    string ApprovalFor = (rblAutoritySetupType.SelectedValue == "Lv") ? "LV" : "SC";
 
                     foreach (GridViewRow row in gvEmployeeList.Rows)
                     {
@@ -301,7 +457,7 @@ namespace SigmaERP.ControlPanel
                         if (ckbEmp.Checked)
                         {
                             string EmpID = gvEmployeeList.DataKeys[row.RowIndex].Values[0].ToString();
-                            delete(tbl,EmpID);
+                            delete(tbl,EmpID, ApprovalFor);
                             foreach (GridViewRow rowAuth in gvSelectedAuthorityList.Rows)
                             {
                                 string AuthorityID = gvSelectedAuthorityList.DataKeys[rowAuth.RowIndex].Values[1].ToString();
@@ -309,14 +465,14 @@ namespace SigmaERP.ControlPanel
                                 string AuthorityAction =((TextBox) rowAuth.FindControl("txtLvAuthorityOrder")).Text.Trim() ;
                                
                                 
-                                sqlCmd = @"INSERT INTO [dbo].["+ tbl +@"]
+                                sqlCmd = @"INSERT INTO [dbo].["+ tbl + @"]
                                         ([CompanyID]
                                         ,[EmpID]
                                         ,[AuthorityID]
                                         ,[AuthorityPosition]
-                                        ,[AuthorityAction])
+                                        ,[AuthorityAction],[ApprovalFor])
                                     VALUES
-                                        ('" + ddlCompany.SelectedValue + "','"+ EmpID + "',"+ AuthorityID + ","+ AuthorityAction + ","+ AuthorityPosition + ")";                               
+                                        ('" + ddlCompany.SelectedValue + "','"+ EmpID + "',"+ AuthorityID + ","+ AuthorityAction + ","+ AuthorityPosition + ",'"+ ApprovalFor + "')";                               
                                 CRUD.Execute(sqlCmd,sqlDB.connection);
                             }
                         }
@@ -333,9 +489,9 @@ namespace SigmaERP.ControlPanel
             {
             }
         }
-        private void delete(string tbl, string EmpID)
+        private void delete(string tbl, string EmpID, string ApprovalFor)
         {
-            sqlCmd = "Delete " + tbl + " where EmpID='" + EmpID + "'";
+            sqlCmd = "Delete " + tbl + " where EmpID='" + EmpID + "' and ApprovalFor='"+ ApprovalFor+ "'";
             CRUD.Execute(sqlCmd, sqlDB.connection);
         }
         private void directApprove(string tbl, string EmpID)
@@ -364,9 +520,9 @@ namespace SigmaERP.ControlPanel
                    
                     string EmpID = gvEmployeeList.DataKeys[rIndex].Values[0].ToString();
                     if(rblAutoritySetupType.SelectedValue=="Lv")
-                    delete("tblLeaveAuthorityAccessControl", EmpID);
+                    delete("tblLeaveAuthorityAccessControl", EmpID ,"LV");
                     else
-                    delete("tblOutDutyAuthorityAccessControl", EmpID);
+                    delete("tblOutDutyAuthorityAccessControl", EmpID,"SC");
                     loadEmployee();
                     lblMessage.InnerText = "success-> Successfully Deleted.";
                   
@@ -378,13 +534,13 @@ namespace SigmaERP.ControlPanel
                     string EmpID = gvEmployeeList.DataKeys[rIndex].Values[0].ToString();
                     if (rblAutoritySetupType.SelectedValue == "Lv")
                     {
-                        delete("tblLeaveAuthorityAccessControl", EmpID);
+                        delete("tblLeaveAuthorityAccessControl", EmpID, "LV");
                         directApprove("tblLeaveAuthorityAccessControl", EmpID);
                     }
 
                     else
                     {
-                        delete("tblOutDutyAuthorityAccessControl", EmpID);
+                        delete("tblOutDutyAuthorityAccessControl", EmpID, "SC");
                         directApprove("tblOutDutyAuthorityAccessControl", EmpID);
                     }
                        

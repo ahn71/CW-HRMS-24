@@ -8,9 +8,9 @@
                    <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
+                       <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li>  <a href="/vat_tax/vat_tax_index.aspx">Vat&Tax</a></li>
+                       <li><a href="<%= Session["__vattaxURl__"] %>">Vat Tax</a></li>
                     <li><a class="seperator" href="#">/</a></li>                       
                     <li> <a href="#" class="ds_negevation_inactive Pactive">Tax Report</a></li>
                    </ul>               

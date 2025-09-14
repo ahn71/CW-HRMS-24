@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,9 +21,13 @@ namespace SigmaERP.personnel
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-            
+            int[] pagePermission = { 284 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 setPrivilege();
                 classes.commonTask.LoadEmpTypeWithAll(rbEmpList);
                // classes.commonTask.loadEmpTye(rbEmpList);
@@ -43,10 +48,11 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                string[] AccessPermission = new string[0];
-                //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "seperation_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                ////System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "seperation_sheet.aspx", ddlCompany, WarningMessage, tblGenerateType, btnpreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
                    
                     
                     ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -241,8 +247,11 @@ namespace SigmaERP.personnel
                 //{
                 //    CompanyId = ddlCompany.SelectedValue;
                 //}
+
+                string ownempId =AccessControl.hasOwnEmpIdWithOtherDepartment();
+
                 CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
-                sqlCmd = "Select CompanyName,SftName,EmpName,Substring(EmpCardNo,8,15) as EmpCardNo ,GrdName,DptName,DsgName,Format(EffectiveDate,'dd-MM-yyyy') as EffectiveDate,EmpStatusName,Remarks,Address From v_SeparationSheet where CompanyId='" + CompanyId + "' and EFMonth='" + ddlMonthName.SelectedValue + "' and DptId " + setPredicate + " and IsActive=1 order by EffectiveDate";
+                sqlCmd = "Select CompanyName,SftName,EmpName,Substring(EmpCardNo,8,15) as EmpCardNo ,GrdName,DptName,DsgName,Format(EffectiveDate,'dd-MM-yyyy') as EffectiveDate,EmpStatusName,Remarks,Address From v_SeparationSheet where CompanyId='" + CompanyId + "' and EFMonth='" + ddlMonthName.SelectedValue + "' and DptId " + setPredicate + " "+ ownempId + " and IsActive=1 order by EffectiveDate";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 Session["__SeparationSheet__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SeparationSheet-" + MonthName + "');", true);  //Open New Tab for Sever side code

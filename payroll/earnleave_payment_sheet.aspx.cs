@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,14 +14,19 @@ namespace SigmaERP.payroll
 {
     public partial class earnleave_payment_sheet : System.Web.UI.Page
     {
+        //permission=313
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            int[] pagePermission = { 313 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpType(rblEmployeeType);               
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
@@ -42,10 +48,11 @@ namespace SigmaERP.payroll
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "salary_sheet_Report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "salary_sheet_Report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
                 commonTask.LoadDepartmentByCompanyInListBox(ViewState["__CompanyId__"].ToString(), lstAll);
                 classes.Payroll.loadEarnleaveMonthIdByCompany(ddlSelectMonth, ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
@@ -182,7 +189,11 @@ namespace SigmaERP.payroll
                 }
                 else
                 {
-
+                    bool hasEmpcard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), CompanyList);
+                    if (!hasEmpcard)
+                    {
+                        return;
+                    }
                     getSQLCMD = " SELECT DptId, CompanyId, DsgName,EmpId, EmpName, EmpPresentSalary, DptName, GrdName, CompanyName, Address,SUBSTRING(EmpCardNo,10,4) as EmpCardNo, PayableEarnLeaveDays, WithdrawableEarnLeaveDays, PayableAmount, OneDaySalary, convert(varchar(10), EmpJoiningDate,105) as EmpJoiningDate,preJan,pJan,pFeb,pMar,pApr,pMay,pJun,pJul,pAug,pSep,pOct,pNov,pDec,nDec,(preJan+pJan+pFeb+pMar+pApr+pMay+pJun+pJul+pAug+pSep+pOct+pNov+pDec) as TotalPresent,StampDeductions,round(TotalAmount,0) as TotalAmount,WithdrawableEarnLeavePer,TotalEarnLeaveDays,SepntEarnLeaveDays,EmpType,EmpTypeID,BasicSalary,ReserveEeanLeaveDays,GName,EmpProximityNo,CurrentYearEarnLeaveDays,PreviousYearEarnLeaveDays FROM v_Payroll_EarnLeavePaymentSheet " +
                           " where " +
                           " IsSeparated='" + isSeperated + "' and convert(varchar(10),StartDate,120)='" + startDate + "' and convert(varchar(10),EndDate,120)='" + endDate + "' and CompanyId  in(" + CompanyList + ") and  EmpCardNo Like'%"+txtEmpCardNo.Text.Trim()+"'    " +

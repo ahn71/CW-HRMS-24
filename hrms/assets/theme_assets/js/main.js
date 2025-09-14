@@ -824,18 +824,23 @@
     imageUpload.addEventListener("change", uploadfile, false);
   }
 
-  /* Time Picker */
-  $("#time-picker,#time-picker2").wickedpicker();
+    // Initialize Wickedpicker on all targeted elements
+    $("#time-picker, #time-picker2").wickedpicker();
 
-  /* Slider Basic */
-  let initialValue = 20;
-  let sliderTooltip = function (event, ui) {
-    var curValue = ui.value || initialValue;
-    var target = ui.handle || $(".ui-slider-handle");
-    var tooltip = `<span class="tooltip-text">${curValue}</span>`;
+    // Initialize Slider with Tooltip
+    let initialValue = 20;
 
-    $(target).html(tooltip);
-  };
+    // Function to display a tooltip on the slider handle
+    let sliderTooltip = function (event, ui) {
+        var curValue = ui.value || initialValue; // Use `ui.value` if available, otherwise use `initialValue`
+        var target = ui.handle || $(".ui-slider-handle"); // Target the slider handle
+        var tooltip = `<span class="tooltip-text">${curValue}</span>`;
+
+        $(target).html(tooltip); // Append tooltip to the handle
+    };
+
+
+
 
   /* Slider Controls */
   $("#switch-slider").on("change", function () {
@@ -1127,7 +1132,60 @@
       ["formatting", "strong", "em", "superscript", "subscript", "link"],
       ["unorderedList", "orderedList"],
     ],
-  });
+    });
+    function eye_Newpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtNewPass");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Newpass();
+    function eye_Confirmpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtConfirmPass");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Confirmpass();
+
+    function eye_Oldmpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");
+            input = $(this).parent().find("#txtOldPasswoed");
+            if (input.attr("type") == "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+    eye_Oldmpass();
+
+    function eye_Loginpass() {
+        $(".toggle-password2").click(function () {
+            $(this).toggleClass("uil-eye");  // Toggle between eye and eye-slash icons
+            let input = $(this).parent().find("#txtPassword");
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "password");
+            }
+        });
+    }
+
+    eye_Loginpass();
+
+
 
   /* Input password toggle */
   function eye_pass() {

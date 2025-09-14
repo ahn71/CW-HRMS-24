@@ -8,11 +8,13 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
     public partial class WeekendInfoReport : System.Web.UI.Page
     {
+        //permission=326;
         DataTable dt;
         DataTable dtSetPrivilege;
         string CompanyId = "";
@@ -20,11 +22,16 @@ namespace SigmaERP.attendance
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 326 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtToDate.Text= txtFromDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 setPrivilege();
@@ -44,12 +51,12 @@ namespace SigmaERP.attendance
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 //------------load privilege setting inof from db------
                 //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "holyday.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];                
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "holyday.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];                
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);                //-----------------------------------------------------
 
 

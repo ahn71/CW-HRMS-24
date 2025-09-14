@@ -9,23 +9,33 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.hrd
 {
     public partial class others_settings : System.Web.UI.Page
     {
+        //permission(view=239 Add=240 Edit=241)
         protected void Page_Load(object sender, EventArgs e)
         {
+       
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                setPrivilege();
-               
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                int[] pagePermission = { 239, 240, 241 };
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+                setPrivilege(userPagePermition);
+
             }
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
@@ -37,13 +47,18 @@ namespace SigmaERP.hrd
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "others_settings.aspx", ddlCompanyName, gvOthersList, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                if (permission.Contains(239))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(240))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(241))
+                    ViewState["__UpdateAction__"] = "1";
+                checkInitialPermission();
 
                 loadAllowanceType();
                 if (!classes.commonTask.HasBranch())
@@ -240,6 +255,22 @@ namespace SigmaERP.hrd
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)
         {
             loadAllowanceType();
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Rbutton";
+            }
+            else
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+
+
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,14 +15,18 @@ namespace SigmaERP.personnel
     public partial class leave_balance_report : System.Web.UI.Page
     {
         DataTable dt;
-
+        //permission=310
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 310 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyName.Enabled = false;
@@ -39,12 +44,12 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
-                string[] AccessPermission = new string[0];
-                //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "leave_balance_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];             
-                    classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());                      
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                ////System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "leave_balance_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];             
+                classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());                      
 
                 addAllTextInShift();
 

@@ -17,7 +17,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li> <a class="seperator" href="#"></a>/</li>
-                       <li> <a href="/payroll_default.aspx">Payroll</a></li>   
+                        <li><a href="<%= Session["__topMenuPayroll__"] %>">Payroll</a></li> 
                        <li> <a class="seperator" href="#"></a>/</li>                  
                         <li> <a href="/payroll/salary_index.aspx">Salary</a></li>
                         <li> <a class="seperator" href="#"></a>/</li>
@@ -71,7 +71,7 @@
                                         <td>Wages Generate Month
                                         </td>
                                         <td>
-                                            <asp:TextBox CssClass="form-control text_box_width"  ClientIDMode="Static" ID="txtGenerateMonth" runat="server"></asp:TextBox>
+                                            <asp:TextBox CssClass="form-control text_box_width"  ClientIDMode="Static" ID="txtGenerateMonth" runat="server" autocomplete="off"></asp:TextBox>
                                             <asp:CalendarExtender ID="txtGenerateMonth_CalendarExtender" Format="dd-MM-yyyy" runat="server" TargetControlID="txtGenerateMonth">
                                             </asp:CalendarExtender>
                                         </td>
@@ -82,6 +82,14 @@
                                         </td>
                                         <td>
                                             <asp:DropDownList ID="ddlEmpCardNo" runat="server" Enabled="false" ClientIDMode="Static" Width="310px"  CssClass="form-control select_width" onChange="getCardNo()"></asp:DropDownList>
+                                        </td>
+                                    </tr>
+                                     <tr>
+                                        <td>
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbTiffinBill" Text="Tiffin Bill" Checked="true" />
+                                        </td>
+                                        <td>
+                                            <asp:CheckBox runat="server" ClientIDMode="Static" ID="ckbNightBill" Text="Night Bill" Checked="true" />
                                         </td>
                                     </tr>
 

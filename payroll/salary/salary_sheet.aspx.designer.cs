@@ -40,6 +40,15 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblMessage;
         
         /// <summary>
+        /// heading control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl heading;
+        
+        /// <summary>
         /// up1 control.
         /// </summary>
         /// <remarks>
@@ -139,13 +148,22 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.TextBox txtEmpCardNo;
         
         /// <summary>
-        /// trHideForIndividual control.
+        /// chkbanksheet control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trHideForIndividual;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow chkbanksheet;
+        
+        /// <summary>
+        /// trHideForIndividualLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl trHideForIndividualLabel;
         
         /// <summary>
         /// rblEmployeeType control.
@@ -166,6 +184,15 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.RadioButtonList rblPaymentType;
         
         /// <summary>
+        /// chkIsBankfordQatar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIsBankfordQatar;
+        
+        /// <summary>
         /// chkBankForwardingLetter control.
         /// </summary>
         /// <remarks>
@@ -173,6 +200,51 @@ namespace SigmaERP.payroll.salary {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetter;
+        
+        /// <summary>
+        /// chkExcel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkExcel;
+        
+        /// <summary>
+        /// chkBankForwardingLetterXL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetterXL;
+        
+        /// <summary>
+        /// chkBKashForwardingLetterXL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkBKashForwardingLetterXL;
+        
+        /// <summary>
+        /// bankshhet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow bankshhet;
+        
+        /// <summary>
+        /// ddlBankSheet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlBankSheet;
         
         /// <summary>
         /// pnl1 control.

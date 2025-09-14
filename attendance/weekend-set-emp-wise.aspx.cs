@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,6 +12,8 @@ using System.Web.UI.WebControls;
 
 namespace SigmaERP.attendance
 {
+
+    //permission=324;
     public partial class weekend_set_emp_wise : System.Web.UI.Page
     {
         DataTable dt;
@@ -18,9 +21,14 @@ namespace SigmaERP.attendance
         string sqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 324 }; 
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);                
                 setPrivilege();
                 SetupTypeWiseShowHide();
@@ -35,12 +43,13 @@ namespace SigmaERP.attendance
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "holyday.aspx", ddlCompany, gvEmployeeList, btnSubmit);
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "holyday.aspx", ddlCompany, gvEmployeeList, btnSubmit);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                
                 //     classes.commonTask.getAuthorityList(ViewState["__CompanyId__"].ToString(),ckblAuthorityList);

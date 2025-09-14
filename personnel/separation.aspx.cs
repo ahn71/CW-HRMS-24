@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.SqlClient;
 using SigmaERP.classes;
 using System.Drawing;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
@@ -18,13 +19,29 @@ namespace SigmaERP.personnel
         DataTable dt;
         SqlCommand cmd;
         string query = "";
+
+        // Separation Entry=280,
+        //Current Separation  List=281
+        //Separation Activation =282
+        //Separation Activation Log=283
         protected void Page_Load(object sender, EventArgs e)
         {
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+
+                ViewState["__SeparationEntry=__"] = "0";
+                ViewState["__CurrentSeparationList__"] = "0";
+                ViewState["__SeparationActivation__"] = "0";
+                ViewState["__SeparationActivationLog__"] = "0";
+
+                int[] pagePermission = { 280, 281, 282, 283 };
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                
                 loadSeparationInfo();
@@ -39,9 +56,28 @@ namespace SigmaERP.personnel
                 }
 
                 classes.Employee.LoadEmpCardNo_ForSeperation(ddlEmpCardNo,ddlCompany.SelectedValue);
-                load_CurrentSeperationList();
-                load_SeperationListForActivation();
-                load_SeperationActivation_Log();
+                if (userPagePermition.Contains(280))
+                {
+                    tabPanel1.Visible = true;
+                }
+                else
+                {
+                    tabPanel1.Visible = false;
+                }
+
+
+
+                if (userPagePermition.Contains(281))
+                    load_CurrentSeperationList();
+                if (userPagePermition.Contains(282))
+                    load_SeperationListForActivation();
+                else
+                    tabSeperationActivation.Visible = false;
+                if (userPagePermition.Contains(283))
+                    load_SeperationActivation_Log();
+                else
+                    TabPanel2.Visible = false;
+
             }
         }
         private void setPrivilege()
@@ -54,20 +90,18 @@ namespace SigmaERP.personnel
                 ViewState["__G_UserId__"] = getUserId;
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "separation.aspx", ddlCompany, gvSeparationList, btnSave);
-                
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "separation.aspx", ddlCompany, gvSeparationList, btnSave);
 
-                if (ViewState["__ReadAction__"].ToString().Equals("0"))
-                {
-                    gvCurrentSeperationList.Visible = false;
-                }
-              
-            
+             
+
+                //if (ViewState["__ReadAction__"].ToString().Equals("0"))
+                //{
+                //    gvCurrentSeperationList.Visible = false;
+                //}
+
+                tabSeperationActivation.Visible = true;
                ddlSearchCompany.DataTextField = "Text";
                ddlSearchCompany.DataValueField = "Value";;
                ddlSearchCompany.DataSource = ddlCompany.Items;
@@ -117,6 +151,9 @@ namespace SigmaERP.personnel
                 ViewState["__G_EmpId__"] = EmpCards[0];
                 ViewState["__G_EmpCardNo__"] = EmpCards[1];
                 ViewState["__G_EmpTypeId__"] = EmpCards[2];
+
+                string test = ViewState["__G_EmpTypeId__"].ToString();
+
                 saveEmpSeparation();
             }               
             else updateEmpSeparation();
@@ -198,16 +235,16 @@ namespace SigmaERP.personnel
 
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "ClearInputBox();", true);
                     btnSave.Text = "Save";
-                    if (ViewState["__WriteAction__"].Equals("0"))
-                    {
-                        btnSave.Enabled = false;
-                        btnSave.CssClass = "";
-                    }
-                    else
-                    {
-                        btnSave.Enabled = true;
-                        btnSave.CssClass = "css_btn Ptbut";
-                    }
+                    //if (ViewState["__WriteAction__"].Equals("0"))
+                    //{
+                    //    btnSave.Enabled = false;
+                    //    btnSave.CssClass = "";
+                    //}
+                    //else
+                    //{
+                    //    btnSave.Enabled = true;
+                    //    btnSave.CssClass = "css_btn Ptbut";
+                    //}
                     ddlEmpCardNo.Enabled = true;
                     ddlSeparationType.SelectedIndex = 0;
                     txtEffectiveDate.Text = "";
@@ -225,7 +262,12 @@ namespace SigmaERP.personnel
         {
             try
             {
-                SQLOperation.selectBySetCommandInDatatable("select EmpSeparationId,EmpId,EmpCardNo,EmpName,EmpTypeId,convert(varchar(11),EffectiveDate,105) as EffectiveDate,EmpStatusName,EmpType,convert(varchar(11),EntryDate,105) as EntryDate,Remarks  from v_Personnel_EmpSeparation where IsActive='false' ", dt = new DataTable(), sqlDB.connection);
+                SQLOperation.selectBySetCommandInDatatable("select pes.EmpSeparationId,pes.EmpId,pes.EmpCardNo,pei.EmpName,pes.EmpTypeId,convert(varchar(11),pes.EffectiveDate,105) as EffectiveDate,empSts.EmpStatusName,empt.EmpType,convert(varchar(11),pes.EntryDate,105) as EntryDate,pes.Remarks  from Personnel_EmpSeparation as pes inner join Personnel_EmployeeInfo as pei on pes.EmpId=pei.Empid inner join Hrd_EmployeeType as Empt on empt.EmpTypeId=pes.EmpTypeId INNER JOIN Personnel_EmpCurrentStatus AS pecs ON pes.EmpId = pecs.EmpId inner join  Hrd_EmpStatus as empSts on  empSts.EmpStatus = pecs.EmpStatus where pecs.CompanyId='" + ViewState["__CompanyId__"].ToString() + "' and pes.IsActive=0", dt = new DataTable(), sqlDB.connection);
+
+
+
+
+                string nnn = "select EmpSeparationId,EmpId,EmpCardNo,EmpName,EmpTypeId,convert(varchar(11),EffectiveDate,105) as EffectiveDate,EmpStatusName,EmpType,convert(varchar(11),EntryDate,105) as EntryDate,Remarks  from v_Personnel_EmpSeparation where IsActive='false'";
                 gvSeparationList.DataSource = dt;
                 gvSeparationList.DataBind();
             }
@@ -258,16 +300,17 @@ namespace SigmaERP.personnel
                     else if (gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[6].Text.ToLower().Equals("discharged")) ddlSeparationType.SelectedValue = "6";
                     else if (gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[6].Text.ToLower().Equals("unauthorized")) ddlSeparationType.SelectedValue = "7";
                     btnSave.Text = "Update";
-                    if (ViewState["__UpdateAction__"].ToString().Equals("1"))
-                    {
-                        btnSave.Enabled = true;
-                        btnSave.CssClass = "css_btn Ptbut";
-                    }
-                    if (ViewState["__DeletAction__"].ToString().Equals("0"))
-                    {
-                        btnDelete.Visible = true;
-                        btnDelete.CssClass = "css_btn Ptbut";
-                    }
+                    //if (ViewState["__UpdateAction__"].ToString().Equals("1"))
+                    //{
+                    //    btnSave.Enabled = true;
+                    //    btnSave.CssClass = "css_btn Ptbut";
+                    //}
+                    //if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                    //if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                    //{
+                    //    btnDelete.Visible = true;
+                    //    btnDelete.CssClass = "css_btn Ptbut";
+                    //}
                     ViewState["__G_EmpId__"] = gvSeparationList.DataKeys[Convert.ToInt32(e.CommandArgument.ToString())].Values[3].ToString();
                     ViewState["__G_EmpCardNo__"] = gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[2].Text;
                     ViewState["__G_EmpTypeId__"] = gvSeparationList.DataKeys[Convert.ToInt32(e.CommandArgument.ToString())].Values[1].ToString();
@@ -390,13 +433,53 @@ namespace SigmaERP.personnel
 
         private void load_CurrentSeperationList()
         {
+            
             try
             {
                 string CompanyId = (ddlCompanyCurrentList.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyCurrentList.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 dt = new DataTable();
-                sqlDB.fillDataTable("select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
-                    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
-                    " where CompanyId='"+CompanyId+"' and IsActive='True'",dt);               
+
+                //string query = "select EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,Convert(varchar,EffectiveDate,100) as  EffectiveDate,EmpStatus,EmpStatusName," +
+                //    " EmpType,EmpTypeId,Convert(varchar,EntryDate,100) as  EntryDate,(FirstName+' '+LastName) as UserName,Remarks from v_Personnel_EmpSeparation " +
+                //    "where IsActive='True' and  " + condition + "";
+                if (txtCardNoSpFilter.Text.Trim().Length > 0)
+                {
+                    condition += "and pecs.EmpCardNo like'%" + txtCardNoSpFilter.Text.Trim() + "'";
+                }
+
+                string query = @"SELECT 
+                            pes.EmpId,
+                            SUBSTRING(pecs.EmpCardNo, 8, 10) AS EmpCardNo,
+                            pei.EmpName,
+                            CONVERT(VARCHAR, pes.EffectiveDate, 100) AS EffectiveDate,
+                            pecs.EmpStatus,
+                            es.EmpStatusName,
+                            Etyp.EmpType,
+                            pes.EmpTypeId,
+                            CONVERT(VARCHAR, pes.EntryDate, 100) AS EntryDate,
+                            pes.UserId,
+                            CASE 
+                                WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName)
+                                ELSE creator.EmpName
+                            END AS UserName,
+                            pes.Remarks
+                        FROM 
+                            Personnel_EmpSeparation AS pes
+                        INNER JOIN 
+                            Personnel_EmpCurrentStatus AS pecs ON pes.EmpId = pecs.EmpId
+                        LEFT JOIN 
+                            Users AS us ON pes.UserId = us.UserId
+                        INNER JOIN 
+                            Personnel_EmployeeInfo AS pei ON pes.EmpId = pei.EmpId
+                        INNER JOIN 
+                            HRD_EmployeeType AS Etyp ON pes.EmpTypeId = Etyp.EmpTypeId
+                        INNER JOIN 
+                            Hrd_EmpStatus AS es ON pecs.EmpStatus = es.EmpStatus
+                        LEFT JOIN 
+                            Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID 
+	                        where pes.IsActive=1 and pecs."+condition+"";
+                sqlDB.fillDataTable(query, dt);               
                 gvCurrentSeperationList.DataSource = dt;
                 gvCurrentSeperationList.DataBind();
             }
@@ -415,19 +498,21 @@ namespace SigmaERP.personnel
                     dateRange = " and EffectiveDate>='"+ Fdate [2]+ "-"+ Fdate [1]+ "-"+ Fdate [0]+ "' and EffectiveDate<='" + Tdate[2] + "-" + Tdate[1] + "-" + Tdate[0] + "' ";
                 }
                 string CompanyId = (ddlCompanyListActive.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString(): ddlCompanyListActive.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 dt = new DataTable();
                 if (txtEmpCardNo.Text.Trim().Length == 0)
                     query = " select  EmpSeparationId,EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,EmpType,DptName,DsgName,EmpStatusName, convert(VARCHAR(10),EffectiveDate, 105) AS EffectiveDate, convert(VARCHAR(10), GETDATE(), 105) AS CurrentDate  " +
                     "from v_Personnel_EmpSeparation  " +
                     "where EmpSeparationId in ( select max(EmpSeparationId) from v_Personnel_EmpSeparation  where CompanyId='" + CompanyId + "' group by EmpId) " +
                     "and Empid not In(select EmpId from Personnel_EmpCurrentStatus where CompanyId='" + CompanyId + "' and EmpStatus=1 and IsActive=1) " + dateRange +
-                    "order by EffectiveDate desc,EmpSeparationId desc";
+                    " and  "+ condition + " order by EffectiveDate desc,EmpSeparationId desc";
                 else
                     query = " select  EmpSeparationId,EmpId,Substring(EmpCardNo,8,10) as EmpCardNo,EmpName,EmpType,DptName,DsgName,EmpStatusName, convert(VARCHAR(10),EffectiveDate, 105) AS EffectiveDate, convert(VARCHAR(10), GETDATE(), 105) AS CurrentDate  " +
                     "from v_Personnel_EmpSeparation  " +
                     "where EmpSeparationId in ( select max(EmpSeparationId) from v_Personnel_EmpSeparation  where CompanyId='" + CompanyId + "' and EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "' group by EmpId) " +
                     "and Empid not In(select EmpId from Personnel_EmpCurrentStatus where CompanyId='" + CompanyId + "' and EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "' and EmpStatus=1 and IsActive=1) " +
-                    "order by EffectiveDate desc,EmpSeparationId desc";
+                    " and  "+ condition + " order by EffectiveDate desc,EmpSeparationId desc";
+
                 sqlDB.fillDataTable(query, dt);
 
                 gvCurrentSeperationListForActivation.DataSource = dt;
@@ -440,22 +525,40 @@ namespace SigmaERP.personnel
             try
             {
                 string CompanyId = (ddlCompanyListActiveLog.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyListActiveLog.SelectedValue;
+                string condition = AccessControl.getDataAccessCondition(CompanyId, "0");
+                if (condition.Contains("DptId"))
+                    condition = condition.Replace("DptId", "pecs.DptId");
                 dt = new DataTable();
-                if (txtEmpCardNo.Text.Trim().Length == 0)
-                    sqlDB.fillDataTable(" select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate,"+
-                        "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
-                        "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount "+
-                        " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId "+
-                        "where v_EmployeeDetails.CompanyId ='" + CompanyId + "' " +
-                        "order by ActiveDate desc", dt);
-                else                    
-                        sqlDB.fillDataTable(" select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate," +
-                            "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
-                            "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount " +
-                            " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId " +
-                            "where v_EmployeeDetails.CompanyId ='" + CompanyId + "' and EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' " +
-                            "order by ActiveDate desc", dt);      
-                
+                if (txtCardnoActive.Text.Trim().Length == 0)
+                {
+                    //this query for testing 
+
+                    //query = "select SUBSTRING(v_EmployeeDetails.EmpCardNo,8,10) as EmpCardNo ,v_EmployeeDetails.EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join v_EmployeeDetails on psal.EmpId=v_EmployeeDetails.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID  where v_EmployeeDetails.CompanyId= " + condition + " order by ActiveDate desc";
+
+                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
+                      HRD_EmployeeType AS Etyp ON pei.EmpTypeId = Etyp.EmpTypeId
+				      Inner Join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId
+					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei."+ condition + " order by ActiveDate desc";
+
+                    sqlDB.fillDataTable(query, dt);
+                }
+                else
+                {
+                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
+                      HRD_EmployeeType AS Etyp ON pei.EmpTypeId = Etyp.EmpTypeId
+				      Inner Join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId
+					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei." + condition + " and pei.EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' order by ActiveDate desc";
+
+                    //query = "select SUBSTRING(EmpCardNo,8,10) as EmpCardNo ,EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate," +
+                    //    "FirstName+' '+LastName as UName,Remark from Personnel_SeparationActivation_Log inner join v_EmployeeDetails on " +
+                    //    "Personnel_SeparationActivation_Log.EmpId=v_EmployeeDetails.EmpId inner join UserAccount " +
+                    //    " on Personnel_SeparationActivation_Log.UserId=UserAccount.UserId " +
+                    //    "where  EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' and  " + condition + " " +
+                    //    "order by ActiveDate desc";
+                    sqlDB.fillDataTable(query, dt);
+
+                   
+                }
                 gvSeparationActivitionLog.DataSource = dt;
                 gvSeparationActivitionLog.DataBind();
             }
@@ -472,23 +575,22 @@ namespace SigmaERP.personnel
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+         
 
                 try
                 {
 
-                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
-                    {
-                        Button btnAlter = new Button();
-                        btnAlter = (Button)e.Row.FindControl("btnAlter");
-                        btnAlter.Enabled = false;
-                        btnAlter.ForeColor = Color.Silver;
-                    }
+                    //if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                    //{
+                    //    Button btnAlter = new Button();
+                    //    btnAlter = (Button)e.Row.FindControl("btnAlter");
+                    //    btnAlter.Enabled = false;
+                    //    btnAlter.ForeColor = Color.Silver;
+                    //}
 
                 }
                 catch { }
-            }
+            
         }
 
         protected void gvCurrentSeperationList_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -566,6 +668,8 @@ namespace SigmaERP.personnel
                 SqlCommand cmd2;
                 cmd = new SqlCommand("Update  Personnel_EmployeeInfo set EmpStatus=1 where EmpId='" + EmpId + "'", sqlDB.connection);
                 cmd2 = new SqlCommand("Update  Personnel_EmpCurrentStatus set EmpStatus=1 where SN= (select Max(SN) from Personnel_EmpCurrentStatus where EmpId='" + EmpId + "')", sqlDB.connection);
+                
+
                 if (int.Parse(cmd.ExecuteNonQuery().ToString()) == 1 && int.Parse(cmd2.ExecuteNonQuery().ToString())==1)
                     return true;
                 else
@@ -640,26 +744,27 @@ namespace SigmaERP.personnel
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+         
                 Button btn;
                
                 try
                 {
-                    if (ViewState["__WriteAction__"].ToString().Equals("0"))
-                    {
-                        btn = new Button();
-                        btn = (Button)e.Row.FindControl("btnActive");
-                        btn.Enabled = false;
-                        btn.ForeColor = Color.Silver;
-                    }
+                    //if (ViewState["__WriteAction__"].ToString().Equals("0"))
+                    //{
+                    //    btn = new Button();
+                    //    btn = (Button)e.Row.FindControl("btnActive");
+                    //    btn.Enabled = false;
+                    //    btn.ForeColor = Color.Silver;
+                    //}
 
                 }
                 catch { }
             }
+
+
+        protected void btnSplSearch_Click(object sender, EventArgs e)
+        {
+            load_CurrentSeperationList();
         }
-        
-
-
     }
 }

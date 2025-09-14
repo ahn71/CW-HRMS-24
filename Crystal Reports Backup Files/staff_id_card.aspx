@@ -30,9 +30,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                     <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive">ID Card Report</a></li>
                 </ul>
@@ -87,7 +85,7 @@
                                        
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr >
                                     <td>Report Type
                                     </td>
                                     <td>:
@@ -110,7 +108,7 @@
                                     <td class="tdWidth">
                                         <asp:DropDownList runat="server" ID="ddlEmpCardNo" CssClass="form-control select_width" ClientIDMode="Static"></asp:DropDownList></td>
                                 </tr>
-                                 <tr>
+                                 <tr  runat="server" visible="false">
                                         <td>Report View
                                         </td>
                                         <td>:

@@ -328,6 +328,24 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.DropDownList ddlCompanyCurrentList;
         
         /// <summary>
+        /// txtCardNoSpFilter control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCardNoSpFilter;
+        
+        /// <summary>
+        /// btnSplSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSplSearch;
+        
+        /// <summary>
         /// gvCurrentSeperationList control.
         /// </summary>
         /// <remarks>

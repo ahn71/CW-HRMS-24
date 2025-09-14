@@ -24,9 +24,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                       <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Roster Missing Panel</a></li>
                    </ul>
@@ -63,10 +61,10 @@
                <div style="margin-left:15px">
                         <table style="border-collapse: collapse;width:100%; padding: 5px 0px;">
                               <tr>
-                                    <td>
+                                    <td runat="server" visible="false">
                                        Company
                                       </td>
-                                       <td >
+                                       <td runat="server" visible="false">
                                      <asp:DropDownList runat="server" ID="ddlCompanyList" CssClass="form-control text_box_width style" Width="200px" AutoPostBack="True" Enabled="False"   ></asp:DropDownList>
                                  </td>
                                        <td >

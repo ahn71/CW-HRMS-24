@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,20 +16,27 @@ namespace SigmaERP.pf
     public partial class pfentrypanel : System.Web.UI.Page
     {
         string query = "";
+        //Permission(add=366)
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
+               
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();
                 lblMessage.InnerText = "";
+                int[] pagePermission = { 366 };
                 if (!IsPostBack)
                 {
+                    ViewState["__WriteAction__"] = "0";
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect(Routing.defualtUrl);
                     classes.commonTask.loadEmpTye(rblEmployeeType);
                     rblEmployeeType.SelectedValue = "1";
                     classes.commonTask.loadEmpTye(rblEmployeeType2);
                     rblEmployeeType2.SelectedValue = "1";
-                    setPrivilege();
+                    setPrivilege(userPagePermition);
 
                 }
             }
@@ -36,7 +44,7 @@ namespace SigmaERP.pf
            
 
         }
-        private void setPrivilege()
+        private void setPrivilege(int[]permission)
         {
             try
             {
@@ -48,14 +56,19 @@ namespace SigmaERP.pf
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForpfentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pfentrypanel.aspx", gvpfpendinglist, gvpflist, btnSubmit, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
+                //string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadBranch(ddlCompanyList2, ViewState["__CompanyId__"].ToString());
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForpfentrypanel(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "pfentrypanel.aspx", gvpfpendinglist, gvpflist, btnSubmit, ViewState["__CompanyId__"].ToString(), ddlCompanyList, ddlCompanyList2);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];                
-                if (!classes.commonTask.HasBranch())
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];  
+                
+                if(permission.Contains(366))
+                    ViewState["__WriteAction__"] ="1";
+                checkInitialPermission();
+                    if (!classes.commonTask.HasBranch())
                 {
                     ddlCompanyList.Enabled = false;
                     ddlCompanyList2.Enabled = false;
@@ -171,6 +184,7 @@ namespace SigmaERP.pf
         {
             DataTable dtpf_setting = new DataTable();
             sqlDB.fillDataTable("Select EmpContribution,EmprContribution,PFStartYear from PF_CalculationSetting where CompanyId='" + ddlCompanyList.SelectedValue + "'", dtpf_setting);
+            string condition = AccessControl.getDataAccessCondition(ddlCompanyList.SelectedValue,"0");
             if (dtpf_setting.Rows.Count == 0)
             {
                 gvpfpendinglist.DataSource = null;
@@ -180,11 +194,11 @@ namespace SigmaERP.pf
             string emp_type = " and EmpTypeID=" + rblEmployeeType.SelectedValue;
            DataTable dtpf_pendinglist = new DataTable();
             if (rblEmpMaturity.SelectedIndex == 0)
-                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  CompanyId='" + ddlCompanyList.SelectedValue + "' " + emp_type;
+                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  " + condition + " " + emp_type;
             else if (rblEmpMaturity.SelectedIndex == 1)
-                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 >=" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  CompanyId='" + ddlCompanyList.SelectedValue + "' " + emp_type;
+                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 >=" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  " + condition + " " + emp_type;
             else
-                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 <" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  CompanyId='" + ddlCompanyList.SelectedValue + "' " + emp_type;
+                query = "SELECT EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance," + dtpf_setting.Rows[0]["EmpContribution"].ToString() + " EmpContribution,BasicSalary,round((" + dtpf_setting.Rows[0]["EmpContribution"].ToString() + "*BasicSalary)/100,0) PFAmount,convert(varchar(11),DATEADD(year," + dtpf_setting.Rows[0]["PFStartYear"].ToString() + ", EmpJoiningDate),105) as PfDate  from v_Personnel_EmpCurrentStatus where EmpStatus in(1,8) and IsActive=1 and PFMember=0 and  datediff(day,EmpJoiningDate,GETDATE()) / 365.2425 <" + dtpf_setting.Rows[0]["PFStartYear"].ToString() + "  and  " + condition + " " + emp_type;
 
            sqlDB.fillDataTable(query, dtpf_pendinglist);
            gvpfpendinglist.DataSource = dtpf_pendinglist;
@@ -283,9 +297,11 @@ namespace SigmaERP.pf
         }
         private void pflist()
         {
+            string condition = AccessControl.getDataAccessCondition(ddlCompanyList2.SelectedValue,"0");
             DataTable dtpf_list = new DataTable();
-            sqlDB.fillDataTable("SELECT ROW_NUMBER() Over (partition by DptId Order by EmpId ) As SLDpt, DptId, EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance,PfEmpContribution,BasicSalary,PFAmount,convert(varchar(11),PfDate,105) as PfDate,DptName  from v_Personnel_EmpCurrentStatus where EmpTypeId=" + rblEmployeeType2.SelectedValue+" and CompanyId='" + ddlCompanyList2.SelectedValue + "' and PfMember='1' and IsActive=1 ", dtpf_list);
+            sqlDB.fillDataTable("SELECT ROW_NUMBER() Over (partition by DptId Order by EmpId ) As SLDpt, DptId, EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance,PfEmpContribution,BasicSalary,PFAmount,convert(varchar(11),PfDate,105) as PfDate,DptName  from v_Personnel_EmpCurrentStatus where EmpTypeId=" + rblEmployeeType2.SelectedValue+" and " + condition + " and PfMember='1' and IsActive=1 ", dtpf_list);
             gvpflist.DataSource = dtpf_list;
+            string query = "SELECT ROW_NUMBER() Over (partition by DptId Order by EmpId ) As SLDpt, DptId, EmpId,EmpType,SubString(EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,isnull(PfOpeningBalance,0) PfOpeningBalance,PfEmpContribution,BasicSalary,PFAmount,convert(varchar(11),PfDate,105) as PfDate,DptName  from v_Personnel_EmpCurrentStatus where EmpTypeId=" + rblEmployeeType2.SelectedValue + " and " + condition + " and PfMember='1' and IsActive=1";
             gvpflist.DataBind();
         }
 
@@ -342,6 +358,20 @@ namespace SigmaERP.pf
         protected void rblEmployeeType2_SelectedIndexChanged(object sender, EventArgs e)
         {
             pflist();
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnSubmit.Enabled = false;
+                btnSubmit.CssClass = "";
+
+            }
+            else
+            {
+                btnSubmit.Enabled = true;
+                btnSubmit.CssClass = "Pbutton";
+            }
         }
     }
 }

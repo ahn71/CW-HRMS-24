@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SigmaERP</RootNamespace>
     <AssemblyName>SigmaERP</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -34,6 +34,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <IncludeIisSettings>true</IncludeIisSettings>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,8 +49,8 @@
     <Reference Include="AdviitRuntimeScripting">
       <HintPath>Assemblies\AdviitRuntimeScripting.dll</HintPath>
     </Reference>
-    <Reference Include="AjaxControlToolkit">
-      <HintPath>Assemblies\AjaxControlToolkit.dll</HintPath>
+    <Reference Include="AjaxControlToolkit, Version=20.1.0.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
+      <HintPath>packages\AjaxControlToolkit.20.1.0\lib\net40\AjaxControlToolkit.dll</HintPath>
     </Reference>
     <Reference Include="BusinessLogicLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -65,7 +66,7 @@
       <HintPath>Assemblies\ComplexScriptingWebControl.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.CrystalReports.TemplateEngine, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -73,50 +74,59 @@
     <Reference Include="CrystalDecisions.Enterprise.Viewing.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.ClientDoc, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommonControls, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.CommonControls, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CommonObjectModel, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.CommonObjectModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.Controllers, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.Controllers, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.CubeDefModel, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.CubeDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.DataDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.DataSetConversion, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportAppServer.DataSetConversion, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.ReportAppServer.ObjectFactory, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="CrystalDecisions.ReportAppServer.Prompting, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.ReportDefModel, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.ReportDefModel, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportAppServer.XmlSerialize, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+    <Reference Include="CrystalDecisions.ReportAppServer.XmlSerialize, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="CrystalDecisions.VSDesigner, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Web, Version=13.0.3500.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Web, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
     <Reference Include="DAL">
       <HintPath>\\JAHURUL-PC\SigmaERP Project\Sigma Source Code\SigmaERP\bin\DAL.dll</HintPath>
     </Reference>
     <Reference Include="DataAccessLayer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\DataAccessLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=7.6.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.7.6.0\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=7.5.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.Interfaces.7.5.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.System.Drawing, Version=7.5.0.0, Culture=neutral, PublicKeyToken=2308d35469c9bac0, processorArchitecture=MSIL">
+      <HintPath>packages\EPPlus.System.Drawing.7.5.0\lib\net462\EPPlus.System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -126,11 +136,39 @@
       <HintPath>packages\IronXL.Excel.2022.3.0\lib\net45\IronXL.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="RoholProgressBar, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\Administrator\Documents\Visual Studio 2012\Projects\WebApplication1\WebApplication1\bin\RoholProgressBar.dll</HintPath>
     </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing.Common, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Drawing.Common.8.0.4\lib\net462\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -1102,9 +1140,11 @@
     <Content Include="ControlPanel\CreateAccount.aspx" />
     <Content Include="ControlPanel\Login.aspx" />
     <Content Include="ControlPanel\user_privilege.aspx" />
-    <Content Include="ControlPanel\WebForm1.aspx" />
     <Content Include="default.aspx" />
     <Content Include="EmployeeImages\CompanyLogo\logo.png" />
+    <Content Include="EmployeeImages\Images\rdNoImage.png" />
+    <Content Include="hrd\bankentry_panel.aspx" />
+    <Content Include="hrd\bank_entry_panel.aspx" />
     <Content Include="hrd\business_type.aspx" />
     <Content Include="hrd\department.aspx" />
     <Content Include="hrd\designation.aspx" />
@@ -1119,7 +1159,15 @@
     <Content Include="hrd\SpecialTimeTable.aspx" />
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
+    <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
+    <Content Include="hrms\attendance\attendanceProcessing.aspx" />
+    <Content Include="hrms\attendance\attendanceWeekendSetup.aspx" />
+    <Content Include="hrms\attendance\roster\roster-entry.aspx" />
+    <Content Include="hrms\attendance\roster\roster-list.aspx" />
+    <Content Include="hrms\dashbordUser.aspx" />
+    <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
+    <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
     <Content Include="hrms\assets\theme_assets\js\charts.js" />
     <Content Include="hrms\assets\theme_assets\js\drag-drop.js" />
     <Content Include="hrms\assets\theme_assets\js\footable.js" />
@@ -1129,6 +1177,9 @@
     <Content Include="hrms\assets\theme_assets\js\jvectormap-init.js" />
     <Content Include="hrms\assets\theme_assets\js\leaflet-init.js" />
     <Content Include="hrms\assets\theme_assets\js\main.js" />
+    <Content Include="hrms\assets\theme_assets\js\module.js" />
+    <Content Include="hrms\assets\theme_assets\js\moduleValidationSchema.js" />
+    <Content Include="hrms\assets\theme_assets\js\TreeViewHepler.js" />
     <Content Include="hrms\assets\vendor_assets\css\bootstrap\bootstrap.css" />
     <Content Include="hrms\assets\vendor_assets\css\daterangepicker.css" />
     <Content Include="hrms\assets\vendor_assets\css\fontawesome.css" />
@@ -1212,6 +1263,7 @@
     <Content Include="hrms\img\author\2.jpg" />
     <Content Include="hrms\img\author\3.jpg" />
     <Content Include="hrms\img\author\4.jpg" />
+    <Content Include="hrms\img\author\myProfile.jpg" />
     <Content Include="hrms\img\author\e1.png" />
     <Content Include="hrms\img\author\e2.png" />
     <Content Include="hrms\img\author\e3.png" />
@@ -1385,6 +1437,7 @@
     <Content Include="hrms\img\png%402x.png" />
     <Content Include="hrms\img\post-image.png" />
     <Content Include="hrms\img\premium-clock.png" />
+    <Content Include="hrms\img\profile-cover-photo.jpg" />
     <Content Include="hrms\img\profile_bg.png" />
     <Content Include="hrms\img\profile_bg_2.png" />
     <Content Include="hrms\img\psd%402x.png" />
@@ -1685,21 +1738,52 @@
     <Content Include="hrms\img\upload.png" />
     <Content Include="hrms\img\video-camera.png" />
     <Content Include="hrms\img\visa.png" />
+    <Content Include="hrms\img\wellcome-photo.jpg" />
     <Content Include="hrms\img\women-bag.png" />
     <Content Include="hrms\img\youtube.png" />
     <Content Include="hrms\img\zip%402x.png" />
     <Content Include="hrms\img\zip.png" />
     <Content Include="hrms\index.html" />
+    <Content Include="hrms\Leave\EarnLeaveProcessing.aspx" />
+    <Content Include="hrms\Leave\EarnLeaveReport.aspx" />
+    <Content Include="hrms\Leave\HolyDaySetup.aspx" />
+    <Content Include="hrms\Leave\leaveApplication.aspx" />
+    <Content Include="hrms\Leave\leaveApprove.aspx" />
+    <Content Include="hrms\Leave\leaveConfiguration.aspx" />
+    <Content Include="hrms\Leave\leaveYearlySummaryReport.aspx" />
     <Content Include="hrms\man.jpg" />
-    <Content Include="hrms\Modules.aspx" />
+    <Content Include="hrms\packages\modules.aspx" />
+    <Content Include="hrms\payroll\salary-entry.aspx" />
+    <Content Include="hrms\personnel\employee-list.aspx" />
+    <Content Include="hrms\settings\bankEntryPanelSetup.aspx" />
+    <Content Include="hrms\settings\businessTypeSetup.aspx" />
+    <Content Include="hrms\settings\companySetup.aspx" />
+    <Content Include="hrms\settings\departmentSetup.aspx" />
+    <Content Include="hrms\settings\designationSetup.aspx" />
+    <Content Include="hrms\settings\districtSetup.aspx" />
+    <Content Include="hrms\settings\floorSetup.aspx" />
+    <Content Include="hrms\settings\gradeSetup.aspx" />
+    <Content Include="hrms\settings\lineGroup.aspx" />
+    <Content Include="hrms\settings\othersSetup.aspx" />
+    <Content Include="hrms\settings\qualificationSetup.aspx" />
+    <Content Include="hrms\settings\religionSetup.aspx" />
+    <Content Include="hrms\settings\shiftSetup.aspx" />
+    <Content Include="hrms\settings\thanaSetup.aspx" />
+    <Content Include="hrms\settings\unitSetup.aspx" />
+    <Content Include="hrms\SpecialCase\specialCase.aspx" />
     <Content Include="hrms\style.css" />
     <Content Include="hrms\test.aspx" />
+    <Content Include="hrms\UI\access\UserCreate.aspx" />
     <Content Include="hrms\UI\auth\cw-hrms.png" />
     <Content Include="hrms\UI\auth\login.aspx" />
     <Content Include="hrms\UI\auth\login.html" />
     <Content Include="hrms\UI\auth\logo.png" />
-    <Content Include="hrms\user_img_default.jpg" />
-    <Content Include="hrms\WebForm1.aspx" />
+    <Content Include="hrms\user.aspx" />
+    <Content Include="hrms\packages\userPackages.aspx" />
+    <Content Include="hrms\packages\userPackagesSetup.aspx" />
+    <Content Include="hrms\packages\userPermissions.aspx" />
+    <Content Include="hrms\userProfile.aspx" />
+    <Content Include="hrms\userRoles.aspx" />
     <Content Include="images\action\Delete_Icon.png" />
     <Content Include="images\common\add document.ico" />
     <Content Include="images\common\addemployee.ico" />
@@ -2043,11 +2127,15 @@
     <Content Include="payroll\pay_base_shift.aspx" />
     <Content Include="payroll\pay_slip.aspx" />
     <Content Include="payroll\pay_slip2.aspx" />
-    <Content Include="payroll\salary\other_pay_deduction.aspx" />
+    <Content Include="payroll\salary\IncrementEntitleReport.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
+    <Content Include="payroll\salary\QatarBankfordReport.aspx" />
     <Content Include="payroll\salary\salary_processing.aspx" />
     <Content Include="payroll\salary\salary_sheet.aspx" />
+    <Content Include="payroll\salary\salary_sheet_excel.aspx" />
     <Content Include="personnel\employee-list-allowing-compliance.aspx" />
+    <Content Include="personnel\employee_profileview.aspx" />
+    <Content Include="personnel\ImportEmployeInfo.aspx" />
     <Content Include="personnel\OtherReports.aspx" />
     <Content Include="personnel\promotion_sheetc.aspx" />
     <Content Include="payroll\Punishment_OthersPay.aspx" />
@@ -2253,7 +2341,6 @@
     <Content Include="All Report\Dataset\StaffIDCard.xsc">
       <DependentUpon>StaffIDCard.xsd</DependentUpon>
     </Content>
-    <Content Include="WebForm1.aspx" />
     <None Include="All Report\Dataset\StaffIDCard.xsd">
       <SubType>Designer</SubType>
       <Generator>MSDataSetGenerator</Generator>
@@ -2507,6 +2594,9 @@
     <Content Include="hrms\HRMS.Master" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile2.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile3.pubxml" />
     <None Include="Properties\PublishProfiles\GloryGroup.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
@@ -3437,9 +3527,11 @@
     <Compile Include="classes\mRosterOperation_Shrink_Data.cs" />
     <Compile Include="classes\mZK_Shrink_Data_SqlServer.cs" />
     <Compile Include="classes\Payroll.cs" />
+    <Compile Include="classes\PermissionManager.cs" />
     <Compile Include="classes\PF_ProfitDistribution.cs" />
     <Compile Include="classes\Roster.cs" />
     <Compile Include="classes\RosteringLogic.cs" />
+    <Compile Include="classes\Routing.cs" />
     <Compile Include="classes\SalaryProcessing.cs" />
     <Compile Include="classes\SalaryProcessingCommonTask.cs" />
     <Compile Include="classes\ServerTimeZone.cs" />
@@ -3481,19 +3573,26 @@
     <Compile Include="ControlPanel\user_privilege.aspx.designer.cs">
       <DependentUpon>user_privilege.aspx</DependentUpon>
     </Compile>
-    <Compile Include="ControlPanel\WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ControlPanel\WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-    </Compile>
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrd\bankentry_panel.aspx.cs">
+      <DependentUpon>bankentry_panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrd\bankentry_panel.aspx.designer.cs">
+      <DependentUpon>bankentry_panel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrd\bank_entry_panel.aspx.cs">
+      <DependentUpon>bank_entry_panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrd\bank_entry_panel.aspx.designer.cs">
+      <DependentUpon>bank_entry_panel.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrd\business_type.aspx.cs">
       <DependentUpon>business_type.aspx</DependentUpon>
@@ -3593,6 +3692,51 @@
     <Compile Include="hrd_default.aspx.designer.cs">
       <DependentUpon>hrd_default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\attendance\attendanceProcessing.aspx.cs">
+      <DependentUpon>attendanceProcessing.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceProcessing.aspx.designer.cs">
+      <DependentUpon>attendanceProcessing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceWeekendSetup.aspx.cs">
+      <DependentUpon>attendanceWeekendSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\attendanceWeekendSetup.aspx.designer.cs">
+      <DependentUpon>attendanceWeekendSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\roster\roster-entry.aspx.cs">
+      <DependentUpon>roster-entry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\roster\roster-entry.aspx.designer.cs">
+      <DependentUpon>roster-entry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\roster\roster-list.aspx.cs">
+      <DependentUpon>roster-list.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\roster\roster-list.aspx.designer.cs">
+      <DependentUpon>roster-list.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\dashbordUser.aspx.cs">
+      <DependentUpon>dashbordUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\dashbordUser.aspx.designer.cs">
+      <DependentUpon>dashbordUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\DTO\ShiftDTO.cs" />
+    <Compile Include="hrms\packages\AppSettings.aspx.cs">
+      <DependentUpon>AppSettings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\packages\AppSettings.aspx.designer.cs">
+      <DependentUpon>AppSettings.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\BLL\AccessControl.cs" />
+    <Compile Include="hrms\BLL\ApiConnector.cs" />
     <Compile Include="hrms\dashboard.aspx.cs">
       <DependentUpon>dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3601,6 +3745,8 @@
       <DependentUpon>dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\Data\CRUD.cs" />
+    <Compile Include="hrms\DTO\PermissionRoute.cs" />
+    <Compile Include="hrms\DTO\RouteDTO.cs" />
     <Compile Include="hrms\HRMS.Master.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3608,12 +3754,191 @@
     <Compile Include="hrms\HRMS.Master.designer.cs">
       <DependentUpon>HRMS.Master</DependentUpon>
     </Compile>
-    <Compile Include="hrms\Modules.aspx.cs">
-      <DependentUpon>Modules.aspx</DependentUpon>
+    <Compile Include="hrms\Leave\EarnLeaveProcessing.aspx.cs">
+      <DependentUpon>EarnLeaveProcessing.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\Modules.aspx.designer.cs">
-      <DependentUpon>Modules.aspx</DependentUpon>
+    <Compile Include="hrms\Leave\EarnLeaveProcessing.aspx.designer.cs">
+      <DependentUpon>EarnLeaveProcessing.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\EarnLeaveReport.aspx.cs">
+      <DependentUpon>EarnLeaveReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\EarnLeaveReport.aspx.designer.cs">
+      <DependentUpon>EarnLeaveReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\HolyDaySetup.aspx.cs">
+      <DependentUpon>HolyDaySetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\HolyDaySetup.aspx.designer.cs">
+      <DependentUpon>HolyDaySetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveApplication.aspx.cs">
+      <DependentUpon>leaveApplication.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveApplication.aspx.designer.cs">
+      <DependentUpon>leaveApplication.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveApprove.aspx.cs">
+      <DependentUpon>leaveApprove.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveApprove.aspx.designer.cs">
+      <DependentUpon>leaveApprove.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveConfiguration.aspx.cs">
+      <DependentUpon>leaveConfiguration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveConfiguration.aspx.designer.cs">
+      <DependentUpon>leaveConfiguration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveYearlySummaryReport.aspx.cs">
+      <DependentUpon>leaveYearlySummaryReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\leaveYearlySummaryReport.aspx.designer.cs">
+      <DependentUpon>leaveYearlySummaryReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\packages\modules.aspx.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\packages\modules.aspx.designer.cs">
+      <DependentUpon>modules.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\payroll\salary-entry.aspx.cs">
+      <DependentUpon>salary-entry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\payroll\salary-entry.aspx.designer.cs">
+      <DependentUpon>salary-entry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\personnel\employee-list.aspx.cs">
+      <DependentUpon>employee-list.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\personnel\employee-list.aspx.designer.cs">
+      <DependentUpon>employee-list.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\repo\implementations\Zk.cs" />
+    <Compile Include="hrms\repo\implementations\ZkBiotime.cs" />
+    <Compile Include="hrms\repo\repositories\IDevice.cs" />
+    <Compile Include="hrms\repo\services\PunchService.cs" />
+    <Compile Include="hrms\settings\bankEntryPanelSetup.aspx.cs">
+      <DependentUpon>bankEntryPanelSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\bankEntryPanelSetup.aspx.designer.cs">
+      <DependentUpon>bankEntryPanelSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\businessTypeSetup.aspx.cs">
+      <DependentUpon>businessTypeSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\businessTypeSetup.aspx.designer.cs">
+      <DependentUpon>businessTypeSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\companySetup.aspx.cs">
+      <DependentUpon>companySetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\companySetup.aspx.designer.cs">
+      <DependentUpon>companySetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\departmentSetup.aspx.cs">
+      <DependentUpon>departmentSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\departmentSetup.aspx.designer.cs">
+      <DependentUpon>departmentSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\designationSetup.aspx.cs">
+      <DependentUpon>designationSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\designationSetup.aspx.designer.cs">
+      <DependentUpon>designationSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\districtSetup.aspx.cs">
+      <DependentUpon>districtSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\districtSetup.aspx.designer.cs">
+      <DependentUpon>districtSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\floorSetup.aspx.cs">
+      <DependentUpon>floorSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\floorSetup.aspx.designer.cs">
+      <DependentUpon>floorSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\gradeSetup.aspx.cs">
+      <DependentUpon>gradeSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\gradeSetup.aspx.designer.cs">
+      <DependentUpon>gradeSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\lineGroup.aspx.cs">
+      <DependentUpon>lineGroup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\lineGroup.aspx.designer.cs">
+      <DependentUpon>lineGroup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\othersSetup.aspx.cs">
+      <DependentUpon>othersSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\othersSetup.aspx.designer.cs">
+      <DependentUpon>othersSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\qualificationSetup.aspx.cs">
+      <DependentUpon>qualificationSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\qualificationSetup.aspx.designer.cs">
+      <DependentUpon>qualificationSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\religionSetup.aspx.cs">
+      <DependentUpon>religionSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\religionSetup.aspx.designer.cs">
+      <DependentUpon>religionSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\shiftSetup.aspx.cs">
+      <DependentUpon>shiftSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\shiftSetup.aspx.designer.cs">
+      <DependentUpon>shiftSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\thanaSetup.aspx.cs">
+      <DependentUpon>thanaSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\thanaSetup.aspx.designer.cs">
+      <DependentUpon>thanaSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\unitSetup.aspx.cs">
+      <DependentUpon>unitSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\unitSetup.aspx.designer.cs">
+      <DependentUpon>unitSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\SpecialCase\specialCase.aspx.cs">
+      <DependentUpon>specialCase.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\SpecialCase\specialCase.aspx.designer.cs">
+      <DependentUpon>specialCase.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\test.aspx.cs">
       <DependentUpon>test.aspx</DependentUpon>
@@ -3622,6 +3947,13 @@
     <Compile Include="hrms\test.aspx.designer.cs">
       <DependentUpon>test.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\UI\access\UserCreate.aspx.cs">
+      <DependentUpon>UserCreate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\UI\access\UserCreate.aspx.designer.cs">
+      <DependentUpon>UserCreate.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\UI\auth\login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3629,12 +3961,47 @@
     <Compile Include="hrms\UI\auth\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="hrms\user.aspx.cs">
+      <DependentUpon>user.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
+    <Compile Include="hrms\user.aspx.designer.cs">
+      <DependentUpon>user.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\packages\userPackages.aspx.cs">
+      <DependentUpon>userPackages.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\packages\userPackages.aspx.designer.cs">
+      <DependentUpon>userPackages.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\packages\userPackagesSetup.aspx.cs">
+      <DependentUpon>userPackagesSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\packages\userPackagesSetup.aspx.designer.cs">
+      <DependentUpon>userPackagesSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\packages\userPermissions.aspx.cs">
+      <DependentUpon>userPermissions.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\packages\userPermissions.aspx.designer.cs">
+      <DependentUpon>userPermissions.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userProfile.aspx.cs">
+      <DependentUpon>userProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userProfile.aspx.designer.cs">
+      <DependentUpon>userProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userRoles.aspx.cs">
+      <DependentUpon>userRoles.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userRoles.aspx.designer.cs">
+      <DependentUpon>userRoles.aspx</DependentUpon>
     </Compile>
     <Compile Include="leave\all_leave_list.aspx.cs">
       <DependentUpon>all_leave_list.aspx</DependentUpon>
@@ -4554,7 +4921,6 @@
     </Compile>
     <Compile Include="payroll\advance\advance_monthly_installment_setup.aspx.cs">
       <DependentUpon>advance_monthly_installment_setup.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="payroll\advance\advance_monthly_installment_setup.aspx.designer.cs">
       <DependentUpon>advance_monthly_installment_setup.aspx</DependentUpon>
@@ -4916,12 +5282,12 @@
     <Compile Include="payroll\pay_slip2.aspx.designer.cs">
       <DependentUpon>pay_slip2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="payroll\salary\other_pay_deduction.aspx.cs">
-      <DependentUpon>other_pay_deduction.aspx</DependentUpon>
+    <Compile Include="payroll\salary\IncrementEntitleReport.aspx.cs">
+      <DependentUpon>IncrementEntitleReport.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="payroll\salary\other_pay_deduction.aspx.designer.cs">
-      <DependentUpon>other_pay_deduction.aspx</DependentUpon>
+    <Compile Include="payroll\salary\IncrementEntitleReport.aspx.designer.cs">
+      <DependentUpon>IncrementEntitleReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>
@@ -4929,6 +5295,13 @@
     </Compile>
     <Compile Include="payroll\salary\ot_payment.aspx.designer.cs">
       <DependentUpon>ot_payment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\salary\QatarBankfordReport.aspx.cs">
+      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\QatarBankfordReport.aspx.designer.cs">
+      <DependentUpon>QatarBankfordReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\salary_processing.aspx.cs">
       <DependentUpon>salary_processing.aspx</DependentUpon>
@@ -4944,12 +5317,33 @@
     <Compile Include="payroll\salary\salary_sheet.aspx.designer.cs">
       <DependentUpon>salary_sheet.aspx</DependentUpon>
     </Compile>
+    <Compile Include="payroll\salary\salary_sheet_excel.aspx.cs">
+      <DependentUpon>salary_sheet_excel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\salary_sheet_excel.aspx.designer.cs">
+      <DependentUpon>salary_sheet_excel.aspx</DependentUpon>
+    </Compile>
     <Compile Include="personnel\employee-list-allowing-compliance.aspx.cs">
       <DependentUpon>employee-list-allowing-compliance.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="personnel\employee-list-allowing-compliance.aspx.designer.cs">
       <DependentUpon>employee-list-allowing-compliance.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="personnel\employee_profileview.aspx.cs">
+      <DependentUpon>employee_profileview.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="personnel\employee_profileview.aspx.designer.cs">
+      <DependentUpon>employee_profileview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="personnel\ImportEmployeInfo.aspx.cs">
+      <DependentUpon>ImportEmployeInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="personnel\ImportEmployeInfo.aspx.designer.cs">
+      <DependentUpon>ImportEmployeInfo.aspx</DependentUpon>
     </Compile>
     <Compile Include="personnel\OtherReports.aspx.cs">
       <DependentUpon>OtherReports.aspx</DependentUpon>
@@ -5687,13 +6081,6 @@
     <Compile Include="vat_tax\vat_tax_years.aspx.designer.cs">
       <DependentUpon>vat_tax_years.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForm1.aspx.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForm1.aspx.designer.cs">
-      <DependentUpon>WebForm1.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Glory.Master" />
@@ -5713,11 +6100,10 @@
     <Folder Include="AssetsNew\js\file-uploader\server\php\files\thumbnail\" />
     <Folder Include="EmployeeImages\AdvanceDocument\" />
     <Folder Include="EmployeeImages\AttachFile\" />
-    <Folder Include="EmployeeImages\Images\" />
     <Folder Include="EmployeeImages\LeaveDocument\" />
     <Folder Include="EmployeeImages\Signature\" />
     <Folder Include="hrms\StaticFiles\" />
-    <Folder Include="hrms\UI\access\" />
+    <Folder Include="System\Web\UI\WebControls\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="CRDESIGNERLib">

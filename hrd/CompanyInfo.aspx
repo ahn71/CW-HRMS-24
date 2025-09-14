@@ -32,7 +32,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li> <a href="#">/</a></li>
-                       <li> <a href="/hrd_default.aspx">Settings</a></li>
+                         <li><a href="<%= Session["__topMenuforSettings__"] %>">Settings</a></li>
                        <li> <a href="#">/</a></li>
                        <li> <a href="#" class="ds_negevation_inactive Ractive">Company</a></li>
                    </ul>               
@@ -63,8 +63,10 @@
                         <asp:AsyncPostBackTrigger ControlID="rblCardNoType"/>
                     </Triggers>
                     <ContentTemplate>
-                <div style="margin: 0px auto; width: 868px; overflow: hidden;">
-                <div style=float:left;>
+                <div style="margin: 0px auto; width: 1000px; overflow: hidden;">
+                    <div class="row">
+                        <div class="col-lg-6" style="padding:15px">
+                              <div style=float:left;>
                 
                         <div class="input_division_info_2" style="float:left; width:450px;">                           
                             <table class="division_table company_radio_btn">
@@ -158,13 +160,30 @@
                                  </asp:DropDownList>
                                         <%--<asp:TextBox ID="txtDefaultCurrency" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width" ></asp:TextBox>--%>
                                     </td>
-                                </tr>                               
+                                   
+                                      
+                                </tr>   
+                                <tr>
+                                    <td>Registration No</td>
+                                    <td>:</td>
+                                    <td class="mt-2"><asp:TextBox runat="server" ID="txtRegistrationInfos" CssClass="form-control text_box_width"></asp:TextBox></td>
+                                      
+                                </tr>
+                                <tr>
+                                      <td>Establishment No</td>
+                                      <td>:</td>
+                                    <td><asp:TextBox runat="server" ID="txtEstablesed" CssClass="form-control text_box_width"></asp:TextBox></td>
+
+                                </tr>
                             </table>                            
                         </div>
                              
                                        
                 </div>
-                       <div style="float: right;">                     
+                        </div>
+
+                         <div class="col-lg-6" style="padding:15px">
+   <div style="float: right;">                     
                    <div style="text-align:center;">
                         <asp:Image ID="imgProfile" class="BImg" ClientIDMode="Static"  runat="server" ImageUrl="~/images/profileImages/Logo.png" />  
                         <asp:FileUpload ID="FileUpload1" style="margin-left:108px" runat="server"  onchange="previewFile()" ClientIDMode="Static" />
@@ -238,8 +257,10 @@
                                     <td>:</td>
                                     <td>
                                          <asp:DropDownList ID="ddlMachine" ClientIDMode="Static" CssClass="form-control select_width"  runat="server">
+                                             <asp:ListItem Value="zkbiotime">ZK Biotime</asp:ListItem>
                                              <asp:ListItem Value="ZK">ZK</asp:ListItem>
-                                             <asp:ListItem Value="RMS">RMS</asp:ListItem>                                            
+                                             <asp:ListItem Value="RMS">RMS</asp:ListItem>    
+                                             <asp:ListItem Value="HIKVISION">HIKVISION</asp:ListItem>
                                          </asp:DropDownList>
                                     </td>
                                 </tr>
@@ -252,6 +273,10 @@
                                 </tr>
                     </table>                  
                         </div>
+                        </div>
+                    </div>
+                     
+                    
                     </div>
             </ContentTemplate>
                 </asp:UpdatePanel>
@@ -264,7 +289,7 @@
                     </div>
 
                 <div  class="show_division_info">
-                    <asp:GridView ID="gvCompanyInfo" runat="server" AutoGenerateColumns="False" Width="100%"  AllowPaging="True" PageSize="4"  DataKeyNames="ID,CompanyId" OnPageIndexChanging="gvCompanyInfo_PageIndexChanging" OnRowCommand="gvCompanyInfo_RowCommand" OnRowDataBound="gvCompanyInfo_RowDataBound" OnRowDeleting="gvCompanyInfo_RowDeleting"  >
+                    <asp:GridView ID="gvCompanyInfo" runat="server" AutoGenerateColumns="False" Width="100%"  AllowPaging="True" PageSize="5"  DataKeyNames="ID,CompanyId" OnPageIndexChanging="gvCompanyInfo_PageIndexChanging" OnRowCommand="gvCompanyInfo_RowCommand" OnRowDataBound="gvCompanyInfo_RowDataBound" OnRowDeleting="gvCompanyInfo_RowDeleting"  >
                 <HeaderStyle BackColor="#0057AE" Height="28px" HorizontalAlign="Center" Font-Bold="True" Font-Size="14px" ForeColor="White"></HeaderStyle>
                          <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                           <Columns>
@@ -280,24 +305,39 @@
                              <asp:BoundField DataField="BTypeName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderText="BusinessType" Visible="true" />
                               <asp:BoundField DataField="StartCardNo" HeaderText="S.Card No" ItemStyle-HorizontalAlign="Center" Visible="true" />
                              <%--<asp:ButtonField ButtonType="Button" ItemStyle-HorizontalAlign="Center" ControlStyle-CssClass="btnForAlterInGV"    HeaderText="Edit" Text="Edit" CommandName="Alter" />--%>
-                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                              <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                         <HeaderTemplate>
-                                            Delete
+                                           Setup 
                                         </HeaderTemplate>
                                         <ItemTemplate>
-                                            <asp:Button ID="btnAlter" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Edit" CommandName="Alter"
+                                            <asp:Button ID="btnSrtupPackages" runat="server"  ControlStyle-CssClass="btn btn-primary"   Text="Package Set" style="margin: 5px;" CommandName="Setup"
                                                
                                                 CommandArgument='<%# Container.DataItemIndex %>' />
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                         <HeaderTemplate>
-                                            Delete
+                                            Action
                                         </HeaderTemplate>
                                         <ItemTemplate>
+                                           <%-- <asp:Button ID="btnAlter" runat="server"  ControlStyle-CssClass="btnForAlterInGV"   Text="Edit" CommandName="Alter"
+                                               
+                                                CommandArgument='<%# Container.DataItemIndex %>' />
                                             <asp:Button ID="btnDelete" runat="server"  ControlStyle-CssClass="btnForDeleteInGV"   Text="Delete" CommandName="Delete"
                                                 OnClientClick="return confirm('Are you sure, you want to delete the record?')"
-                                                CommandArgument='<%# Container.DataItemIndex %>' />
+                                                CommandArgument='<%# Container.DataItemIndex %>' />--%>
+
+                                            <asp:LinkButton ID="btnAlter" runat="server" CssClass="" CommandName="Alter"
+                                                CommandArgument='<%# Container.DataItemIndex %>'>
+    <i class="fa fa-edit"></i> <!-- Font Awesome edit icon -->
+                                            </asp:LinkButton>
+
+                                            <asp:LinkButton ID="btnDelete" runat="server" CssClass="" CommandName="Delete"
+                                                OnClientClick="return confirm('Are you sure, you want to delete the record?');"
+                                                CommandArgument='<%# Container.DataItemIndex %>'>
+    <i class="fa fa-trash"></i> <!-- Font Awesome delete icon -->
+                                            </asp:LinkButton>
+
                                         </ItemTemplate>
                                     </asp:TemplateField>
                           </Columns>                         

@@ -76,9 +76,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                    <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Ptactive">Roster View & Remove</a></li>
                 </ul>
@@ -108,7 +106,7 @@
                         <ContentTemplate>                      
                         
                <div>
-                        <table style="width:88%;margin:0px auto">
+                        <table style="width:90%;margin:0px auto">
                               <tr>
                                     <%--<td runat="server" >
                                        Company
@@ -123,7 +121,7 @@
                                      <asp:DropDownList runat="server" ID="ddlDepartment" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" ClientIDMode="Static" OnSelectedIndexChanged="ddlDepartment_SelectedIndexChanged" ></asp:DropDownList>
                                  </td>
                                   <td>
-                                      Roster 
+                                      Current Roster 
                                       </td>
                                        <td class="auto-style1">
                                      <asp:DropDownList runat="server" ID="ddlDepartmentList" CssClass="form-control text_box_width style" Width="96%" Height="30px" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged" ClientIDMode="Static" ></asp:DropDownList>
@@ -133,12 +131,15 @@
                                   </td>                                                                                    
                                        <td>  <asp:Button runat="server" ID="btnDelete" CssClass="css_btn Ptbut" Font-Bold="true" Text="Delete full roster" OnClientClick="return confirm('Do you want to delete ?')" Width="125px" Height="34px" OnClick="btnDelete_Click"  /></td>
                                   <td>
-                                       <asp:TextBox Height="28px" MaxLength="10" AutoComplete="Off" PlaceHolder="Select for single date " Style=" border:1px solid; text-align:center;" ID="txtRosterDate" runat="server" Enabled="true" ForeColor="Blue"   ></asp:TextBox> 
+                                       <asp:TextBox Height="28px" MaxLength="10" AutoComplete="Off" PlaceHolder="Select for single date " Style=" border:1px solid; text-align:center;" ID="txtRosterDate" runat="server" Enabled="true" ForeColor="Blue" ></asp:TextBox> 
                                    <asp:CalendarExtender ID="txtRosterDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtRosterDate">
                                    </asp:CalendarExtender>
+                                      </td>
+                                      <td>
+
                              <asp:Button runat="server" ID="btnSearch" CssClass="css_btn Ptbut" Text="Search" Width="125px" Height="34px" OnClick="btnSearch_Click"  /> 
                                   </td>
-                                <td>                                    
+                                <td runat="server" visible="false">                                    
                                      <asp:Button runat="server" ID="btnClose" CssClass="css_btn Ptbut" Text="Close" Width="65px" Height="34px"  />
                                       
                                 </td> 

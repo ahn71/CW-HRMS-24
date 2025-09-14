@@ -23,9 +23,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                    <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Ptactive">Roster Manage Report</a></li>
                 </ul>
@@ -102,7 +100,7 @@
                             <tr>
                                  <td>By Date</td>
                                 <td class="tdWidth">
-                                     <asp:TextBox ID="txtDate"  ClientIDMode="Static"  runat="server" CssClass="form-control text_box_width" MaxLength="10" style="width:96%; text-align:center" ></asp:TextBox>
+                                     <asp:TextBox ID="txtDate"   ClientIDMode="Static"  runat="server" CssClass="form-control text_box_width" MaxLength="10" style="width:96%; text-align:center"  autocomplete="off"></asp:TextBox>
                                      <asp:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="txtDate" Format="dd-MM-yyyy">
                                      </asp:CalendarExtender>                                  
                                 </td>

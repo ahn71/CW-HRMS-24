@@ -1,5 +1,6 @@
 ﻿using adviitRuntimeScripting;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,12 +13,18 @@ namespace SigmaERP.attendance
 {
     public partial class absent_notification_log : System.Web.UI.Page
     {
+        //permission=322;
         DataTable dt;
         string query = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 322 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 txtToDate.Text = DateTime.Now.ToString("dd-MM-yyyy");

@@ -11,7 +11,7 @@ using ComplexScriptingSystem;
 using System.Text;
 using System.Drawing;
 using SigmaERP.classes;
-
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.hrd
 {
@@ -20,23 +20,34 @@ namespace SigmaERP.hrd
         string CompanyId = "";
         string sqlcmd="";
         DataTable dt;
+        // View=191,Add=192,Edit=193,Delete=194
+    
         protected void Page_Load(object sender, EventArgs e)
         {
+           
             sqlDB.connectionString = Glory.getConnectionString();           
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-              setPrivilege();
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+                int[] pagePermission = { 191, 192, 193, 194 };
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+                setPrivilege(userPagePermition);
               
             }          
 
         }
-        private void setPrivilege()
+        private void setPrivilege(int[] permission)
         {
             try
             {
-                            
+
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 ViewState["__preRIndex__"] = "No";
                 string getUserId = getCookies["__getUserId__"].ToString();
@@ -44,14 +55,20 @@ namespace SigmaERP.hrd
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "department.aspx", ddlCompanyName, divDepartmentList, btnSave);
-             
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
-             
+                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "department.aspx", ddlCompanyName, divDepartmentList, btnSave);
+
+                if(permission.Contains(191))
+                    ViewState["__ReadAction__"] = "1";
+                if(permission.Contains(192))
+                    ViewState["__WriteAction__"] = "1";
+                if(permission.Contains(193))
+                    ViewState["__UpdateAction__"] = "1";
+                if(permission.Contains(194))
+                    ViewState["__DeletAction__"] = "1";
+
+                checkInitialPermission();
                 LoadCompanyInfo();
                 loadDepartment();
                 if (!classes.commonTask.HasBranch())
@@ -341,8 +358,8 @@ namespace SigmaERP.hrd
                 }
             }
             catch { }
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
-            {
+            //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
+            //{
                 try
                 {
                     if (ViewState["__DeletAction__"].ToString().Equals("0"))
@@ -366,8 +383,21 @@ namespace SigmaERP.hrd
 
                 }
                 catch { }
-            }
-        }
+            //}
+
+            try
+            {
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                {
+                    LinkButton lnkDelete = (LinkButton)e.Row.FindControl("lnkDelete");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.OnClientClick = "return false";
+                    lnkDelete.ForeColor = Color.Silver;
+                }
+
+    }
+            catch { }
+}
 
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -391,6 +421,21 @@ namespace SigmaERP.hrd
                 trDptCode.Visible = false;
                 txtDepartmentCode.Text = dtcom.Rows[0]["FlatCode"].ToString();
             }
+        }
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Rbutton";
+            }
+            else
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+           
+
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,6 +14,7 @@ namespace SigmaERP.personnel
 {
     public partial class shift_manage_report : System.Web.UI.Page
     {
+        //permission=437
         DataTable dt;
         DataTable dtSetPrivilege;
         protected void Page_Load(object sender, EventArgs e)
@@ -19,9 +22,13 @@ namespace SigmaERP.personnel
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
-
+            int[] pagePermission = { 437 };
             if (!IsPostBack)
             {
+               
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;  
@@ -39,36 +46,36 @@ namespace SigmaERP.personnel
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string getUserId = getCookies["__getUserId__"].ToString();
                 string cmpID = ViewState["__CompanyId__"].ToString();
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
-                {
-                    dtSetPrivilege = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='shift_manage_report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPrint.CssClass = "css_btn Ptbut"; btnPrint.Enabled = true;
-                            btnSearch.CssClass = "css_btn Ptbut"; btnSearch.Enabled = true;
-                        }
-                        else
-                        {
-                         // tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPrint.Enabled = false;
-                            btnPrint.CssClass = "";
-                            btnSearch.CssClass = ""; btnSearch.Enabled = false;
-                        }
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
+                //{
+                //    dtSetPrivilege = new DataTable();
+                //    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='shift_manage_report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                //    if (dtSetPrivilege.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                //        {
+                //            btnPrint.CssClass = "css_btn Ptbut"; btnPrint.Enabled = true;
+                //            btnSearch.CssClass = "css_btn Ptbut"; btnSearch.Enabled = true;
+                //        }
+                //        else
+                //        {
+                //         // tblGenerateType.Visible = false;
+                //            WarningMessage.Visible = true;
+                //            btnPrint.Enabled = false;
+                //            btnPrint.CssClass = "";
+                //            btnSearch.CssClass = ""; btnSearch.Enabled = false;
+                //        }
 
-                    }
-                    else
-                    {
-                      //tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPrint.Enabled = false;
-                        btnPrint.CssClass = "";
-                        btnSearch.CssClass = ""; btnSearch.Enabled = false;
-                    }
-                }
+                //    }
+                //    else
+                //    {
+                //      //tblGenerateType.Visible = false;
+                //        WarningMessage.Visible = true;
+                //        btnPrint.Enabled = false;
+                //        btnPrint.CssClass = "";
+                //        btnSearch.CssClass = ""; btnSearch.Enabled = false;
+                //    }
+                //}
                 classes.commonTask.LoadBranch(ddlCompanyList);
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);     
@@ -134,7 +141,7 @@ namespace SigmaERP.personnel
             Session["__ShiftTarnsferReport__"] = dt;
             if (dt==null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning-> Data Not Found";
                 return;
             } 
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=ShiftTarnsferReport-"+ddlCompanyList.SelectedValue+"');", true);  //Open New Tab for Sever side code
@@ -165,7 +172,7 @@ namespace SigmaERP.personnel
             dt = GenerateRepotData();
             if (dt == null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning-> Data Not Found";
                 return;
             }
             gvEmpList.DataSource = dt;

@@ -19,7 +19,7 @@
             <div class="ds_nagevation_bar">
                 <div style="margin-top: 5px">
                     <ul>
-                        <li><a href="/default.aspx">Dasboard</a></li>
+                        <li><a href="/default.aspx">Dashboard</a></li>
                         <li>/</li>
                         <li><a href="/tools_default.aspx">Tools</a></li>
                         <li>/</li>
@@ -120,6 +120,13 @@
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
+                                 <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <asp:CheckBox runat="server" ID="ckbIsCompliance" Text="Is Compliance" />
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td></td>
                                     <td></td>
@@ -127,6 +134,7 @@
                                         <asp:CheckBox runat="server" ID="ckbLeaveAuthority" Text=" If Leave Authority" AutoPostBack="true" OnCheckedChanged="ckbLeaveAuthority_CheckedChanged" />
                                     </td>
                                 </tr>
+                                
                                 <%--</table>
                               <br />
                               <table class="division_table" runat="server" >    --%>

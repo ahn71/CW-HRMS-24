@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,19 +17,29 @@ namespace SigmaERP.attendance
     public partial class AttendanceProcessing : System.Web.UI.Page
     {
         string sqlCmd = "";
+        //Dataacees Level= OnlyMe=1 All=3 Own=2 custom=4
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 260 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-
+           
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
+               
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 ViewState["__OT__"] = "0";
                 setPrivilege();
+                ToggleSections(rblImportType.SelectedValue);
             }
             if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
+           
+         
         }
 
         private void setPrivilege()
@@ -41,25 +52,50 @@ namespace SigmaERP.attendance
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+                ViewState["__dptID__"]= getCookies["__DptId__"].ToString();
 
 
-                string[] AccessPermission = new string[0];
+                //  string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "import_data.aspx", ddlCompanyList, btnImport);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "import_data.aspx", ddlCompanyList, btnImport);
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
-                classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                if (Session["__dataAceesLevel__"].ToString() == "4")
+                {
+                    classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                }
+                else if(Session["__dataAceesLevel__"].ToString() == "3")
+                {
+                    classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                }
+                 else if(Session["__dataAceesLevel__"].ToString() == "2")
+                {
+                    classes.commonTask.loadDepartmentListByCompany_ForShrink(ddlDepartmentList, ddlCompanyList.SelectedValue);
+                }
+
                 ViewState["__AttMachineName__"] = classes.commonTask.loadAttMachineName(ddlCompanyList.SelectedValue);
                 if (ViewState["__AttMachineName__"].ToString().Equals("RMS"))
                 {                    
                     trImportFrom.Visible = true;
                 }
+                else if (ViewState["__AttMachineName__"].ToString().Equals("zk(access)"))
+                {
+                    trImportFrom.Visible = true;
+                   
+
+                    tdFileUpload.Visible = true;
+                    tdSelectFile.Visible = true;
+                }
                 else
                 {
-                    trImportFrom.Visible = false;                    
-                }
+                    trImportFrom.Visible = false; 
+                    
                 tdFileUpload.Visible = false;
                 tdSelectFile.Visible = false;
+                }
+               
+
             }
             catch { }
         }
@@ -72,6 +108,9 @@ namespace SigmaERP.attendance
                 {
                     DataTable DtEmpAttList = null;
                     DateTime AttendanceDate = (rblImportType.SelectedItem.Value.Equals("FullImport")) ? DateTime.ParseExact(txtFullAttDate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture) : DateTime.ParseExact(txtPartialAttDate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                    DateTime AttendanceToDate = (rblImportType.SelectedItem.Value.Equals("FullImport")) ? DateTime.ParseExact(txtTodate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture) : DateTime.ParseExact(txtPartialToDate.Text, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
                     bool forAllEmployee = (rblImportType.SelectedItem.Value.Equals("FullImport")) ? true : false;
 
                     
@@ -85,16 +124,16 @@ namespace SigmaERP.attendance
 
                         attendanceProcessing._AttendanceProcessingWithCommonShift(ddlCompanyList.SelectedValue, AttendanceDate, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue);
                     }
-                    else// RSS
+                    else
                     {
                         Random rnd = new Random();
                         string ProcessingID = DateTime.Now.ToFileTime().ToString() + "_" + rnd.Next().ToString();
                         lblErrorMessage.Text = ProcessingID;
-                        attendanceProcessing._AttendanceProcessing(ProcessingID, ddlCompanyList.SelectedValue, AttendanceDate, FileUpload1, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue,rblImportFrom.SelectedValue, lblErrorMessage1);
+                        attendanceProcessing._AttendanceProcessing(ProcessingID, ViewState["__AttMachineName__"].ToString(), ddlCompanyList.SelectedValue, AttendanceDate, FileUpload1, forAllEmployee, ddlDepartmentList.SelectedValue, txtCardNo.Text.Trim(), ViewState["__getUserId__"].ToString(), rblEmpType.SelectedValue,rblImportFrom.SelectedValue, lblErrorMessage1, AttendanceDate, AttendanceToDate);
                         generateAbsentNotification(AttendanceDate);
                     }
                     
-                    DtEmpAttList =attendanceProcessing.LoadProcessedAttendanceData(ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue, AttendanceDate.ToString("yyyy-MM-dd"), forAllEmployee, txtCardNo.Text.Trim(),rblEmpType.SelectedValue);
+                    DtEmpAttList =attendanceProcessing.LoadProcessedAttendanceData(ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue, AttendanceDate.ToString("yyyy-MM-dd"), forAllEmployee, txtCardNo.Text.Trim(),rblEmpType.SelectedValue, Session["__dataAceesLevel__"].ToString(), AttendanceToDate.ToString("yyyy-MM-dd"));
                     gvAttendance.DataSource = DtEmpAttList;
                     gvAttendance.DataBind();
                     ulAttMissingLog.Visible = true;
@@ -102,6 +141,8 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
+
+
         private void deleteAbsentNotification(DateTime selectdDate, string condition)
         {
             sqlCmd = "delete AttAbsentNotification_Log where Date='" + selectdDate.ToString("yyyy-MM-dd") + "' " + condition;
@@ -138,6 +179,11 @@ namespace SigmaERP.attendance
                 }
                 else
                 {
+                    bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), ddlCompanyList.SelectedValue);
+                    if (!hasEmpCard)
+                    {
+                        return;
+                    }
                     conditionDel = condition = " and EmpID in(select EmpId from Personnel_EmpCurrentStatus where IsActive=1 and EmpStatus in(1,8) and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' and CompanyId='" + ddlCompanyList.SelectedValue + "')";
                 }
                 deleteAbsentNotification(selectdDate, conditionDel);
@@ -199,40 +245,75 @@ namespace SigmaERP.attendance
                 //    FileUpload1.Focus();
                 //    return false;
                 //}
-                if (rblImportType.SelectedValue == "FullImport" && rblDateType.SelectedValue == "SingleDate" && txtFullAttDate.Text.Trim().Length < 10)
-                {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select attendance date";
-                    txtFullAttDate.Focus();
+                //if (rblImportType.SelectedValue == "FullImport" && rblDateType.SelectedValue == "SingleDate" && txtFullAttDate.Text.Trim().Length < 10)
+                //{
+                //    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                //    lblErrorMessage.Text = "Please select attendance date";
+                //    txtFullAttDate.Focus();
+                //    return false;
+                //}
+                if (rblImportType.SelectedValue == "FullImport" &&
+                    rblDateType.SelectedValue == "SingleDate" &&
+                    txtFullAttDate.Text.Trim().Length < 10)
+                   {
+                    string message = "Please select attendance date";
+                    lblErrorMessage.Text = message;
+                    //txtFullAttDate.Focus();
+
+                    ScriptManager.RegisterStartupScript(
+                        this.Page,
+                        Page.GetType(),
+                        "showSweetAlert",
+                        $"Swal.fire({{ icon: 'error', title: 'Error', text: '{message}', confirmButtonText: 'OK' }});",
+                        true
+                    );
                     return false;
                 }
+
+
+
 
                 if (rblImportType.SelectedValue != "FullImport" && txtCardNo.Text.Trim().Length < 4)
                 {
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please type valid card no";
+                    //lblErrorMessage.Text = "Please type valid card no";
+                    
+
+                    ScriptManager.RegisterStartupScript(
+                    this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please type valid card no', confirmButtonText: 'OK' }});", true);
                     txtCardNo.Focus();
                     return false;
                 }
                 if (rblImportType.SelectedValue != "FullImport" && txtPartialAttDate.Text.Trim().Length < 10)
                 {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select partial attendance date";
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                    //lblErrorMessage.Text = "Please select partial attendance date";
+
+                    ScriptManager.RegisterStartupScript(
+                   this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please select partial attendance date', confirmButtonText: 'OK' }});", true);
+
                     txtPartialAttDate.Focus();
                     return false;
                 }
 
                 if (txtFullToDate.Visible == true && txtFullToDate.Text.Trim().Length < 10)
                 {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select To date";
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                    //lblErrorMessage.Text = "Please select To date";
+
+                    ScriptManager.RegisterStartupScript(
+                   this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please select To date', confirmButtonText: 'OK' }});", true);
                     txtFullToDate.Focus();
                     return false;
                 }
                 else if (txtPartialToDate.Visible == true && txtPartialToDate.Text.Trim().Length < 10)
                 {
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
-                    lblErrorMessage.Text = "Please select To date";
+                    //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "alertMessage();", true);
+                    //lblErrorMessage.Text = "Please select To date";
+
+                    ScriptManager.RegisterStartupScript(
+                   this.Page, Page.GetType(), "showSweetAlert", $"Swal.fire({{ icon: 'error', title: 'Error', text: 'Please select To date', confirmButtonText: 'OK' }});", true);
+
                     txtPartialToDate.Focus();
                     return false;
                 }
@@ -295,6 +376,24 @@ namespace SigmaERP.attendance
                 tdSelectFile.Visible = true;
             }
                 
+        }
+
+        protected void rblImportType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ToggleSections(rblImportType.SelectedValue);
+        }
+        private void ToggleSections(string selectedValue)
+        {
+            if (selectedValue == "FullImport")
+            {
+                fullSection.Visible = true;
+                partialSection.Visible = false;
+            }
+            else if (selectedValue == "PartialImport")
+            {
+                fullSection.Visible = false;
+                partialSection.Visible = true;
+            }
         }
     }
 }

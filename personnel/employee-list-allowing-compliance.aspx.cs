@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,17 +13,24 @@ using System.Web.UI.WebControls;
 
 namespace SigmaERP.personnel
 {
+
+    //view=286;
     public partial class employee_list_allowing_compliance : System.Web.UI.Page
     {
         DataTable dt;
         string query = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 286 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+                
                 setPrivilege();
                 loadPendingWorkers();
             }
@@ -35,9 +43,13 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+                ViewState["__dptID__"] = getCookies["__DptId__"].ToString();
+                ViewState["__empId__"] = getCookies["__getEmpId__"].ToString();
+
                 DropDownList ddlCompanyList = new DropDownList();
                 Button btnSearch = new Button();
                 string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyList, gvForApprovedList, btnSearch);
                 ViewState["__ReadAction__"] = AccessPermission[0];
                 ViewState["__WriteAction__"] = AccessPermission[1];
@@ -48,7 +60,9 @@ namespace SigmaERP.personnel
         }
         private void loadPendingWorkers()
         {
-            query = "select EmpId,CompanyId,EmpType,SUBSTRING(EmpCardNo,8,6)+' ('+EmpProximityNo+')' as EmpCardNo,convert(varchar(10),EmpJoiningDate,105) as EmpJoiningDate,EmpName,DptName,DsgName,DptId from v_EmployeeDetails where  EmpTypeId=1 and IsActive=1 and EmpStatus=1 and IsTransferredToCompliance is null and CompanyID='" + ViewState["__CompanyId__"].ToString()+ "' order by DptId";
+            string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"");
+
+            query = "select EmpId,CompanyId,EmpType,SUBSTRING(EmpCardNo,8,6)+' ('+EmpProximityNo+')' as EmpCardNo,convert(varchar(10),EmpJoiningDate,105) as EmpJoiningDate,EmpName,DptName,DsgName,DptId from v_EmployeeDetails where  EmpTypeId=1 and IsActive=1 and EmpStatus=1 and IsTransferredToCompliance is null " + condition + " order by DptId";
             sqlDB.fillDataTable(query, dt = new DataTable());
             if (dt.Rows.Count == 0)
             {

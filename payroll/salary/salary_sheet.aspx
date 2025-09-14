@@ -3,6 +3,9 @@
         #ContentPlaceHolder1_ContentPlaceHolder1_tblGenerateType {
             width:100%;
         }
+     td.chkbank {
+         white-space:nowrap;
+     }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -12,9 +15,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll/salary_index.aspx">Salary</a></li>
+                    <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Pactive">Salary Sheet Report</a></li>
                 </ul>
@@ -29,7 +30,7 @@
     </asp:UpdatePanel>
        <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
-            <h2>Salary Sheet Report</h2>
+            <h2 runat="server" id="heading">Salary Sheet Report</h2>
         </div>
         <div class="main_box_body Pbody">
             <div class="main_box_content">
@@ -93,12 +94,17 @@
                                
                            </td>
                        </tr>
-                         <tr runat="server" id="trHideForIndividual">
-                                <td>Employee Type</td>                                
+                         <tr runat="server" id="chkbanksheet" visible="false">
+
+                         </tr>
+                       
+                         <tr>
+                                <td><span  runat="server" id="trHideForIndividualLabel">Employee Type</span> </td>                                
                                 <td>                                   
-                                    <asp:RadioButtonList ID="rblEmployeeType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
+                                    <asp:RadioButtonList ID="rblEmployeeType" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow" OnSelectedIndexChanged="rblEmployeeType_SelectedIndexChanged" AutoPostBack="true">
                                         
                                     </asp:RadioButtonList>
+                               <%--     <asp:RadioButton runat="server" ID="rblAlll" value="0" Text="All" OnCheckedChanged="rblAlll_CheckedChanged" Visible="false" AutoPostBack="true"/>--%>
                                 </td>
                            <%--  <td>Payment Type</td>    --%>                            
                                 <td>                                   
@@ -109,10 +115,41 @@
                                     </asp:RadioButtonList>
                                      
                                 </td>
-                             <td>
-                                 <asp:CheckBox ID="chkBankForwardingLetter" runat="server" Text="Bank Forwarding Letter" />
+                          <td class="chkbank">
+                                 <asp:CheckBox runat="server" ID="chkIsBankfordQatar"  Text="BankSalary Sheet(Bank wise)" CssClass="chkboxsalary" OnCheckedChanged="chkIsBankfordQatar_CheckedChanged" AutoPostBack="true"/><br />
+                             
+                                 <asp:CheckBox Visible="false" ID="chkBankForwardingLetter" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Letter" /> 
+                                <asp:CheckBox ID="chkExcel" CssClass="chkboxsalary" runat="server" Text="Salary Sheet(Excel)" />
+                                
                              </td>
+                             
+                           
                             </tr>
+                         <tr>
+                             <td></td>
+                             <td></td>
+                             <td></td>
+                             <td class="chkbank">  <asp:CheckBox ID="chkBankForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bank Forwarding Sheet (Excel)" /></td>
+
+                         </tr>
+                            <tr>
+                             <td></td>
+                             <td></td>
+                             <td></td>
+                             <td class="chkbank">  <asp:CheckBox ID="chkBKashForwardingLetterXL" CssClass="chkboxsalary" runat="server" Text="Bkash Forwarding Sheet (Excel)" /></td>
+
+                         </tr>
+
+                           <tr runat="server" id="bankshhet" visible="false">
+                                <td></td>
+                             <td></td>
+                              <td>Select Bank</td>
+                             <td>
+                             <asp:DropDownList runat="server" ID="ddlBankSheet" CssClass="form-control select_width">
+                               
+                             </asp:DropDownList>
+                                 </td>
+                         </tr>
                    </table>
                 </div>
                         <asp:Panel id="pnl1" runat="server" >
@@ -161,11 +198,14 @@
 
                     <asp:Button ID="btnPreview" runat="server" CssClass="Pbutton" Text="Preview" OnClick="btnPreview_Click"  />
                     <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/payroll_default.aspx" CssClass="Pbutton" />
+
+                   
                 </div>
                 
             </div>
                         </ContentTemplate>
                 </asp:UpdatePanel>
+                
         </div>
     </div>
      </div>

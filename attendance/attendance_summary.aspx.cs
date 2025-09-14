@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 using ComplexScriptingSystem;
 using System.Drawing;
 using SigmaERP.classes;
-
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
@@ -20,8 +20,10 @@ namespace SigmaERP.attendance
         DataTable dtSetPrivilege;
         string CompanyId = "";
         GridView gvattsummary;
+        //view=264
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 264 };
             try
             {
                 sqlDB.connectionString = Glory.getConnectionString();
@@ -31,6 +33,9 @@ namespace SigmaERP.attendance
                 {
                     classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                     txtFromDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect(Routing.defualtUrl);
                     setPrivilege();
                     //if (!classes.ServerTimeZone.IsBDTZone()) txtFromDate.Text = dptDate.Text = classes.ServerTimeZone.GetBangladeshNowDate();
                     //else txtFromDate.Text = dptDate.Text= DateTime.Now.ToString("dd-MM-yyyy");
@@ -59,20 +64,21 @@ namespace SigmaERP.attendance
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserId__"] = getCookies["__getUserId__"].ToString();
-
-                string[] AccessPermission = new string[0];              
-                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance_summary.aspx", ddlCompanyName, WarningMessage, btnPrintPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                if (ViewState["__ReadAction__"].ToString().Equals("0")) 
-                {
-                    btnSearch.Enabled = false;
-                    btnSearch.CssClass = "";
-                    tblGenerateType.Visible = false;
-                }
+                classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+               // string[] AccessPermission = new string[0];              
+                // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance_summary.aspx", ddlCompanyName, WarningMessage, btnPrintPreview);
+               // ViewState["__ReadAction__"] = AccessPermission[0];
+                //if (ViewState["__ReadAction__"].ToString().Equals("0")) 
+                //{
+                //    btnSearch.Enabled = false;
+                //    btnSearch.CssClass = "";
+                //    tblGenerateType.Visible = false;
+                //}
                 classes.commonTask.LoadShiftNameByCompany(ViewState["__CompanyId__"].ToString(), ddlShiftName);
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
-                
+                classes.commonTask.loadUnit(ddlUnit, ViewState["__CompanyId__"].ToString());
+
 
             }
             catch { }
@@ -137,6 +143,14 @@ namespace SigmaERP.attendance
                 FromDate = Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0];
                 string IsNightShiftForReport = (rblDayNight.SelectedValue == "all") ? " " : (rblDayNight.SelectedValue == "night") ? " and IsNull(IsNightShiftForReport,0)=1 " : " and IsNull(IsNightShiftForReport,0)=0 ";
                 string ShiftName = (ddlShiftName.SelectedValue == "0") ? "" : " and SftName='" + ddlShiftName.SelectedValue + "' ";
+
+                string unitCondition = "";
+                if (ddlUnit.SelectedValue != "0")
+                {
+                    unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+                }
+
+
                 gvattsummary = new GridView();
                 gvattsummary.AutoGenerateColumns = false;
                 DataTable dt = new DataTable();
@@ -144,27 +158,29 @@ namespace SigmaERP.attendance
                 {
                     if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin"))
                     {
-                        sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + FromDate + "' " + ShiftName + IsNightShiftForReport+ empType + " and DptId "+ DepartmentList + "    group by DptId,DptName", dt);
+                        sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + FromDate + "' " + ShiftName + IsNightShiftForReport+ empType + " and DptId "+ DepartmentList + "  "+unitCondition + "  group by DptId,DptName", dt);
                         //else sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(A)+sum(P)+sum(Lv)+sum(L) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and SftId=" + ddlShiftName.SelectedValue + " and EmpStatus in (1,8) and ATTDate='" + FromDate + "'  and DptId='" + ViewState["__DptId__"].ToString() + "' group by DptId,DptName ", dt);
 
                     }
                     else
                     {
                         sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + FromDate + "' " + ShiftName + IsNightShiftForReport + empType + " and DptId " + DepartmentList + "   group by DptId,CONVERT(int,DptCode),DptName order by CONVERT(int,DptCode)", dt);
-                         
+                        string kk = "Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + FromDate + "' " + ShiftName + IsNightShiftForReport + empType + " and DptId " + DepartmentList + " " + unitCondition + "  group by DptId,CONVERT(int,DptCode),DptName order by CONVERT(int,DptCode)";
+
+
                     }
                 }
                 else
                 {
                     if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin"))
                     {
-                        sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate>='" + FromDate + "' and ATTDate<='" + ToDate + "' and DptId='" + ViewState["__DptId__"].ToString() + "' " + ShiftName + IsNightShiftForReport + " group by DptId,DptName", dt);
+                        sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate>='" + FromDate + "' and ATTDate<='" + ToDate + "' and DptId='" + ViewState["__DptId__"].ToString() + "' " + ShiftName + IsNightShiftForReport + " " + unitCondition + " group by DptId,DptName", dt);
                         //else sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(A)+sum(P)+sum(Lv)+sum(L) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and SftId=" + ddlShiftName.SelectedValue + " and EmpStatus in (1,8) and ATTDate>='" + FromDate + "' and ATTDate<='" + ToDate + "' and DptId='" + ViewState["__DptId__"].ToString() + "' group by DptId,DptName ", dt);
 
                     }
                     else
                     {
-                        sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate>='" + FromDate + "' and ATTDate<='" + ToDate + "' " + ShiftName + IsNightShiftForReport + " group by DptId,CONVERT(int,DptCode),DptName order by CONVERT(int,DptCode)", dt);
+                        sqlDB.fillDataTable("Select DptId,DptName as Department,sum(A) as Absent,sum(P) as Present,sum(Lv) as Leave,sum(L) as Late,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate>='" + FromDate + "' and ATTDate<='" + ToDate + "' " + ShiftName + IsNightShiftForReport + " " + unitCondition + " group by DptId,CONVERT(int,DptCode),DptName order by CONVERT(int,DptCode)", dt);
                        
                     }
                 }
@@ -282,6 +298,13 @@ namespace SigmaERP.attendance
         {
             try
             {
+                string unitCondition = "";
+                if (ddlUnit.SelectedValue != "0")
+                {
+                    unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+                }
+
+
                 string[] Fdate = txtFromDate.Text.Split('-');
                 string[] Tdate = txtFromDate.Text.Split('-');
                 DataTable dtselect = new DataTable();
@@ -474,6 +497,12 @@ namespace SigmaERP.attendance
          */
         private void SpeacificEmpDailyAttRpt() 
         {
+            string unitCondition = "";
+            if (ddlUnit.SelectedValue != "0")
+            {
+                unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+            }
+
             string SqlCmd = "";
             string[] Fdate = txtFromDate.Text.Split('-');
             string FromDate = Fdate[2] + " - " + Fdate[1] + " - " + Fdate[0];
@@ -487,13 +516,13 @@ namespace SigmaERP.attendance
                     + "v_tblAttendanceRecord.DsgName, v_tblAttendanceRecord.SftName,format(v_tblAttendanceRecord.EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate, v_tblAttendanceRecord.EmpCardNo,"
                     + "v_tblAttendanceRecord.CompanyName, v_tblAttendanceRecord.Address, v_tblAttendanceRecord.Sex, v_tblAttendanceRecord.RName,v_tblAttendanceRecord.MobileNo"
                     + " FROM v_tblAttendanceRecord"
-                    + " where EmpCardNo like '%" + txtCardNo.Text + "' and CompanyId='" + ddlCompanyName.SelectedValue + "' and DptId='" + ViewState["__DptId__"].ToString() + "' and EmpStatus in (1,8) and ATTDate='" + ToDate + "'";
+                    + " where EmpCardNo like '%" + txtCardNo.Text + "' and CompanyId='" + ddlCompanyName.SelectedValue + "' and DptId='" + ViewState["__DptId__"].ToString() + "' and EmpStatus in (1,8) and ATTDate='" + ToDate + "' "+ unitCondition + "";
                 else
                     SqlCmd = " SELECT Format(v_tblAttendanceRecord.ATTDate,'dd-MM-yyyy') as AttDate, v_tblAttendanceRecord.ATTStatus, v_tblAttendanceRecord.StateStatus, v_tblAttendanceRecord.EmpName,v_tblAttendanceRecord.DptName, "
                    + "v_tblAttendanceRecord.DsgName, v_tblAttendanceRecord.SftName,format(v_tblAttendanceRecord.EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate, v_tblAttendanceRecord.EmpCardNo,"
                    + "v_tblAttendanceRecord.CompanyName, v_tblAttendanceRecord.Address, v_tblAttendanceRecord.Sex, v_tblAttendanceRecord.RName,v_tblAttendanceRecord.MobileNo"
                    + " FROM v_tblAttendanceRecord"
-                   + " where EmpCardNo like '%" + txtCardNo.Text + "' and CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + ToDate + "'";
+                   + " where EmpCardNo like '%" + txtCardNo.Text + "' and CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate='" + ToDate + "' "+ unitCondition + "";
                 sqlDB.fillDataTable(SqlCmd, dt);
                 if (dt.Rows.Count == 0)
                 {
@@ -537,6 +566,12 @@ namespace SigmaERP.attendance
         {
             try
             {
+                string unitCondition = "";
+                if (ddlUnit.SelectedValue != "0")
+                {
+                    unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+                }
+
                 string DepartmentList = "";
                 if (lstSelected.Items.Count < 1)
                 {
@@ -560,7 +595,7 @@ namespace SigmaERP.attendance
                     else if (rblDptORGrp.SelectedValue == "Dsg")
                         sqlCmd = "Select CompanyName,Address,DptName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' " + ShiftName + IsNightShiftForReport + "  group by DptId,CONVERT(int,DptCode),DptName,CompanyName,Address order by CONVERT(int,DptCode)";
                     else
-                        sqlCmd = "Select CompanyName,Address,GName as DptName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' " + ShiftName + IsNightShiftForReport + " group by GId,GName,DptId,CompanyName,Address order by Convert(int,DptId),CONVERT(int,GId)";
+                        sqlCmd = "Select CompanyName,Address,GName as DptName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' " + ShiftName + IsNightShiftForReport + " "+unitCondition+" group by GId,GName,DptId,CompanyName,Address order by Convert(int,DptId),CONVERT(int,GId)";
                         //else sqlDB.fillDataTable("Select DptName,CompanyName,Address,SftId, SftName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and SftId=" + ddlShiftName.SelectedValue + " and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' and DptId='" + ViewState["__DptId__"].ToString() + "' group by DptId,CONVERT(int,DptCode),DptName,CompanyName,Address,SftId,SftName order by CONVERT(int,DptCode) ", dt);
 
 
@@ -572,7 +607,7 @@ namespace SigmaERP.attendance
                     else if (rblDptORGrp.SelectedValue == "Dsg")
                         sqlCmd = "Select CompanyName,Address,DptName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' " + ShiftName + IsNightShiftForReport + "  group by DptId,CONVERT(int,DptCode),DptName,CompanyName,Address order by CONVERT(int,DptCode)";
                     else
-                        sqlCmd = "Select CompanyName,Address,GName as DptName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' " + ShiftName + IsNightShiftForReport + "  group by GId,GName,DptId,CompanyName,Address order by Convert(int,DptId),CONVERT(int,GId)";
+                        sqlCmd = "Select CompanyName,Address,GName as DptName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L,sum(WH) as WH,sum(A)+sum(P)+sum(Lv)+sum(L)+sum(WH) as Total From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "' " + ShiftName + IsNightShiftForReport + " " + unitCondition + " group by GId,GName,DptId,CompanyName,Address order by Convert(int,DptId),CONVERT(int,GId)";
                     //if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin"))
                     //{
                     //   sqlDB.fillDataTable("Select CompanyName,Address,DptName,SftId,SftName,sum(A) as A,sum(P) as P,sum(Lv) as Lv,sum(L) as L From v_v_DailyAttendanceSummary where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpStatus in (1,8) and ATTDate ='" + Fdate[2] + "-" + Fdate[1] + "-" + Fdate[0] + "'  group by DptId,CONVERT(int,DptCode),DptName,CompanyName,Address,SftId,SftName order by CONVERT(int,DptCode)", dt);

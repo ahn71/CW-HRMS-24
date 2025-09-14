@@ -9,19 +9,26 @@ using System.Data;
 using System.Data.SqlClient;
 using SigmaERP.classes;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class staff_id_card : System.Web.UI.Page
     {
+        //permission=277
         DataTable dt;
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 277 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 setPrivilege();               
                 classes.commonTask.LoadEmpType(rblEmpType);
                 ddlBranch.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -41,10 +48,11 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];                
+                classes.commonTask.LoadBranch(ddlBranch, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];                
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "staff_id_card.aspx", ddlBranch, WarningMessage, tblGenerateType, btnpreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "staff_id_card.aspx", ddlBranch, WarningMessage, tblGenerateType, btnpreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
 
                
 
@@ -57,9 +65,10 @@ namespace SigmaERP.personnel
             try
             {
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
+                string condition = AccessControl.loadEmpCardNumber(CompanyID);
                 dt = new DataTable();
                 sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo  From v_EmployeeDetails where CompanyId='" + CompanyID + "' and EmpTypeId="+rblEmpType.SelectedValue+" and EmpStatus in ('1','8')" +
-                                    " and  ActiveSalary='True' Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode,CustomOrdering", dt);
+                                    " and  ActiveSalary='True' and "+ condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode,CustomOrdering", dt);
                 lstAll.DataSource = dt;
                 lstAll.DataTextField = "EmpCardNo";
                 lstAll.DataValueField = "SN";
@@ -95,7 +104,8 @@ namespace SigmaERP.personnel
                 lstAll.Items.Clear();
                 lstSelected.Items.Clear();
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
-                classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);
+                 classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);
+                
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
             }
             catch { }
@@ -401,7 +411,7 @@ namespace SigmaERP.personnel
                 lstAll.Items.Clear();
                 lstSelected.Items.Clear();
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
-                classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);  
+                 classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);  
             }                                      
             else if (rdbIndividual.Checked == true)
                 LoadStaffCardNo(ddlEmpCardNo);

@@ -13,6 +13,8 @@ using System.IO;
 using System.Globalization;
 using System.Data.SqlClient;
 using CrystalDecisions.Web;
+using SigmaERP.classes;
+using System.Configuration;
 
 namespace SigmaERP.All_Report
 {
@@ -23,11 +25,20 @@ namespace SigmaERP.All_Report
         string query = "";
         protected void Page_Init(object sender, EventArgs e)
         {
-            this.Init += new System.EventHandler(this.Page_Init);
-            sqlDB.connectionString = Glory.getConnectionString();
-            sqlDB.connectDB();
+
+            //divError.InnerText += "load->Page_Init";
+            try {
+                this.Init += new System.EventHandler(this.Page_Init);
+                sqlDB.connectionString = Glory.getConnectionString();
+                sqlDB.connectDB();
+            }
+            catch (Exception ex) {
+                divError.InnerText+="error_init_31->" + ex.Message;
+            } 
+            
             try
             {
+
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
 
@@ -42,6 +53,27 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("ResignationLetter")) LoadResignationLetter();
                 else if (query[0].Equals("AppoinmentLetterStaff")) LoadAppoinmentLetterStaff(query[1], query[2]);
                 else if (query[0].Equals("PromotionLetterStaff")) PromotionLetterStaff(query[1], query[2] + "-" + query[3]);
+
+                //new devlopment letter 
+                else if (query[0].Equals("AppointmentLetter")) showAppoinmentLetter();
+                else if (query[0].Equals("joiningletter")) showjoiningLetter();
+
+                else if (query[0].Equals("LadyWorkerNightFormate")) showLadyNightFormateLetter();
+                else if (query[0].Equals("medical_formet")) showmedical_formet();
+                else if (query[0].Equals("JobApplicationWorkerCopy")) showjob_application();
+                else if (query[0].Equals("nominee_report")) showNomineeReport();
+                else if (query[0].Equals("wages_statment")) showWagesStatment();
+                else if (query[0].Equals("DismissLetter")) showDismissLetter();
+                else if (query[0].Equals("ShowCauseLetter")) showCauseLetter();
+                else if (query[0].Equals("PromotionLetter")) showPromotionLetter();
+                else if (query[0].Equals("IncrementLetter")) showIncrementletter();
+                else if (query[0].Equals("ConfirmationLetter")) showConfirmationletter();
+                else if (query[0].Equals("IncrementWithPromotion")) showIncrementWithPromotionletter();
+                else if (query[0].Equals("1stAbsentLetter")) show1stAbsentLetter();
+                else if (query[0].Equals("2ndAbsentLetter")) show2ndAbsentLetter();
+                else if (query[0].Equals("3rddAbsentLetter")) show3rdAbsentLetter();
+
+
                 else if (query[0].Equals("PromotionLetterWorker")) PromotionLetterWorker(query[1], query[2] + "-" + query[3]);
                 else if (query[0].Equals("PromotionSheet")) PromotionSheet(query[1]);
                 else if (query[0].Equals("PreviousPromotionSheet")) PreviousPromotionSheet(query[1]);
@@ -175,13 +207,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("NightBill")) ShowDailyNightBill(query[0] + "-" + query[1] + "-" + query[2] + "-" + query[3]);
                 else if (query[0].Equals("HolidayBill")) ShowHoliDayBill(query[0] + "-" + query[1] + "-" + query[2] + "-" + query[3]);
                 else if (query[0].Equals("Monthlytransferredamount")) ShowMonthlytransferredamount(query[1], query[2]);
-
                 else if (query[0].Equals("ContactInfo")) ShowContactInfo();
-
-
-
-
-
 
                 else if (query[0].Equals("DailyAttStatus")) ShowDailyAttStatus(query[1], query[2] + "-" + query[3] + "-" + query[4], query[5] + "-" + query[6] + "-" + query[7]);
                 else if (query[0].Equals("PromotionInfo")) ShowPromotionInfo();
@@ -199,6 +225,9 @@ namespace SigmaERP.All_Report
                 //------------------------------For Attendance reports----------------------------------------------
                 else if (query[0].Equals("TodaysAttStatus")) TodaysAttendanceStatus(query[1]);
                 else if (query[0].Equals("DailyMovement")) ShowDailyMovement(query[1] + "-" + query[2] + "-" + query[3], query[4], query[5]);
+
+                else if (query[0].Equals("DailyMovementDateRange")) ShowDailyMovementDateRange(query[1]);
+
                 else if (query[0].Equals("AttManpowerStatement")) AttManpowerStatement(query[1]);
                 else if (query[0].Equals("ManualAttReprot")) ShowManualAttendanceReport(query[1], query[2]);
                 else if (query[0].Equals("DailyOTReport")) Daily_OT_Report(query[1] + "-" + query[2] + "-" + query[3]);
@@ -247,13 +276,14 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("DailyMovementByDateRange")) ShowDailyMovementByDateRange(query[1], query[2], query[3]);
                 //------------------------------------------------------------------------------------------------------
             }
-            catch { }
+            catch(Exception ex) { divError.InnerText += "error_load_277->" + ex.Message; }
         }
 
         protected void Page_Unload(object sender, EventArgs e)
         {
             try
             {
+                divError.InnerText += " Call -> Page_Unload";
                 rpd.Refresh();
                 CrystalReportViewer1.ReportSource = null;
                 rpd.Dispose();
@@ -264,7 +294,11 @@ namespace SigmaERP.All_Report
             }
             catch
             {
-                rpd.Refresh();
+                try {
+                    rpd.Refresh();
+                }
+                catch (Exception ex) { divError.InnerText += "error_Page_Unload-> " + ex.Message; }
+                
 
                 CrystalReportViewer1.ReportSource = null; ;
                 GC.Collect();
@@ -474,7 +508,282 @@ namespace SigmaERP.All_Report
             }
             catch { }
         }
+        private void showAppoinmentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
 
+                rpd.Load(Server.MapPath("//All Report//Personnel//AppointmentLettert.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__AppoinmentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showjoiningLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//EmpJoiningLetter.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__JoiningLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showLadyNightFormateLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//ladyWorkerNightFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__LadyWorkerNightFormate__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showmedical_formet()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//Medicalforemate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__medical_formet__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
+
+        private void showNomineeReport()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//NomineeReport.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__nominee_report__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
+        private void showWagesStatment()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//wagesstatment.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__wages_statment__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showDismissLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//DismissLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Dismiss_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showCauseLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//ShowCauseLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__ShowCauseLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showPromotionLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//PromotionLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Promotion_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showIncrementletter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//IncrementLetter.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__IncrementLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showConfirmationletter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//ConfirmationLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Confirmation_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showIncrementWithPromotionletter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//IncrementWithPromotionLetter.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Increment_With_Promotion__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
+        private void show1stAbsentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//1stAbsentLetterBangla.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__1stAbsentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void show2ndAbsentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//2ndAbsentLetterBangla.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__2ndAbsentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void show3rdAbsentLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//3rdAbsentLetterBangla.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__3rdAbsentLetter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showjob_application()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//JobApplicationWorkerCopy.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__job_application__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
         private void DailyMovementBangla(string Date)
         {
             try
@@ -929,6 +1238,7 @@ namespace SigmaERP.All_Report
             }
             catch (Exception ex)
             {
+
             }
         }
 
@@ -946,6 +1256,12 @@ namespace SigmaERP.All_Report
             try
             {
                 rpd = new ReportDocument();
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string companyId = Session["__GetCompanyId__"].ToString();
+                string url = rootUrl + "//" + companyId + "//" + "EmployeeImage" + "//";
+        
+
+
                 if (IsDefault == "0")
                 {
                     rpd.Load(Server.MapPath("//All Report//Personnel//EmployeeBioData.rpt"));
@@ -957,7 +1273,7 @@ namespace SigmaERP.All_Report
                     rpd.SetParameterValue(0, dtcompany.Rows[0]["CompanyName"].ToString());
                     rpd.SetParameterValue(1, dtcompany.Rows[0]["Address"].ToString());
                     rpd.SetParameterValue(2, dtcompany.Rows[0]["Telephone"].ToString());
-                    rpd.SetParameterValue(3, Server.MapPath("//EmployeeImages//Images//"));
+                    rpd.SetParameterValue(3, Server.MapPath(url));
                 }
                 else
                 {
@@ -966,7 +1282,7 @@ namespace SigmaERP.All_Report
                     dt = new DataTable();
                     dt = (DataTable)Session["__EmployeeProfile__"];
                     rpd.SetDataSource(dt);
-                    rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+                    rpd.SetParameterValue(0, Server.MapPath(url));
                 }
 
 
@@ -1612,6 +1928,8 @@ namespace SigmaERP.All_Report
         {
             try
             {
+                divError.InnerText += "Call->ShowEmpInformationBangla ";
+                
                 rpd = new ReportDocument();
                 if (ReportType == "BasicInfo")
                 {
@@ -1646,17 +1964,21 @@ namespace SigmaERP.All_Report
                 }
                 dt = new DataTable();
                 dt = (DataTable)Session["__EmpInformation__"];
+                divError.InnerText += "Data->" + dt.Rows.Count;
                 rpd.SetDataSource(dt);
 
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
-            catch { }
+            catch(Exception ex) {
+                divError.InnerText += "Data->" + dt.Rows.Count;
+            }
         }
         private void ShowEmpInformationBangla(string ReportType)
         {
             try
             {
+               
                 rpd = new ReportDocument();
                 if (ReportType == "BasicInfo")
                 {
@@ -1677,11 +1999,13 @@ namespace SigmaERP.All_Report
                 }
                 dt = new DataTable();
                 dt = (DataTable)Session["__EmpInformationBangla__"];
+
+               
                 rpd.SetDataSource(dt);
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
-            catch { }
+            catch(Exception ex) { divError.InnerText += "error->" + ex.Message; }
         }
         private void ShowRecrutmentPanelList(string MonthName)
         {
@@ -2376,6 +2700,25 @@ namespace SigmaERP.All_Report
                 dt = (DataTable)Session["__DailyMovement__"];
                 rpd.SetDataSource(dt);
                 rpd.SetParameterValue(0, Date);
+                rpd.SetParameterValue(1, Title);
+
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
+
+        private void ShowDailyMovementDateRange(string Date)
+        {
+            try
+            {
+                rpd = new ReportDocument();
+                rpd.Load(Server.MapPath("//All Report//Attendance//DailyMovementReportByDateRangeIndividualV1.rpt"));
+                dt = new DataTable();
+                dt = (DataTable)Session["__DailyMovementDateRange__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Date.Replace('/', '-'));
                 rpd.SetParameterValue(1, Title);
 
                 CrystalReportViewer1.ReportSource = rpd;
@@ -3175,7 +3518,7 @@ namespace SigmaERP.All_Report
             catch { }
         }
         private void LeaveYearlySummary(string Year, string EmpType)
-        {
+         {
             try
             {
                 dt = new DataTable();
@@ -3568,6 +3911,11 @@ namespace SigmaERP.All_Report
             dt = (DataTable)Session["__SalarySheet__"];
             rpd = new ReportDocument();
 
+       
+            string rootUrl = Session["__RootUrl__"]?.ToString();
+            string companyId = Session["__GetCompanyId__"].ToString();
+            string EmpImageurl = rootUrl + "/" + companyId + "/" + "EmployeeImage" + "/";
+
             if (Session["__Language__"].ToString() == "English")
             {
                 if (IsSeparation == "0")
@@ -3587,10 +3935,126 @@ namespace SigmaERP.All_Report
                     }
                     else// This is for Actual Salary Sheet
                     {
+                        //string imagePath = commonTask.GetFullImagePath();
+
+                  
+
+
+                        //if (EmpTypeId == "1")
+                        //{
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+
+
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_WithEmpImage.rpt"));
+
+                        //}
+                        //else
+                        //    //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_New.rpt"));
+
+                        //    rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_New_Mollah.rpt"));
+
+                    }
+                }
+                else
+                {
+                    if (IsActual == "False") // This is for Compliance Salary Sheet
+                    {
+                        if (EmpTypeId == "1")
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker.rpt"));
+                        else
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff.rpt"));
+                    }
+                    else// This is for Actual Salary Sheet
+                    {
+                        if (EmpTypeId == "1")
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Sep.rpt"));
+                        rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_WithEmpImage.rpt"));
+                        else
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_Sep.rpt"));
+
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_WithEmpImage.rpt"));
+
+                    }
+                }
+
+                rpd.SetDataSource(dt);
+                string imageFolder = ConfigurationManager.AppSettings["employeeImageFolder"];
+                rpd.SetParameterValue(0, imageFolder);
+                rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
+                if (dynamicSignature)
+                {
+                    try
+                    {
+                        dt = new DataTable();
+                        dt = (DataTable)Session["__Salary_Sheet_Worker_Compliance__"];
+                        for (byte i = 0; i < dt.Rows.Count; i++)
+                        {
+                            rpd.SetParameterValue(i + 1, dt.Rows[i]["Signature"].ToString());
+                        }
+                    }
+                    catch (Exception ex) { }
+                }
+                // rpd.SetParameterValue(1,Session["__ReportTitle__"].ToString());
+            }
+            else
+            {
+                rpd.Load(Server.MapPath("//All Report//Payroll//monthly_salary_sheet_new_Bangla.rpt"));
+                rpd.SetDataSource(dt);
+                //rpd.SetParameterValue(0, SelectMonth);
+                //rpd.SetParameterValue(1, Year);
+                // rpd.SetParameterValue(1, Session["__ReportTitle__"].ToString());
+            }
+            //}
+
+            CrystalReportViewer1.ReportSource = rpd;
+            CrystalReportViewer1.HasToggleGroupTreeButton = false;
+        }
+        private void loadSalarySheetActualAndCompliance_(string SelectMonth, string IsActual, string EmpTypeId, string PaymentType, string IsSeparation) // 
+        {
+            bool dynamicSignature = false;
+            dt = new DataTable();
+            dt = (DataTable)Session["__SalarySheet__"];
+            rpd = new ReportDocument();
+
+
+            string rootUrl = Session["__RootUrl__"]?.ToString();
+            string companyId = Session["__GetCompanyId__"].ToString();
+            string EmpImageurl = "E:/CW-Official Project/CW-HRMS-API/wwwroot/0001/EmployeeImage/";
+
+            if (Session["__Language__"].ToString() == "English")
+            {
+                if (IsSeparation == "0")
+                {
+                    if (IsActual == "False") // This is for Compliance Salary Sheet
+                    {
+
+
+                        if (EmpTypeId == "1")
+                        {
+                            dynamicSignature = true;
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker.rpt"));
+                        }
+
+                        else
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff.rpt"));
+                    }
+                    else// This is for Actual Salary Sheet
+                    {
+                        //string imagePath = commonTask.GetFullImagePath();
+
+
+
+
                         if (EmpTypeId == "1")
                         {
                             //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
-                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                            //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+
+
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_ABR.rpt"));
 
                         }
                         else
@@ -3620,7 +4084,10 @@ namespace SigmaERP.All_Report
                 }
 
                 rpd.SetDataSource(dt);
-                rpd.SetParameterValue(0, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
+                //rpd.SetParameterValue(0, EmpImageurl);
+                rpd.SetParameterValue(0, EmpImageurl);
+                //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+                rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
                 if (dynamicSignature)
                 {
                     try

@@ -85,15 +85,6 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.DropDownList ddlBranch;
         
         /// <summary>
-        /// rblReportStructure control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblReportStructure;
-        
-        /// <summary>
         /// rblEmpType control.
         /// </summary>
         /// <remarks>
@@ -101,24 +92,6 @@ namespace SigmaERP.personnel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rblEmpType;
-        
-        /// <summary>
-        /// rdball control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton rdball;
-        
-        /// <summary>
-        /// rdbindividual control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButton rdbindividual;
         
         /// <summary>
         /// divindivisual control.
@@ -139,6 +112,69 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.DropDownList ddlCardNo;
         
         /// <summary>
+        /// divDepartmentList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDepartmentList;
+        
+        /// <summary>
+        /// lstAll control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox lstAll;
+        
+        /// <summary>
+        /// btnAddItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddItem;
+        
+        /// <summary>
+        /// btnAddAllItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddAllItem;
+        
+        /// <summary>
+        /// btnRemoveItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRemoveItem;
+        
+        /// <summary>
+        /// btnRemoveAllItem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRemoveAllItem;
+        
+        /// <summary>
+        /// lstSelected control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox lstSelected;
+        
+        /// <summary>
         /// btnPrintpreview control.
         /// </summary>
         /// <remarks>
@@ -146,15 +182,6 @@ namespace SigmaERP.personnel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnPrintpreview;
-        
-        /// <summary>
-        /// btnOldProfile control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnOldProfile;
         
         /// <summary>
         /// btnClose control.

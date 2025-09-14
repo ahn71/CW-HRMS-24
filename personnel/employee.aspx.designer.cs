@@ -283,6 +283,15 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.TextBox txtNameBangla;
         
         /// <summary>
+        /// ddlUnit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlUnit;
+        
+        /// <summary>
         /// ddlDepartment control.
         /// </summary>
         /// <remarks>
@@ -481,6 +490,15 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.RadioButtonList rblWeekendType;
         
         /// <summary>
+        /// ddlWeekend control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlWeekend;
+        
+        /// <summary>
         /// txtDptWise control.
         /// </summary>
         /// <remarks>
@@ -607,6 +625,24 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.DropDownList dsMaritialStatus;
         
         /// <summary>
+        /// husbandOrWifeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow husbandOrWifeName;
+        
+        /// <summary>
+        /// txtHusbandOrwifeName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtHusbandOrwifeName;
+        
+        /// <summary>
         /// dsDateOfBirth control.
         /// </summary>
         /// <remarks>
@@ -722,6 +758,15 @@ namespace SigmaERP.personnel {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMobileNo;
+        
+        /// <summary>
+        /// txtEmpVisaNo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEmpVisaNo;
         
         /// <summary>
         /// trel control.

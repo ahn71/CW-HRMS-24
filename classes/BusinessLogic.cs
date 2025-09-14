@@ -9,213 +9,226 @@ namespace SigmaERP.classes
 {
     public class BusinessLogic
     {
-        public static DataTable get_MonthlyLoginLogOutTime(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_MonthlyLoginLogOutTime(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition, string ShiftName)
         {
             try
             {
 
                 DataTable dt = new DataTable();
-                if(index==0) // 0 Means All
-                sqlDB.fillDataTable(
-                    "select substring(EmpCardNo,8,15) as EmpCardNo,EmpId,EmpName,sum(case DATEPART (day,AttDate) when 1 then InHour else 0 end) as '1_InH',sum(case DATEPART (day,AttDate) when 1 then InMin else 0 end) as '1_InM',sum(case DATEPART (day,AttDate) when 1 then OutHour else 0 end) as '1_OutH',sum(case DATEPART (day,AttDate) when 1 then OutMin else 0 end) as '1_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 2 then InHour else 0 end) as '2_InH',sum(case DATEPART (day,AttDate) when 2 then InMin else 0 end) as '2_InM',sum(case DATEPART (day,AttDate) when 2 then OutHour else 0 end) as '2_OutH',sum(case DATEPART (day,AttDate) when 2 then OutMin else 0 end) as '2_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 3 then InHour else 0 end) as '3_InH',sum(case DATEPART (day,AttDate) when 3 then InMin else 0 end) as '3_InM',sum(case DATEPART (day,AttDate) when 3 then OutHour else 0 end) as '3_OutH',sum(case DATEPART (day,AttDate) when 3 then OutMin else 0 end) as '3_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 4 then InHour else 0 end) as '4_InH',sum(case DATEPART (day,AttDate) when 4 then InMin else 0 end) as '4_InM',sum(case DATEPART (day,AttDate) when 4 then OutHour else 0 end) as '4_OutH',sum(case DATEPART (day,AttDate) when 4 then OutMin else 0 end) as '4_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 5 then InHour else 0 end) as '5_InH',sum(case DATEPART (day,AttDate) when 5 then InMin else 0 end) as '5_InM',sum(case DATEPART (day,AttDate) when 5 then OutHour else 0 end) as '5_OutH',sum(case DATEPART (day,AttDate) when 5 then OutMin else 0 end) as '5_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 6 then InHour else 0 end) as '6_InH',sum(case DATEPART (day,AttDate) when 6 then InMin else 0 end) as '6_InM',sum(case DATEPART (day,AttDate) when 6 then OutHour else 0 end) as '6_OutH',sum(case DATEPART (day,AttDate) when 6 then OutMin else 0 end) as '6_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 7 then InHour else 0 end) as '7_InH',sum(case DATEPART (day,AttDate) when 7 then InMin else 0 end) as '7_InM',sum(case DATEPART (day,AttDate) when 7 then OutHour else 0 end) as '7_OutH',sum(case DATEPART (day,AttDate) when 7 then OutMin else 0 end) as '7_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 8 then InHour else 0 end) as '8_InH',sum(case DATEPART (day,AttDate) when 8 then InMin else 0 end) as '8_InM',sum(case DATEPART (day,AttDate) when 8 then OutHour else 0 end) as '8_OutH',sum(case DATEPART (day,AttDate) when 8 then OutMin else 0 end) as '8_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 9 then InHour else 0 end) as '9_InH',sum(case DATEPART (day,AttDate) when 9 then InMin else 0 end) as '9_InM',sum(case DATEPART (day,AttDate) when 9 then OutHour else 0 end) as '9_OutH',sum(case DATEPART (day,AttDate) when 9 then OutMin else 0 end) as '9_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 10 then InHour else 0 end) as '10_InH',sum(case DATEPART (day,AttDate) when 10 then InMin else 0 end) as '10_InM',sum(case DATEPART (day,AttDate) when 10 then OutHour else 0 end) as '10_OutH',sum(case DATEPART (day,AttDate) when 10 then OutMin else 0 end) as '10_OutM'," +
-
-                "sum(case DATEPART (day,AttDate) when 11 then InHour else 0 end) as '11_InH',sum(case DATEPART (day,AttDate) when 11 then InMin else 0 end) as '11_InM',sum(case DATEPART (day,AttDate) when 11 then OutHour else 0 end) as '11_OutH',sum(case DATEPART (day,AttDate) when 11 then OutMin else 0 end) as '11_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 12 then InHour else 0 end) as '12_InH',sum(case DATEPART (day,AttDate) when 12 then InMin else 0 end) as '12_InM',sum(case DATEPART (day,AttDate) when 12 then OutHour else 0 end) as '12_OutH',sum(case DATEPART (day,AttDate) when 12 then OutMin else 0 end) as '12_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 13 then InHour else 0 end) as '13_InH',sum(case DATEPART (day,AttDate) when 13 then InMin else 0 end) as '13_InM',sum(case DATEPART (day,AttDate) when 13 then OutHour else 0 end) as '13_OutH',sum(case DATEPART (day,AttDate) when 13 then OutMin else 0 end) as '13_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 14 then InHour else 0 end) as '14_InH',sum(case DATEPART (day,AttDate) when 14 then InMin else 0 end) as '14_InM',sum(case DATEPART (day,AttDate) when 14 then OutHour else 0 end) as '14_OutH',sum(case DATEPART (day,AttDate) when 14 then OutMin else 0 end) as '14_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 15 then InHour else 0 end) as '15_InH',sum(case DATEPART (day,AttDate) when 15 then InMin else 0 end) as '15_InM',sum(case DATEPART (day,AttDate) when 15 then OutHour else 0 end) as '15_OutH',sum(case DATEPART (day,AttDate) when 15 then OutMin else 0 end) as '15_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 16 then InHour else 0 end) as '16_InH',sum(case DATEPART (day,AttDate) when 16 then InMin else 0 end) as '16_InM',sum(case DATEPART (day,AttDate) when 16 then OutHour else 0 end) as '16_OutH',sum(case DATEPART (day,AttDate) when 16 then OutMin else 0 end) as '16_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 17 then InHour else 0 end) as '17_InH',sum(case DATEPART (day,AttDate) when 17 then InMin else 0 end) as '17_InM',sum(case DATEPART (day,AttDate) when 17 then OutHour else 0 end) as '17_OutH',sum(case DATEPART (day,AttDate) when 17 then OutMin else 0 end) as '17_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 18 then InHour else 0 end) as '18_InH',sum(case DATEPART (day,AttDate) when 18 then InMin else 0 end) as '18_InM',sum(case DATEPART (day,AttDate) when 18 then OutHour else 0 end) as '18_OutH',sum(case DATEPART (day,AttDate) when 18 then OutMin else 0 end) as '18_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 19 then InHour else 0 end) as '19_InH',sum(case DATEPART (day,AttDate) when 19 then InMin else 0 end) as '19_InM',sum(case DATEPART (day,AttDate) when 19 then OutHour else 0 end) as '19_OutH',sum(case DATEPART (day,AttDate) when 19 then OutMin else 0 end) as '19_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 20 then InHour else 0 end) as '20_InH',sum(case DATEPART (day,AttDate) when 20 then InMin else 0 end) as '20_InM',sum(case DATEPART (day,AttDate) when 20 then OutHour else 0 end) as '20_OutH',sum(case DATEPART (day,AttDate) when 20 then OutMin else 0 end) as '20_OutM'," +
-
-                "sum(case DATEPART (day,AttDate) when 21 then InHour else 0 end) as '21_InH',sum(case DATEPART (day,AttDate) when 21 then InMin else 0 end) as '21_InM',sum(case DATEPART (day,AttDate) when 21 then OutHour else 0 end) as '21_OutH',sum(case DATEPART (day,AttDate) when 21 then OutMin else 0 end) as '21_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 22 then InHour else 0 end) as '22_InH',sum(case DATEPART (day,AttDate) when 22 then InMin else 0 end) as '22_InM',sum(case DATEPART (day,AttDate) when 22 then OutHour else 0 end) as '22_OutH',sum(case DATEPART (day,AttDate) when 22 then OutMin else 0 end) as '22_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 23 then InHour else 0 end) as '23_InH',sum(case DATEPART (day,AttDate) when 23 then InMin else 0 end) as '23_InM',sum(case DATEPART (day,AttDate) when 23 then OutHour else 0 end) as '23_OutH',sum(case DATEPART (day,AttDate) when 23 then OutMin else 0 end) as '23_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 24 then InHour else 0 end) as '24_InH',sum(case DATEPART (day,AttDate) when 24 then InMin else 0 end) as '24_InM',sum(case DATEPART (day,AttDate) when 24 then OutHour else 0 end) as '24_OutH',sum(case DATEPART (day,AttDate) when 24 then OutMin else 0 end) as '24_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 25 then InHour else 0 end) as '25_InH',sum(case DATEPART (day,AttDate) when 25 then InMin else 0 end) as '25_InM',sum(case DATEPART (day,AttDate) when 25 then OutHour else 0 end) as '25_OutH',sum(case DATEPART (day,AttDate) when 25 then OutMin else 0 end) as '25_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 26 then InHour else 0 end) as '26_InH',sum(case DATEPART (day,AttDate) when 26 then InMin else 0 end) as '26_InM',sum(case DATEPART (day,AttDate) when 26 then OutHour else 0 end) as '26_OutH',sum(case DATEPART (day,AttDate) when 26 then OutMin else 0 end) as '26_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 27 then InHour else 0 end) as '27_InH',sum(case DATEPART (day,AttDate) when 27 then InMin else 0 end) as '27_InM',sum(case DATEPART (day,AttDate) when 27 then OutHour else 0 end) as '27_OutH',sum(case DATEPART (day,AttDate) when 27 then OutMin else 0 end) as '27_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 28 then InHour else 0 end) as '28_InH',sum(case DATEPART (day,AttDate) when 28 then InMin else 0 end) as '28_InM',sum(case DATEPART (day,AttDate) when 28 then OutHour else 0 end) as '28_OutH',sum(case DATEPART (day,AttDate) when 28 then OutMin else 0 end) as '28_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
-                ",DptId,DptName,SftId,SftName,CompanyName,Address " +
-                "from v_tblAttendanceRecord " +
-                "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
-                "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
-                        " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt=new DataTable());
-                else
-                    sqlDB.fillDataTable(
-                    "select substring(EmpCardNo,8,15) as EmpCardNo, EmpId,EmpName,sum(case DATEPART (day,AttDate) when 1 then InHour else 0 end) as '1_InH',sum(case DATEPART (day,AttDate) when 1 then InMin else 0 end) as '1_InM',sum(case DATEPART (day,AttDate) when 1 then OutHour else 0 end) as '1_OutH',sum(case DATEPART (day,AttDate) when 1 then OutMin else 0 end) as '1_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 2 then InHour else 0 end) as '2_InH',sum(case DATEPART (day,AttDate) when 2 then InMin else 0 end) as '2_InM',sum(case DATEPART (day,AttDate) when 2 then OutHour else 0 end) as '2_OutH',sum(case DATEPART (day,AttDate) when 2 then OutMin else 0 end) as '2_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 3 then InHour else 0 end) as '3_InH',sum(case DATEPART (day,AttDate) when 3 then InMin else 0 end) as '3_InM',sum(case DATEPART (day,AttDate) when 3 then OutHour else 0 end) as '3_OutH',sum(case DATEPART (day,AttDate) when 3 then OutMin else 0 end) as '3_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 4 then InHour else 0 end) as '4_InH',sum(case DATEPART (day,AttDate) when 4 then InMin else 0 end) as '4_InM',sum(case DATEPART (day,AttDate) when 4 then OutHour else 0 end) as '4_OutH',sum(case DATEPART (day,AttDate) when 4 then OutMin else 0 end) as '4_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 5 then InHour else 0 end) as '5_InH',sum(case DATEPART (day,AttDate) when 5 then InMin else 0 end) as '5_InM',sum(case DATEPART (day,AttDate) when 5 then OutHour else 0 end) as '5_OutH',sum(case DATEPART (day,AttDate) when 5 then OutMin else 0 end) as '5_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 6 then InHour else 0 end) as '6_InH',sum(case DATEPART (day,AttDate) when 6 then InMin else 0 end) as '6_InM',sum(case DATEPART (day,AttDate) when 6 then OutHour else 0 end) as '6_OutH',sum(case DATEPART (day,AttDate) when 6 then OutMin else 0 end) as '6_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 7 then InHour else 0 end) as '7_InH',sum(case DATEPART (day,AttDate) when 7 then InMin else 0 end) as '7_InM',sum(case DATEPART (day,AttDate) when 7 then OutHour else 0 end) as '7_OutH',sum(case DATEPART (day,AttDate) when 7 then OutMin else 0 end) as '7_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 8 then InHour else 0 end) as '8_InH',sum(case DATEPART (day,AttDate) when 8 then InMin else 0 end) as '8_InM',sum(case DATEPART (day,AttDate) when 8 then OutHour else 0 end) as '8_OutH',sum(case DATEPART (day,AttDate) when 8 then OutMin else 0 end) as '8_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 9 then InHour else 0 end) as '9_InH',sum(case DATEPART (day,AttDate) when 9 then InMin else 0 end) as '9_InM',sum(case DATEPART (day,AttDate) when 9 then OutHour else 0 end) as '9_OutH',sum(case DATEPART (day,AttDate) when 9 then OutMin else 0 end) as '9_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 10 then InHour else 0 end) as '10_InH',sum(case DATEPART (day,AttDate) when 10 then InMin else 0 end) as '10_InM',sum(case DATEPART (day,AttDate) when 10 then OutHour else 0 end) as '10_OutH',sum(case DATEPART (day,AttDate) when 10 then OutMin else 0 end) as '10_OutM'," +
-
-                "sum(case DATEPART (day,AttDate) when 11 then InHour else 0 end) as '11_InH',sum(case DATEPART (day,AttDate) when 11 then InMin else 0 end) as '11_InM',sum(case DATEPART (day,AttDate) when 11 then OutHour else 0 end) as '11_OutH',sum(case DATEPART (day,AttDate) when 11 then OutMin else 0 end) as '11_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 12 then InHour else 0 end) as '12_InH',sum(case DATEPART (day,AttDate) when 12 then InMin else 0 end) as '12_InM',sum(case DATEPART (day,AttDate) when 12 then OutHour else 0 end) as '12_OutH',sum(case DATEPART (day,AttDate) when 12 then OutMin else 0 end) as '12_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 13 then InHour else 0 end) as '13_InH',sum(case DATEPART (day,AttDate) when 13 then InMin else 0 end) as '13_InM',sum(case DATEPART (day,AttDate) when 13 then OutHour else 0 end) as '13_OutH',sum(case DATEPART (day,AttDate) when 13 then OutMin else 0 end) as '13_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 14 then InHour else 0 end) as '14_InH',sum(case DATEPART (day,AttDate) when 14 then InMin else 0 end) as '14_InM',sum(case DATEPART (day,AttDate) when 14 then OutHour else 0 end) as '14_OutH',sum(case DATEPART (day,AttDate) when 14 then OutMin else 0 end) as '14_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 15 then InHour else 0 end) as '15_InH',sum(case DATEPART (day,AttDate) when 15 then InMin else 0 end) as '15_InM',sum(case DATEPART (day,AttDate) when 15 then OutHour else 0 end) as '15_OutH',sum(case DATEPART (day,AttDate) when 15 then OutMin else 0 end) as '15_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 16 then InHour else 0 end) as '16_InH',sum(case DATEPART (day,AttDate) when 16 then InMin else 0 end) as '16_InM',sum(case DATEPART (day,AttDate) when 16 then OutHour else 0 end) as '16_OutH',sum(case DATEPART (day,AttDate) when 16 then OutMin else 0 end) as '16_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 17 then InHour else 0 end) as '17_InH',sum(case DATEPART (day,AttDate) when 17 then InMin else 0 end) as '17_InM',sum(case DATEPART (day,AttDate) when 17 then OutHour else 0 end) as '17_OutH',sum(case DATEPART (day,AttDate) when 17 then OutMin else 0 end) as '17_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 18 then InHour else 0 end) as '18_InH',sum(case DATEPART (day,AttDate) when 18 then InMin else 0 end) as '18_InM',sum(case DATEPART (day,AttDate) when 18 then OutHour else 0 end) as '18_OutH',sum(case DATEPART (day,AttDate) when 18 then OutMin else 0 end) as '18_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 19 then InHour else 0 end) as '19_InH',sum(case DATEPART (day,AttDate) when 19 then InMin else 0 end) as '19_InM',sum(case DATEPART (day,AttDate) when 19 then OutHour else 0 end) as '19_OutH',sum(case DATEPART (day,AttDate) when 19 then OutMin else 0 end) as '19_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 20 then InHour else 0 end) as '20_InH',sum(case DATEPART (day,AttDate) when 20 then InMin else 0 end) as '20_InM',sum(case DATEPART (day,AttDate) when 20 then OutHour else 0 end) as '20_OutH',sum(case DATEPART (day,AttDate) when 20 then OutMin else 0 end) as '20_OutM'," +
-
-                "sum(case DATEPART (day,AttDate) when 21 then InHour else 0 end) as '21_InH',sum(case DATEPART (day,AttDate) when 21 then InMin else 0 end) as '21_InM',sum(case DATEPART (day,AttDate) when 21 then OutHour else 0 end) as '21_OutH',sum(case DATEPART (day,AttDate) when 21 then OutMin else 0 end) as '21_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 22 then InHour else 0 end) as '22_InH',sum(case DATEPART (day,AttDate) when 22 then InMin else 0 end) as '22_InM',sum(case DATEPART (day,AttDate) when 22 then OutHour else 0 end) as '22_OutH',sum(case DATEPART (day,AttDate) when 22 then OutMin else 0 end) as '22_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 23 then InHour else 0 end) as '23_InH',sum(case DATEPART (day,AttDate) when 23 then InMin else 0 end) as '23_InM',sum(case DATEPART (day,AttDate) when 23 then OutHour else 0 end) as '23_OutH',sum(case DATEPART (day,AttDate) when 23 then OutMin else 0 end) as '23_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 24 then InHour else 0 end) as '24_InH',sum(case DATEPART (day,AttDate) when 24 then InMin else 0 end) as '24_InM',sum(case DATEPART (day,AttDate) when 24 then OutHour else 0 end) as '24_OutH',sum(case DATEPART (day,AttDate) when 24 then OutMin else 0 end) as '24_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 25 then InHour else 0 end) as '25_InH',sum(case DATEPART (day,AttDate) when 25 then InMin else 0 end) as '25_InM',sum(case DATEPART (day,AttDate) when 25 then OutHour else 0 end) as '25_OutH',sum(case DATEPART (day,AttDate) when 25 then OutMin else 0 end) as '25_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 26 then InHour else 0 end) as '26_InH',sum(case DATEPART (day,AttDate) when 26 then InMin else 0 end) as '26_InM',sum(case DATEPART (day,AttDate) when 26 then OutHour else 0 end) as '26_OutH',sum(case DATEPART (day,AttDate) when 26 then OutMin else 0 end) as '26_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 27 then InHour else 0 end) as '27_InH',sum(case DATEPART (day,AttDate) when 27 then InMin else 0 end) as '27_InM',sum(case DATEPART (day,AttDate) when 27 then OutHour else 0 end) as '27_OutH',sum(case DATEPART (day,AttDate) when 27 then OutMin else 0 end) as '27_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 28 then InHour else 0 end) as '28_InH',sum(case DATEPART (day,AttDate) when 28 then InMin else 0 end) as '28_InM',sum(case DATEPART (day,AttDate) when 28 then OutHour else 0 end) as '28_OutH',sum(case DATEPART (day,AttDate) when 28 then OutMin else 0 end) as '28_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
-                "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
-                ",DptId,DptName,SftId,SftName,CompanyName,Address " +
-                "from v_tblAttendanceRecord " +
-                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%"+EmpCardNo+"'" +
-                "group by EmpCardNo, EmpId,EmpName,DptId,DptName,SftId,SftName,CompanyName,Address ", dt = new DataTable());
-                return dt;
-            }
-            catch { return null; }
-        }
-
-
-        public static DataTable get_Moanthly_Attendance_Sheet(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
-        {
-            try
-            {
-                DataTable dt=new DataTable ();
-                if (index==0)
-                sqlDB.fillDataTable(
-                    "select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName," +
-                    "sum(case DATEPART (day,AttDate) when 1 then code else 0 end) as '1',"+
-                    "sum(case DATEPART (day,AttDate) when 2 then code else 0 end) as '2',"+
-                    "sum(case DATEPART (day,AttDate) when 3 then code else 0 end) as '3',"+
-                    "sum(case DATEPART (day,AttDate) when 4 then code else 0 end) as '4',"+
-                    "sum(case DATEPART (day,AttDate) when 5 then code else 0 end) as '5',"+
-                    "sum(case DATEPART (day,AttDate) when 6 then code else 0 end) as '6',"+
-                    "sum(case DATEPART (day,AttDate) when 7 then code else 0 end) as '7',"+
-                    "sum(case DATEPART (day,AttDate) when 8 then code else 0 end) as '8',"+
-                    "sum(case DATEPART (day,AttDate) when 9 then code else 0 end) as '9',"+
-                    "sum(case DATEPART (day,AttDate) when 10 then code else 0 end) as '10',"+
-                    "sum(case DATEPART (day,AttDate) when 11 then code else 0 end) as '11',"+
-                    "sum(case DATEPART (day,AttDate) when 12 then code else 0 end) as '12',"+
-                    "sum(case DATEPART (day,AttDate) when 13 then code else 0 end) as '13',"+
-                    "sum(case DATEPART (day,AttDate) when 14 then code else 0 end) as '14',"+
-                    "sum(case DATEPART (day,AttDate) when 15 then code else 0 end) as '15',"+
-                    "sum(case DATEPART (day,AttDate) when 16 then code else 0 end) as '1',"+
-                    "sum(case DATEPART (day,AttDate) when 17 then code else 0 end) as '17',"+
-                    "sum(case DATEPART (day,AttDate) when 18 then code else 0 end) as '18',"+
-                    "sum(case DATEPART (day,AttDate) when 19 then code else 0 end) as '19',"+
-                    "sum(case DATEPART (day,AttDate) when 20 then code else 0 end) as '20',"+
-                    "sum(case DATEPART (day,AttDate) when 21 then code else 0 end) as '21',"+
-                    "sum(case DATEPART (day,AttDate) when 22 then code else 0 end) as '22',"+
-                    "sum(case DATEPART (day,AttDate) when 23 then code else 0 end) as '23',"+
-                    "sum(case DATEPART (day,AttDate) when 24 then code else 0 end) as '24',"+
-                    "sum(case DATEPART (day,AttDate) when 25 then code else 0 end) as '25',"+
-                    "sum(case DATEPART (day,AttDate) when 26 then code else 0 end) as '26',"+
-                    "sum(case DATEPART (day,AttDate) when 27 then code else 0 end) as '27',"+
-                    "sum(case DATEPART (day,AttDate) when 28 then code else 0 end) as '28',"+
-                    "sum(case DATEPART (day,AttDate) when 29 then code else 0 end) as '29',"+
-                    "sum(case DATEPART (day,AttDate) when 30 then code else 0 end) as '30',"+
-                    "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31',"+
-                    " DsgName, DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address "+
-                    "from v_tblAttendanceRecord "+
-                    "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
-                    "group by EmpId,EmpCardNo,EmpName, DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
-                        " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt);
-                else 
-                    sqlDB.fillDataTable(
-                    "select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName," +
-                    "sum(case DATEPART (day,AttDate) when 1 then code else 0 end) as '1',"+
-                    "sum(case DATEPART (day,AttDate) when 2 then code else 0 end) as '2',"+
-                    "sum(case DATEPART (day,AttDate) when 3 then code else 0 end) as '3',"+
-                    "sum(case DATEPART (day,AttDate) when 4 then code else 0 end) as '4',"+
-                    "sum(case DATEPART (day,AttDate) when 5 then code else 0 end) as '5',"+
-                    "sum(case DATEPART (day,AttDate) when 6 then code else 0 end) as '6',"+
-                    "sum(case DATEPART (day,AttDate) when 7 then code else 0 end) as '7',"+
-                    "sum(case DATEPART (day,AttDate) when 8 then code else 0 end) as '8',"+
-                    "sum(case DATEPART (day,AttDate) when 9 then code else 0 end) as '9',"+
-                    "sum(case DATEPART (day,AttDate) when 10 then code else 0 end) as '10',"+
-                    "sum(case DATEPART (day,AttDate) when 11 then code else 0 end) as '11',"+
-                    "sum(case DATEPART (day,AttDate) when 12 then code else 0 end) as '12',"+
-                    "sum(case DATEPART (day,AttDate) when 13 then code else 0 end) as '13',"+
-                    "sum(case DATEPART (day,AttDate) when 14 then code else 0 end) as '14',"+
-                    "sum(case DATEPART (day,AttDate) when 15 then code else 0 end) as '15',"+
-                    "sum(case DATEPART (day,AttDate) when 16 then code else 0 end) as '1',"+
-                    "sum(case DATEPART (day,AttDate) when 17 then code else 0 end) as '17',"+
-                    "sum(case DATEPART (day,AttDate) when 18 then code else 0 end) as '18',"+
-                    "sum(case DATEPART (day,AttDate) when 19 then code else 0 end) as '19',"+
-                    "sum(case DATEPART (day,AttDate) when 20 then code else 0 end) as '20',"+
-                    "sum(case DATEPART (day,AttDate) when 21 then code else 0 end) as '21',"+
-                    "sum(case DATEPART (day,AttDate) when 22 then code else 0 end) as '22',"+
-                    "sum(case DATEPART (day,AttDate) when 23 then code else 0 end) as '23',"+
-                    "sum(case DATEPART (day,AttDate) when 24 then code else 0 end) as '24',"+
-                    "sum(case DATEPART (day,AttDate) when 25 then code else 0 end) as '25',"+
-                    "sum(case DATEPART (day,AttDate) when 26 then code else 0 end) as '26',"+
-                    "sum(case DATEPART (day,AttDate) when 27 then code else 0 end) as '27',"+
-                    "sum(case DATEPART (day,AttDate) when 28 then code else 0 end) as '28',"+
-                    "sum(case DATEPART (day,AttDate) when 29 then code else 0 end) as '29',"+
-                    "sum(case DATEPART (day,AttDate) when 30 then code else 0 end) as '30',"+
-                    "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31',"+
-                    "  DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address " +
-                    "from v_tblAttendanceRecord "+
-                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
-                    "group by EmpId,EmpCardNo,EmpName,DptId, DsgName,DptName,SftId,SftName,CompanyId,CompanyName,Address ", dt = new DataTable());
-
-
-                return dt;
-            }
-            catch { return null; }
-        }
-
-        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
-        {
-            try
-            {
-                DataTable dt=new DataTable ();
+                string cmd = "";
                 if (index == 0)
-                    sqlDB.fillDataTable("SELECT        EmpId, substring(EmpCardNo,8,15) as EmpCardNo, EmpName,Address,GId,GName, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," + 
-                         "SUM(CASE DATEPART(day, AttDate) WHEN 3 THEN code ELSE 0 END) AS [3], SUM(CASE DATEPART(day, AttDate) WHEN 4 THEN code ELSE 0 END) AS [4], SUM(CASE DATEPART(day, AttDate) "+ 
-                         "WHEN 5 THEN code ELSE 0 END) AS [5], SUM(CASE DATEPART(day, AttDate) WHEN 6 THEN code ELSE 0 END) AS [6], SUM(CASE DATEPART(day, AttDate) WHEN 7 THEN code ELSE 0 END) AS [7],"+ 
-                         "SUM(CASE DATEPART(day, AttDate) WHEN 8 THEN code ELSE 0 END) AS [8], SUM(CASE DATEPART(day, AttDate) WHEN 9 THEN code ELSE 0 END) AS [9], SUM(CASE DATEPART(day, AttDate) "+
-                         "WHEN 10 THEN code ELSE 0 END) AS [10], SUM(CASE DATEPART(day, AttDate) WHEN 11 THEN code ELSE 0 END) AS [11], SUM(CASE DATEPART(day, AttDate) WHEN 12 THEN code ELSE 0 END) AS [12],"+ 
-                         "SUM(CASE DATEPART(day, AttDate) WHEN 13 THEN code ELSE 0 END) AS [13], SUM(CASE DATEPART(day, AttDate) WHEN 14 THEN code ELSE 0 END) AS [14], SUM(CASE DATEPART(day, AttDate) "+
-                         "WHEN 15 THEN code ELSE 0 END) AS [15], SUM(CASE DATEPART(day, AttDate) WHEN 16 THEN code ELSE 0 END) AS [16], SUM(CASE DATEPART(day, AttDate) WHEN 17 THEN code ELSE 0 END) AS [17], "+
-                         "SUM(CASE DATEPART(day, AttDate) WHEN 18 THEN code ELSE 0 END) AS [18], SUM(CASE DATEPART(day, AttDate) WHEN 19 THEN code ELSE 0 END) AS [19], SUM(CASE DATEPART(day, AttDate) "+
-                         "WHEN 20 THEN code ELSE 0 END) AS [20], SUM(CASE DATEPART(day, AttDate) WHEN 21 THEN code ELSE 0 END) AS [21], SUM(CASE DATEPART(day, AttDate) WHEN 22 THEN code ELSE 0 END) AS [22], "+
-                         "SUM(CASE DATEPART(day, AttDate) WHEN 23 THEN code ELSE 0 END) AS [23], SUM(CASE DATEPART(day, AttDate) WHEN 24 THEN code ELSE 0 END) AS [24], SUM(CASE DATEPART(day, AttDate) "+
-                         "WHEN 25 THEN code ELSE 0 END) AS [25], SUM(CASE DATEPART(day, AttDate) WHEN 26 THEN code ELSE 0 END) AS [26], SUM(CASE DATEPART(day, AttDate) WHEN 27 THEN code ELSE 0 END) AS [27], "+
-                         "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN code ELSE 0 END) AS [28], SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN code ELSE 0 END) AS [29], SUM(CASE DATEPART(day, AttDate) "+
+                {// 0 Means All
+                    cmd = "select substring(EmpCardNo,8,15) + ' (' + EmpProximityNo + ')' AS EmpCardNo,EmpId,EmpName,sum(case DATEPART(day, AttDate) when 1 then InHour else 0 end) as '1_InH',sum(case DATEPART(day, AttDate) when 1 then InMin else 0 end) as '1_InM',sum(case DATEPART(day, AttDate) when 1 then OutHour else 0 end) as '1_OutH',sum(case DATEPART(day, AttDate) when 1 then OutMin else 0 end) as '1_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 2 then InHour else 0 end) as '2_InH',sum(case DATEPART (day,AttDate) when 2 then InMin else 0 end) as '2_InM',sum(case DATEPART (day,AttDate) when 2 then OutHour else 0 end) as '2_OutH',sum(case DATEPART (day,AttDate) when 2 then OutMin else 0 end) as '2_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 3 then InHour else 0 end) as '3_InH',sum(case DATEPART (day,AttDate) when 3 then InMin else 0 end) as '3_InM',sum(case DATEPART (day,AttDate) when 3 then OutHour else 0 end) as '3_OutH',sum(case DATEPART (day,AttDate) when 3 then OutMin else 0 end) as '3_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 4 then InHour else 0 end) as '4_InH',sum(case DATEPART (day,AttDate) when 4 then InMin else 0 end) as '4_InM',sum(case DATEPART (day,AttDate) when 4 then OutHour else 0 end) as '4_OutH',sum(case DATEPART (day,AttDate) when 4 then OutMin else 0 end) as '4_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 5 then InHour else 0 end) as '5_InH',sum(case DATEPART (day,AttDate) when 5 then InMin else 0 end) as '5_InM',sum(case DATEPART (day,AttDate) when 5 then OutHour else 0 end) as '5_OutH',sum(case DATEPART (day,AttDate) when 5 then OutMin else 0 end) as '5_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 6 then InHour else 0 end) as '6_InH',sum(case DATEPART (day,AttDate) when 6 then InMin else 0 end) as '6_InM',sum(case DATEPART (day,AttDate) when 6 then OutHour else 0 end) as '6_OutH',sum(case DATEPART (day,AttDate) when 6 then OutMin else 0 end) as '6_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 7 then InHour else 0 end) as '7_InH',sum(case DATEPART (day,AttDate) when 7 then InMin else 0 end) as '7_InM',sum(case DATEPART (day,AttDate) when 7 then OutHour else 0 end) as '7_OutH',sum(case DATEPART (day,AttDate) when 7 then OutMin else 0 end) as '7_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 8 then InHour else 0 end) as '8_InH',sum(case DATEPART (day,AttDate) when 8 then InMin else 0 end) as '8_InM',sum(case DATEPART (day,AttDate) when 8 then OutHour else 0 end) as '8_OutH',sum(case DATEPART (day,AttDate) when 8 then OutMin else 0 end) as '8_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 9 then InHour else 0 end) as '9_InH',sum(case DATEPART (day,AttDate) when 9 then InMin else 0 end) as '9_InM',sum(case DATEPART (day,AttDate) when 9 then OutHour else 0 end) as '9_OutH',sum(case DATEPART (day,AttDate) when 9 then OutMin else 0 end) as '9_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 10 then InHour else 0 end) as '10_InH',sum(case DATEPART (day,AttDate) when 10 then InMin else 0 end) as '10_InM',sum(case DATEPART (day,AttDate) when 10 then OutHour else 0 end) as '10_OutH',sum(case DATEPART (day,AttDate) when 10 then OutMin else 0 end) as '10_OutM'," +
+
+                 "sum(case DATEPART (day,AttDate) when 11 then InHour else 0 end) as '11_InH',sum(case DATEPART (day,AttDate) when 11 then InMin else 0 end) as '11_InM',sum(case DATEPART (day,AttDate) when 11 then OutHour else 0 end) as '11_OutH',sum(case DATEPART (day,AttDate) when 11 then OutMin else 0 end) as '11_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 12 then InHour else 0 end) as '12_InH',sum(case DATEPART (day,AttDate) when 12 then InMin else 0 end) as '12_InM',sum(case DATEPART (day,AttDate) when 12 then OutHour else 0 end) as '12_OutH',sum(case DATEPART (day,AttDate) when 12 then OutMin else 0 end) as '12_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 13 then InHour else 0 end) as '13_InH',sum(case DATEPART (day,AttDate) when 13 then InMin else 0 end) as '13_InM',sum(case DATEPART (day,AttDate) when 13 then OutHour else 0 end) as '13_OutH',sum(case DATEPART (day,AttDate) when 13 then OutMin else 0 end) as '13_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 14 then InHour else 0 end) as '14_InH',sum(case DATEPART (day,AttDate) when 14 then InMin else 0 end) as '14_InM',sum(case DATEPART (day,AttDate) when 14 then OutHour else 0 end) as '14_OutH',sum(case DATEPART (day,AttDate) when 14 then OutMin else 0 end) as '14_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 15 then InHour else 0 end) as '15_InH',sum(case DATEPART (day,AttDate) when 15 then InMin else 0 end) as '15_InM',sum(case DATEPART (day,AttDate) when 15 then OutHour else 0 end) as '15_OutH',sum(case DATEPART (day,AttDate) when 15 then OutMin else 0 end) as '15_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 16 then InHour else 0 end) as '16_InH',sum(case DATEPART (day,AttDate) when 16 then InMin else 0 end) as '16_InM',sum(case DATEPART (day,AttDate) when 16 then OutHour else 0 end) as '16_OutH',sum(case DATEPART (day,AttDate) when 16 then OutMin else 0 end) as '16_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 17 then InHour else 0 end) as '17_InH',sum(case DATEPART (day,AttDate) when 17 then InMin else 0 end) as '17_InM',sum(case DATEPART (day,AttDate) when 17 then OutHour else 0 end) as '17_OutH',sum(case DATEPART (day,AttDate) when 17 then OutMin else 0 end) as '17_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 18 then InHour else 0 end) as '18_InH',sum(case DATEPART (day,AttDate) when 18 then InMin else 0 end) as '18_InM',sum(case DATEPART (day,AttDate) when 18 then OutHour else 0 end) as '18_OutH',sum(case DATEPART (day,AttDate) when 18 then OutMin else 0 end) as '18_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 19 then InHour else 0 end) as '19_InH',sum(case DATEPART (day,AttDate) when 19 then InMin else 0 end) as '19_InM',sum(case DATEPART (day,AttDate) when 19 then OutHour else 0 end) as '19_OutH',sum(case DATEPART (day,AttDate) when 19 then OutMin else 0 end) as '19_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 20 then InHour else 0 end) as '20_InH',sum(case DATEPART (day,AttDate) when 20 then InMin else 0 end) as '20_InM',sum(case DATEPART (day,AttDate) when 20 then OutHour else 0 end) as '20_OutH',sum(case DATEPART (day,AttDate) when 20 then OutMin else 0 end) as '20_OutM'," +
+
+                 "sum(case DATEPART (day,AttDate) when 21 then InHour else 0 end) as '21_InH',sum(case DATEPART (day,AttDate) when 21 then InMin else 0 end) as '21_InM',sum(case DATEPART (day,AttDate) when 21 then OutHour else 0 end) as '21_OutH',sum(case DATEPART (day,AttDate) when 21 then OutMin else 0 end) as '21_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 22 then InHour else 0 end) as '22_InH',sum(case DATEPART (day,AttDate) when 22 then InMin else 0 end) as '22_InM',sum(case DATEPART (day,AttDate) when 22 then OutHour else 0 end) as '22_OutH',sum(case DATEPART (day,AttDate) when 22 then OutMin else 0 end) as '22_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 23 then InHour else 0 end) as '23_InH',sum(case DATEPART (day,AttDate) when 23 then InMin else 0 end) as '23_InM',sum(case DATEPART (day,AttDate) when 23 then OutHour else 0 end) as '23_OutH',sum(case DATEPART (day,AttDate) when 23 then OutMin else 0 end) as '23_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 24 then InHour else 0 end) as '24_InH',sum(case DATEPART (day,AttDate) when 24 then InMin else 0 end) as '24_InM',sum(case DATEPART (day,AttDate) when 24 then OutHour else 0 end) as '24_OutH',sum(case DATEPART (day,AttDate) when 24 then OutMin else 0 end) as '24_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 25 then InHour else 0 end) as '25_InH',sum(case DATEPART (day,AttDate) when 25 then InMin else 0 end) as '25_InM',sum(case DATEPART (day,AttDate) when 25 then OutHour else 0 end) as '25_OutH',sum(case DATEPART (day,AttDate) when 25 then OutMin else 0 end) as '25_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 26 then InHour else 0 end) as '26_InH',sum(case DATEPART (day,AttDate) when 26 then InMin else 0 end) as '26_InM',sum(case DATEPART (day,AttDate) when 26 then OutHour else 0 end) as '26_OutH',sum(case DATEPART (day,AttDate) when 26 then OutMin else 0 end) as '26_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 27 then InHour else 0 end) as '27_InH',sum(case DATEPART (day,AttDate) when 27 then InMin else 0 end) as '27_InM',sum(case DATEPART (day,AttDate) when 27 then OutHour else 0 end) as '27_OutH',sum(case DATEPART (day,AttDate) when 27 then OutMin else 0 end) as '27_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 28 then InHour else 0 end) as '28_InH',sum(case DATEPART (day,AttDate) when 28 then InMin else 0 end) as '28_InM',sum(case DATEPART (day,AttDate) when 28 then OutHour else 0 end) as '28_OutH',sum(case DATEPART (day,AttDate) when 28 then OutMin else 0 end) as '28_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
+                 "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
+                 ",DptId,DptName,PSftId as SftId,PSftName as GName,CompanyName,Address " +
+                 "from v_tblAttendanceRecord " +
+                 "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + "group by EmpCardNo,EmpProximityNo, EmpId,EmpName,DptId,DptName,PSftId ,PSftName,CompanyName,Address,convert(int,DptCode), CustomOrdering " +
+                         " order by PSftName,convert(int,DptCode),CustomOrdering";
+                    sqlDB.fillDataTable(cmd, dt = new DataTable());
+                }
+                else
+                {
+                    cmd = "select substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo, EmpId,EmpName,sum(case DATEPART (day,AttDate) when 1 then InHour else 0 end) as '1_InH',sum(case DATEPART (day,AttDate) when 1 then InMin else 0 end) as '1_InM',sum(case DATEPART (day,AttDate) when 1 then OutHour else 0 end) as '1_OutH',sum(case DATEPART (day,AttDate) when 1 then OutMin else 0 end) as '1_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 2 then InHour else 0 end) as '2_InH',sum(case DATEPART (day,AttDate) when 2 then InMin else 0 end) as '2_InM',sum(case DATEPART (day,AttDate) when 2 then OutHour else 0 end) as '2_OutH',sum(case DATEPART (day,AttDate) when 2 then OutMin else 0 end) as '2_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 3 then InHour else 0 end) as '3_InH',sum(case DATEPART (day,AttDate) when 3 then InMin else 0 end) as '3_InM',sum(case DATEPART (day,AttDate) when 3 then OutHour else 0 end) as '3_OutH',sum(case DATEPART (day,AttDate) when 3 then OutMin else 0 end) as '3_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 4 then InHour else 0 end) as '4_InH',sum(case DATEPART (day,AttDate) when 4 then InMin else 0 end) as '4_InM',sum(case DATEPART (day,AttDate) when 4 then OutHour else 0 end) as '4_OutH',sum(case DATEPART (day,AttDate) when 4 then OutMin else 0 end) as '4_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 5 then InHour else 0 end) as '5_InH',sum(case DATEPART (day,AttDate) when 5 then InMin else 0 end) as '5_InM',sum(case DATEPART (day,AttDate) when 5 then OutHour else 0 end) as '5_OutH',sum(case DATEPART (day,AttDate) when 5 then OutMin else 0 end) as '5_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 6 then InHour else 0 end) as '6_InH',sum(case DATEPART (day,AttDate) when 6 then InMin else 0 end) as '6_InM',sum(case DATEPART (day,AttDate) when 6 then OutHour else 0 end) as '6_OutH',sum(case DATEPART (day,AttDate) when 6 then OutMin else 0 end) as '6_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 7 then InHour else 0 end) as '7_InH',sum(case DATEPART (day,AttDate) when 7 then InMin else 0 end) as '7_InM',sum(case DATEPART (day,AttDate) when 7 then OutHour else 0 end) as '7_OutH',sum(case DATEPART (day,AttDate) when 7 then OutMin else 0 end) as '7_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 8 then InHour else 0 end) as '8_InH',sum(case DATEPART (day,AttDate) when 8 then InMin else 0 end) as '8_InM',sum(case DATEPART (day,AttDate) when 8 then OutHour else 0 end) as '8_OutH',sum(case DATEPART (day,AttDate) when 8 then OutMin else 0 end) as '8_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 9 then InHour else 0 end) as '9_InH',sum(case DATEPART (day,AttDate) when 9 then InMin else 0 end) as '9_InM',sum(case DATEPART (day,AttDate) when 9 then OutHour else 0 end) as '9_OutH',sum(case DATEPART (day,AttDate) when 9 then OutMin else 0 end) as '9_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 10 then InHour else 0 end) as '10_InH',sum(case DATEPART (day,AttDate) when 10 then InMin else 0 end) as '10_InM',sum(case DATEPART (day,AttDate) when 10 then OutHour else 0 end) as '10_OutH',sum(case DATEPART (day,AttDate) when 10 then OutMin else 0 end) as '10_OutM'," +
+
+               "sum(case DATEPART (day,AttDate) when 11 then InHour else 0 end) as '11_InH',sum(case DATEPART (day,AttDate) when 11 then InMin else 0 end) as '11_InM',sum(case DATEPART (day,AttDate) when 11 then OutHour else 0 end) as '11_OutH',sum(case DATEPART (day,AttDate) when 11 then OutMin else 0 end) as '11_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 12 then InHour else 0 end) as '12_InH',sum(case DATEPART (day,AttDate) when 12 then InMin else 0 end) as '12_InM',sum(case DATEPART (day,AttDate) when 12 then OutHour else 0 end) as '12_OutH',sum(case DATEPART (day,AttDate) when 12 then OutMin else 0 end) as '12_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 13 then InHour else 0 end) as '13_InH',sum(case DATEPART (day,AttDate) when 13 then InMin else 0 end) as '13_InM',sum(case DATEPART (day,AttDate) when 13 then OutHour else 0 end) as '13_OutH',sum(case DATEPART (day,AttDate) when 13 then OutMin else 0 end) as '13_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 14 then InHour else 0 end) as '14_InH',sum(case DATEPART (day,AttDate) when 14 then InMin else 0 end) as '14_InM',sum(case DATEPART (day,AttDate) when 14 then OutHour else 0 end) as '14_OutH',sum(case DATEPART (day,AttDate) when 14 then OutMin else 0 end) as '14_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 15 then InHour else 0 end) as '15_InH',sum(case DATEPART (day,AttDate) when 15 then InMin else 0 end) as '15_InM',sum(case DATEPART (day,AttDate) when 15 then OutHour else 0 end) as '15_OutH',sum(case DATEPART (day,AttDate) when 15 then OutMin else 0 end) as '15_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 16 then InHour else 0 end) as '16_InH',sum(case DATEPART (day,AttDate) when 16 then InMin else 0 end) as '16_InM',sum(case DATEPART (day,AttDate) when 16 then OutHour else 0 end) as '16_OutH',sum(case DATEPART (day,AttDate) when 16 then OutMin else 0 end) as '16_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 17 then InHour else 0 end) as '17_InH',sum(case DATEPART (day,AttDate) when 17 then InMin else 0 end) as '17_InM',sum(case DATEPART (day,AttDate) when 17 then OutHour else 0 end) as '17_OutH',sum(case DATEPART (day,AttDate) when 17 then OutMin else 0 end) as '17_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 18 then InHour else 0 end) as '18_InH',sum(case DATEPART (day,AttDate) when 18 then InMin else 0 end) as '18_InM',sum(case DATEPART (day,AttDate) when 18 then OutHour else 0 end) as '18_OutH',sum(case DATEPART (day,AttDate) when 18 then OutMin else 0 end) as '18_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 19 then InHour else 0 end) as '19_InH',sum(case DATEPART (day,AttDate) when 19 then InMin else 0 end) as '19_InM',sum(case DATEPART (day,AttDate) when 19 then OutHour else 0 end) as '19_OutH',sum(case DATEPART (day,AttDate) when 19 then OutMin else 0 end) as '19_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 20 then InHour else 0 end) as '20_InH',sum(case DATEPART (day,AttDate) when 20 then InMin else 0 end) as '20_InM',sum(case DATEPART (day,AttDate) when 20 then OutHour else 0 end) as '20_OutH',sum(case DATEPART (day,AttDate) when 20 then OutMin else 0 end) as '20_OutM'," +
+
+               "sum(case DATEPART (day,AttDate) when 21 then InHour else 0 end) as '21_InH',sum(case DATEPART (day,AttDate) when 21 then InMin else 0 end) as '21_InM',sum(case DATEPART (day,AttDate) when 21 then OutHour else 0 end) as '21_OutH',sum(case DATEPART (day,AttDate) when 21 then OutMin else 0 end) as '21_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 22 then InHour else 0 end) as '22_InH',sum(case DATEPART (day,AttDate) when 22 then InMin else 0 end) as '22_InM',sum(case DATEPART (day,AttDate) when 22 then OutHour else 0 end) as '22_OutH',sum(case DATEPART (day,AttDate) when 22 then OutMin else 0 end) as '22_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 23 then InHour else 0 end) as '23_InH',sum(case DATEPART (day,AttDate) when 23 then InMin else 0 end) as '23_InM',sum(case DATEPART (day,AttDate) when 23 then OutHour else 0 end) as '23_OutH',sum(case DATEPART (day,AttDate) when 23 then OutMin else 0 end) as '23_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 24 then InHour else 0 end) as '24_InH',sum(case DATEPART (day,AttDate) when 24 then InMin else 0 end) as '24_InM',sum(case DATEPART (day,AttDate) when 24 then OutHour else 0 end) as '24_OutH',sum(case DATEPART (day,AttDate) when 24 then OutMin else 0 end) as '24_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 25 then InHour else 0 end) as '25_InH',sum(case DATEPART (day,AttDate) when 25 then InMin else 0 end) as '25_InM',sum(case DATEPART (day,AttDate) when 25 then OutHour else 0 end) as '25_OutH',sum(case DATEPART (day,AttDate) when 25 then OutMin else 0 end) as '25_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 26 then InHour else 0 end) as '26_InH',sum(case DATEPART (day,AttDate) when 26 then InMin else 0 end) as '26_InM',sum(case DATEPART (day,AttDate) when 26 then OutHour else 0 end) as '26_OutH',sum(case DATEPART (day,AttDate) when 26 then OutMin else 0 end) as '26_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 27 then InHour else 0 end) as '27_InH',sum(case DATEPART (day,AttDate) when 27 then InMin else 0 end) as '27_InM',sum(case DATEPART (day,AttDate) when 27 then OutHour else 0 end) as '27_OutH',sum(case DATEPART (day,AttDate) when 27 then OutMin else 0 end) as '27_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 28 then InHour else 0 end) as '28_InH',sum(case DATEPART (day,AttDate) when 28 then InMin else 0 end) as '28_InM',sum(case DATEPART (day,AttDate) when 28 then OutHour else 0 end) as '28_OutH',sum(case DATEPART (day,AttDate) when 28 then OutMin else 0 end) as '28_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 29 then InHour else 0 end) as '29_InH',sum(case DATEPART (day,AttDate) when 29 then InMin else 0 end) as '29_InM',sum(case DATEPART (day,AttDate) when 29 then OutHour else 0 end) as '29_OutH',sum(case DATEPART (day,AttDate) when 29 then OutMin else 0 end) as '29_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 30 then InHour else 0 end) as '30_InH',sum(case DATEPART (day,AttDate) when 30 then InMin else 0 end) as '30_InM',sum(case DATEPART (day,AttDate) when 30 then OutHour else 0 end) as '30_OutH',sum(case DATEPART (day,AttDate) when 30 then OutMin else 0 end) as '30_OutM'," +
+               "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
+               ",DptId,DptName,PSftId as SftId,PSftName as GName,CompanyName,Address " +
+               "from v_tblAttendanceRecord " +
+               "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' " + unitCondition + "" +
+               "group by EmpCardNo,EmpProximityNo, EmpId,EmpName,DptId,DptName,PSftId ,PSftName ,CompanyName,Address";
+                    sqlDB.fillDataTable(
+                       
+                    cmd, dt = new DataTable());
+                }
+                return dt;
+            }
+            catch { return null; }
+        }
+
+
+        public static DataTable get_Moanthly_Attendance_Sheet(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition , string ShiftName)
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                string cmd = "";
+                if (index == 0)
+                {
+                    cmd = "select EmpId,substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo,EmpName," +
+                    "sum(case DATEPART (day,AttDate) when 1 then code else 0 end) as '1'," +
+                    "sum(case DATEPART (day,AttDate) when 2 then code else 0 end) as '2'," +
+                    "sum(case DATEPART (day,AttDate) when 3 then code else 0 end) as '3'," +
+                    "sum(case DATEPART (day,AttDate) when 4 then code else 0 end) as '4'," +
+                    "sum(case DATEPART (day,AttDate) when 5 then code else 0 end) as '5'," +
+                    "sum(case DATEPART (day,AttDate) when 6 then code else 0 end) as '6'," +
+                    "sum(case DATEPART (day,AttDate) when 7 then code else 0 end) as '7'," +
+                    "sum(case DATEPART (day,AttDate) when 8 then code else 0 end) as '8'," +
+                    "sum(case DATEPART (day,AttDate) when 9 then code else 0 end) as '9'," +
+                    "sum(case DATEPART (day,AttDate) when 10 then code else 0 end) as '10'," +
+                    "sum(case DATEPART (day,AttDate) when 11 then code else 0 end) as '11'," +
+                    "sum(case DATEPART (day,AttDate) when 12 then code else 0 end) as '12'," +
+                    "sum(case DATEPART (day,AttDate) when 13 then code else 0 end) as '13'," +
+                    "sum(case DATEPART (day,AttDate) when 14 then code else 0 end) as '14'," +
+                    "sum(case DATEPART (day,AttDate) when 15 then code else 0 end) as '15'," +
+                    "sum(case DATEPART (day,AttDate) when 16 then code else 0 end) as '1'," +
+                    "sum(case DATEPART (day,AttDate) when 17 then code else 0 end) as '17'," +
+                    "sum(case DATEPART (day,AttDate) when 18 then code else 0 end) as '18'," +
+                    "sum(case DATEPART (day,AttDate) when 19 then code else 0 end) as '19'," +
+                    "sum(case DATEPART (day,AttDate) when 20 then code else 0 end) as '20'," +
+                    "sum(case DATEPART (day,AttDate) when 21 then code else 0 end) as '21'," +
+                    "sum(case DATEPART (day,AttDate) when 22 then code else 0 end) as '22'," +
+                    "sum(case DATEPART (day,AttDate) when 23 then code else 0 end) as '23'," +
+                    "sum(case DATEPART (day,AttDate) when 24 then code else 0 end) as '24'," +
+                    "sum(case DATEPART (day,AttDate) when 25 then code else 0 end) as '25'," +
+                    "sum(case DATEPART (day,AttDate) when 26 then code else 0 end) as '26'," +
+                    "sum(case DATEPART (day,AttDate) when 27 then code else 0 end) as '27'," +
+                    "sum(case DATEPART (day,AttDate) when 28 then code else 0 end) as '28'," +
+                    "sum(case DATEPART (day,AttDate) when 29 then code else 0 end) as '29'," +
+                    "sum(case DATEPART (day,AttDate) when 30 then code else 0 end) as '30'," +
+                    "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
+                    " DsgName, DptId,DptName,SftId,SftName,PSftName as GName,CompanyId,CompanyName,Address " +
+                    "from v_tblAttendanceRecord " +
+                    "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + ""+
+                    "group by EmpId,EmpCardNo,EmpProximityNo,EmpName, PSftName, DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
+                        " order by convert(int,DptCode), convert(int,SftId),CustomOrdering";
+                    sqlDB.fillDataTable(
+                        cmd, dt);
+                }
+                else
+                {
+                    sqlDB.fillDataTable(
+                    "select EmpId,substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo,EmpName," +
+                    "sum(case DATEPART (day,AttDate) when 1 then code else 0 end) as '1'," +
+                    "sum(case DATEPART (day,AttDate) when 2 then code else 0 end) as '2'," +
+                    "sum(case DATEPART (day,AttDate) when 3 then code else 0 end) as '3'," +
+                    "sum(case DATEPART (day,AttDate) when 4 then code else 0 end) as '4'," +
+                    "sum(case DATEPART (day,AttDate) when 5 then code else 0 end) as '5'," +
+                    "sum(case DATEPART (day,AttDate) when 6 then code else 0 end) as '6'," +
+                    "sum(case DATEPART (day,AttDate) when 7 then code else 0 end) as '7'," +
+                    "sum(case DATEPART (day,AttDate) when 8 then code else 0 end) as '8'," +
+                    "sum(case DATEPART (day,AttDate) when 9 then code else 0 end) as '9'," +
+                    "sum(case DATEPART (day,AttDate) when 10 then code else 0 end) as '10'," +
+                    "sum(case DATEPART (day,AttDate) when 11 then code else 0 end) as '11'," +
+                    "sum(case DATEPART (day,AttDate) when 12 then code else 0 end) as '12'," +
+                    "sum(case DATEPART (day,AttDate) when 13 then code else 0 end) as '13'," +
+                    "sum(case DATEPART (day,AttDate) when 14 then code else 0 end) as '14'," +
+                    "sum(case DATEPART (day,AttDate) when 15 then code else 0 end) as '15'," +
+                    "sum(case DATEPART (day,AttDate) when 16 then code else 0 end) as '1'," +
+                    "sum(case DATEPART (day,AttDate) when 17 then code else 0 end) as '17'," +
+                    "sum(case DATEPART (day,AttDate) when 18 then code else 0 end) as '18'," +
+                    "sum(case DATEPART (day,AttDate) when 19 then code else 0 end) as '19'," +
+                    "sum(case DATEPART (day,AttDate) when 20 then code else 0 end) as '20'," +
+                    "sum(case DATEPART (day,AttDate) when 21 then code else 0 end) as '21'," +
+                    "sum(case DATEPART (day,AttDate) when 22 then code else 0 end) as '22'," +
+                    "sum(case DATEPART (day,AttDate) when 23 then code else 0 end) as '23'," +
+                    "sum(case DATEPART (day,AttDate) when 24 then code else 0 end) as '24'," +
+                    "sum(case DATEPART (day,AttDate) when 25 then code else 0 end) as '25'," +
+                    "sum(case DATEPART (day,AttDate) when 26 then code else 0 end) as '26'," +
+                    "sum(case DATEPART (day,AttDate) when 27 then code else 0 end) as '27'," +
+                    "sum(case DATEPART (day,AttDate) when 28 then code else 0 end) as '28'," +
+                    "sum(case DATEPART (day,AttDate) when 29 then code else 0 end) as '29'," +
+                    "sum(case DATEPART (day,AttDate) when 30 then code else 0 end) as '30'," +
+                    "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
+                    "  DsgName,DptId,DptName,SftId,SftName, PSftName as GName,CompanyId,CompanyName,Address " +
+                    "from v_tblAttendanceRecord " +
+                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' " + unitCondition + "" +
+                    "group by EmpId,EmpCardNo,EmpProximityNo,EmpName,DptId, DsgName,DptName,SftId,SftName,PSftName,CompanyId,CompanyName,Address ", dt = new DataTable());
+                }
+
+                return dt;
+            }
+            catch { return null; }
+        }
+
+        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition,string pSftCondition)
+        {
+            try
+            {
+                string query = "";
+               
+                if (index == 0)                
+                    query = "SELECT  EmpId, substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo, PSftName as SftName,EmpName,Address,GId,GName,PSftId as SftId, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," +
+                         "SUM(CASE DATEPART(day, AttDate) WHEN 3 THEN code ELSE 0 END) AS [3], SUM(CASE DATEPART(day, AttDate) WHEN 4 THEN code ELSE 0 END) AS [4], SUM(CASE DATEPART(day, AttDate) " +
+                         "WHEN 5 THEN code ELSE 0 END) AS [5], SUM(CASE DATEPART(day, AttDate) WHEN 6 THEN code ELSE 0 END) AS [6], SUM(CASE DATEPART(day, AttDate) WHEN 7 THEN code ELSE 0 END) AS [7]," +
+                         "SUM(CASE DATEPART(day, AttDate) WHEN 8 THEN code ELSE 0 END) AS [8], SUM(CASE DATEPART(day, AttDate) WHEN 9 THEN code ELSE 0 END) AS [9], SUM(CASE DATEPART(day, AttDate) " +
+                         "WHEN 10 THEN code ELSE 0 END) AS [10], SUM(CASE DATEPART(day, AttDate) WHEN 11 THEN code ELSE 0 END) AS [11], SUM(CASE DATEPART(day, AttDate) WHEN 12 THEN code ELSE 0 END) AS [12]," +
+                         "SUM(CASE DATEPART(day, AttDate) WHEN 13 THEN code ELSE 0 END) AS [13], SUM(CASE DATEPART(day, AttDate) WHEN 14 THEN code ELSE 0 END) AS [14], SUM(CASE DATEPART(day, AttDate) " +
+                         "WHEN 15 THEN code ELSE 0 END) AS [15], SUM(CASE DATEPART(day, AttDate) WHEN 16 THEN code ELSE 0 END) AS [16], SUM(CASE DATEPART(day, AttDate) WHEN 17 THEN code ELSE 0 END) AS [17], " +
+                         "SUM(CASE DATEPART(day, AttDate) WHEN 18 THEN code ELSE 0 END) AS [18], SUM(CASE DATEPART(day, AttDate) WHEN 19 THEN code ELSE 0 END) AS [19], SUM(CASE DATEPART(day, AttDate) " +
+                         "WHEN 20 THEN code ELSE 0 END) AS [20], SUM(CASE DATEPART(day, AttDate) WHEN 21 THEN code ELSE 0 END) AS [21], SUM(CASE DATEPART(day, AttDate) WHEN 22 THEN code ELSE 0 END) AS [22], " +
+                         "SUM(CASE DATEPART(day, AttDate) WHEN 23 THEN code ELSE 0 END) AS [23], SUM(CASE DATEPART(day, AttDate) WHEN 24 THEN code ELSE 0 END) AS [24], SUM(CASE DATEPART(day, AttDate) " +
+                         "WHEN 25 THEN code ELSE 0 END) AS [25], SUM(CASE DATEPART(day, AttDate) WHEN 26 THEN code ELSE 0 END) AS [26], SUM(CASE DATEPART(day, AttDate) WHEN 27 THEN code ELSE 0 END) AS [27], " +
+                         "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN code ELSE 0 END) AS [28], SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN code ELSE 0 END) AS [29], SUM(CASE DATEPART(day, AttDate) " +
                          "WHEN 30 THEN code ELSE 0 END) AS [30], SUM(CASE DATEPART(day, AttDate) WHEN 31 THEN code ELSE 0 END) AS [31], DsgName, DptId, DptName, CompanyId, CompanyName," +
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +
-                         "   FROM            dbo.v_tblAttendanceRecord "+
-                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
-                         "   GROUP BY EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
-                        " order by convert(int,DptId), convert(int,GId),CustomOrdering", dt);
+                         "   FROM            dbo.v_tblAttendanceRecord " +
+                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + " " + pSftCondition + " " +
+                         "   GROUP BY EmpId, EmpCardNo,EmpProximityNo,PSftId, EmpName,PSftName ,DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
+                        " order by PSftName, convert(int,DptId), convert(int,GId),CustomOrdering";
+                
                 else
-                    sqlDB.fillDataTable("SELECT        EmpId, substring(EmpCardNo,8,15) as EmpCardNo, EmpName,Address,GId,GName, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," +
+                    query = "SELECT EmpId, substring(EmpCardNo,8,15) + ' (' + EmpProximityNo + ')' AS EmpCardNo, PSftName as SftName,PSftId as SftId, EmpName,Address,GId,GName, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," +
                         "SUM(CASE DATEPART(day, AttDate) WHEN 3 THEN code ELSE 0 END) AS [3], SUM(CASE DATEPART(day, AttDate) WHEN 4 THEN code ELSE 0 END) AS [4], SUM(CASE DATEPART(day, AttDate) " +
                         "WHEN 5 THEN code ELSE 0 END) AS [5], SUM(CASE DATEPART(day, AttDate) WHEN 6 THEN code ELSE 0 END) AS [6], SUM(CASE DATEPART(day, AttDate) WHEN 7 THEN code ELSE 0 END) AS [7]," +
                         "SUM(CASE DATEPART(day, AttDate) WHEN 8 THEN code ELSE 0 END) AS [8], SUM(CASE DATEPART(day, AttDate) WHEN 9 THEN code ELSE 0 END) AS [9], SUM(CASE DATEPART(day, AttDate) " +
@@ -229,10 +242,12 @@ namespace SigmaERP.classes
                         "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN code ELSE 0 END) AS [28], SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN code ELSE 0 END) AS [29], SUM(CASE DATEPART(day, AttDate) " +
                         "WHEN 30 THEN code ELSE 0 END) AS [30], SUM(CASE DATEPART(day, AttDate) WHEN 31 THEN code ELSE 0 END) AS [31], DsgName, DptId, DptName,  CompanyId, CompanyName," +
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
-                         "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +                        
-                        "   FROM            dbo.v_tblAttendanceRecord " +
-                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
-                        "    GROUP BY EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering", dt);
+                         "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV " +
+                        "   FROM dbo.v_tblAttendanceRecord " +
+                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" + unitCondition + " "+ pSftCondition + " " +
+                        "    GROUP BY EmpId, EmpCardNo,EmpProximityNo, PSftId,EmpName, DsgName,PSftName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering";
+                DataTable dt = new DataTable();
+                sqlDB.fillDataTable(query, dt);
                 return dt;
             }
             catch {return null; }
@@ -240,7 +255,7 @@ namespace SigmaERP.classes
 
         //---------------------------------------For Bangla Report----------------------------------------------
 
-        public static DataTable get_MonthlyLoginLogOutTimeBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_MonthlyLoginLogOutTimeBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -283,7 +298,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                     ",DptId,DptNameBn DptName,SftId,SftNameBangla SftName,CompanyNameBangla CompanyName,AddressBangla Address " +
                     "from v_tblAttendanceRecord " +
-                    "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                    "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + "" +
                     "group by EmpCardNo, EmpId,EmpNameBn,DptId,DptNameBn,SftId,SftNameBangla,CompanyNameBangla,AddressBangla,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                             " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt = new DataTable());
                 else
@@ -323,7 +338,7 @@ namespace SigmaERP.classes
                 "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                 ",DptId,DptNameBn DptName,SftId,SftNameBangla SftName,CompanyNameBangla CompanyName,AddressBangla Address " +
                 "from v_tblAttendanceRecord " +
-                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ unitCondition + "" +
                 "group by EmpCardNo, EmpId,EmpName,DptId,DptNameBn,SftId,SftNameBangla,CompanyNameBangla,AddressBangla ", dt = new DataTable());
                 return dt;
             }
@@ -331,7 +346,7 @@ namespace SigmaERP.classes
         }
 
 
-        public static DataTable get_Moanthly_Attendance_SheetBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_Moanthly_Attendance_SheetBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition)
         {
             try
             {
@@ -372,7 +387,7 @@ namespace SigmaERP.classes
                         "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
                         " DptId,DptNameBn DptName,DsgNameBn DsgName,SftId,SftNameBangla SftName,CompanyId,CompanyNameBangla CompanyName,AddressBangla Address " +
                         "from v_tblAttendanceRecord " +
-                        "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                        "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ unitCondition + "" +
                         "group by EmpId,EmpCardNo,EmpNameBn,DptId,DptNameBn,DsgNameBn,SftId,SftNameBangla,CompanyId,CompanyNameBangla,AddressBangla,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                             " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt);
                 else
@@ -411,7 +426,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
                     " DsgNameBn DsgName,DptId,DptNameBn DptName,SftId,SftNameBangla SftName,CompanyId,CompanyNameBangla CompanyName,AddressBangla Address " +
                     "from v_tblAttendanceRecord " +
-                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ unitCondition + " " +
                     " group by EmpId,EmpCardNo,EmpNameBn,DsgNameBn,DptId,DptNameBn,SftId,SftNameBangla,CompanyId,CompanyNameBangla,AddressBangla ", dt = new DataTable());
 
 
@@ -420,7 +435,7 @@ namespace SigmaERP.classes
             catch { return null; }
         }
 
-        public static DataTable get_Moanthly_Attendance_Sheet_SummaryBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID)
+        public static DataTable get_Moanthly_Attendance_Sheet_SummaryBangla(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string condition)
         {
             try
             {
@@ -456,7 +471,7 @@ namespace SigmaERP.classes
                          "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN OverTime ELSE 0 END) AS '28_OT', SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN OverTime ELSE 0 END) AS '29_OT', SUM(CASE DATEPART(day, AttDate) " +
                          "WHEN 30 THEN OverTime ELSE 0 END) AS '30_OT', SUM(CASE DATEPART(day, AttDate) WHEN 31 THEN OverTime ELSE 0 END) AS '31_OT', SUM(OverTime) AS MonthlyTotalOT " +
                          "   FROM            dbo.v_tblAttendanceRecord " +
-                         " Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "'" +
+                         " Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' "+ condition + "" +
                          "   GROUP BY EmpId, EmpCardNo, EmpNameBn,DsgNameBn, DptId, DptNameBn, SftId, SftNameBangla, CompanyId, CompanyNameBangla,AddressBangla,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                         " order by convert(int,DptCode), convert(int,SftId),CustomOrdering", dt);
                 else
@@ -490,7 +505,7 @@ namespace SigmaERP.classes
                         "SUM(CASE DATEPART(day, AttDate) WHEN 28 THEN OverTime ELSE 0 END) AS '28_OT', SUM(CASE DATEPART(day, AttDate) WHEN 29 THEN OverTime ELSE 0 END) AS '29_OT', SUM(CASE DATEPART(day, AttDate) " +
                         "WHEN 30 THEN OverTime ELSE 0 END) AS '30_OT', SUM(CASE DATEPART(day, AttDate) WHEN 31 THEN OverTime ELSE 0 END) AS '31_OT', SUM(OverTime) AS MonthlyTotalOT " +
                         "   FROM            dbo.v_tblAttendanceRecord " +
-                        "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" +
+                        "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' "+ condition + "" +
                         "   GROUP BY EmpId, EmpCardNo, EmpNameBn,DsgNameBn, DptId, DptNameBn, SftId, SftNameBangla, CompanyId, CompanyNameBangla,AddressBangla", dt);
                 return dt;
             }

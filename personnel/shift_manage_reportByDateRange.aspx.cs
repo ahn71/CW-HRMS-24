@@ -7,20 +7,27 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
+using SigmaERP.classes;
 
 namespace SigmaERP.personnel
 {
     public partial class shift_manage_reportByDateRange : System.Web.UI.Page
     {
+        //permission=438
         DataTable dt;
         DataTable dtSetPrivilege;
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
-            lblMessage.InnerText = "";           
+            lblMessage.InnerText = "";
+            int[] pagePermission = { 437 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;
@@ -38,36 +45,36 @@ namespace SigmaERP.personnel
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 string getUserId = getCookies["__getUserId__"].ToString();
                 string cmpID = ViewState["__CompanyId__"].ToString();
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
-                {
-                    dtSetPrivilege = new DataTable();
-                    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='shift_manage_reportByDateRange.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPreview.CssClass = "css_btn Ptbut"; btnPreview.Enabled = true;
-                            btnSearch.CssClass = "css_btn Ptbut"; btnSearch.Enabled = true;
-                        }
-                        else
-                        {
-                            // tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPreview.Enabled = false;
-                            btnPreview.CssClass = "";
-                            btnSearch.CssClass = ""; btnSearch.Enabled = false;
-                        }
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Admin"))
+                //{
+                //    dtSetPrivilege = new DataTable();
+                //    sqlDB.fillDataTable("select * from UserPrivilege where ModulePageName='shift_manage_reportByDateRange.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                //    if (dtSetPrivilege.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                //        {
+                //            btnPreview.CssClass = "css_btn Ptbut"; btnPreview.Enabled = true;
+                //            btnSearch.CssClass = "css_btn Ptbut"; btnSearch.Enabled = true;
+                //        }
+                //        else
+                //        {
+                //            // tblGenerateType.Visible = false;
+                //            WarningMessage.Visible = true;
+                //            btnPreview.Enabled = false;
+                //            btnPreview.CssClass = "";
+                //            btnSearch.CssClass = ""; btnSearch.Enabled = false;
+                //        }
 
-                    }
-                    else
-                    {
-                        //tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPreview.Enabled = false;
-                        btnPreview.CssClass = "";
-                        btnSearch.CssClass = ""; btnSearch.Enabled = false;
-                    }
-                }
+                //    }
+                //    else
+                //    {
+                //        //tblGenerateType.Visible = false;
+                //        WarningMessage.Visible = true;
+                //        btnPreview.Enabled = false;
+                //        btnPreview.CssClass = "";
+                //        btnSearch.CssClass = ""; btnSearch.Enabled = false;
+                //    }
+                //}
                 classes.commonTask.LoadBranch(ddlCompany);
                 ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartment, ddlCompany.SelectedValue);
@@ -157,7 +164,7 @@ namespace SigmaERP.personnel
             Session["__ShiftTarnsferReport__"] = dt;
             if (dt == null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning->";
                 return;
             }
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=ShiftTarnsferReport-" + ddlCompany.SelectedValue + "');", true);  //Open New Tab for Sever side code
@@ -204,7 +211,7 @@ namespace SigmaERP.personnel
             sqlDB.fillDataTable(sql, dt = new DataTable());           
             if (dt == null || dt.Rows.Count < 1)
             {
-                lblMessage.InnerText = "warning-> Any record are not founded";
+                lblMessage.InnerText = "warning-> Data Not Found";
                 return;
             }
             Session["__ShiftScheduleDetails__"] = dt;

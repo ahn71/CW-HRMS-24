@@ -27,12 +27,12 @@
       border-bottom: 3px solid #3B5998;
 }
 .ds_nagevation_bar {
-  background-color: whitesmoke;
-  border-bottom: 3px solid #3b5998;
   color: #2e2e2e;
   font-size: 15px;
   overflow: hidden;
   padding: 5px 0;
+  display:flex;
+  justify-content:end;
 }
 .ds_button_Basic {
     margin-bottom:10px;

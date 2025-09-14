@@ -30,9 +30,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                     <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive">ID Card Report</a></li>
                 </ul>
@@ -63,7 +61,7 @@
                     <h2>ID Card Report</h2>
                 </div>
                 <div class="employee_box_body">
-                    <div class="employee_box_content" style="height:460px">
+                    <div class="employee_box_content">
                         <div class="punishment_against1">
                              <div class="punishment_against">
                     <h1 runat="server" visible="false" id="WarningMessage" style="color: red; text-align: center"></h1>
@@ -156,19 +154,12 @@
                             <div class="id_card_right EilistR">
                                 <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  ClientIDMode="Static" runat="server"></asp:ListBox>
                             </div>
+
+                           
                         </div>
-                        <div class="punishment_button_area">
-                            <table class="emp_button_table">
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            <asp:Button ID="btnpreview" CssClass="css_btn Ptbut" runat="server" ClientIDMode="Static" Text="Preview" OnClick="btnpreview_Click" /></th>
-                                        <th>
-                                            <asp:Button ID="btnClose" CssClass="css_btn Ptbut" Text="Close" PostBackUrl="~/default.aspx" runat="server" /></th>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                               <asp:Button ID="btnpreview" style="margin: 0 auto; display:block" CssClass="css_btn Ptbut" runat="server" ClientIDMode="Static" Text="Preview" OnClick="btnpreview_Click" />
+                             
+
 
                     </div>
                     </div>

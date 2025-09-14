@@ -67,9 +67,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                       <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Roster Transter Panel</a></li>
                    </ul>
@@ -242,6 +240,9 @@
                      </asp:GridView>
                          
                 </div>
+                        <div>
+                            <a runat="server" id="aRosterMissingLog" href="#" target="_blank">Roster Missing Log</a>
+                        </div>
                    </ContentTemplate>
                 </asp:UpdatePanel>
           <div id="divProgressPanel" runat="server">

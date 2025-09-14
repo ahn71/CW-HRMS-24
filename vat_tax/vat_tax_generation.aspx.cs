@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,16 +20,20 @@ namespace SigmaERP.vat_tax
         DataTable dtTaxSlapInfo;
         DataTable dtRebateSlapInfo;
         DataTable dtTaxFreeInfo;
-        DataTable dtAllowanceInfo; 
+        DataTable dtAllowanceInfo;
+        //permission=409
         protected void Page_Load(object sender, EventArgs e)
         {
             Session["OPERATION_PROGRESS"] = 0;
-
+            int[] pagePermission = { 409};
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
-                setPrivilege();               
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+                 setPrivilege();               
                 Session["__CID__"] = ddlCompanyList.SelectedValue;                
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
@@ -49,8 +54,9 @@ namespace SigmaERP.vat_tax
                 ViewState["__getUserId__"] = getUserId;
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "vat_tax_generation.aspx", ddlCompanyList, btnGenerate);  
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "vat_tax_generation.aspx", ddlCompanyList, btnGenerate);  
             }
             catch { }
         }

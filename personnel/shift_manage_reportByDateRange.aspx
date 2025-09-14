@@ -48,9 +48,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/roster_index.aspx">Roster Configuration</a></li>
+                    <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Ptactive">Shift Manage Report By Date Range</a></li>
                 </ul>
@@ -113,7 +111,7 @@
                             </td>
                             <td>:</td>
                             <td>
-                                  <asp:TextBox ID="txtDate" Style="float:left"  ClientIDMode="Static" Width="39%"  runat="server" CssClass="form-control text_box_width" ></asp:TextBox>
+                                  <asp:TextBox ID="txtDate" Style="float:left"  ClientIDMode="Static" Width="39%"  runat="server" CssClass="form-control text_box_width"   autocomplete="off" ></asp:TextBox>
                                 <asp:CalendarExtender
                                                 ID="TextBoxDate_CalendarExtender" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtDate">
                                             </asp:CalendarExtender>                         
@@ -123,7 +121,7 @@
                          <%--   </td>
                             <td>:</td>
                              <td>--%>
-                                <asp:TextBox ID="txtToDtae" ClientIDMode="Static" Style="float:right; margin-right:10px;width: 39%" runat="server" CssClass="form-control text_box_width" ></asp:TextBox>
+                                <asp:TextBox ID="txtToDtae" ClientIDMode="Static" Style="float:right; margin-right:10px;width: 39%" runat="server" CssClass="form-control text_box_width"   autocomplete="off" ></asp:TextBox>
                                 <asp:CalendarExtender
                                                 ID="CalendarExtender1" Format="dd-MM-yyyy" runat="server" Enabled="True" TargetControlID="txtToDtae">
                                             </asp:CalendarExtender>                                 

@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,12 +15,18 @@ namespace SigmaERP.personnel
 {
     public partial class roster_transfer : System.Web.UI.Page
     {
+        //permission=434
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 434 };
+
             lblErrorMessage.Text = "";
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
@@ -36,14 +43,14 @@ namespace SigmaERP.personnel
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
 
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "roster_transfer.aspx", ddlCompanyList, gvEmpList, btnSubmit);
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "roster_transfer.aspx", ddlCompanyList, gvEmpList, btnSubmit);
-
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
 
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);
@@ -75,7 +82,7 @@ namespace SigmaERP.personnel
                 gvEmpList.DataBind(); return;
             }
             divRecordMessage.Visible = false;
-            if (!ViewState["__ReadAction__"].ToString().Equals("0"))
+            //if (!ViewState["__ReadAction__"].ToString().Equals("0"))
                 gvEmpList.Visible = true;
             LoadAllEmployeeList();
           //  lblTotal.Text = gvEmpList.Rows.Count.ToString();

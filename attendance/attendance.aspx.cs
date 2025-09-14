@@ -11,7 +11,13 @@ using System.Data.SqlClient;
 using ComplexScriptingSystem;
 using System.Globalization;
 using SigmaERP.classes;
-
+using SigmaERP.hrms.BLL;
+using Newtonsoft.Json;
+using System.Net;
+using System.IO;
+using System.Configuration;
+using System.Collections.Specialized;
+using System.Text;
 
 namespace SigmaERP.attendance
 {
@@ -23,15 +29,19 @@ namespace SigmaERP.attendance
         SqlDataAdapter da;
         SqlCommand cmd;
         DataTable dt; DataTable dtEmpInfo;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
 
-
+            int[] pagePermission = {261};
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+
+
                 string[] ForAlter = {" "};
                 try
                 {
@@ -46,6 +56,8 @@ namespace SigmaERP.attendance
                 gvAttendance.DataBind();
                 ViewState["__OT__"] = "0"; ;
                 if (ForAlter[0] != " ") setValueForAlter(ForAlter[0],ForAlter[1],ForAlter[2],ForAlter[3],ForAlter[4],ForAlter[5],ForAlter[6],ForAlter[7],ForAlter[8]);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
@@ -63,15 +75,15 @@ namespace SigmaERP.attendance
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
 
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance.aspx", ddlCompanyList, btnSave);
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "attendance.aspx", ddlCompanyList, btnSave);
-
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
 
 
                 if(ViewState["__ReadAction__"].ToString().Equals("0"))
@@ -99,16 +111,16 @@ namespace SigmaERP.attendance
                 txtFromDate.Enabled = false;
                 btnSave.Text = "Update";
 
-                if (ViewState["__UpdateAction__"].Equals("0"))
-                {
-                    btnSave.Enabled = false;
-                    btnSave.CssClass = "";
-                }
-                else
-                {
-                    btnSave.Enabled = true;
-                    btnSave.CssClass = "Mbutton";
-                }
+                //if (ViewState["__UpdateAction__"].Equals("0"))
+                //{
+                //    btnSave.Enabled = false;
+                //    btnSave.CssClass = "";
+                //}
+                //else
+                //{
+                //    btnSave.Enabled = true;
+                //    btnSave.CssClass = "Mbutton";
+                //}
 
                 sqlDB.fillDataTable("select SftId,DptName,CompanyId from v_Personnel_EmpCurrentStatus where EmpId='"+empId+"'",dt=new DataTable ());
 
@@ -350,14 +362,40 @@ namespace SigmaERP.attendance
                     string InHur = "00"; string OutHur = "00";
                     DateTime AttDate = DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim()));
                     // to get needed employee information for count employee attendance 
+
+
+
                     string [] Get_Needed_EmployeeInfo = classes.mManually_Attendance_Count.Get_Needed_EmployeeeInfo(ddlCompanyList.SelectedValue, txtEmpCardNo.Text.Trim());
                     DateTime joindate = DateTime.ParseExact(Get_Needed_EmployeeInfo[7], "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
                     if (joindate > AttDate)
                     {
                         lblMessage.InnerText = "error->Attendace date must be largest or equal to Joining Date (" + Get_Needed_EmployeeInfo[7] + ") ";
                         return;
                     }
-                 //   string[] Shift_Roster_InfoList = new string[10];
+
+
+                    string inHour = txtInHur.Text;
+                    string inMin = txtInMin.Text;
+                    string inAmPm = ddlInTimeAMPM.SelectedValue;
+
+                    string outHour = txtOutHur.Text;
+                    string outMin = txtOutMin.Text;
+                    string outAmPm = ddlOutTimeAMPM.SelectedValue;
+
+                    string inPunchVal = ConvertTo24Hour(inHour, inMin, inAmPm);
+                    string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
+                    string attStatus = ddlAttendanceTemplate.SelectedValue.ToString();
+
+
+                    var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal, AttStatus: attStatus);
+
+
+                    lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
+
+                    return;
+
+                    //   string[] Shift_Roster_InfoList = new string[10];
                     DataTable dtOtherSettings = mZK_Shrink_Data_SqlServer.LoadOTherSettings(ddlCompanyList.SelectedValue);
                     string[] othersetting = new string[9];
                     if (dtOtherSettings.Rows.Count > 0)
@@ -380,6 +418,12 @@ namespace SigmaERP.attendance
                     string DutyType = Get_Needed_EmployeeInfo[4];
                     AttendanceCommonTasks _attCommon = new AttendanceCommonTasks();
                     string[] rosterInfo = _attCommon.GetRosterInfo(AttDate.ToString("yyyy-MM-dd"), Get_Needed_EmployeeInfo[0], DutyType, Get_Needed_EmployeeInfo[5], Get_Needed_EmployeeInfo[6]);
+                    if (rosterInfo == null)
+                    {
+                        lblMessage.InnerText = "warning->Shift/Roster not assigned";
+                        return;
+                    }
+                        
                     if (DutyType=="Roster")  // if employee duty type is roster then execute if block
                     {
                         // to get all roster information 
@@ -500,13 +544,20 @@ namespace SigmaERP.attendance
                          //---------------------------------------------------------------------------------------
                         else
                         {
-                            //InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
-                            //OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();
+                                //InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
+                                //OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();
 
-                            InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text).Equals(12)) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
-                            OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text).Equals(12)) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();   
-                            string[] Roster_Operation_Status = classes.mManually_Attendance_Count.Roster_Operation_TimeChecking(TimeSpan.Parse(rosterInfo[3].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]), TimeSpan.Parse(InHur + ":" + txtInMin.Text.Trim() + ":00"));
 
+                   
+
+                                InHur = (ddlInTimeAMPM.SelectedValue.Equals("AM")) ? txtInHur.Text : (int.Parse(txtInHur.Text).Equals(12)) ? txtInHur.Text : (int.Parse(txtInHur.Text) + 12).ToString();
+                            OutHur = (ddlOutTimeAMPM.SelectedValue.Equals("AM")) ? txtOutHur.Text : (int.Parse(txtOutHur.Text).Equals(12)) ? txtOutHur.Text : (int.Parse(txtOutHur.Text) + 12).ToString();
+
+                                classes.mManually_Attendance_Count.Roster_Operation_TimeChecking(TimeSpan.Parse(rosterInfo[3].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]), TimeSpan.Parse(InHur + ":" + txtInMin.Text.Trim() + ":00"));
+
+                                string[] Roster_Operation_Status = classes.mManually_Attendance_Count.Roster_Operation_TimeChecking(TimeSpan.Parse(rosterInfo[3].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]), TimeSpan.Parse(InHur + ":" + txtInMin.Text.Trim() + ":00"));
+
+                     
                             if (!bool.Parse(Roster_Operation_Status[0]))
                             {
                                 lblMessage.InnerText = "error->" + Roster_Operation_Status[1];
@@ -640,17 +691,20 @@ namespace SigmaERP.attendance
                                     DayStatus = classes.mManually_Attendance_Count.getTotalOverTime(TimeSpan.Parse(InHur + ":" + txtInMin.Text + ":"+txtInSec.Text), TimeSpan.Parse(OutHur + ":" + txtOutMin.Text + ":"+txtOutSec.Text), TimeSpan.Parse(rosterInfo[1].Split(' ')[1]), TimeSpan.Parse(rosterInfo[2].Split(' ')[1]),"0", rosterInfo[6], false, TimeSpan.Parse(tiffin), TimeSpan.Parse(othersetting[5]), TimeSpan.Parse(othersetting[7]), BreakBeforeStartOTAsMin);
                         }
                         }
-                        classes.
-                            mManually_Attendance_Count.
-                        SaveAttendance_Status(Get_Needed_EmployeeInfo[0], AttDate.ToString("dd-MM-yyyy"), Get_Needed_EmployeeInfo[6],
-                                                  (InHur.Length == 1) ? "0" + InHur : InHur,
-                                                  (txtInMin.Text.Trim().Length == 1) ? "0" + txtInMin.Text.Trim() : txtInMin.Text.Trim(), (txtInSec.Text.Trim().Length == 1) ? "0" + txtInSec.Text.Trim() : txtInSec.Text.Trim(),
-                                                  (OutHur.Length == 1) ? "0" + OutHur : OutHur,
-                                                  (txtOutMin.Text.Trim().Length == 1) ? "0" + txtOutMin.Text.Trim() : txtOutMin.Text.Trim(), (txtOutSec.Text.Trim().Length == 1) ? "0" + txtOutSec.Text.Trim() : txtOutSec.Text.Trim(),
-                                                  DayStatus[0], DayStatus[1], DayStatus[2], rosterInfo, Get_Needed_EmployeeInfo[1],
-                                                  Get_Needed_EmployeeInfo[2], ddlCompanyList.SelectedValue, Get_Needed_EmployeeInfo[3],
-                                                  DayStatus[3], DayStatus[4], rosterInfo[1].Split(' ')[1] + ":" + rosterInfo[6] + ":" + rosterInfo[2].Split(' ')[1], "MC", DayStatus[5], holidaycount, DayStatus[6], DayStatus[7], DayStatus[8], (ckbOutPunch.Checked) ? "1" : "0", txtReferencId.Text.Trim(), ViewState["__getUserId__"].ToString(),txtRemark.Text.Trim(), Get_Needed_EmployeeInfo[8], DutyType);
-                        lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
+                        //classes.
+                        //    mManually_Attendance_Count.
+                        //SaveAttendance_Status(Get_Needed_EmployeeInfo[0], AttDate.ToString("dd-MM-yyyy"), Get_Needed_EmployeeInfo[6],
+                        //                          (InHur.Length == 1) ? "0" + InHur : InHur,
+                        //                          (txtInMin.Text.Trim().Length == 1) ? "0" + txtInMin.Text.Trim() : txtInMin.Text.Trim(), (txtInSec.Text.Trim().Length == 1) ? "0" + txtInSec.Text.Trim() : txtInSec.Text.Trim(),
+                        //                          (OutHur.Length == 1) ? "0" + OutHur : OutHur,
+                        //                          (txtOutMin.Text.Trim().Length == 1) ? "0" + txtOutMin.Text.Trim() : txtOutMin.Text.Trim(), (txtOutSec.Text.Trim().Length == 1) ? "0" + txtOutSec.Text.Trim() : txtOutSec.Text.Trim(),
+                        //                          DayStatus[0], DayStatus[1], DayStatus[2], rosterInfo, Get_Needed_EmployeeInfo[1],
+                        //                          Get_Needed_EmployeeInfo[2], ddlCompanyList.SelectedValue, Get_Needed_EmployeeInfo[3],
+                        //                          DayStatus[3], DayStatus[4], rosterInfo[1].Split(' ')[1] + ":" + rosterInfo[6] + ":" + rosterInfo[2].Split(' ')[1], "MC", DayStatus[5], holidaycount, DayStatus[6], DayStatus[7], DayStatus[8], (ckbOutPunch.Checked) ? "1" : "0", txtReferencId.Text.Trim(), ViewState["__getUserId__"].ToString(),txtRemark.Text.Trim(), Get_Needed_EmployeeInfo[8], DutyType);
+
+
+
+             
                        DataTable dt= classes.mCommon_Module_For_AttendanceProcessing.Load_Process_AttendanceData(ddlCompanyList.SelectedValue,"0", AttDate.ToString("yyyy-MM-dd"), false, txtEmpCardNo.Text.Trim());
                         gvAttendance.DataSource = dt;
                         gvAttendance.DataBind();
@@ -660,12 +714,78 @@ namespace SigmaERP.attendance
                    
 
                 }
-                catch { }
+                catch (Exception ex)
+                {
+
+                }
             }
             catch { }
         }
+        private string ConvertTo24Hour(string hourStr, string minuteStr, string amPm)
+        {
+            int hour = int.Parse(hourStr.Trim());
+            int minute = int.Parse(minuteStr.Trim());
 
-        
+            if (amPm.ToUpper() == "PM" && hour != 12)
+            {
+                hour += 12;
+            }
+            else if (amPm.ToUpper() == "AM" && hour == 12)
+            {
+                hour = 0;
+            }
+
+            return $"{hour.ToString("D2")}:{minute.ToString("D2")}";
+        }
+        public string RootUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
+        private readonly string endpoint = "/api/Attendance/attendance/manual-process";
+
+        public string PostManualAttendance(List<string> empIds, string fromDate, string toDate, string companyId, string inPunch, string outPunch,string AttStatus)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string requestUrl = RootUrl + endpoint;
+
+                using (var client = new WebClient())
+                {
+                    // ✅ Get token from session and add to header
+                    string token = Session["___token___"]?.ToString();
+                    if (!string.IsNullOrEmpty(token))
+                        client.Headers.Add("Authorization", "Bearer " + token);
+
+                    // ❌ DO NOT SET Content-Type manually — causes error
+                    // client.Headers[HttpRequestHeader.ContentType] = "multipart/form-data"; // REMOVE THIS LINE
+
+                    // ✅ Prepare form data
+                    NameValueCollection formData = new NameValueCollection();
+                    formData["EmpIds"] = JsonConvert.SerializeObject(empIds);  // send as JSON string
+                    formData["FromDate"] = fromDate;
+                    formData["ToDate"] = toDate;
+                    formData["CompanyId"] = companyId;
+                    formData["Inpunch"] = inPunch;
+                    formData["Outpunch"] = outPunch;
+                    formData["AttStatus"] = AttStatus;
+
+                    // ✅ Send form-encoded POST request
+                    byte[] responseBytes = client.UploadValues(requestUrl, "POST", formData);
+                    return Encoding.UTF8.GetString(responseBytes);
+                }
+            }
+            catch (WebException ex)
+            {
+                using (Stream stream = ex.Response?.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream ?? Stream.Null))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
+
+
 
         protected void rblAttendanceCountType_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -815,7 +935,8 @@ namespace SigmaERP.attendance
             try
             {
 
-                if (txtEmpCardNo.Text.Trim().Length<5) 
+                int lenght = txtEmpCardNo.Text.Trim().Length;
+                if (txtEmpCardNo.Text.Trim().Length<3) 
                 {
                     lblMessage.InnerText = "warning-> Please type valid Card No !";
                     txtEmpCardNo.Focus();
@@ -827,8 +948,18 @@ namespace SigmaERP.attendance
                     txtFromDate.Focus();
                     return;
                 }
-                   
-                string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim());
+                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), ddlCompanyList.SelectedValue);
+                if (!hasEmpCard)
+                {
+                    lblMessage.InnerText = "warning-> You have no access for this EmpCard !";
+                    return;
+                }
+
+                string jjj = txtFromDate.Text.ToString();
+                //string dateyy = txtFromDate.Text;
+                //DateTime df = Convert.ToDateTime(dateyy);
+                DateTime parsedDate = DateTime.ParseExact(txtFromDate.Text.ToString(), "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                string[] EmployeeInfos = classes.mManually_Attendance_Count.Find_IsRunningEmployee(ddlCompanyList.SelectedValue.ToString(), txtEmpCardNo.Text.Trim(),parsedDate);
                 if (EmployeeInfos == null) lblMessage.InnerText = "error->Please type valid employee card no";
                 else
                 {
@@ -901,7 +1032,7 @@ namespace SigmaERP.attendance
                     }
                 }
             }
-            catch { }            
+            catch (Exception ex){ }            
         }
 
         protected void btnClear_Click(object sender, EventArgs e)

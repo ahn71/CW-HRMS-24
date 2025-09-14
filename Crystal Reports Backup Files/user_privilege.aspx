@@ -62,7 +62,7 @@
             <div class="ds_nagevation_bar">
                 <div style="margin-top: 5px">
                     <ul>
-                        <li><a href="/default.aspx">Dasboard</a></li>
+                        <li><a href="/default.aspx">Dashboard</a></li>
                         <li>/</li>
                         <li><a href="/tools_default.aspx">Tools</a></li>
                         <li>/</li>

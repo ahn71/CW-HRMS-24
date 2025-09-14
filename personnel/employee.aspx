@@ -35,9 +35,7 @@
             <ul>
                 <li><a href="/default.aspx">Dashboard</a></li>
                 <li> <a href="#">/</a></li>
-                <li> <a href="/personnel_defult.aspx">Personnel</a></li>
-                <li> <a href="#">/</a></li>
-                 <li> <a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                 <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                 <li> <a href="#">/</a></li>
                 <li> <a href="#" class="ds_negevation_inactive Ptactive">Employees Entry</a></li>
             </ul>               
@@ -85,8 +83,8 @@
                             <asp:HiddenField ID="hdfCardnoDigitsSet" Value="0" runat="server" ClientIDMode="Static" />
                             <div class="employee_box_left">
                                 <table class="employee_table">
-                                    <tr id="trBranch" runat="server">
-                                        <td>Branch <span class="requerd1">*</span>
+                                    <tr id="trBranch" runat="server" visible="false">
+                                        <td>Company <span class="requerd1">*</span>
                                         </td>
                                         <td>:
                                         </td>
@@ -106,7 +104,7 @@
 
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr runat="server" visible="false">
                                         <td>
                                         </td>
                                         <td>
@@ -124,9 +122,9 @@
                                         </td>
                                         <td>
                                             <asp:RadioButtonList ID="rblSalaryType" runat="server" RepeatDirection="Horizontal">
-                                                <asp:ListItem Value="Scale" Text="Scale" Selected="True"></asp:ListItem>
+                                                <asp:ListItem Value="Scale" Text="Scale" ></asp:ListItem>
                                                 <asp:ListItem Value="Gross" Text="Gross"></asp:ListItem>
-                                                <asp:ListItem Value="Gross Scale" Text="Gross Scale"></asp:ListItem>
+                                                <asp:ListItem Value="Gross Scale" Text="Gross Scale" Selected="True"></asp:ListItem>
                                             </asp:RadioButtonList>
 
                                         </td>
@@ -141,7 +139,7 @@
 
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr runat="server" visible="false">
                                         <td>Nick  Name <span class="requerd1">*</span>
                                         </td>
                                         <td>:
@@ -158,6 +156,15 @@
                                         <td>
 
                                             <asp:TextBox ID="txtNameBangla" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Font-Names="SutonnyMJ"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Unit <span class=""></span>
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width"></asp:DropDownList>
                                         </td>
                                     </tr>
                                     <tr>
@@ -182,7 +189,7 @@
                                     </tr>
 
                                     <tr>
-                                        <td>Group <span class="requerd1">*</span>
+                                        <td>Group/Section <span class="requerd1">*</span>
                                         </td>
                                         <td>:
                                         </td>
@@ -191,7 +198,7 @@
                                         </td>
                                     </tr>
                                      <tr>
-                                        <td>Emp Shift <span class="requerd1">*</span>
+                                        <td>Permanent Shift <span class="requerd1">*</span>
                                         </td>
                                         <td>:
                                         </td>
@@ -286,6 +293,7 @@
 
                                             <asp:DropDownList ID="ddlType" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
                                                 <asp:ListItem>Permanent</asp:ListItem>
+                                                <asp:ListItem>Probation</asp:ListItem>
                                                 <asp:ListItem>Temporary</asp:ListItem>
                                             </asp:DropDownList>
                                         </td>
@@ -314,26 +322,35 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Ordering
+                                        <td>Weekend </td>
+                                        <td>: </td>
+                                        <td>
+                                            <asp:DropDownList ID="ddlWeekend" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                                <asp:ListItem Text="" Value=""></asp:ListItem>
+                                                <asp:ListItem Text="Sunday" Value="Sunday"></asp:ListItem>
+                                                <asp:ListItem Text="Monday" Value="Monday"></asp:ListItem>
+                                                <asp:ListItem Text="Tuesday" Value="Tuesday"></asp:ListItem>
+                                                <asp:ListItem Text="Wednesday" Value="Wednesday"></asp:ListItem>
+                                                <asp:ListItem Text="Thursday" Value="Thursday"></asp:ListItem>
+                                                <asp:ListItem Text="Friday" Value="Friday"></asp:ListItem>
+                                                <asp:ListItem Text="Saturday" Value="Saturday"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </td>
-                                        <td>:
-                                        </td>
-                                        <td>                                            
-                                             <asp:TextBox ID="txtDptWise"  Font-Bold="true" runat="server" ClientIDMode="Static" style="width:39%;float:left;color:red;text-align:center" MaxLength="4" ToolTip="Dpertment Wise Custom Ordering"  placeholder="Dpt Wise" CssClass="form-control text_box_width"></asp:TextBox>
-                                            <asp:CheckBox runat="server" ID="cskDptWise" AutoPostBack="true" style="float:left;padding-left: 2px;padding-right: 2px;padding-top: 8px" ToolTip="Dpertment Wise Custom Ordering"  OnCheckedChanged="cskDptWise_CheckedChanged" />
-                                            <asp:TextBox ID="txtFlatOrder" Font-Bold="true" runat="server" ClientIDMode="Static" style="width:39%;float:left; color:red; text-align:center" MaxLength="4" ToolTip="Flat Custom Ordering" placeholder="Flat" CssClass="form-control text_box_width"></asp:TextBox>
-                                            <asp:CheckBox runat="server"  ID="cskFlatOrder" AutoPostBack="true" ToolTip="Flat Custom Ordering"  style="float:left;  padding-left: 2px;padding-top: 8px" OnCheckedChanged="cskFlatOrder_CheckedChanged" />
+                                    <tr>
+                                        <td>Ordering </td>
+                                        <td>: </td>
+                                        <td>
+                                            <asp:TextBox ID="txtDptWise" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Font-Bold="true" MaxLength="4" placeholder="Dpt Wise" style="width:39%;float:left;color:red;text-align:center" ToolTip="Dpertment Wise Custom Ordering"></asp:TextBox>
+                                            <asp:CheckBox ID="cskDptWise" runat="server" AutoPostBack="true" OnCheckedChanged="cskDptWise_CheckedChanged" style="float:left;padding-left: 2px;padding-right: 2px;padding-top: 8px" ToolTip="Dpertment Wise Custom Ordering" />
+                                            <asp:TextBox ID="txtFlatOrder" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Font-Bold="true" MaxLength="4" placeholder="Flat" style="width:39%;float:left; color:red; text-align:center" ToolTip="Flat Custom Ordering"></asp:TextBox>
+                                            <asp:CheckBox ID="cskFlatOrder" runat="server" AutoPostBack="true" OnCheckedChanged="cskFlatOrder_CheckedChanged" style="float:left;  padding-left: 2px;padding-top: 8px" ToolTip="Flat Custom Ordering" />
                                         </td>
                                     </tr>
-
-                                       <tr runat="server" visible="false">
-                                        <td>TIN
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>                                            
-                                             <asp:TextBox ID="txtTIN"  Font-Bold="true" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                                            
+                                    <tr runat="server" visible="false">
+                                        <td>TIN </td>
+                                        <td>: </td>
+                                        <td>
+                                            <asp:TextBox ID="txtTIN" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Font-Bold="true"></asp:TextBox>
                                         </td>
                                     </tr>
                                     
@@ -380,7 +397,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="width:175px;">Father's/ Husband's Name
+                                        <td style="width:175px;">Father's Name
                                         </td>
                                         <td>:
                                         </td>
@@ -404,7 +421,7 @@
                                         </td>
                                         <td>
 
-                                            <asp:DropDownList ID="dsMaritialStatus" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                            <asp:DropDownList ID="dsMaritialStatus" runat="server" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="dsMaritialStatus_SelectedIndexChanged" AutoPostBack="true">
                                                 <asp:ListItem>Single</asp:ListItem>
                                                 <asp:ListItem>Married</asp:ListItem>
                                                 <asp:ListItem>Widow</asp:ListItem>
@@ -413,163 +430,138 @@
 
                                         </td>
                                     </tr>
+                                    <tr id="husbandOrWifeName" runat="server" visible="false">
+
+
+                                         <td>Husband&#39;s /Wife&#39;s Name </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="txtHusbandOrwifeName" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                        </tr>
                                     <tr>
-                                        <td>Date of Birth
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
 
-                                            <asp:TextBox ID="dsDateOfBirth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                                            <asp:CalendarExtender ID="CalendarExtender5" Format="d-M-yyyy" runat="server" TargetControlID="dsDateOfBirth"></asp:CalendarExtender>
 
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Place of Birth
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="dsPlaceOfBirth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Height
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="dsHeight" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Weight
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="dsWeight" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Blood Group
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:DropDownList ID="dsBloodGroup" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                                <asp:ListItem></asp:ListItem>
-                                                <asp:ListItem>A+</asp:ListItem>
-                                                <asp:ListItem>A-</asp:ListItem>
-                                                <asp:ListItem>B+</asp:ListItem>
-                                                <asp:ListItem>B-</asp:ListItem>
-                                                <asp:ListItem>AB+</asp:ListItem>
-                                                <asp:ListItem>AB-</asp:ListItem>
-                                                <asp:ListItem>O+</asp:ListItem>
-                                                <asp:ListItem>O-</asp:ListItem>
-                                            </asp:DropDownList>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Gender
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:DropDownList ID="dsSex" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                                <asp:ListItem>Male</asp:ListItem>
-                                                <asp:ListItem>Female</asp:ListItem>
-                                            </asp:DropDownList>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Religion
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:DropDownList ID="dsReligion" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                            </asp:DropDownList>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Last Educational Qualifi
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-                                            <asp:DropDownList ID="ddlLastEdQualification" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                            </asp:DropDownList>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Total No of Experience
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:TextBox ID="dsNoOfExperience" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nationality
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:TextBox ID="dsNationality" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width">Bangladeshi</asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>National ID/Birth ID No
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:TextBox ID="dsNationIDCardNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mobile No
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtMobileNo" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
-                                        </td>
-                                    </tr>
-                                   
-                                    <tr id="trel" runat="server" visible="false">
-                                        <td>Earned Leave
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:TextBox ID="txtEarnedLeave" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
-
-                                        </td>
-                                    </tr>
-                                    <tr id="tresd" runat="server" visible="false">
-                                        <td>El Start Date
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-
-                                            <asp:TextBox ID="txtElStart" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
-                                            <asp:CalendarExtender ID="CalendarExtender3" Format="d-M-yyyy" runat="server" TargetControlID="txtElStart"></asp:CalendarExtender>
-                                        </td>
-                                    </tr>
+                                         <td>Date of Birth </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsDateOfBirth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                             <asp:CalendarExtender ID="CalendarExtender5" runat="server" Format="d-M-yyyy" TargetControlID="dsDateOfBirth" />
+                                         </td>
+                                     <tr>
+                                         <td>Place of Birth </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsPlaceOfBirth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Height </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsHeight" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Weight </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsWeight" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Blood Group </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:DropDownList ID="dsBloodGroup" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                                 <asp:ListItem></asp:ListItem>
+                                                 <asp:ListItem>A+</asp:ListItem>
+                                                 <asp:ListItem>A-</asp:ListItem>
+                                                 <asp:ListItem>B+</asp:ListItem>
+                                                 <asp:ListItem>B-</asp:ListItem>
+                                                 <asp:ListItem>AB+</asp:ListItem>
+                                                 <asp:ListItem>AB-</asp:ListItem>
+                                                 <asp:ListItem>O+</asp:ListItem>
+                                                 <asp:ListItem>O-</asp:ListItem>
+                                             </asp:DropDownList>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Gender </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:DropDownList ID="dsSex" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                                 <asp:ListItem>Male</asp:ListItem>
+                                                 <asp:ListItem>Female</asp:ListItem>
+                                             </asp:DropDownList>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Religion </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:DropDownList ID="dsReligion" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                             </asp:DropDownList>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Last Educational Qualification </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:DropDownList ID="ddlLastEdQualification" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
+                                             </asp:DropDownList>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Total No of Experience </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsNoOfExperience" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Nationality </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsNationality" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">Bangladeshi</asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>National ID/Birth ID No </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="dsNationIDCardNo" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>Mobile No </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="txtMobileNo" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr>
+                                         <td>EmployeeVisa No </td>
+                                         <td>:</td>
+                                         <td>
+                                             <asp:TextBox ID="txtEmpVisaNo" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr id="trel" runat="server" visible="false">
+                                         <td>Earned Leave </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="txtEarnedLeave" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width">0</asp:TextBox>
+                                         </td>
+                                     </tr>
+                                     <tr id="tresd" runat="server" visible="false">
+                                         <td>El Start Date </td>
+                                         <td>: </td>
+                                         <td>
+                                             <asp:TextBox ID="txtElStart" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                             <asp:CalendarExtender ID="CalendarExtender3" runat="server" Format="d-M-yyyy" TargetControlID="txtElStart" />
+                                         </td>
+                                     </tr>
                                 </table>
                                 </ContentTemplate>
                         </asp:UpdatePanel> 
@@ -589,6 +581,7 @@
                             </Triggers>
                             <ContentTemplate>
                                 <div>
+                                    <small style="color:darkred">Maximum image size: 2 MB. Supported formats: JPG, JPEG, and PNG.</small>
                                     <asp:Image ID="imgProfile" class="profileImage" ClientIDMode="Static" runat="server" ImageUrl="~/images/profileImages/noProfileImage.jpg" />
                                     <asp:FileUpload ID="FileUpload1" Style="margin-top: 20px;" runat="server" onchange="previewFile()" ClientIDMode="Static" />
                                 </div>
@@ -713,7 +706,93 @@
 
             
         </div>
+    
+<%--    unit Api Bind --%>
+<%--    <script>
+              //var rootUrl = 'http://localhost:5081';
+
+        var rootUrl = '<%= Session["__RootUrl__"]%>';
+        var CompanyID = '<%= Session["__GetCompanyId__"]%>';
+        var LoginUserId = '<%= Session["__GetUserId__"]%>';
+
+        var GetDdlUnitsUrl = rootUrl + `/api/Unit/basicInfo?CompanyId=${CompanyID}`;
+
+        var token = '<%= Session["__UserToken__"] %>';
+
+
+        $(document).ready(function () {
+           
+        
+            //GetCompanys();
+            GetUnitDropwown();
             
+        });
+        function GetUnitDropwown() {
+            ApiCall(GetDdlUnitsUrl, token)
+                .then(function (response) {
+                    if (response.statusCode === 200) {
+                        var responseData = response.data;
+                        PopulateDropdown(responseData)
+                    } else {
+                        console.error('Error occurred while fetching data:', response.message);
+                        const dropdown = document.getElementById('ddlUnit');
+                        dropdown.innerHTML = '<option value="0">---Select---</option>';
+                    }
+                })
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                    const dropdown = document.getElementById('ddlUnit');
+                    dropdown.innerHTML = '<option value="0">---Select---</option>';
+                    console.error('Error occurred while fetching data:', error);
+
+                });
+        }
+        function PopulateDropdown(data) {
+            const dropdown = document.getElementById('ddlUnit');
+
+            // Clear existing options
+            dropdown.innerHTML = '';
+
+            // Add default "ALL" option
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '0';
+            defaultOption.text = '---Select---';
+            dropdown.appendChild(defaultOption);
+
+            // Loop through the response data and append options
+            data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.text = item.name;
+                dropdown.appendChild(option);
+            });
+        }
+
+        function ApiCall(url, token) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json'
+            },
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                //console.log(status);
+                //var message = xhr.responseJSON.message
+                //console.log('Error occurred while fetching data:', message);
+                var message = xhr.responseJSON.message;
+                console.error('Error occurred while fetching data:', message);
+                reject({ message: message, status: status, error: error });
+            }
+        });
+    });
+}
+    </script>--%>
     <script type="text/javascript">
         $(document).ready(function () {
             $("#ddlEmpCardNo").select2();
@@ -731,53 +810,173 @@
         function load() {
             $("#ddlEmpCardNo").select2();
         }
+
+        //function previewFile() {
+        //    try {
+        //        var preview = document.querySelector('#imgProfile');
+        //        var fileInput = document.querySelector('#FileUpload1');
+        //        var file = fileInput.files[0];
+
+        //        var reader = new FileReader();
+
+        //        reader.onloadend = function () {
+        //            preview.src = reader.result;
+        //        };
+
+        //        if (file) {
+        //            reader.readAsDataURL(file);
+        //            // Extract only the file name
+        //            var fileName = file.name;
+        //            $('#HiddenField1').val(fileName);
+        //        } else {
+        //            preview.src = "";
+        //            $('#HiddenField1').val(""); // Clear the hidden field if no file is selected
+        //        }
+        //    } catch (exception) {
+        //        lblMessage.innerText = exception;
+        //    }
+        //}
+
         function previewFile() {
             try {
                 var preview = document.querySelector('#imgProfile');
-                var file = document.querySelector('#FileUpload1').files[0];
-               
-                var reader = new FileReader();
-
-                reader.onloadend = function () {
-                    preview.src = reader.result;
-                }
+                var fileInput = document.querySelector('#FileUpload1');
+                var file = fileInput.files[0];
+                var hiddenField = document.querySelector('#HiddenField1');
 
                 if (file) {
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    var allowedExtensions = ["jpg", "jpeg", "png"];
+                    var fileSize = file.size;
+                    var fileName = file.name.toLowerCase();
+                    var fileExtension = fileName.split('.').pop();
+
+                    // Validate file size
+                    if (fileSize > maxSize) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Size",
+                            text: "File size must be less than 2 MB.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Validate file format
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Format",
+                            text: "Only JPG, JPEG, and PNG formats are allowed.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Preview the image if valid
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
+                        preview.src = reader.result;
+                    };
                     reader.readAsDataURL(file);
+
+                    // Set the file name in the hidden field
+                    hiddenField.value = fileName;
                 } else {
                     preview.src = "";
+                    hiddenField.value = ""; // Clear hidden field if no file selected
                 }
-                var imagename = $('#FileUpload1').val();
-                $('#HiddenField1').val(imagename);                
+            } catch (exception) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred: " + exception.message,
+                    confirmButtonColor: "#d33"
+                });
             }
-            catch (exception) {
-                lblMessage.innerText = exception;
-            }
-
         }
+
         function previewFilesignature() {
             try {
                 var preview = document.querySelector('#imgSignature');
-                var file = document.querySelector('#FileUpload2').files[0];
-
-                var reader = new FileReader();
-
-                reader.onloadend = function () {
-                    preview.src = reader.result;
-                }
+                var fileInput = document.querySelector('#FileUpload2');
+                var file = fileInput.files[0];
 
                 if (file) {
+                    var maxSize = 2 * 1024 * 1024; // 2MB
+                    var allowedExtensions = ["jpg", "jpeg", "png"];
+                    var fileSize = file.size;
+                    var fileName = file.name.toLowerCase();
+                    var fileExtension = fileName.split('.').pop();
+
+                    // Validate file size
+                    if (fileSize > maxSize) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Size",
+                            text: "File size must be less than 2 MB.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Validate file format
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Invalid File Format",
+                            text: "Only JPG, JPEG, and PNG formats are allowed.",
+                            confirmButtonColor: "#d33"
+                        });
+                        fileInput.value = ""; // Clear file input
+                        return;
+                    }
+
+                    // Preview the image if valid
+                    var reader = new FileReader();
+                    reader.onloadend = function () {
+                        preview.src = reader.result;
+                    };
                     reader.readAsDataURL(file);
                 } else {
                     preview.src = "";
                 }
-               
+            } catch (exception) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred: " + exception.message,
+                    confirmButtonColor: "#d33"
+                });
             }
-            catch (exception) {
-                lblMessage.innerText = exception;
-            }
-
         }
+
+        //function previewFilesignature() {
+        //    try {
+        //        var preview = document.querySelector('#imgSignature');
+        //        var file = document.querySelector('#FileUpload2').files[0];
+
+        //        var reader = new FileReader();
+
+        //        reader.onloadend = function () {
+        //            preview.src = reader.result;
+        //        }
+
+        //        if (file) {
+        //            reader.readAsDataURL(file);
+        //        } else {
+        //            preview.src = "";
+        //        }
+               
+        //    }
+        //    catch (exception) {
+        //        lblMessage.innerText = exception;
+        //    }
+
+        //}
         //function EmpType() {
             
         //    if ($('#rblEmpType').select().text == "Worker") {
@@ -804,11 +1003,11 @@
                     $('#txtName').focus();
                     return false;
                 }
-                if ($('#txtNickName').val().trim().length == 0) {
-                    showMessage("warning->Please Type Nick Name ");
-                    $('#txtNickName').focus();
-                    return false;
-                }
+                //if ($('#txtNickName').val().trim().length == 0) {
+                //    showMessage("warning->Please Type Nick Name ");
+                //    $('#txtNickName').focus();
+                //    return false;
+                //}
                if ($('#ddlDepartment option:selected').text().length == 0) {
                     showMessage("warning->Please Select Department ");
                     $('#ddlDepartment').focus();
@@ -887,17 +1086,22 @@
                     $('#txtExpireDate').focus();
                     return false;
                 }
-
-                           
-               
                 return true;
-              
+
+             
 
             }
             catch (exception) {
 
             }
         }
+
+     
+     
+
+
+
+
 
         function divEmpInfoHide() {
            
@@ -1136,7 +1340,10 @@
                     $('#txtExpireDate').val(date);
                    
                 }               
-        </script>
+    </script>
                 
-          
+    <script src="../hrms/assets/theme_assets/js/charts.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </asp:Content>              

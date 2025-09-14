@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,19 +20,30 @@ namespace SigmaERP.payroll.salary
     {
         DataTable dt;
         string query = "";
+        //View=334 Process/Add=335 Delete=336
+     
         protected void Page_Load(object sender, EventArgs e)
         {
+           
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
-                txtGenerateMonth.Visible = true;
+                int[] pagePermission = { 334, 335, 336 };
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
+                    txtGenerateMonth.Visible = true;
                 ddlMonthID.Visible = false;
-                setPrivilege();
+                setPrivilege(userPagePermition);
                 // classes.commonTask.loadEmpTypeInRadioButtonList(rbEmpTypeList);
                 Session["__CID__"] = ddlCompanyList.SelectedValue;
                 classes.Employee.LoadEmpCardNoWithNameByCompanyRShift(ddlEmpCardNo, ddlCompanyList.SelectedValue);
-               
+
                 //if (classes.Payroll.Office_IsGarments()) IsGarments = true;
                 //else IsGarments = false;
                 if (!classes.commonTask.HasBranch())
@@ -46,12 +58,26 @@ namespace SigmaERP.payroll.salary
                     else
                         txtNotTiffinCardno.Text = "0069,0037";
                 }
-                loadExistingSalary();
+           
+                ViewState["__salaryGenerateFor__"] = "compliance";
+                string url = Request.Url.ToString();
+                string[] parts = url.Split('/');
+                string value = parts[5];
+                if (value == "regular")
+                {
+                    ViewState["__salaryGenerateFor__"] = value;
+                    heading.InnerText = "Salary Processing(Regular)";
+                }
+                    
+                string jjjj = ViewState["__salaryGenerateFor__"].ToString();
+                loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
+
+
             }
 
             lblMessage.InnerText = "";
-        }      
-        private void setPrivilege()
+        }
+        private void setPrivilege(int[] permissions)
         {
             try
             {
@@ -64,8 +90,15 @@ namespace SigmaERP.payroll.salary
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_generation.aspx", ddlCompanyList, btnGenerate, btnBDTNoteGenerate, gvSalaryList);
-
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForOnlyWriteAction(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "payroll_generation.aspx", ddlCompanyList, btnGenerate, btnBDTNoteGenerate, gvSalaryList);
+                if(permissions.Contains(334))
+                    ViewState["__ReadAction__"] = "1";
+                if (permissions.Contains(335))
+                    ViewState["__WriteAction__"] = "1";
+                if (permissions.Contains(336))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
                 SalaryProcessingCommonTask.loadSeparationMonth(ddlMonthID, ViewState["__CompanyId__"].ToString());
             }
             catch { }
@@ -81,11 +114,11 @@ namespace SigmaERP.payroll.salary
             if (rblProcessOn.SelectedValue == "1") //Separation
             {
                 string[] MonthYear = ddlMonthID.SelectedValue.Split('-');
-                SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]),int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
+                SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]), int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
             }
-            
-            sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId,EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked,txtSpecialGrossPer.Text.Trim(),ckbAdvanceDeduction.Checked,ckbStampDeduction.Checked,ckbLateDeduction.Checked,txtExceptedEmpCardNo.Text.Trim());
-            loadExistingSalary();
+
+            sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, ckbLateDeduction.Checked, txtExceptedEmpCardNo.Text.Trim(), ViewState["__salaryGenerateFor__"].ToString());
+            loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
             return;
             string[] getDays = txtGenerateMonth.Text.Trim().Split('-');
             int DaysInMonth = DateTime.DaysInMonth(int.Parse(getDays[2]), int.Parse(getDays[1]));
@@ -96,8 +129,8 @@ namespace SigmaERP.payroll.salary
 
 
 
-          generateMonthlySalarySheet(getDays[1] + "-" + getDays[2], getDays[1], getDays[2], DaysInMonth, getDays[0]);
-            loadExistingSalary();
+            generateMonthlySalarySheet(getDays[1] + "-" + getDays[2], getDays[1], getDays[2], DaysInMonth, getDays[0]);
+            loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
         }
         private void setFromDateToDate(string sy, string sm, string sd)
         {
@@ -238,7 +271,7 @@ namespace SigmaERP.payroll.salary
             }
             catch { }
         }
-       
+
         private void deleteBDTNotes(string CompanyId)
         {
             try
@@ -282,7 +315,7 @@ namespace SigmaERP.payroll.salary
         {
             try
             {
-                
+
 
                 double getTotalOT;
                 string getJoingingDate;
@@ -597,7 +630,7 @@ namespace SigmaERP.payroll.salary
                     //----------End Night Allow.------------------------
                     string a = Session["__getUserId__"].ToString();
 
-               //     saveMonthlyPayrollSheet(month, year, DaysInMonth, dtRunningEmp.Rows[i]["EmpName"].ToString(), i, selectDays, int.Parse(Session["__getUserId__"].ToString()), CompanyId, pg, txtGenerateMonth.Text);
+                    //     saveMonthlyPayrollSheet(month, year, DaysInMonth, dtRunningEmp.Rows[i]["EmpName"].ToString(), i, selectDays, int.Parse(Session["__getUserId__"].ToString()), CompanyId, pg, txtGenerateMonth.Text);
 
                     //if (!isActiveLoop) break;
                 }
@@ -1407,7 +1440,7 @@ namespace SigmaERP.payroll.salary
                 else
                     txtNotTiffinCardno.Text = "0069,0037";
             }
-            loadExistingSalary();
+            loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
         }
         private void removeTiffinCount(string Month)
@@ -1437,12 +1470,17 @@ namespace SigmaERP.payroll.salary
             }
             catch { }
         }
-        private void loadExistingSalary()
+        private void loadExistingSalary(string generateFor)
         {
             try
             {
+                string tableName = "Payroll_MonthlySalarySheet";
+                if (generateFor == "compliance")
+                {
+                    tableName = "Payroll_monthlysalarysheet_Compliances";
+                }
                 DataTable dtExSalary = new DataTable();
-                sqlDB.fillDataTable("select distinct top(4) IsSeperationGeneration,convert(varchar(10), FromDate,120) as FromDate,convert(varchar(10), ToDate,120) as ToDate,format(FromDate,'MMM-yyyy')+' ['+case when IsSeperationGeneration=1 then 'Separation' else 'Regular' end+']' as MonthYear  , count(EmpId) as Total,sum( case when EmpTypeId=1 then 1 else 0 end) as Worker,sum( case when EmpTypeId=2 then 1 else 0 end) as Staff  from Payroll_MonthlySalarySheet where  FromDate is not null and CompanyId='" + ddlCompanyList.SelectedValue + "' group by  convert(varchar(10), FromDate,120),convert(varchar(10), ToDate,120),format(FromDate,'MMM-yyyy'),IsSeperationGeneration order by ToDate desc", dtExSalary);// this line add for RSS ,Date: 05-02-2018
+                sqlDB.fillDataTable("select distinct top(4) IsSeperationGeneration,convert(varchar(10), FromDate,120) as FromDate,convert(varchar(10), ToDate,120) as ToDate,format(FromDate,'MMM-yyyy')+' ['+case when IsSeperationGeneration=1 then 'Separation' else 'Regular' end+']' as MonthYear  , count(EmpId) as Total,sum( case when EmpTypeId=1 then 1 else 0 end) as Worker,sum( case when EmpTypeId=2 then 1 else 0 end) as Staff  from "+ tableName + " where  FromDate is not null and CompanyId='" + ddlCompanyList.SelectedValue + "' group by  convert(varchar(10), FromDate,120),convert(varchar(10), ToDate,120),format(FromDate,'MMM-yyyy'),IsSeperationGeneration order by ToDate desc", dtExSalary);// this line add for RSS ,Date: 05-02-2018
                 gvSalaryList.DataSource = dtExSalary;
                 gvSalaryList.DataBind();
             }
@@ -1459,27 +1497,54 @@ namespace SigmaERP.payroll.salary
                     int rIndex = Convert.ToInt32(e.CommandArgument.ToString());
                     string ToDate = gvSalaryList.DataKeys[rIndex].Values[0].ToString();
                     string IsSeperationGeneration = gvSalaryList.DataKeys[rIndex].Values[1].ToString();
-                    if (deleteExSalary(ToDate, IsSeperationGeneration))
+                    if(ViewState["__salaryGenerateFor__"].ToString()== "regular")
                     {
-                        lblMessage.InnerText = "warning-> Successfully Deleted.";
-                        gvSalaryList.Rows[rIndex].Visible = false;
+                        if (deleteExSalary(ToDate, IsSeperationGeneration))
+                        {
+                            lblMessage.InnerText = "warning-> Successfully Deleted.";
+                            gvSalaryList.Rows[rIndex].Visible = false;
+                        }
                     }
-
+                    else
+                    {
+                        if (deleteExSalaryComplaince(ToDate, IsSeperationGeneration))
+                        {
+                            lblMessage.InnerText = "warning-> Successfully Deleted.";
+                            gvSalaryList.Rows[rIndex].Visible = false;
+                        }
+                    }
+                   
+                    
                 }
             }
             catch { }
         }
-        private bool deleteExSalary(string ToDate,string IsSeperationGeneration)
+        private bool deleteExSalary(string ToDate, string IsSeperationGeneration)
         {
             try
             {
-                query = "delete Payroll_MonthlySalarySheet where IsSeperationGeneration="+ IsSeperationGeneration + " and ToDate='" + ToDate + "' and CompanyId='" + ddlCompanyList.SelectedValue + "'";
+                query = "delete Payroll_MonthlySalarySheet where IsSeperationGeneration=" + IsSeperationGeneration + " and ToDate='" + ToDate + "' and CompanyId='" + ddlCompanyList.SelectedValue + "'";
                 return CRUD.Execute(query, sqlDB.connection);
 
             }
             catch (Exception ex) { lblMessage.InnerText = "error-> " + ex.Message; return false; }
 
         }
+
+
+        private bool deleteExSalaryComplaince(string ToDate, string IsSeperationGeneration)
+        {
+            try
+            {
+                query = "delete Payroll_monthlysalarysheet_Compliances where IsSeperationGeneration=" + IsSeperationGeneration + " and ToDate='" + ToDate + "' and CompanyId='" + ddlCompanyList.SelectedValue + "'";
+                return CRUD.Execute(query, sqlDB.connection);
+
+            }
+            catch (Exception ex) { lblMessage.InnerText = "error-> " + ex.Message; return false; }
+
+        }
+
+
         protected void ddlMonthID_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -1507,7 +1572,39 @@ namespace SigmaERP.payroll.salary
             }
             rbGenaratingType.SelectedValue = "0";
         }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("0"))
+            {
+                btnGenerate.Enabled = false;
+                btnGenerate.CssClass = "";
+            }
+            else
+            {
+                btnGenerate.Enabled = true;
+                btnGenerate.CssClass = "Pbutton";
+            }
+        }
+
+        protected void gvSalaryList_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                try
+                {
+                    if (ViewState["__DeletAction__"].ToString().Equals("0"))
+                    {
+                        Button btnRemove = (Button)e.Row.FindControl("btnRemove");
+                        btnRemove.Enabled = false;
+                        btnRemove.ForeColor = Color.Silver;
+                    }
+
+                }
+                catch { }
+            }
+        }
+
+
     }
-
-
 }

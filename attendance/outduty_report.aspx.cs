@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,17 +14,24 @@ namespace SigmaERP.attendance
 {
     public partial class outduty_report : System.Web.UI.Page
     {
+
+        //permission=321;
         DataTable dt;
         DataTable dtSetPrivilege;
         string CompanyId = "";
         string SqlCmd = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 321 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 txtFromDate.Text = "01-" + DateTime.Now.ToString("MM-yyyy");
                 txtToDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
@@ -42,11 +50,12 @@ namespace SigmaERP.attendance
                 HttpCookie getCookies = Request.Cookies["userInfo"];
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();                
+                ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
                 //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];                
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];                
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
                 //-----------------------------------------------------
             }
@@ -110,6 +119,11 @@ namespace SigmaERP.attendance
                 {
                     lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
                     txtCardNo.Focus();                    
+                    return;
+                }
+                bool condition = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyId);
+                if (!condition)
+                {
                     return;
                 }
                 SqlCmd = "select EmpId,substring(EmpCardNo,8,6) as EmpCardNo,EmpName,DsgName,DptId,DptName,CompanyId,CompanyName,Address,InTime,OutTime,Remark,AssignedBy,Place,convert(varchar(10),Date,105) as Date from v_tblOutDuty where Status=1 and CompanyId='" + CompanyId + "' and Date>='" + commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim()) + "' and Date<='" + commonTask.ddMMyyyyTo_yyyyMMdd(txtToDate.Text.Trim()) + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' order by Date ";                

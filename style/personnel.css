@@ -447,12 +447,13 @@ label {
 }
 .id_card {
     background: none repeat scroll 0 0 #8FD6FF;
-    border: 1px solid #909090;
+    border: 1px solid #ccc;
     margin: 0 auto;
-    padding: 10px; 
+    padding: 20px;
     overflow: hidden;
-    margin-top:10px;
+    margin-top: 10px;
 }
+
 .id_card_left {
     float:left;
     border:0px solid red;
@@ -464,10 +465,10 @@ label {
     font-size:13px;
 }
 .id_card_center {
-    float:left;
-    border:0px solid red;
+    float: left;
+    border: 0px solid red;
     margin-right: 5px;
-    width:54px;
+    width: 80px;
 }
 .id_card_right {
     float:right;
@@ -480,16 +481,18 @@ label {
     font-size:13px;
 }
 .arrow_button {
-    background:#F7EFE7 no-repeat;
+    background: #8231d3 no-repeat;
     border-radius: 5px;
-    color:black;
+    color: #ffffff;
     cursor: pointer;
     font-family: Arial;
     font-size: 14px;
     margin: 0 3px;
     padding: 5px 6px;
     text-decoration: none;
-    width:29px;
+    width: 29px;
+    margin: 2px;
+    border: 0;
 }
 .employee_list_table {
     border-collapse: collapse;

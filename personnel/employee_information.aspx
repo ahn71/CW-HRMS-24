@@ -28,9 +28,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                       <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Employees List</a></li>
                    </ul>
@@ -54,7 +52,7 @@
             <h2>Employee List Report</h2>
         </div>
         <div class="employee_box_body">
-            <div class="employee_box_content" style="height:495px">
+            <div class="employee_box_content">
         <div class="punishment_against1">
                 <div class="punishment_against">  
                     <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>                  

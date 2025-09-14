@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,17 +15,31 @@ namespace SigmaERP.hrd
 {
     public partial class religion : System.Web.UI.Page
     {
+        // permission(View=215 Add=216 Edit=217 Delete=218)
+
         protected void Page_Load(object sender, EventArgs e)
         {
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
-                setPrivilege();                
+                int[] pagePermission = { 215, 216, 217, 218 };
+
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+                setPrivilege(userPagePermition);
+                            
                 LoadReligion("");
             }
         }
-        private void setPrivilege()
+        private void setPrivilege(int [] permission)
         {
             try
             {                
@@ -34,10 +49,16 @@ namespace SigmaERP.hrd
                 string[] AccessPermission = new string[0];
                 AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "religion.aspx",  gvQualificationList, btnSave);
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+
+                if (permission.Contains(215))
+                    ViewState["__ReadAction__"] = "1";
+                if (permission.Contains(216))
+                    ViewState["__WriteAction__"] = "1";
+                if (permission.Contains(217))
+                    ViewState["__UpdateAction__"] = "1";
+                if (permission.Contains(218))
+                    ViewState["__DeletAction__"] = "1";
+                checkInitialPermission();
 
             }
             catch { }
@@ -250,6 +271,22 @@ namespace SigmaERP.hrd
             if (dt.Rows.Count > 0)
                 return false;
             else return true;
+        }
+
+        private void checkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].ToString().Equals("1"))
+            {
+                btnSave.Enabled = true;
+                btnSave.CssClass = "Rbutton";
+            }
+            else
+            {
+                btnSave.Enabled = false;
+                btnSave.CssClass = "";
+            }
+
+
         }
     }
 }

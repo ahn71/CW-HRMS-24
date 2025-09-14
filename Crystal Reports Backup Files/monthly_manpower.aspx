@@ -16,9 +16,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                   <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Ptactive">Monthly Man Power Status</a></li>
                 </ul>
@@ -113,7 +111,6 @@
     </div>
      <script type="text/javascript">
          $(document).ready(function () {
-
              $("#ddlShift").select2();
 
          });

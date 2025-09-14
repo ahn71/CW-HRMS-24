@@ -8,6 +8,11 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 using ComplexScriptingSystem;
+using SigmaERP.hrms.BLL;
+using System.Net;
+using Newtonsoft.Json;
+using System.IO;
+using System.Configuration;
 
 namespace SigmaERP.classes
 {
@@ -16,6 +21,81 @@ namespace SigmaERP.classes
         public static DataTable dt;
         public static SqlDataAdapter da;
         public static string sqlCmd = "";
+
+
+        public static string PostDocument(string url, string Id, string companyId, List<string> ImageBase64, string token)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string requestUrl = $"{url}";
+
+            WebRequest webRequest = WebRequest.Create(requestUrl);
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json";
+            webRequest.Headers["Authorization"] = "Bearer " + token; // Add Authorization header
+
+            var requestBody = new
+            {
+                Id = Id,
+                companyId = companyId,
+                imageBase64 = ImageBase64,
+            };
+
+            string json = JsonConvert.SerializeObject(requestBody);
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+                using (Stream stream = httpWebResponse.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    string response = sr.ReadToEnd();
+                    sr.Close();
+                    return response;
+                }
+            }
+            catch (WebException ex)
+            {
+                using (Stream stream = ex.Response?.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
+        public static List<string> ConvertFilesToBase64(System.Web.UI.WebControls.FileUpload fileUpload)
+        {
+            List<string> base64Files = new List<string>();
+
+            if (fileUpload.HasFile)
+            {
+                foreach (var file in fileUpload.PostedFiles)
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        file.InputStream.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+
+                        string fileExtension = Path.GetExtension(file.FileName).ToLower().TrimStart('.');
+                        string mimeType = fileExtension == "jpg" ? "jpeg" : fileExtension; // Adjust for JPEG
+
+                        string base64String = $"data:image/{mimeType};base64,{Convert.ToBase64String(fileBytes)}";
+                        base64Files.Add(base64String);
+                    }
+                }
+            }
+            return base64Files;
+        }
+
 
         public static string ddMMyyyyTo_yyyyMMdd(string date)
         {
@@ -45,6 +125,22 @@ namespace SigmaERP.classes
                 sqlCmd = "SELECT SL,CompanyId,CompanyName,DptId,DsgId, DptName,DsgName,DsgNameBn, DsgShortName, DsgStatus,Ordering FROM v_HRD_Designation where SL=" + SL;
                 dt = new DataTable();
                 sqlDB.fillDataTable(sqlCmd, dt);
+                return dt;
+            }
+            catch { return null; }
+        }
+
+      
+
+        public static DataTable getDesignationAll(string SL)
+        {
+            try
+            {
+                string sqlcmd = "";
+                sqlcmd = "select dsg.SL, dsg.CompanyId,CompanyName, DsgId,dsg.DptId, ISNULL(NULLIF(dpt.DptName, ''), 'All') AS DptName,DsgName,DsgNameBn,DsgShortName,DsgStatus,Ordering  from HRD_Designation as dsg Left Join HRD_CompanyInfo as cmp on cmp.CompanyId=dsg.CompanyId left join HRD_Department  as dpt on dpt.DptId =dsg.DptId where dsg.SL='"+SL+"'";
+
+                dt = new DataTable();
+                sqlDB.fillDataTable(sqlcmd, dt);
                 return dt;
             }
             catch { return null; }
@@ -98,8 +194,9 @@ namespace SigmaERP.classes
         }
         public static void LoadEmpTypeWithAll(RadioButtonList rbl)
         {
-            da = new SqlDataAdapter("SELECT EmpType, EmpTypeId FROM HRD_EmployeeType", sqlDB.connection);
-            da.Fill(dt = new DataTable());
+            dt = new DataTable();
+            dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT EmpType, EmpTypeId FROM HRD_EmployeeType");
+            string jj = "SELECT EmpType, EmpTypeId FROM HRD_EmployeeType";
             if (dt.Rows.Count > 1)
                 rbl.Items.Add(new ListItem("All", "All"));
             for (byte i = 0; i < dt.Rows.Count; i++)
@@ -120,9 +217,10 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadDepartmetCondition(CompnayId);
                 dt = new DataTable();
 
-                sqlDB.fillDataTable("SELECT Distinct SftName from HRD_Shift where CompanyId=" + CompnayId + " and IsActive=1", dt);
+                sqlDB.fillDataTable("SELECT Distinct SftName from HRD_Shift where " + condition + " and IsActive=1", dt);
                 ddl.DataValueField = "SftName";
                 ddl.DataTextField = "SftName";
                 ddl.DataSource = dt;
@@ -132,6 +230,24 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadActiveShiftsForCompany (string CompnayId, DropDownList ddl)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompnayId);
+                dt = new DataTable();
+
+                sqlDB.fillDataTable("SELECT Distinct SftName,SftId from HRD_Shift where " + condition + " and IsActive=1", dt);
+                ddl.DataValueField = "SftId";
+                ddl.DataTextField = "SftName";
+                ddl.DataSource = dt;
+                ddl.DataBind();
+                if (ddl.Items.Count > 1)
+                    ddl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
+
         public static void LoadEarnleaveList(string CompnayId, DropDownList ddl)
         {
             try
@@ -148,6 +264,22 @@ namespace SigmaERP.classes
             catch { }
         }
 
+        public static string RootUrl
+        {
+            get => HttpContext.Current.Session["__RootUrl__"]?.ToString() ?? "https://localhost:7220";
+        }
+
+        public static string EmpCreateApiURL
+        {
+            get => RootUrl + "/api/Employee/employees/create";
+        }
+
+        public static string UserToken
+        {
+            get => HttpContext.Current.Session["__UserToken__"]?.ToString();
+        }
+
+
         public static bool GroupORLineDependency()
         {
             DataTable dt = new DataTable();
@@ -158,11 +290,16 @@ namespace SigmaERP.classes
         }
         public static bool HasBranch()
         {
-            DataTable dt = new DataTable();
-            sqlDB.fillDataTable("select * from HRD_BranchType", dt);
+             dt = new DataTable();
+            //sqlDB.fillDataTable("select * from HRD_BranchType", dt);
+            dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("select * from HRD_BranchType");
             if (dt.Rows[0]["HasBranch"].ToString().Equals("False"))
                 return false;
             else return true;
+
+          
+
+
         }
         public static void addAllTextInShift(DropDownList dl)
         {
@@ -173,9 +310,10 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadDepartmetCondition(CompnayId);
                 dt = new DataTable();
-                sqlDB.fillDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId=" + CompnayId + "", dt);
-
+                //sqlDB.fillDataTable("SELECT DptId, DptName FROM HRD_Department where CompanyId=" + CompnayId + "", dt);
+                dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT DptId, DptName FROM HRD_Department where " + condition + "");
                 lst.DataValueField = "DptId";
                 lst.DataTextField = "DptName";
                 lst.DataSource = dt;
@@ -183,13 +321,29 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void LoadDepartmentDDL(DropDownList downList,string CompnayId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompnayId);
+                DataTable dt = CRUD.ExecuteReturnDataTable("SELECT DptId, DptName FROM HRD_Department where  " + condition + "");
+                downList.DataValueField = "DptId";
+                downList.DataTextField = "DptName";
+                downList.DataSource = dt;
+                downList.DataBind();
+                downList.Items.Insert(0, new ListItem("---Select One---", "0"));
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoByEmpType(DropDownList dl, string CompanyId, string EmpTypeID)
         {
             try
             {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 EmpTypeID = (EmpTypeID == "All") ? "" : "EmpTypeId=" + EmpTypeID + " and";
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeProfile where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and CompanyId='" + CompanyId + "' Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
+                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeProfile where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "SN";
@@ -198,6 +352,21 @@ namespace SigmaERP.classes
             catch { }
         }
 
+        public static void LoadEmpCardNoByEmpTypeForProfile(DropDownList dl, string CompanyId, string EmpTypeID)
+        {
+            try
+            {
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
+                EmpTypeID = (EmpTypeID == "All") ? "" : "EmpTypeId=" + EmpTypeID + " and";
+                dt = new DataTable();
+                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeProfile where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
+                dl.DataSource = dt;
+                dl.DataTextField = "EmpCardNo";
+                dl.DataValueField = "EmpId";
+                dl.DataBind();
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoByShift(DropDownList dl, string CompanyId, string SftID)
         {
             try
@@ -246,9 +415,11 @@ namespace SigmaERP.classes
         {
             try {
 
-                da = new SqlDataAdapter("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                //da = new SqlDataAdapter("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                dt = new DataTable();
+                dt = SigmaERP.hrms.Data.CRUD.ExecuteReturnDataTable("SELECT CompanyId, CompanyName FROM HRD_CompanyInfo where CompanyId='" + CompanyId + "'");
 
-                da.Fill(dt = new DataTable());
+                //da.Fill(dt = new DataTable());
                 dl.DataValueField = "CompanyId";
                 dl.DataTextField = "CompanyName";
                 dl.DataSource = dt;
@@ -346,12 +517,28 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("Select GId,GName From HRD_Group where CompanyId='" + CompanyId + "' and IsActive='True'", dt = new DataTable());
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlDB.fillDataTable("Select GId,GName From HRD_Group where " + condition + " and IsActive='True'", dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "GId";
                 dl.DataTextField = "GName";
                 dl.DataBind();
                 dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
+        public static void LoadGroupingAll(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlDB.fillDataTable("Select GId,GName From HRD_Group where " + condition + " and IsActive='True'", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "GId";
+                dl.DataTextField = "GName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
             }
             catch { }
         }
@@ -381,12 +568,13 @@ namespace SigmaERP.classes
             }
             catch { }
         }
-
+   
         public static void loadDepartmentListByCompany(DropDownList dl, string CompanyId)
         {
             try
             {
-                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                string condtion = AccessControl.loadDepartmetCondition(CompanyId);
+                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where " + condtion + "", sqlDB.connection);
                 da.Fill(dt = new DataTable());
                 dl.DataValueField = "DptId";
                 dl.DataTextField = "DptName";
@@ -400,7 +588,8 @@ namespace SigmaERP.classes
         {
             try
             {
-                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where " + condition + "", sqlDB.connection);
                 da.Fill(dt = new DataTable());
                 dl.DataValueField = "DptId";
                 dl.DataTextField = "DptName";
@@ -410,6 +599,24 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void loadDepartmentListByCompanyWithCommonDpt(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetConditionAll(CompanyId);
+                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where " + condition + "", sqlDB.connection);
+                da.Fill(dt = new DataTable());
+                dl.DataValueField = "DptId";
+                dl.DataTextField = "DptName";
+                dl.DataSource = dt;
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
+
+
         public static void loadLeaveNameByCompany(DropDownList dl, string CompanyId)
         {
             try
@@ -536,7 +743,9 @@ namespace SigmaERP.classes
         {
             try
             {
-                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where CompanyId=" + companyId + "", sqlDB.connection);
+                string conditon = AccessControl.loadDepartmetCondition(companyId);
+ ;
+                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where "+ conditon + "", sqlDB.connection);
                 da.Fill(dt = new DataTable());
                 dl.DataValueField = "DptId";
                 dl.DataTextField = "DptName";
@@ -550,7 +759,8 @@ namespace SigmaERP.classes
         {
             try
             {
-                da = new SqlDataAdapter("SELECT DptId+'_'+DptCode as DptId,DptCode, DptName FROM HRD_Department where CompanyId=" + companyId + " order by convert(int,DptCode)", sqlDB.connection);
+                string conditon = AccessControl.loadDepartmetCondition(companyId);
+                da = new SqlDataAdapter("SELECT DptId+'_'+DptCode as DptId,DptCode, DptName FROM HRD_Department " + conditon + " order by convert(int,DptCode)", sqlDB.connection);
                 da.Fill(dt = new DataTable());
                 dl.DataValueField = "DptId";
                 dl.DataTextField = "DptName";
@@ -620,6 +830,34 @@ namespace SigmaERP.classes
                 dl.DataSource = dt;
                 dl.DataValueField = "DsgId";
                 dl.DataTextField = "DsgName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
+        public static void LoadDesignationAll(string DptId, DropDownList dl)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select DsgId,DsgName From HRD_Designation where DsgStatus='True' and  ( DptId='" + DptId + "' or DptId=0)", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "DsgId";
+                dl.DataTextField = "DsgName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
+        public static void LoadUnit(string CompanyId, DropDownList dl)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select UnitId,UnitName From HRDUnits where CompanyId='"+ CompanyId + "' and IsActive=1", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "UnitId";
+                dl.DataTextField = "UnitName";
                 dl.DataBind();
                 dl.Items.Insert(0, new ListItem(string.Empty, "0"));
             }
@@ -715,7 +953,8 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where companyId='" + CompanyId + "' AND IsActive='true'", dt = new DataTable());
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where " + condition + " AND IsActive='true'", dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
@@ -742,7 +981,9 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1 and IsInitial=1 and CompanyId='" + CompanyId + "'", dt = new DataTable());
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlDB.fillDataTable("select SftId,SftName from HRD_Shift where IsActive=1 and " + condition + "", dt = new DataTable());
+                string condggition="select SftId,SftName from HRD_Shift where IsActive = 1 and IsInitial = 1 and " + condition + "";
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
@@ -820,6 +1061,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadGrade(DropDownList dl, string companyId)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select GradeID,GrdName From HrdGrade where CompanyId=" + companyId+" and GrdStatus='True'", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "GradeID";
+                dl.DataTextField = "GrdName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
 
         public static void loadEmpCardNo(DropDownList dl, string empId)
         {
@@ -858,8 +1113,10 @@ namespace SigmaERP.classes
         {
             try
             {
+
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 dl.Items.Clear();
-                SQLOperation.selectBySetCommandInDatatable("select EmpID+'/'+convert(varchar(10),PfDate,120)  EmpID,  EmpCardNo+' '+ EmpName as EmpCardNo  from v_Personnel_EmpCurrentStatus where isActive=1 and PfMember=1  and CompanyID='" + CompanyId + "'", dt = new DataTable(), sqlDB.connection);
+                SQLOperation.selectBySetCommandInDatatable("select EmpID+'/'+convert(varchar(10),PfDate,120)  EmpID,  EmpCardNo+' '+ EmpName as EmpCardNo  from v_Personnel_EmpCurrentStatus where isActive=1 and PfMember=1  and " + condition + "", dt = new DataTable(), sqlDB.connection);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "EmpID";
@@ -965,6 +1222,25 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+
+        public static void _loadEmpTye(RadioButtonList rl)
+        {
+            try
+            {
+                dt = new DataTable();
+
+                sqlDB.fillDataTable("select EmpTypeId,EmpType from  HRD_EmployeeType ", dt);
+                rl.DataSource = dt;
+
+                rl.DataValueField = "EmpTypeId";
+                rl.DataTextField = "EmpType";
+                rl.DataBind();
+                rl.Items.Insert(rl.Items.Count, new ListItem("All", "0"));
+                rl.SelectedIndex = rl.Items.Count - 1;
+
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoAppoinmentLetter(string EmpTypeId, string DId, string DptId, DropDownList dl)
         {
             try
@@ -1000,9 +1276,9 @@ namespace SigmaERP.classes
         {
             try
             {
-
+                string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpCardNo,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNoAndName From v_Personnel_EmpCurrentStatus where   EmpStatus in ('1','8') and IsActive='1' and CompanyId='" + CompanyId + "' Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
+                sqlDB.fillDataTable("Select EmpCardNo,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNoAndName From v_Personnel_EmpCurrentStatus where   EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNoAndName";
                 dl.DataValueField = "EmpId";
@@ -1154,6 +1430,16 @@ namespace SigmaERP.classes
             catch { }
         }
         // ----------------For Seperation--------------------
+
+        public static string GetFullImagePath()
+        {
+            string baseUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
+            string folder = ConfigurationManager.AppSettings["employeeImageFolder"];
+            string companyId = HttpContext.Current.Session["__GetCompanyId__"]?.ToString();
+
+            return $"{baseUrl}//{companyId}/{folder}/";
+        }
+
         public static void LoadMonthForSeperation(DropDownList dl, string CompanyId)
         {
             try
@@ -1195,12 +1481,29 @@ namespace SigmaERP.classes
         }
         //-------------------------------------------------------------------------
         //-------------------------------For Promotion-----------------------------------------
+        //public static void LoadMonthForPromotion(DropDownList dl, string CompanyId)
+        //{
+        //    try
+        //    {
+        //        sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
+        //                   " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='p' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+        //        sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
+        //        dl.DataSource = dt;
+        //        dl.DataTextField = "MonthName";
+        //        dl.DataValueField = "EffectiveMonth";
+        //        dl.DataBind();
+        //        dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+        //    }
+        //    catch { }
+        //}
         public static void LoadMonthForPromotion(DropDownList dl, string CompanyId)
         {
             try
             {
-                sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
-                           " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='p' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+
+                sqlCmd = @"SELECT DISTINCT CASE 
+        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'p' AND CompanyId = '"+CompanyId+"' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";
@@ -1232,8 +1535,9 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlCmd = "select distinct FORMAT(CONVERT(datetime,convert(varchar(2),SUBSTRING(EffectiveMonth,1,2))+'/'+convert(varchar(2),01)+'/'+convert(varchar(4),SUBSTRING(EffectiveMonth,4,10))),'MMM-yyyy')" +
-                         " as MonthName,EffectiveMonth,substring(EffectiveMonth,4,4) ,substring(EffectiveMonth,0,3)  from v_Promotion_Increment where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by substring(EffectiveMonth,4,4) desc,substring(EffectiveMonth,0,3) desc";
+                sqlCmd = @"SELECT DISTINCT CASE 
+        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'i' AND CompanyId = '" + CompanyId + "' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";
@@ -1453,10 +1757,11 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
                 dt = new DataTable();
 
 
-                sqlDB.fillDataTable("SELECT  DptId, DptName FROM HRD_Department where CompanyId='" + CompanyId + "' And DptStatus=1 ", dt = new DataTable());
+                sqlDB.fillDataTable("SELECT  DptId, DptName FROM HRD_Department where " + condition + " And DptStatus=1 ", dt = new DataTable());
                 lst.DataValueField = "DptId";
                 lst.DataTextField = "DptName";
                 lst.DataSource = dt;
@@ -1501,10 +1806,11 @@ namespace SigmaERP.classes
         {
             try
             {
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
                 dt = new DataTable();
 
                 TypeId = (TypeId == "All") ? "" : " and EmpTypeId=" + TypeId + "";
-                sqlDB.fillDataTable("SELECT Distinct DptId, DptName FROM v_SeparationSheet where CompanyId='" + CompanyId + "' " + TypeId + "  and EFMonth='" + MonthName + "' and IsActive=1", dt = new DataTable());
+                sqlDB.fillDataTable("SELECT Distinct DptId, DptName FROM v_SeparationSheet where " + condition + " " + TypeId + "  and EFMonth='" + MonthName + "' and IsActive=1", dt = new DataTable());
 
                 lst.DataValueField = "DptId";
                 lst.DataTextField = "DptName";
@@ -1528,6 +1834,20 @@ namespace SigmaERP.classes
                 lst.DataBind();
             }
             catch { }
+        }
+
+        public static void loadBankNameCompanyWise(string companyId,DropDownList ddlbankList)
+        {
+           
+            DataTable dt = new DataTable();
+            sqlDB.fillDataTable("select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and   IsPayer=1 and CompanyId='0001'", dt);
+            string sajj = "select  CAST(BankId AS VARCHAR) + '_' + BankShortName AS BankId, BankName + '(' + BankShortName + ')' AS BankName from Hrd_BankInfo where IsActive=1 and  BankShortName is not null and IsPayer=1 and CompanyId='0001'";
+            ddlbankList.DataSource = dt;
+            ddlbankList.DataValueField = "BankId";
+            ddlbankList.DataTextField = "BankName";
+            ddlbankList.DataBind();
+            ddlbankList.Items.Insert(0, new ListItem("ALL", "0"));
+           
         }
         public static void AddRemoveItem(ListBox aSource, ListBox aTarget)
         {
@@ -1645,7 +1965,8 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where IsInitial='false' and CompanyId='" + CompanyId + "' AND DptId='" + dptId + "' order by sftName ", dt = new DataTable());
+                sqlCmd = "SELECT SftId, SftName FROM HRD_Shift WHERE CompanyId='" + CompanyId + "' AND (DptId='" + dptId + "' OR DptId='0') ORDER BY SftName";
+                sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
@@ -1659,14 +1980,36 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlDB.fillDataTable("Select SftId,SftName From HRD_Shift where IsInitial='false' and CompanyId='" + CompanyId + "' order by sftName ", dt = new DataTable());
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlCmd = "Select SftId,SftName From HRD_Shift where " + condition + " or DptId='0' order by sftName ";
+                sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "SftId";
                 dl.DataTextField = "SftName";
                 dl.DataBind();
                 dl.Items.Insert(0, new ListItem(string.Empty, "0"));
             }
-            catch { }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public static void LoadPermanentShiftShift(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                sqlCmd = "Select SftId,SftName From HRD_Shift where " + condition + " or DptId='0' order by sftName ";
+                sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "SftId";
+                dl.DataTextField = "SftName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch (Exception ex)
+            {
+            }
         }
         public static void loadDepartmentListByCompanyAndGroup(DropDownList dl, string CompanyId, string GroupId)
         {
@@ -1728,7 +2071,7 @@ namespace SigmaERP.classes
                 dl.DataSource = dt;
                 dl.DataBind();
                 if (dl.Items.Count > 1)
-                    dl.Items.Insert(0, new ListItem("All", "0"));
+                    dl.Items.Insert(0, new ListItem("", "0"));
             }
             catch { }
         }
@@ -1777,7 +2120,9 @@ namespace SigmaERP.classes
         {
             try
             {
-                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where CompanyId='" + CompanyId + "'", sqlDB.connection);
+                string condition = AccessControl.loadDepartmetCondition(CompanyId);
+                da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where " + condition + "", sqlDB.connection);
+                
                 da.Fill(dt = new DataTable());
                 dl.DataValueField = "DptId";
                 dl.DataTextField = "DptName";
@@ -2374,6 +2719,50 @@ namespace SigmaERP.classes
             catch (Exception ex) { return false; }
 
         }
+
+        public static void loadReportName(DropDownList dl, int [] permissionID)
+        {
+            string rpermissionId = string.Join(",", permissionID);
+            try
+            {
+                sqlDB.fillDataTable("select userPermId,PermissionName from userpermission where userPermId in("+ rpermissionId + ")", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "userPermId";
+                dl.DataTextField = "PermissionName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("---Select---", "0"));
+            }
+            catch { }
+        }
+
+        public static string getBankAcount(string bankID)
+        {
+            string query = "select BankAccount from hrd_bankinfo where BankId =" + bankID;
+            DataTable dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0]["BankAccount"].ToString();
+            else
+                return "";
+
+        }
+
+        public static void loadUnit(DropDownList dl, string CompanyId)
+        {
+            try
+            {
+
+                da = new SqlDataAdapter("select Unitid,UnitName  from HRDUnits Where CompanyId='"+ CompanyId + "'", sqlDB.connection);
+                da.Fill(dt = new DataTable());
+                dl.DataValueField = "Unitid";
+                dl.DataTextField = "UnitName";
+                dl.DataSource = dt;
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
+            }
+            catch { }
+        }
+
+
 
     }
 }

@@ -13,10 +13,9 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
+           
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li>  <a href="/pf/pf_index.aspx">Provident Fund</a></li>
+                      <li><a href="<%= Session["__topMenuPf__"] %>"> Provident Fund</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                      <li> <a href="#" class="ds_negevation_inactive Pactive">PF Profit Distribution</a></li>
                 </ul>
@@ -118,7 +117,7 @@
                         <asp:UpdatePanel ID="UpdatePanel1" runat="server">    
         <ContentTemplate>
                      <%--<div id="ShiftConfig" class="datatables_wrapper" runat="server" style="width:100%; height:auto; max-height:500px;overflow:auto;overflow-x:hidden;"></div>--%>
-                    <asp:GridView ID="gvPFSettings" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="CompanyId,FdrID"   AllowPaging="True"   >
+                    <asp:GridView ID="gvPFSettings" runat="server"  Width="100%" AutoGenerateColumns="False" DataKeyNames="CompanyId,FdrID" AllowPaging="True" >
 <HeaderStyle BackColor="#FFA500" Font-Bold="True" Font-Size="14px" ForeColor="White" Height="28px"></HeaderStyle>
                         <PagerStyle CssClass="gridview Sgridview" Height="40px" />
                        <RowStyle HorizontalAlign="Center" />

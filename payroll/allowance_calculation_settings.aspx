@@ -1,7 +1,10 @@
 ﻿<%@ Page Title="Allowance Calculation Settings" Language="C#" MasterPageFile="~/payroll_nested.master" AutoEventWireup="true" CodeBehind="allowance_calculation_settings.aspx.cs" Inherits="SigmaERP.payroll.allowance_calculation_settings" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+<%--<link href="https://ajax.aspnetcdn.com/ajax/ToolkitStyles/ToolkitStyles.css" rel="stylesheet" />--%>
 
         <script type="text/javascript">
 
@@ -27,6 +30,114 @@
         .gv1 th {
             text-align:center;
         }
+
+.ajax__tab_xp .ajax__tab_header .ajax__tab_tab {
+    background-image: none !important;
+    background-repeat: no-repeat;
+}
+r .ajax__tab_active .ajax__tab_outer{
+    Background-image: none !important;
+}
+.ajax__tab_xp .ajax__tab_header .ajax__tab_active .ajax__tab_tab {
+     background-image:none !important;
+}
+.ajax__tab_xp .ajax__tab_header .ajax__tab_inner {
+    background-image: none !important;
+}
+
+.ajax__tab_xp .ajax__tab_header .ajax__tab_outer {
+    background-image: none !important;
+}
+/* Default tab style */
+/* Inactive tab style *//* Base container styling */
+.ajax__tab_xp .ajax__tab_header {
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    padding-left: 10px;
+}
+
+.ajax__tab_xp .ajax__tab_header .ajax__tab_active .ajax__tab_tab {
+    background: #337ab7 !important;
+    color: #fff !important;
+}
+.ajax__tab_xp .ajax__tab_header {
+   
+    font-size: 14px !important;
+}
+.ajax__tab_xp .ajax__tab_header .ajax__tab_inner {
+    background: #fff;
+    border:0 !important;
+}
+.ajax__tab_xp .ajax__tab_header .ajax__tab_inner {
+    background-repeat: no-repeat;
+    padding-left: 0 !important;
+    height: 33px !important;
+}
+.ajax__tab_xp .ajax__tab_body {
+    background-color: #ffffff;
+    /* border: 1px solid #999999; */
+    border: 0 !important;
+}
+.ajax__tab_xp .ajax__tab_header {
+    background-image: none !important;
+     border: 0 !important;
+}
+.ajax__tab_xp .ajax__tab_header .ajax__tab_inner {
+    background: #ddd !important;
+}
+div#ContentPlaceHolder1_ContentPlaceHolder1_tcContainer_tab1 {
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+.Pbody {
+   border: 0 !important;
+}
+.ajax__tab_xp .ajax__tab_header .ajax__tab_inner {
+    background: #fff;
+    /* border: 1px solid #b5b5b5 !important; */
+}
+.main_box_header{
+    display:none;
+}
+/* All tabs */
+.ajax__tab_xp .ajax__tab_tab {
+    background-color: transparent;
+    color: #0d6efd;
+    font-weight: 500;
+    padding: 10px 16px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-radius: 0.375rem 0.375rem 0 0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.ajax__tab_xp .ajax__tab_tab:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6 #dee2e6 transparent;
+}
+
+/* Active tab */
+.ajax__tab_xp .ajax__tab_active .ajax__tab_tab {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-bottom-color: transparent;
+    color: #212529;
+}
+
+/* Content area */
+.ajax__tab_xp .ajax__tab_body {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    padding: 16px;
+    background-color: #fff;
+}
+
+
+
+
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -35,10 +146,9 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
+      
                     <li><a class="seperator" href="#"></a>/</li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
-                    <li><a class="seperator" href="#"></a>/</li>
-                    <li><a href="/payroll/salary_index.aspx">Salary</a></li>
+                     <li><a href="<%= Session["__topMenuforSalary__"] %>">Salary</a></li>
                     <li><a class="seperator" href="#"></a>/</li>
                     <li><a href="#" class="ds_negevation_inactive Pactive">Allowance Calculation Settings</a></li>
                 </ul>
@@ -60,6 +170,9 @@
         <div class="employee_box_body">
          
             <div class="employee_box_content">--%>
+
+
+
      <div class="main_box Mbox">
         <div class="main_box_header PBoxheader">
             <h2 style="float: none">
@@ -76,8 +189,8 @@
                         </Triggers>
                         <ContentTemplate>
 
-                               <asp:TabContainer runat="server" ID="tcContainer" CssClass="fancy fancy-green" ActiveTabIndex="0" >
-                <asp:TabPanel runat="server" HeaderText="Allowance Calculation Plan Settings" TabIndex="0"  ID="tab1" >
+                               <asp:TabContainer runat="server" ID="tcContainer" CssClass="ajax__tab_xp" ActiveTabIndex="0" >
+                                   <asp:TabPanel runat="server" HeaderText="Allowance Calculation Plan Settings" TabIndex="0"  ID="tab1" >
                     <ContentTemplate>
                         <center>
                                 <div>
@@ -473,9 +586,7 @@
                                         <br />
                                        </ContentTemplate>
                                    </asp:TabPanel>
-            </asp:TabContainer>
-
-                            
+                              </asp:TabContainer>                          
                         </ContentTemplate>
                     </asp:UpdatePanel>
                    

@@ -93,10 +93,9 @@
             <div class="ds_nagevation_bar">
                 <ul>
                     <li><a href="/default.aspx">Dasboard</a></li>
+
                     <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll_default.aspx">Payroll</a></li>
-                    <li><a class="seperator" href="#">/</a></li>
-                    <li><a href="/payroll/advance/advance_index.aspx">Advance</a></li>
+                  <li><a href="<%= Session["__topMenuAdvance__"] %>">Advance</a></li>
                     <li><a class="seperator" href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Pactive">Advance List</a></li>
                 </ul>

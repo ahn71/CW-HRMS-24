@@ -34,7 +34,7 @@ namespace SigmaERP.classes
                 int result = int.Parse(cmd.ExecuteScalar().ToString());
                 return result;
             }
-            catch { return 0; }
+            catch(Exception ex) { return 0; }
         }
 
         public static bool Execute(string sqlCmd, SqlConnection con)
@@ -74,6 +74,8 @@ namespace SigmaERP.classes
             }
             catch (Exception ex) { return null; }
         }
+
+
         public static DataTable ExecuteReturnDataTable(string sqlCmd,SqlConnection con )
         {
             try

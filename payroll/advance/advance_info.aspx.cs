@@ -1,5 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,12 +16,19 @@ namespace SigmaERP.payroll
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            //permission=357;
 
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+
+            int[] pagePermission = { 357 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpType(rblEmpType);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
@@ -61,28 +70,28 @@ namespace SigmaERP.payroll
                     //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
                     //}
 
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='advance_info.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                    //sqlDB.fillDataTable("select * from UserPrivilege where PageName='advance_info.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
 
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPreview.CssClass = "css_btn"; btnPreview.Enabled = true;
-                        }
-                        else
-                        {
-                            tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                        }
+                    //if (dtSetPrivilege.Rows.Count > 0)
+                    //{
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                    //    {
+                    //        btnPreview.CssClass = "css_btn"; btnPreview.Enabled = true;
+                    //    }
+                    //    else
+                    //    {
+                    //        tblGenerateType.Visible = false;
+                    //        WarningMessage.Visible = true;
+                    //        btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                    //    }
 
-                    }
-                    else
-                    {
-                        tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    tblGenerateType.Visible = false;
+                    //    WarningMessage.Visible = true;
+                    //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                    //}
 
                 }
 
@@ -232,10 +241,16 @@ namespace SigmaERP.payroll
                 }
                 else
                 {
-       //             getSQLCMD = @"SELECT CustomOrdering,ld.EmpId,ld.CompanyId, EmpName, DptId, DptName, DsgName, SUBSTRING(EmpCardNo,8,6) as EmpCardNo, EmpPresentSalary, BasicSalary, EmpProximityNo, CompanyName, Address, ld.LoanID, LoanAmount,  InstallmentAmount,Format( DeductFrom,'MM-yyyy') as  DeductFrom , ParticularAmount,convert(varchar(10), LoanTakeDate,105) as  LoanTakeDate,convert(varchar(10), LoanTakeDate,120),StatusId,Status,EmpType,EmpTypeId,ld.LoanDetailsID,Format( lmd.Month,'MM-yyyy') as InstallmentMonth ,lmd.Amount as InstallmentAmountPaid
-       //               FROM v_Payroll_LoanInfoDetails ld left join Payroll_LoanMonthlySetup lmd on ld.LoanID=lmd.LoanID and lmd.IsPaid=1 " + condisions + @" 
-					  //ORDER BY CompanyId,DptId,CustomOrdering,ld.LoanID desc,convert(varchar(10), LoanTakeDate,120), lmd.Month";
+                    //             getSQLCMD = @"SELECT CustomOrdering,ld.EmpId,ld.CompanyId, EmpName, DptId, DptName, DsgName, SUBSTRING(EmpCardNo,8,6) as EmpCardNo, EmpPresentSalary, BasicSalary, EmpProximityNo, CompanyName, Address, ld.LoanID, LoanAmount,  InstallmentAmount,Format( DeductFrom,'MM-yyyy') as  DeductFrom , ParticularAmount,convert(varchar(10), LoanTakeDate,105) as  LoanTakeDate,convert(varchar(10), LoanTakeDate,120),StatusId,Status,EmpType,EmpTypeId,ld.LoanDetailsID,Format( lmd.Month,'MM-yyyy') as InstallmentMonth ,lmd.Amount as InstallmentAmountPaid
+                    //               FROM v_Payroll_LoanInfoDetails ld left join Payroll_LoanMonthlySetup lmd on ld.LoanID=lmd.LoanID and lmd.IsPaid=1 " + condisions + @" 
+                    //ORDER BY CompanyId,DptId,CustomOrdering,ld.LoanID desc,convert(varchar(10), LoanTakeDate,120), lmd.Month";
 
+                    string companyList = ddlCompanyName.SelectedValue.Equals("0000") ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
+                    bool hasEmpard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), companyList);
+                    if (!hasEmpard)
+                    {
+                        return;
+                    }
                     getSQLCMD = @"SELECT CustomOrdering,ld.EmpId,ld.CompanyId, EmpName, DptId, DptName, DsgName, SUBSTRING(EmpCardNo,8,6) as EmpCardNo, EmpPresentSalary, BasicSalary, EmpProximityNo, CompanyName, Address, ld.LoanID, LoanAmount, sum(lmd.Amount) as PaidAmount, InstallmentAmount,Format( DeductFrom,'MM-yyyy') as  DeductFrom , ParticularAmount,convert(varchar(10), LoanTakeDate,105) as  LoanTakeDate,convert(varchar(10), LoanTakeDate,120),StatusId,Status,EmpType,EmpTypeId,SUBSTRING( convert(varchar(10), MAX(lmd.Month),105),4,7) as LastInstallmentAt,count(lmd.Month) as PaidInstallmentNo
                       FROM v_Payroll_LoanInfoDetails ld left join Payroll_LoanMonthlySetup lmd on ld.LoanID=lmd.LoanID and lmd.IsPaid=1 " + condisions + @"   group by CustomOrdering,
                       ld.EmpId,ld.CompanyId, EmpName, DptId, DptName, DsgName, SUBSTRING(EmpCardNo,8,6), EmpPresentSalary, BasicSalary, EmpProximityNo, CompanyName, Address, ld.LoanID, LoanAmount, PaidAmount, InstallmentAmount,Format( DeductFrom,'MM-yyyy')  , ParticularAmount,convert(varchar(10), LoanTakeDate,105),convert(varchar(10), LoanTakeDate,120) ,StatusId,Status,EmpType,EmpTypeId 

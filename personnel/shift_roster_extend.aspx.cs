@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,12 +14,13 @@ using System.Web.UI.WebControls;
 
 namespace SigmaERP.personnel
 {
+    //permission=432
     public partial class shift_roster_extend : System.Web.UI.Page
     {
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            int[] pagePermission = { 432 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
@@ -33,6 +35,9 @@ namespace SigmaERP.personnel
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompanyList.Enabled = false;
@@ -49,16 +54,16 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
+                //string[] AccessPermission = new string[0];
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "FloorAssigne.aspx", ddlCompanyList, gvEmpList, btnExtend);
 
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "FloorAssigne.aspx", ddlCompanyList, gvEmpList, btnExtend);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];                
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];                
-               
                 ddlCompanyList.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.loadDepartmentListByCompany(ddlDepartmentList, ddlCompanyList.SelectedValue);
 
@@ -72,19 +77,49 @@ namespace SigmaERP.personnel
             try
             {
                 classes.commonTask.loadGroupByDepartment_Company(ddlGrouopList, ddlCompanyList.SelectedValue, ddlDepartmentList.SelectedValue);
-               
+
+                if (ddlGrouopList.Items.Count > 0)
+                {
+                    ddlGrouopList.SelectedIndex = 0;
+
+                    // Manually trigger the selected index changed event
+                    ddlGrouopList_SelectedIndexChanged(ddlGrouopList, EventArgs.Empty);
+                }
+
             }
             catch { }
         }
 
+        string SqlCmd = "";
 
         private void loadAssignedShiftList()
         {
             try
             {
+                string condition = "";
+                if(ddlGrouopList.SelectedIndex > 0)
+                {
+                   condition += " AND GID = '" + ddlGrouopList.SelectedValue.ToString() + "'";
+                }
+
                 dt = new DataTable();
-                if (!chkLoadAllShiftList.Checked) sqlDB.fillDataTable("select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='"+ddlGrouopList.SelectedValue.ToString()+"' order by STId Desc ", dt);
-                else sqlDB.fillDataTable("select STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' AND GID='" + ddlGrouopList.SelectedValue.ToString() + "' order by STId Desc ", dt);
+                if (!chkLoadAllShiftList.Checked) {
+
+                    SqlCmd = "select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' " + condition + " order by STId Desc";
+
+
+                    sqlDB.fillDataTable(SqlCmd, dt);
+                }
+                
+                else
+                {
+
+                    SqlCmd = "select STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' "+ condition + " order by STId Desc";
+
+                    sqlDB.fillDataTable(SqlCmd, dt);
+                }
+                //string hhhh = "select  top 50 STID,Convert(varchar,STId)+'|'+DptId+'|'+ CONVERT(varchar,sftId) as SftId_DptId, Format(TFromdate,'dd-MM-yyyy')+' | '+Format(TToDate,'dd-MM-yyyy')+' | '+SftName +' | '+GName as Title from v_ShiftTransferInfo_DepartmetnList  where STId !='1' AND CompanyId='" + ddlCompanyList.SelectedValue.ToString() + "' AND DptId='" + ddlDepartmentList.SelectedValue + "' " + condition + " order by STId Desc  ";
+
                 ddlAssignShift.DataTextField = "Title";
                 ddlAssignShift.DataValueField = "SftId_DptId";
                 ddlAssignShift.DataSource = dt;
@@ -105,17 +140,25 @@ namespace SigmaERP.personnel
 
         protected void ddlAssignShift_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
-            if (ddlDepartmentList.SelectedValue == "0")
+            try
             {
-                gvEmpList.DataSource = null;
-                gvEmpList.DataBind(); return;
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                if (ddlDepartmentList.SelectedValue == "0")
+                {
+                    gvEmpList.DataSource = null;
+                    gvEmpList.DataBind(); return;
+                }
+                divRecordMessage.Visible = false;
+                gvEmpList.Visible = true;
+                LoadAllEmployeeList();
+                lblTotal.Text = gvEmpList.Rows.Count.ToString();
+            
+
             }
-            divRecordMessage.Visible = false;
-            if (!ViewState["__ReadAction__"].ToString().Equals("0"))
-            gvEmpList.Visible = true;
-            LoadAllEmployeeList();
-            lblTotal.Text = gvEmpList.Rows.Count.ToString();
+            catch (Exception ex)
+            { }
+
+       
 
         }
 
@@ -176,7 +219,11 @@ namespace SigmaERP.personnel
             }
 
             string[] Dates = ddlAssignShift.SelectedItem.Text.Split('|');
-            
+            if (Dates.Length == 0)
+            {
+                lblErrorMessage.Text = "Shift missing";
+                return;
+            }
             Extend_Schedule(Dates[1]);
             if (gvEmpList.Rows.Count > 0)
             {

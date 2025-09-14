@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SigmaERP.classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,38 +20,29 @@ namespace SigmaERP
                     if (getCookies == null || getCookies.Value == "")
                     {
                       //  Response.Redirect("~/ControlPanel/Login.aspx");
-                        Response.Redirect("~/hrms/UI/auth/login.aspx");
+                       // Response.Redirect("~/hrms/UI/auth/login.aspx");
+                        Response.RedirectToRoute(Routing.LoginRouteName);
                     }
                     else
                     {
-                        Response.Redirect("~/hrms/dashboard.aspx");
-                        if (Session["__IsCompliance__"].ToString().Equals("True"))
+
+                        var accessLevel = Session["__UserDataAccessLevel__"] != null ? Session["__UserDataAccessLevel__"].ToString() : "";
+
+                        if (accessLevel == "1")
                         {
-                            try
-                            {
-
-                                divSettings.Visible = false;
-                                divTools.Visible = false;
-
-                            }
-                            catch { Response.Redirect("~/default.aspx"); }
+                            Response.RedirectToRoute(Routing.UserDashboardRoutName); 
                         }
-                        else if (Session["__UserNameText__"].ToString() == "common")
+                        else
                         {
-                            try
-                            {                               
-
-                                divSettings.Visible = false;
-                                divPersonnel.Visible = false;
-                                divTools.Visible = false;
-                                divPayroll.Visible = false;
-
-                            }
-                            catch { Response.Redirect("~/default.aspx"); }
+                            // Redirect to dashboard or other route
+                            Response.RedirectToRoute(Routing.dashboardRoutName);
                         }
+
+                              
+                        
                     }
                 }
-                catch { }
+                catch(Exception ex) { }
             }
         }
     }

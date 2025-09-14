@@ -13,6 +13,7 @@ using ComplexScriptingSystem;
 using System.Data.SqlClient;
 using System.Drawing;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
@@ -21,19 +22,35 @@ namespace SigmaERP.attendance
         string strSQL = "";
 
         SqlCommand cmd;
-       
+
+        //View=255,Add=256, Delete=257,Edit=258
+
+        //Dataacees Level= OnlyMe=1 All=3 Own=2 custom=4
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
 
-        
+            string perMissionList = "";
+            int[] pagePermission = { 255, 256, 257, 258 };
+
             if (!IsPostBack)
             {
+                ViewState["__ReadAction__"] = "0";
+                ViewState["__WriteAction__"] = "0";
+                ViewState["__UpdateAction__"] = "0";
+                ViewState["__DeletAction__"] = "0";
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
+                //checkPermissiomn(userPagePermition);
                 ViewState["__preRIndex__"] = "No";
                 ViewState["__IsCalculated__"] = "No";
-                setPrivilege();
+               
+                setPrivilege(userPagePermition);
                 LoadGrid();
                 if (!classes.commonTask.HasBranch())
                 ddlCompanyList.Enabled = false;
@@ -42,7 +59,7 @@ namespace SigmaERP.attendance
         }
 
         static DataTable  dtSetprivilege;
-        private void setPrivilege()
+        private void setPrivilege(int [] accessPermission)
         {
             try
             {
@@ -53,16 +70,22 @@ namespace SigmaERP.attendance
                 ViewState["__getUserId__"] = getUserId;
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-
          
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "monthly_setup.aspx", ddlCompanyList, gvMonthSetup, btnSave);
+               // string[] AccessPermission = new string[0];
+              //  AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "monthly_setup.aspx", ddlCompanyList, gvMonthSetup, btnSave);
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
-               
+                if(accessPermission.Contains(255))
+                    ViewState["__ReadAction__"] ="1";
+                if(accessPermission.Contains(256))
+                    ViewState["__WriteAction__"] = "1";
+                if (accessPermission.Contains(257))
+                    ViewState["__UpdateAction__"] = "1";
+                if(accessPermission.Contains(258))
+                    ViewState["__DeletAction__"] = "1";
+                cheCkInitialPermission();
+
+
 
             }
             catch { Response.Redirect("~/hrms/UI/auth/login.aspx"); }
@@ -287,6 +310,9 @@ namespace SigmaERP.attendance
               
                 if (e.CommandName == "Edit")
                 {
+                   
+                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "CallBoxExpland", "BoxExpland();", true);
+
                     if (!ViewState["__preRIndex__"].ToString().Equals("No")) gvMonthSetup.Rows[int.Parse(ViewState["__preRIndex__"].ToString())].BackColor = System.Drawing.ColorTranslator.FromHtml("#FFFFFF");
 
                     int rIndex = int.Parse((e.CommandArgument).ToString());
@@ -310,7 +336,7 @@ namespace SigmaERP.attendance
 
                     txtMonthName.Enabled = false;
 
-
+                  
 
                 }
                 else if (e.CommandName == "Delete")
@@ -523,32 +549,29 @@ namespace SigmaERP.attendance
             catch { }
 
 
-            if (ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer"))
+            try
             {
-                try
+                if (ViewState["__DeletAction__"].ToString().Equals("0"))
                 {
-                    if (ViewState["__DeletAction__"].ToString().Equals("0"))
-                    {
-                        Button lnkDelete = (Button)e.Row.FindControl("lnkDelete");
-                        lnkDelete.Enabled = false;
-                        lnkDelete.OnClientClick = "return false";
-                        lnkDelete.ForeColor = Color.Silver;
-                    }
-
+                    Button lnkDelete = (Button)e.Row.FindControl("lnkDelete");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.OnClientClick = "return false";
+                    lnkDelete.ForeColor = Color.Silver;
                 }
-                catch { }
-                try
-                {
-                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
-                    {
-                        Button lnkDelete = (Button)e.Row.FindControl("lnkEdit");
-                        lnkDelete.Enabled = false;
-                        lnkDelete.ForeColor = Color.Silver;
-                    }
 
-                }
-                catch { }
             }
+            catch { }
+            try
+            {
+                if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                {
+                    Button lnkDelete = (Button)e.Row.FindControl("lnkEdit");
+                    lnkDelete.Enabled = false;
+                    lnkDelete.ForeColor = Color.Silver;
+                }
+
+            }
+            catch { }
         }
 
         protected void dlDivision_SelectedIndexChanged(object sender, EventArgs e)
@@ -565,5 +588,46 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
+
+
+        public void checkPermissiomn(int[] permissionList)
+        {
+
+            //View=191,Add=192, Delete=194,Edit=193
+            int[] permissionLists = permissionList;
+            if (permissionLists.Contains(191))
+                ViewState["__ReadAction__"] = "1";
+            if(permissionList.Contains(192))
+                ViewState["__AddAction__"] = 1;
+            if(permissionList.Contains(192))
+                ViewState["__EditAction__"] = 1;
+            if(permissionList.Contains(194))
+                ViewState["__DeleteAction__"] = 1;
+
+        }
+
+        public void cheCkInitialPermission()
+        {
+            if (ViewState["__WriteAction__"].Equals("0"))
+            {
+                btnSave.Enabled = false;
+                btnClear.Enabled = false;
+                Button3.Enabled = false;
+                btnSave.CssClass = "";
+                btnClear.CssClass = "";
+                Button3.CssClass = "";
+            }
+            else
+            {
+                btnSave.Enabled = true;
+                btnClear.Enabled = true;
+                Button3.Enabled = true;
+                btnSave.CssClass = "Mbutton";
+                btnClear.CssClass = "Mbutton";
+                Button3.CssClass = "Mbutton";
+            }
+        }
+
+       
     }
-    }
+}

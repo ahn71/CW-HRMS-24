@@ -93,7 +93,7 @@ namespace SigmaERP.personnel
                 lstAll.Items.Clear();
                 lstSelected.Items.Clear();
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
-                classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);
+                 classes.commonTask.loadDepartmentListByCompany(ddlDepName, CompanyID);
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
                
 

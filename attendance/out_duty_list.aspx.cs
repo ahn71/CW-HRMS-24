@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,16 +15,23 @@ namespace SigmaERP.attendance
 {
     public partial class out_duty_list : System.Web.UI.Page
     {
+        //permission=316;
         string sql = "";
         string CompanyId = "";
         DataTable dt;
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 316 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 Session["__dtClient__"] = "";
                 ViewState["__rIndex__"] = "";
@@ -66,16 +74,16 @@ namespace SigmaERP.attendance
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();               
                 ViewState["__EmpId__"] = getCookies["__getEmpId__"].ToString();
+                classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
 
+                //string[] AccessPermission = new string[0];
+                //Button btnSave = new Button();
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "aplication.aspx", ddlCompanyList, btnSave);
 
-                string[] AccessPermission = new string[0];
-                Button btnSave = new Button();
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), ViewState["__getUserId__"].ToString(), ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "aplication.aspx", ddlCompanyList, btnSave);
-
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
 
                
 
@@ -151,36 +159,66 @@ namespace SigmaERP.attendance
                 ViewState["__TDate__"] = dates[2] + "-" + dates[1] + "-" + dates[0];
                 ddlChoseYear.SelectedIndex = 0;
             }
-         
+
+            string condition = "";
            
-            CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
+            string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
+            string dataAccesscondition = AccessControl.getDataAccessCondition(CompanyId,"0");
+
+            sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty  where ";
+
             //0. Search by Company and From date, To Date
             if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0)  && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0)
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' "+ EmpId+AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            {
+                condition= "Status=" + rblApprovedPending.SelectedValue + " and " + dataAccesscondition + " and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc"; 
+            }
+                
             //1. Search by Company and year
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlChoseYear.SelectedIndex > 0 && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0)  && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0)
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and year(Date)='"+ddlChoseYear.SelectedValue+ "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+                {
+                    condition = "Status =" + rblApprovedPending.SelectedValue + " and " + dataAccesscondition + " and year(Date)='" + ddlChoseYear.SelectedValue + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+                }
+               
             //2. Search by Company, CardNo.
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0)  && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "'  and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+                condition = "Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "'  and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
             //3. Search by Company,Department,Card No
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='"+ddlDepartmentList.SelectedValue+ "'  and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+                {
+                    condition = " Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "'  and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+                }
+
+              
             //4. Search by Company, Department
-            else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != ""  && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' " + EmpId + AdminCondition + EmpType + "   order by year(Date) desc,month(Date) desc,date desc";
+                else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != ""  && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
+                {
+                    condition = " Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' " + EmpId + AdminCondition + EmpType + "   order by year(Date) desc,month(Date) desc,date desc";
+                }
+                
             //5. Search by Company, CardNo, From date,To date
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentList.SelectedIndex == -1 || ddlDepartmentList.SelectedIndex == 0) && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0)
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            {
+                condition = " Status=" + rblApprovedPending.SelectedValue + " and " + dataAccesscondition + " and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            }
+                
            //6. Search by Company,Department,Year
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != ""  && ddlChoseYear.SelectedItem.Text.Trim() != "")
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' and year(Date)='" + ddlChoseYear.SelectedValue + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            {
+                condition = " Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' and year(Date)='" + ddlChoseYear.SelectedValue + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            }
+               
             //7. Search by Company, Department, FromDate,ToDate
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != "" && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length == 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            {
+                condition = " Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' " + EmpId + AdminCondition + EmpType + "  order by year(Date) desc,month(Date) desc,date desc";
+            }
+               
             //8. Search by Company, Department, FromDate,ToDate,Card no.
             else if (ddlCompanyList.SelectedItem.Text.Trim() != "" && ddlDepartmentList.SelectedItem.Text.Trim() != ""  && txtFromDate.Text.Trim().Length > 0 && txtToDate.Text.Trim().Length > 0 && txtCardNo.Text.Trim().Length > 0 && (ddlChoseYear.SelectedIndex == 0 || ddlChoseYear.SelectedIndex == -1))
-                sql = "select SL,EmpId,substring(EmpCardNo,8,10)+' ('+ EmpProximityNo+')' as EmpCardNo,substring(EmpCardNo,8,10) as EmpCardNo_,EmpName,DptName,DsgName,convert(varchar(10),Date,105) as Date,case  when Status=0 then 'Pending' when Status=1 then 'Approved' when Status=2 then 'Rejected'  end as Status ,Type,case when Type=0 then 'Out Duty' else 'Training' end as TypeName,Remark,ISNULL(StraightFromHome,0) as StraightFromHome,ISNULL(StraightToHome,0) as StraightToHome,AuthorizedByName+' ('+ SUBSTRING(AuthorizedByEmpCardNo,8,6)+') '+ format(AuthorizedDate ,'dd-MM-yyyy hh:mm:ss tt') as AuthorizedByName,EmpType,Processing from v_tblOutDuty where  Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "   order by year(Date) desc,month(Date) desc,date desc";
+            {
+                condition = " Status=" + rblApprovedPending.SelectedValue + " and CompanyId='" + CompanyId + "' and DptId='" + ddlDepartmentList.SelectedValue + "' and Date >='" + ViewState["__FDate__"].ToString() + "' and Date<='" + ViewState["__TDate__"].ToString() + "' and EmpCardNo like'%" + txtCardNo.Text.Trim() + "' " + EmpId + AdminCondition + EmpType + "   order by year(Date) desc,month(Date) desc,date desc";
+            }
+            sql += condition;
             sqlDB.fillDataTable(sql, dt = new DataTable());
             gvOutDuty.DataSource = dt;
             gvOutDuty.DataBind();

@@ -16,9 +16,7 @@
                    <ul>
                        <li><a href="/default.aspx">Dashboard</a></li>
                        <li><a href="#">/</a></li>
-                       <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                       <li><a href="#">/</a></li>
-                       <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                    <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Employee Information</a></li>
                        <li><a href="#">/</a></li>
                        <li><a href="#" class="ds_negevation_inactive Ptactive">Contact List Report</a></li>
                    </ul>               
@@ -34,8 +32,7 @@
 
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
         <Triggers>
-           <asp:AsyncPostBackTrigger ControlID="ddlCompany" />
-           <asp:AsyncPostBackTrigger ControlID="ddlShiftList" />  
+           <asp:AsyncPostBackTrigger ControlID="ddlCompany" /> 
             <asp:AsyncPostBackTrigger ControlID="rblReportType" />         
         </Triggers>
         <ContentTemplate>
@@ -59,17 +56,7 @@
                                  <asp:DropDownList ID="ddlCompany" runat="server"  AutoPostBack="true" ClientIDMode="Static" CssClass="form-control select_width" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"  >
                                 </asp:DropDownList>                           
                             </td>
-                           </tr>
-                         <tr>
-                            <td>
-                                Shift
-                            </td>
-                            <td>:</td>
-                            <td class="tdWidth">
-                                <asp:DropDownList ID="ddlShiftList" runat="server" ClientIDMode="Static" CssClass="form-control select_width">
-                                </asp:DropDownList>  
-                            </td>  
-                        </tr>   
+                           </tr> 
                          <tr>
                             <td>Employee Type</td>
                             <td>:</td>

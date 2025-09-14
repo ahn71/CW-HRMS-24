@@ -1,5 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,13 +15,21 @@ namespace SigmaERP.payroll
     public partial class bonus_sheet_Report : System.Web.UI.Page
     {
         DataTable dt;
+        //permission=391
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 391 };
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.loadEmpTye(rblEmployeeType);
                 rblEmployeeType.SelectedValue = "1";
                 setPrivilege();
@@ -43,14 +53,14 @@ namespace SigmaERP.payroll
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 //ViewState["__CompanyId__"] = (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin") || ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()).Equals("Viewer")) ? ddlCompanyName.SelectedValue : getCookies["__CompanyId__"].ToString();
-                if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Viewer"))
-                {
-                    classes.commonTask.LoadBranch(ddlCompanyName);
-                    classes.commonTask.LoadDepartmentByCompanyInListBox(ViewState["__CompanyId__"].ToString(), lstAll);
-                   // classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());
-                }
-                else
-                {
+                //if (ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Super Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Master Admin") || ComplexLetters.getEntangledLetters(getCookies["__getUserType__"].ToString()).Equals("Viewer"))
+                //{
+                //    classes.commonTask.LoadBranch(ddlCompanyName);
+                //    classes.commonTask.LoadDepartmentByCompanyInListBox(ViewState["__CompanyId__"].ToString(), lstAll);
+                //   // classes.commonTask.LoadShift(ddlShiftName, ViewState["__CompanyId__"].ToString());
+                //}
+                //else
+                //{
                     chkForAllCompany.Visible = false;
                     dtSetPrivilege = new DataTable();
                     chkForAllCompany.Enabled = true;
@@ -62,29 +72,29 @@ namespace SigmaERP.payroll
                     //{
                     //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
                     //}
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_sheet_Report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPreview.CssClass = "css_btn"; btnPreview.Enabled = true;
-                        }
-                        else
-                        {
-                            tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                        }
+                //    sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_sheet_Report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                //    if (dtSetPrivilege.Rows.Count > 0)
+                //    {
+                //        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                //        {
+                //            btnPreview.CssClass = "css_btn"; btnPreview.Enabled = true;
+                //        }
+                //        else
+                //        {
+                //            tblGenerateType.Visible = false;
+                //            WarningMessage.Visible = true;
+                //            btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                //        }
 
-                    }
-                    else
-                    {
-                        tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                    }
+                //    }
+                //    else
+                //    {
+                //        tblGenerateType.Visible = false;
+                //        WarningMessage.Visible = true;
+                //        btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                //    }
 
-                }
+                //}
 
                 string CompanyId = (ddlCompanyName.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
 
@@ -191,6 +201,11 @@ namespace SigmaERP.payroll
                 }
                 else
                 {
+                    bool hasEmpcard = AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), CompanyList);
+                    if (!hasEmpcard)
+                    {
+                        return;
+                    }
                     getSQLCMD = "SELECT GenerateOn,GId,Gname,EmpType, substring(v_Payroll_YearlyBonusSheet.EmpCardNo,8,15)+'('+EmpProximityNo+')' as EmpCardNo, v_Payroll_YearlyBonusSheet.PresentSalary,v_Payroll_YearlyBonusSheet.BasicSalary,v_Payroll_YearlyBonusSheet.BonusAmount," +
                               "round(v_Payroll_YearlyBonusSheet.Percentage,2) Percentage, v_Payroll_YearlyBonusSheet.EmpName,v_Payroll_YearlyBonusSheet.DptName,v_Payroll_YearlyBonusSheet.DptId,v_Payroll_YearlyBonusSheet.DsgName," +
                               " FORMAT(v_Payroll_YearlyBonusSheet.EmpJoiningDate ,'dd-MM-yyyy') as EmpJoiningDate, v_Payroll_YearlyBonusSheet.CompanyName, v_Payroll_YearlyBonusSheet.Address, v_Payroll_YearlyBonusSheet.SftName,v_Payroll_YearlyBonusSheet.CompanyId,v_Payroll_YearlyBonusSheet.SftId,v_Payroll_YearlyBonusSheet.DptId " +

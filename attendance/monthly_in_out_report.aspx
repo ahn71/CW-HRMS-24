@@ -25,7 +25,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li>/</li>
-                    <li><a href="/attendance_default.aspx">Attendance</a></li>
+                   <li><a href="<%=  Session["__topMenu__"] %>">Attendance</a></li>
                     <li>/</li>
                     <li><a href="#" class="ds_negevation_inactive Mactive">Monthly Status</a></li>
                 </ul>
@@ -40,7 +40,7 @@
     </asp:UpdatePanel>
     <div class="main_box Mbox">
         <div class="main_box_header MBoxheader">
-            <h2>Monthly Attendance Status Report</h2>
+            <h2 runat="server" id="hdMenu">Monthly Attendance Status Report</h2>
         </div>
         <div class="employee_box_body">
             <div class="employee_box_content">
@@ -56,13 +56,34 @@
 <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>
                     
                      <table runat="server" visible="true" id="tblGenerateType"  class="division_table_leave1">                                      
-                                <tr id="trForCompanyList" runat="server">
-                                <td>Company</td>
+                         <tr runat="server" id="trUnit">
+                             <td>Unit</td>
                                     <td>&nbsp;:&nbsp;</td>
                                 <td>
-                                    <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
+                                     <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
                                     </asp:DropDownList>
+                                </td>
+
+                         </tr>
+                                <tr id="trForCompanyList" runat="server">
+                                <td runat="server" visible="false">
+                                    <asp:DropDownList ID="ddlCompanyName" runat="server" ClientIDMode="Static" Visible="false" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyName_SelectedIndexChanged" >
+                                    </asp:DropDownList>
+
+                                   
+
                                 </td>   
+
+                                     <td>Permanent Shift 
+                            </td>
+                            <td>:
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="ddlPermanentShift" ClientIDMode="Static" CssClass="form-control select_width" runat="server">
+                                </asp:DropDownList>
+
+                            </td>
+
                                      <td>Generate Type</td>
                                     <td>&nbsp;:&nbsp;</td>        
                                 <td><asp:RadioButtonList ID="rblGenerateType" runat="server" RepeatDirection="Horizontal" Font-Bold="true" AutoPostBack="True" OnSelectedIndexChanged="rblGenerateType_SelectedIndexChanged">
@@ -98,16 +119,17 @@
                        </tr>
                                 <caption>
                                     <br />
-                                    <tr>
+                                    <tr runat="server" id="trReportType">
                                         <td>Report Type </td>
                                         <td>&nbsp;:&nbsp;</td>
                                         <td colspan="5">
                                             <asp:RadioButtonList ID="rblReportType" runat="server" AutoPostBack="True" Font-Bold="true" RepeatDirection="Horizontal">
                                                 <asp:ListItem Selected="True" Text="Log in-out" Value="0"></asp:ListItem>
-                                                <asp:ListItem Text="Attendance status" Value="1"></asp:ListItem>
-                                                <asp:ListItem Text="Attendance summary" Value="2"></asp:ListItem>
-                                                <asp:ListItem Text="Job Card" Value="3"></asp:ListItem>
-                                                <asp:ListItem Text="Job Card New" Value="5"></asp:ListItem>
+                                            <%--  <asp:ListItem runat="server" Visible="false" Text="Attendance status" Value="1"></asp:ListItem>--%>
+
+                                                <asp:ListItem Text="Attendance status" Value="2"></asp:ListItem>
+                                             <%--   <asp:ListItem Text="Job Card" Value="3"></asp:ListItem>--%>
+                                                <asp:ListItem Text="Job Card" Value="5"></asp:ListItem>
                                                 <asp:ListItem Text="Only W &amp; H" Value="4"></asp:ListItem>
                                             </asp:RadioButtonList>
                                         </td>

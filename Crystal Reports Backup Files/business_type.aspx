@@ -31,7 +31,7 @@
                 <ul>
                       <li><a href="/default.aspx">Dashboard</a></li>
                        <li> <a href="#">/</a></li>
-                       <li> <a href="/hrd_default.aspx">Settings</a></li>
+                         <li><a href="<%= Session["__topMenuforSettings__"] %>">Settings</a></li>
                        <li> <a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive Ractive">Business Type</a></li>
                 </ul>

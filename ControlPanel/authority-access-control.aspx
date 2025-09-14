@@ -48,8 +48,8 @@
                 <div style="margin-top: 5px">
                     <ul>
                         <li><a href="/default.aspx">Dashboard</a></li>
-                        <li>/</li>
-                        <li><a href="/tools_default.aspx">Tools</a></li>
+                    <%--    <li>/</li>--%>
+        <%--                <li><a href="/tools_default.aspx">Tools</a></li>--%>
                         <li>/</li>
                         <li><a href="#" class="ds_negevation_inactive Tactive">Authority Access Control</a></li>
                     </ul>
@@ -65,7 +65,7 @@
     </asp:UpdatePanel>
   <div id="divChangePasswordMainBox" runat="server" class="create_account_main_box Mbox">
                 <div class="employee_box_header TBoxheader">
-                    <h2>User Privilege Panel</h2>
+                    <h2>Approval authority Panel</h2>
                 </div>
               <%--  <div class="punishment_bottom_header" style="width: 900px;">
                     
@@ -99,7 +99,7 @@
                              <td>
                                  <asp:RadioButtonList runat="server" ID="rblAutoritySetupType" ClientIDMode="Static" RepeatDirection="Horizontal" OnSelectedIndexChanged="rblAutoritySetupType_SelectedIndexChanged" AutoPostBack="true" >
                                      <asp:ListItem Selected="True" Value="Lv">Leave Authoriy Setup</asp:ListItem>
-                                     <asp:ListItem Value="OD">Out Duty Authoriy Setup</asp:ListItem>
+                                     <asp:ListItem Value="OD">Special Case Authority Setup</asp:ListItem>
                                  </asp:RadioButtonList>
                            </td>                           
                          </tr>
@@ -162,7 +162,7 @@
                              </asp:BoundField> 
                              <asp:TemplateField HeaderText="Possition" >
                                 <ItemTemplate>
-                                    <asp:TextBox runat="server" ID="txtLvAuthorityOrder" CssClass="txt form-control"  Text='<%#Eval("LvAuthorityOrder")%>'></asp:TextBox>   
+                                    <asp:TextBox runat="server" ID="txtLvAuthorityOrder" CssClass="txt form-control"></asp:TextBox>   
                                     
                                 </ItemTemplate>
                             </asp:TemplateField>

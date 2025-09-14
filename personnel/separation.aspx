@@ -59,9 +59,7 @@
                 <ul>
                     <li><a href="/default.aspx">Dashboard</a></li>
                     <li><a href="#">/</a></li>
-                    <li><a href="/personnel_defult.aspx">Personnel</a></li>
-                    <li><a href="#">/</a></li>
-                    <li><a href="/personnel/employee_index.aspx">Employee Information</a></li>
+                    <li> <a href="<%= Session["__topMenuForPersonnel__"] %>">Personnel</a></li>
                     <li><a href="#">/</a></li>
                     <li><a href="#" class="ds_negevation_inactive">Employees Seperation</a></li>
                 </ul>
@@ -195,7 +193,7 @@
                         </Triggers>
                         <ContentTemplate>
                             
-                                <table style="width:100%">
+                                <table  >
                                     <tr>
                                          <td visible="false" id="tdCompany" runat="server">Company
                                     </td>
@@ -229,8 +227,8 @@
                                         <asp:BoundField DataField="EmpTypeId" HeaderText="EmpTypeId" Visible="false" />
 
                                         <asp:BoundField DataField="EmpCardNo" HeaderText="Code" Visible="true" />
-                                        <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true" ItemStyle-Width="90%" />
-                                        <asp:BoundField DataField="EmpType" HeaderText="Type" Visible="true" ItemStyle-Width="20%" />
+                                        <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true"  />
+                                        <asp:BoundField DataField="EmpType" HeaderText="Type" Visible="true"/>
 
                                         <asp:BoundField DataField="EffectiveDate" HeaderText="Effective Date" Visible="true" />
                                         <asp:BoundField DataField="EmpStatusName" HeaderText="Sep.Type" Visible="true" />
@@ -260,7 +258,7 @@
 
               </asp:TabPanel>
              <asp:TabPanel ID="tabSeperationList" runat="server" TabIndex="1" >
-                 <HeaderTemplate>Current Seperation List</HeaderTemplate>
+                 <HeaderTemplate>Seperation List</HeaderTemplate>
                  <ContentTemplate>
                      <asp:UpdatePanel runat="server">
                           <Triggers>
@@ -276,7 +274,22 @@
                                     <td  style="font-size: 16px">
                                         <asp:DropDownList ID="ddlCompanyCurrentList" ClientIDMode="Static" CssClass="form-control" runat="server" AutoPostBack="True"  OnSelectedIndexChanged="ddlCompanyCurrentList_SelectedIndexChanged">
                                         </asp:DropDownList>
-                                    </td>                                 
+                                    </td>
+                                    <td>Card No
+                                    </td>
+                                    <td>:
+                                    </td>
+                                    <td>
+                                        <asp:TextBox runat="server" ID="txtCardNoSpFilter" CssClass="form-control">
+                                        </asp:TextBox>
+
+                                    </td>
+                                     <td>
+                                         <asp:Button runat="server" ID="btnSplSearch" ClientIDMode="Static" Text="Search" CssClass="css_btn Ptbut" OnClick="btnSplSearch_Click" />
+                                    </td>
+                   <%--                  <td>
+                                         <asp:Button runat="server" ID="splClear" ClientIDMode="Static" Text="Clear" CssClass="css_btn Ptbut" OnClientClick="return Clear()" />
+                                    </td>--%>
                                 </tr>
                                </table>
                                  <br />                          
@@ -538,5 +551,6 @@
         }
     </script>
  
-  
+
+
 </asp:Content>

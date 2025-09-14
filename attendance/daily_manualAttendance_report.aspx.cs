@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.attendance
 {
@@ -17,13 +18,19 @@ namespace SigmaERP.attendance
         DataTable dtSetPrivilege;
         string CompanyId = "";
         string query = "";
+
+        //view=266
         protected void Page_Load(object sender, EventArgs e)
         {
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
+            int[] pagePermission = { 266 };
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
@@ -45,11 +52,13 @@ namespace SigmaERP.attendance
 
                 //------------load privilege setting inof from db------
                 //------------load privilege setting inof from db------
-                string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+                //string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompany, ViewState["__CompanyId__"].ToString());
+                //  AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "daily_movement.aspx", ddlCompany, WarningMessage, tblGenerateType, btnPreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
                 classes.commonTask.LoadShiftNameByCompany(ViewState["__CompanyId__"].ToString(), ddlShift);
                 classes.commonTask.LoadDepartment(ViewState["__CompanyId__"].ToString(), lstAll);
+                classes.commonTask.loadUnit(ddlUnit, ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
 
 
@@ -118,8 +127,15 @@ namespace SigmaERP.attendance
             CompanyList = "in ('" + CompanyId + "')";
             DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
 
+            string unitCondition = "";
+            if (ddlUnit.SelectedValue != "0")
+            {
+                unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+            }
+
+
             if (txtCardNo.Text.Trim().Length == 0)
-                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "' and ar.CompanyId " + CompanyList + "   AND ar.DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + "  order by convert(int,ar.DptCode),convert(int,ar.GId), convert(int,ar.SftId),ar.CustomOrdering ";               
+                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "' and ar.CompanyId " + CompanyList + "   AND ar.DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + "  "+ unitCondition + " order by convert(int,ar.DptCode),convert(int,ar.GId), convert(int,ar.SftId),ar.CustomOrdering ";               
             else
             {
                 if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
@@ -129,7 +145,7 @@ namespace SigmaERP.attendance
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
-                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where ar.AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "'  and ar.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and ar.CompanyId " + CompanyList + " " + AttStatus + " ";
+                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where ar.AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "'  and ar.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and ar.CompanyId " + CompanyList + " " + AttStatus + "  " + unitCondition + " ";
                
             }
             sqlDB.fillDataTable(query, dt = new DataTable());
@@ -184,9 +200,9 @@ namespace SigmaERP.attendance
 
         }
 
+        protected void ddlUnit_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
-
-
-
+        }
     }
 }

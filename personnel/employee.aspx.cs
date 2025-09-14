@@ -19,6 +19,11 @@ using System.Text;
 using SigmaERP.classes;
 
 using IronXL;
+using SigmaERP.hrms.BLL;
+using System.Net;
+using Newtonsoft.Json;
+using OfficeOpenXml;
+
 namespace SigmaERP.personnel
 {
     public partial class Employee : System.Web.UI.Page
@@ -28,15 +33,24 @@ namespace SigmaERP.personnel
         static string SignatureImage = "";
         DataTable dt;
         private static Random rnd = new Random();
+
+        //View=270
         protected void Page_Load(object sender, EventArgs e)
+
         {
             try
             {
+                int[] pagePermission = { 270 };
+
                 sqlDB.connectionString = Glory.getConnectionString();
                 sqlDB.connectDB();
                 lblMessage.InnerText = "";
                 if (!IsPostBack)
                 {
+                    int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                    if (!userPagePermition.Any())
+                        Response.Redirect(Routing.defualtUrl);
+
                     ViewState["__IsSave__"] = "";
                     txtProximityNo.Enabled = false;
                     classes.commonTask.LoadEmpType(rblEmpType);
@@ -56,15 +70,20 @@ namespace SigmaERP.personnel
                     classes.Employee.LoadEmpStatus(ddlEmpStatus);
                    classes.commonTask.LoadShiftOnlyIndependent(ddlShift, ddlBranch.SelectedValue);
                     if (ViewState["__CardNoType__"].ToString().Equals("True"))
-                        classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
-                    else 
-                    { 
-                        AutoGenerateEmpId(); 
-                        classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
+                        loadDepartMentWithCode();
+                    //classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+                    else
+                    {
+                        AutoGenerateEmpId();
+                        loadDepartMents();
+                        //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment); 
                     }
-                    classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
-                    FlatCustomOrdering();        
-                    classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
+                    classes.Employee.LoadEmpCardNoForEntry(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
+                    FlatCustomOrdering();
+                    classes.commonTask.LoadUnit(ddlBranch.SelectedValue, ddlUnit);
+
+                    //classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
+                    classes.commonTask.LoadDesignationAll(ddlDepartment.SelectedValue.ToString(), ddlDesingnation);
                     if (ViewState["__LineORGroupDependency__"].ToString().Equals("False"))
                         classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
                     //-----------------For Employee Personel---------------------
@@ -97,7 +116,10 @@ namespace SigmaERP.personnel
                 }
 
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Handle the exception here
+            }
         }
         private void Transfer()
         {
@@ -154,13 +176,15 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
+                ViewState["__dptID__"] = getCookies["__DptId__"].ToString();
+                classes.commonTask.LoadBranch(ddlBranch, ViewState["__CompanyId__"].ToString());
 
                 string[] AccessPermission = new string[0];
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
-                ViewState["__ReadAction__"] = AccessPermission[0];
-                ViewState["__WriteAction__"] = AccessPermission[1];
-                ViewState["__UpdateAction__"] = AccessPermission[2];
-                ViewState["__DeletAction__"] = AccessPermission[3];
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForSettigs(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlBranch, btnSave);
+                //ViewState["__ReadAction__"] = AccessPermission[0];
+                //ViewState["__WriteAction__"] = AccessPermission[1];
+                //ViewState["__UpdateAction__"] = AccessPermission[2];
+                //ViewState["__DeletAction__"] = AccessPermission[3];
                 //SetUserType();
                
             }
@@ -387,7 +411,11 @@ namespace SigmaERP.personnel
                 ViewState["__DptCode__"] = dptID[1].ToString();
                 if (ViewState["IsTranster"]==null || ViewState["IsTranster"].ToString().Equals(""))
                 AutoGenerateEmpIdByDepartment();
-                classes.commonTask.LoadDesignation(ViewState["__DptId__"].ToString(), ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(ViewState["__DptId__"].ToString(), ddlDesingnation);
+
+
+
+
                classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
                // classes.commonTask.LoadShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ViewState["__DptId__"].ToString());
                 DepartmentCustomOrdering();
@@ -395,7 +423,7 @@ namespace SigmaERP.personnel
             else
             {
                 ViewState["__DptId__"] = ddlDepartment.SelectedValue;
-                classes.commonTask.LoadDesignation(ddlDepartment.SelectedValue, ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(ddlDepartment.SelectedValue, ddlDesingnation);
                 classes.commonTask.LoadInitialShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ddlDepartment.SelectedValue);
                 //classes.commonTask.LoadShiftByDepartment(ddlShift, ddlBranch.SelectedValue, ddlDepartment.SelectedValue);
             }
@@ -406,6 +434,82 @@ namespace SigmaERP.personnel
             }
                 
         }
+
+
+        public string PostDocument(string url, string empId, string companyId, List<string> empImageBase64, List<string> signatureImageBase64, string token)
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            string requestUrl = $"{url}";
+
+            WebRequest webRequest = WebRequest.Create(requestUrl);
+            webRequest.Method = "POST";
+            webRequest.ContentType = "application/json";
+            webRequest.Headers["Authorization"] = "Bearer " + token; // Add Authorization header
+
+            var requestBody = new
+            {
+                empId = empId,
+                companyId = companyId,
+                employeeImageBase64 = empImageBase64,
+                signatureImageeBase64 = signatureImageBase64
+            };
+
+            string json = JsonConvert.SerializeObject(requestBody);
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(webRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(json);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)webRequest.GetResponse())
+                using (Stream stream = httpWebResponse.GetResponseStream())
+                {
+                    StreamReader sr = new StreamReader(stream);
+                    string response = sr.ReadToEnd();
+                    sr.Close();
+                    return response;
+                }
+            }
+            catch (WebException ex)
+            {
+                using (Stream stream = ex.Response?.GetResponseStream())
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    string errorResponse = reader.ReadToEnd();
+                    Console.WriteLine("Error: " + errorResponse);
+                    return errorResponse;
+                }
+            }
+        }
+
+        private List<string> ConvertFilesToBase64(System.Web.UI.WebControls.FileUpload fileUpload)
+        {
+            List<string> base64Files = new List<string>();
+
+            if (fileUpload.HasFile)
+            {
+                foreach (var file in fileUpload.PostedFiles)
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        file.InputStream.CopyTo(ms);
+                        byte[] fileBytes = ms.ToArray();
+
+                        string fileExtension = Path.GetExtension(file.FileName).ToLower().TrimStart('.');
+                        string mimeType = fileExtension == "jpg" ? "jpeg" : fileExtension; // Adjust for JPEG
+
+                        string base64String = $"data:image/{mimeType};base64,{Convert.ToBase64String(fileBytes)}";
+                        base64Files.Add(base64String);
+                    }
+                }
+            }
+            return base64Files;
+        }
+
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
@@ -426,8 +530,27 @@ namespace SigmaERP.personnel
                             saveEmpAddress();//only mobile no
                         AllClear();
                         classes.Employee.LoadEmpCardNo(ddlEmpCardNo, rblEmpType.SelectedValue, ddlBranch.SelectedValue, txtEmpCardNo.Text.Trim());
-                        ddlEmpCardNo.SelectedValue = "0";
-                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeeAddress.aspx');", true);
+                        //ddlEmpCardNo.SelectedValue = "0";
+                        string empId = ViewState["__EmpId__"]?.ToString();
+
+                        string rootUrl = Session["__RootUrl__"]?.ToString();
+                        string apiUrl = rootUrl + "/api/Employee/employees/create";
+
+
+                        string token = Session["__UserToken__"]?.ToString();
+
+                        List<string> empImageBase64 = ConvertFilesToBase64(FileUpload1);
+                        List<string> signatureImageBase64 = ConvertFilesToBase64(FileUpload2);
+
+                        string response = PostDocument(apiUrl, empId, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
+
+
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "SweetAlertSuccess",
+              "Swal.fire({ icon: 'success', title: 'Saved!', text: 'Employee information saved successfully.' });", true);
+
+                        //                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
+                        //$"goToNewTab('/personnel/EmployeeAddress.aspx?EmpId={empId}');", true);
+
                         //if (ViewState["__Username__"]!=null)
                         //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeePersonal.aspx?UserName=" + ViewState["__Username__"].ToString() + "&Password=" + ViewState["__Password__"] .ToString()+ "');", true);  //Open New Tab for Sever side code
                         //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeePersonal.aspx');", true);  //Open New Tab for Sever side code
@@ -439,19 +562,33 @@ namespace SigmaERP.personnel
                     string EmpId = Request.QueryString["EmpId"];
                     
                         if (UpdateCardValidation() == false) return;                        
-                        if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true && updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
+                        if (UpdateEmployeeInfo(ddlEmpCardNo.SelectedValue) == true)
                         {
+                        string rootUrl = Session["__RootUrl__"]?.ToString();
+                        string apiUrl = rootUrl + "/api/Employee/employees/create";
+                        string token = Session["__UserToken__"]?.ToString();
+
+                        List<string> empImageBase64 = ConvertFilesToBase64(FileUpload1);
+                        List<string> signatureImageBase64 = ConvertFilesToBase64(FileUpload2);
+
+                        string response = PostDocument(apiUrl, ddlEmpCardNo.SelectedValue, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
+
+
+                        if (updateEmpPersonnal(ddlEmpCardNo.SelectedValue) == true)
+                          {
                             if (txtMobileNo.Text.Trim().Length > 0)
                                 updateEmpAddress(EmpId);
                             AllClear();
                             if (EmpId == null)
                                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UpdateSuccess();", true);
-                            else 
+                            else
                             {
                                 Session["IsRedirect"] = "Yes";
-                                Response.Redirect("~/personnel/employee_list.aspx");                                 
+                                Response.Redirect("~/hrms/employees/list");
                             }
-                        }
+                          }
+                     }
+                        
                         else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableUpdate();", true);
                    
                 }
@@ -535,7 +672,7 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@EmpCardNo", txtEmpCardNo.Text.Trim());
                     string cardNo = new String(txtEmpCardNo.Text.Where(Char.IsNumber).ToArray());
                     int ProximityNo = int.Parse(cardNo.Substring(DateTime.Now.Year.ToString().Length, cardNo.Length - DateTime.Now.Year.ToString().Length));
-                    cmd.Parameters.AddWithValue("@EmpProximityNo", ProximityNo);
+                    cmd.Parameters.AddWithValue("@EmpProximityNo", txtRegistrationId.Text.Trim());
                 }
                 cmd.Parameters.AddWithValue("@PunchType", rblPunchType.SelectedValue);
                 cmd.Parameters.AddWithValue("@RealProximityNo", txtProximityNo.Text.Trim());
@@ -545,6 +682,7 @@ namespace SigmaERP.personnel
             
               
                 cmd.Parameters.AddWithValue("@SftId", ddlShift.SelectedValue);
+                cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
                
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
                cmd.Parameters.AddWithValue("@ShiftTransferDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
@@ -559,28 +697,17 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", getDate);
                 }
                 else cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", convertDateTime.getCertainCulture(txtElStart.Text.Trim()));
-              
 
-
-
-
-                if (HiddenField1.Value.ToString().Length == 0)
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", "");
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", txtEmpCardNo.Text.Trim() + HiddenField1.Value.ToString());
-                }
-                if (FileUpload2.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", txtEmpCardNo.Text + FileUpload2.FileName);
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", "");
-                }
              
+                  cmd.Parameters.AddWithValue("@EmpPicture", "");
+                
+           
+
+
+
+                cmd.Parameters.AddWithValue("@SignatureImage", "");
+                
+
                 cmd.Parameters.AddWithValue("@Type", ddlType.SelectedItem.Text);
 
 
@@ -631,6 +758,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@EmpDutyType", rblDutyType.SelectedValue);
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);                
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
+                cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
 
                 int result = (int)cmd.ExecuteScalar();
 
@@ -665,15 +793,15 @@ namespace SigmaERP.personnel
                         Session["_EmpId_"] = dtEmpId.Rows[0]["EmpId"].ToString();
                         Session["_EmpStatus_"] = dtEmpId.Rows[0]["EmpId"].ToString();
                     }
-                    if (HiddenField1.Value.ToString().Length != 0)
-                    {
-                        saveImg();
-                    }
-                    if (FileUpload2.HasFile == true)
-                    {
-                        SaveSignature();
-                    }
-                    SaveAttachFile();
+                    //if (HiddenField1.Value.ToString().Length != 0)
+                    //{
+                    //    saveImg();
+                    //}
+                    //if (FileUpload2.HasFile == true)
+                    //{
+                    //    SaveSignature();
+                    //}
+                    //SaveAttachFile();
                     //rblEmpType.SelectedValue = "2"; // Replace Selected index to Selected Value.
                     //fs.Visible = true; 
                     //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "SaveSuccess();", true);   
@@ -704,14 +832,14 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@CompanyId", ddlBranch.SelectedValue);
                 cmd.Parameters.AddWithValue("@EmpTypeId", ViewState["__EmpTypeID__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpName", ViewState["__Name__"].ToString());
-                cmd.Parameters.AddWithValue("@NickName", ViewState["__Name__"].ToString());
-                cmd.Parameters.AddWithValue("@EmpNameBn", txtNameBangla.Text.Trim());
+                cmd.Parameters.AddWithValue("@NickName", ViewState["__Name__"].ToString());            
+                cmd.Parameters.AddWithValue("@EmpNameBn", ViewState["__NameBn__"].ToString()); // add kora lagbe
                 cmd.Parameters.AddWithValue("@EmpCardNo", ViewState["__txtEmpCardNo__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpProximityNo", ViewState["__RegID__"].ToString());                
                 cmd.Parameters.AddWithValue("@PunchType", rblPunchType.SelectedValue);
                 cmd.Parameters.AddWithValue("@RealProximityNo", ViewState["__RegID__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpStatus", ddlEmpStatus.SelectedValue);
-                cmd.Parameters.AddWithValue("@SftId", "0");
+                cmd.Parameters.AddWithValue("@SftId", ViewState["__shift__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", ViewState["__JoiningDate__"].ToString());
                 cmd.Parameters.AddWithValue("@ShiftTransferDate", ViewState["__JoiningDate__"].ToString());
                 cmd.Parameters.AddWithValue("@EarnedLeave", txtEarnedLeave.Text);
@@ -773,19 +901,29 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@CustomOrdering", txtDptWise.Text.Trim());
 
                 cmd.Parameters.AddWithValue("@TIN", txtTIN.Text.Trim());
-                cmd.Parameters.AddWithValue("@PreSalaryType", rblSalaryType.SelectedValue);
-                cmd.Parameters.AddWithValue("@SalaryType", rblSalaryType.SelectedValue);
+                cmd.Parameters.AddWithValue("@PreSalaryType", ViewState["__salaryType__"].ToString());
+                cmd.Parameters.AddWithValue("@SalaryType", ViewState["__salaryType__"].ToString());
 
-                cmd.Parameters.AddWithValue("@PreEmpDutyType", rblDutyType.SelectedValue);
-                cmd.Parameters.AddWithValue("@EmpDutyType", rblDutyType.SelectedValue);
+                cmd.Parameters.AddWithValue("@PreEmpDutyType", ViewState["__dutyType__"].ToString());
+                cmd.Parameters.AddWithValue("@EmpDutyType", ViewState["__dutyType__"].ToString());
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);
-                cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
+                cmd.Parameters.AddWithValue("@WeekendType", ViewState["__weekendType__"].ToString());
 
                 int result = (int)cmd.ExecuteScalar();
+            
 
+             
                 if (result > 0)
                 {
-                    CRUD.Execute("Insert into  Personnel_EmpPersonnal (EmpId,Sex) values ('"+ EmpId + "','"+ ViewState["__Gender__"] .ToString()+ "') ");
+                    CRUD.Execute("Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId,HusbandOrWifeName) values ('" + EmpId + "','"+ ViewState["__Gender__"] .ToString()+ "','" + ViewState["__NID__"].ToString()+ "','"+ ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "','" + ViewState["__HusbandOrWifeName__"].ToString()+ "') ");
+
+                    string jjj = "Insert into  Personnel_EmpPersonnal (EmpId,Sex,NationIDCardNo,DateOfBirth,BloodGroup,LastEdQualification,NoOfExperience,MaritialStatus,FatherName,MotherName,RId,HusbandOrWifeName) values ('" + EmpId + "','" + ViewState["__Gender__"].ToString() + "','" + ViewState["__NID__"].ToString() + "','" + ViewState["__dateOfBirth__"].ToString() + "','" + ViewState["__bloodGroup__"].ToString() + "','" + ViewState["__lastEducationQualification__"].ToString() + "','" + ViewState["__totalNumberOfExperience__"].ToString() + "','" + ViewState["__maritialStatus__"].ToString() + "','" + ViewState["__fatherOrHusbandName__"].ToString() + "','" + ViewState["__mothersName__"].ToString() + "','" + ViewState["__religion__"].ToString() + "','" + ViewState["__HusbandOrWifeName__"].ToString() + "') ";
+
+                    if (ViewState["__EmoContactNumber__"].ToString() != "")
+                    {
+                        //saveEmpAddress(EmpId, ViewState["__EmoContactNumber__"].ToString());
+                        CRUD.Execute("Insert into Personnel_EmpAddress(EmpId, MobileNo) values('"+ EmpId + "', '"+ ViewState["__EmoContactNumber__"].ToString() + "')) ");
+                    }
 
                 }
                 else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableSave();", true);
@@ -866,7 +1004,7 @@ namespace SigmaERP.personnel
                 {
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        thumbnail.Save(Server.MapPath("/EmployeeImages/Images/" + txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
+                        thumbnail.Save(Server.MapPath("/EmployeeImages/Images/"+txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
                     }
                 }
 
@@ -985,6 +1123,7 @@ namespace SigmaERP.personnel
               
                 
                 cmd.Parameters.AddWithValue("@SftId", ddlShift.SelectedValue);
+                cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
                 
                
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
@@ -1000,45 +1139,17 @@ namespace SigmaERP.personnel
 
 
 
-                if (FileUpload1.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", txtEmpCardNo.Text.Trim() + FileUpload1.FileName);
-                    if (imageName != "")
-                    {
-                        System.IO.File.Delete(Request.PhysicalApplicationPath + "/EmployeeImages/Images/" + imageName);
-                    }
-                    string filename = Path.GetFileName(FileUpload1.PostedFile.FileName);
+       
+               cmd.Parameters.AddWithValue("@EmpPicture", "");
+                
+          
+               cmd.Parameters.AddWithValue("@SignatureImage", "");
 
-                    System.Drawing.Image image = System.Drawing.Image.FromStream(FileUpload1.PostedFile.InputStream);
-                    int width = 100;
-                    int height = 100;
-                    using (System.Drawing.Image thumbnail = image.GetThumbnailImage(width, height, new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback), IntPtr.Zero))
-                    {
-                        using (MemoryStream memoryStream = new MemoryStream())
-                        {
-                            thumbnail.Save(Server.MapPath("/EmployeeImages/Images/" + txtEmpCardNo.Text.Trim() + filename), System.Drawing.Imaging.ImageFormat.Png);
-                        }
-                    }
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@EmpPicture", "");
-                }
-                if (FileUpload2.HasFile == true)
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", txtEmpCardNo.Text.Trim() + FileUpload2.FileName);
-                    if (SignatureImage != "")
-                    {
-                        System.IO.File.Delete(Request.PhysicalApplicationPath + "/EmployeeImages/Signature/" + SignatureImage);
-                    }
-                    string filename = Path.GetFileName(FileUpload2.PostedFile.FileName);
-                    FileUpload2.SaveAs(Server.MapPath("/EmployeeImages/Signature/" + txtEmpCardNo.Text + filename));    //Save images into Images folder
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@SignatureImage", "");
-                }
-             
+
+
+      
+
+
                 cmd.Parameters.AddWithValue("@Type", ddlType.SelectedItem.Text);
 
                 cmd.Parameters.AddWithValue("@ExpireDate", convertDateTime.getCertainCulture(txtExpireDate.Text.Trim()));
@@ -1098,6 +1209,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@EmpDutyType", rblDutyType.SelectedValue);
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
+                cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
 
                 int result = (int)cmd.ExecuteScalar();
 
@@ -1403,6 +1515,7 @@ namespace SigmaERP.personnel
                 hdfConveyance.Value = "0";
                 hdfhouserent.Value = "0";
                 hdfMedical.Value = "0";
+                ddlWeekend.SelectedIndex = 0;
                 //txtDesingnationBangla.Text = "";
                 //txtEmpCardNo.Text = "";
                 txtAlternativeCard.Text = "";
@@ -1430,17 +1543,17 @@ namespace SigmaERP.personnel
                 HiddenField1.Value = "";
                 ddlGrouping.SelectedValue = "0";
                 // lblEmployeeMode.Text = "Add Mode";
-                if (ViewState["__WriteAction__"].ToString().Equals("0"))
-                {
+                //if (ViewState["__WriteAction__"].ToString().Equals("0"))
+                //{
 
-                    btnSave.CssClass = "";
-                    btnSave.Enabled = false;
-                }
-                else
-                {
-                    btnSave.CssClass = "css_btn Ptbut";
-                    btnSave.Enabled = true;
-                }
+                //    btnSave.CssClass = "";
+                //    btnSave.Enabled = false;
+                //}
+                //else
+                //{
+                //    btnSave.CssClass = "css_btn Ptbut";
+                //    btnSave.Enabled = true;
+                //}
                 hdfsaveupdatestatus.Value = "Save";
                 
                 //rblEmpType.SelectedValue = "2";
@@ -1455,7 +1568,7 @@ namespace SigmaERP.personnel
                 this.Request.QueryString.Remove("EmpId");
                 this.Request.QueryString.Remove("Edit");
 
-                ddlEmpCardNo.SelectedIndex = 0;
+               // ddlEmpCardNo.SelectedIndex = 0;
                 ddlEmpStatus.SelectedIndex = 0;
                 // Request.QueryString.Remove("EmpId");
 
@@ -1528,17 +1641,17 @@ namespace SigmaERP.personnel
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 if (ddlEmpCardNo.SelectedValue != "0")
                 {
-                    if (ViewState["__UpdateAction__"].ToString().Equals("0"))
-                    {
+                    //if (ViewState["__UpdateAction__"].ToString().Equals("0"))
+                    //{
 
-                        btnSave.CssClass = "";
-                        btnSave.Enabled = false;
-                    }
-                    else
-                    {
-                        btnSave.CssClass = "css_btn Ptbut";
-                        btnSave.Enabled = true;
-                    }
+                    //    btnSave.CssClass = "";
+                    //    btnSave.Enabled = false;
+                    //}
+                    //else
+                    //{
+                    //    btnSave.CssClass = "css_btn Ptbut";
+                    //    btnSave.Enabled = true;
+                    //}
                     string[] EmpCardNowithName = ddlEmpCardNo.SelectedItem.Text.ToString().Split(' ');
 
                     txtEmpCardNo.Text = EmpCardNowithName[0];
@@ -1619,7 +1732,8 @@ namespace SigmaERP.personnel
                 txtName.Text = dtall.Rows[0]["EmpName"].ToString();
                 txtNickName.Text = dtall.Rows[0]["NickName"].ToString();
                 txtNameBangla.Text = dtall.Rows[0]["EmpNameBn"].ToString();
-
+                ddlUnit.SelectedValue = dtall.Rows[0]["UnitId"].ToString();
+                ddlWeekend.SelectedValue = dtall.Rows[0]["Weekend"].ToString();
                 //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
                 {
@@ -1637,7 +1751,8 @@ namespace SigmaERP.personnel
                 txtRegistrationId.Text = dtall.Rows[0]["EmpProximityNo"].ToString();
                 txtTIN.Text = dtall.Rows[0]["TIN"].ToString();
                             
-                classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
+              //  classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
+                classes.commonTask.LoadDesignationAll(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
                 ddlDesingnation.SelectedValue = dtall.Rows[0]["DsgId"].ToString();
                 if (ViewState["__LineORGroupDependency__"].ToString().Equals("True"))
                     classes.commonTask.LoadGrouping(ddlGrouping, ddlBranch.SelectedValue, dtall.Rows[0]["DptId"].ToString());
@@ -1696,13 +1811,18 @@ namespace SigmaERP.personnel
                 {
                     txtElStart.Text = Convert.ToDateTime(dtall.Rows[0]["EarnedLeaveEffectedFrom"].ToString()).ToString("d-M-yyyy");
                 }
-                
+
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string apiUrl = rootUrl + "/api/Employee/employees/create";
+                string companyId = Session["__GetCompanyId__"].ToString();
+
+
                 Session["_EmppictureName_"] = dtall.Rows[0]["EmpPicture"].ToString();
                 imageName = dtall.Rows[0]["EmpPicture"].ToString();
-                string url = @"/EmployeeImages/Images/" + Path.GetFileName(dtall.Rows[0]["EmpPicture"].ToString());
+                string url = rootUrl+"/"+companyId+"/"+ "EmployeeImage"+"/" + Path.GetFileName(dtall.Rows[0]["EmpPicture"].ToString());
                 imgProfile.ImageUrl = url;
                 SignatureImage = dtall.Rows[0]["SignatureImage"].ToString();
-                string url2 = @"/EmployeeImages/Signature/" + Path.GetFileName(dtall.Rows[0]["SignatureImage"].ToString());
+                string url2 = rootUrl + "/" + companyId + "/" + "EmployeeSignature" + "/" + Path.GetFileName(dtall.Rows[0]["SignatureImage"].ToString());
                 imgSignature.ImageUrl = url2;
                 txtMobileNo.Text= dtall.Rows[0]["MobileNo"].ToString();
             }
@@ -1888,13 +2008,14 @@ namespace SigmaERP.personnel
             {
                CompanyId=(ddlBranch.SelectedValue.Equals("0000"))?ViewState["__CompanyId__"].ToString():ddlBranch.SelectedValue;
                 LoadCompanyInfo();
-                
+
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
-                    classes.commonTask.SearchDepartmentWithCode(CompanyId, ddlDepartment);
+                    loadDepartMentWithCode();
+                //classes.commonTask.SearchDepartmentWithCode(CompanyId, ddlDepartment);
                 else
                 {
-
-                    classes.commonTask.SearchDepartment(CompanyId, ddlDepartment);
+                    loadDepartMents();
+                    //classes.commonTask.SearchDepartment(CompanyId, ddlDepartment);
                     AutoGenerateEmpId();
                 }
                 FlatCustomOrdering();
@@ -1930,12 +2051,12 @@ namespace SigmaERP.personnel
             {
 
                 DataTable dt;
-                sqlDB.fillDataTable("Select Personnel_EmpPersonnal.FatherName, Personnel_EmpPersonnal.MotherName, Personnel_EmpPersonnal.FatherNameBn, " +
+                sqlDB.fillDataTable("Select Personnel_EmpPersonnal.HusbandOrWifeName, Personnel_EmpPersonnal.FatherName, Personnel_EmpPersonnal.MotherName, Personnel_EmpPersonnal.FatherNameBn, " +
                     "Personnel_EmpPersonnal.MotherNameBN,Personnel_EmpPersonnal.RId, Personnel_EmpPersonnal.MaritialStatus,convert(varchar(11)," +
                     "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
                     " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
                     " Personnel_EmpPersonnal.Nationality, Personnel_EmpPersonnal.NationIDCardNo,Personnel_EmpPersonnal.NumberofChild," +
-                    "Personnel_EmpPersonnal.LastEdQualification,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
+                    "Personnel_EmpPersonnal.LastEdQualification,Personnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
                     "Left JOIN HRD_Qualification ON Personnel_EmpPersonnal.LastEdQualification=HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON " +
                     "Personnel_EmpPersonnal.RId = HRD_Religion.RId  where Personnel_EmpPersonnal.EmpId='" + EmpId + "'", dt = new DataTable());
                 if (dt.Rows.Count == 0)
@@ -1951,13 +2072,17 @@ namespace SigmaERP.personnel
                 dsHeight.Text = dt.Rows[0]["Height"].ToString();
                 ddlLastEdQualification.SelectedValue = dt.Rows[0]["LastEdQualification"].ToString();
                 dsMaritialStatus.Text = dt.Rows[0]["MaritialStatus"].ToString();
+                if(dsMaritialStatus.Text=="Married" || dsMaritialStatus.Text== "Widow")
+                {
+                    txtHusbandOrwifeName.Text= dt.Rows[0]["HusbandOrWifeName"].ToString();
+                }
                 dsMotherName.Text = dt.Rows[0]["MotherName"].ToString();
                 //dsMotherNameBN.Text = dt.Rows[0]["MotherNameBN"].ToString();
                 dsNationality.Text = dt.Rows[0]["Nationality"].ToString();
                 dsNationIDCardNo.Text = dt.Rows[0]["NationIDCardNo"].ToString();
                 dsNoOfExperience.Text = dt.Rows[0]["NoOfExperience"].ToString();
                 dsPlaceOfBirth.Text = dt.Rows[0]["PlaceOfBirth"].ToString();
-
+                txtEmpVisaNo.Text = dt.Rows[0]["EmpVisaNo"].ToString();
                 dsSex.Text = dt.Rows[0]["Sex"].ToString();
                 dsWeight.Text = dt.Rows[0]["Weight"].ToString();
                 // btnSavePersonal.Text = "Update";
@@ -2010,7 +2135,7 @@ namespace SigmaERP.personnel
                 //DataTable dtEmp;
                 //sqlDB.fillDataTable("SELECT EmpId FROM v_HRD_Shift", dtEmp = new DataTable());
                 string EmpId = ViewState["__EmpId__"].ToString();
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo,HusbandOrWifeName)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo,@HusbandOrWifeName) ", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__EmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
@@ -2045,6 +2170,8 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@NoOfExperience", dsNoOfExperience.Text.Trim());
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text);
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2234,7 +2361,7 @@ namespace SigmaERP.personnel
                 {
                     EmpId = ddlEmpCardNo.SelectedValue;
                 }
-                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo where EmpId=@EmpId ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo,HusbandOrWifeName=@HusbandOrWifeName where EmpId=@EmpId ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", EmpId);
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
                 cmd.Parameters.AddWithValue("@MotherName", dsMotherName.Text.Trim());
@@ -2276,6 +2403,9 @@ namespace SigmaERP.personnel
                 else cmd.Parameters.AddWithValue("@NoOfExperience", dsNoOfExperience.Text.Trim());
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
+
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text.Trim());
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2400,7 +2530,111 @@ namespace SigmaERP.personnel
 
         }
 
-        public void ReadXL(string filename,string companyId)
+
+        public void ReadXL(DataTable dtExcel)
+        {
+            try
+            {
+             
+                foreach (DataRow row in dtExcel.Rows)
+                {
+                    string RegID = row["RegId"].ToString();
+                    if (RegID.Trim().Length > 0)
+                    {
+                        try { int a = int.Parse(RegID); } catch (Exception ex) { continue; }
+                    }
+                    string Name = row["Name"].ToString();
+                    string NameBn = row["BanglaName"].ToString();
+                    string Department = row["Department"].ToString();
+                    string Group = Department;
+                    string Designation = row["Designation"].ToString();
+                    string EmpType = row["EmpType"].ToString();
+                    string JoiningDate = row["JoiningDate"].ToString();
+                    string Gender = row["Gender"].ToString();
+                    string NID = row["NID"].ToString();
+                    string SalaryType = row["SalaryType"].ToString();
+                    string Shift = row["Shift"].ToString();
+                    string DutyType = row["DutyType"].ToString();
+                    string WeekendType= row["WeekendType"].ToString();
+                    string FathersName = row["FathersName"].ToString();
+                    string MothersName = row["MothersName"].ToString();
+                    string MaritialStatus = row["MaritialStatus"].ToString();
+                    string DateOfBirth = row["DateOfBirth"].ToString();
+                    string BloodGroup = row["BloodGroup"].ToString();
+                    string Religion = row["Religion"].ToString();
+                    string LastEducationqualification = row["LastEducationqualification"].ToString();
+                    string TotalNumberOfExperience = row["TotalNumberOfExperience"].ToString();
+                    string HusbandOrWifeName = row["HusbandOrWifeName"].ToString();
+
+
+
+
+                    string ContactNumber = row["ContactNumber"].ToString();
+                    AutoGenerateEmpId();
+                    if (RegID == "")
+                        ViewState["__RegID__"] = ViewState["__txtRegistrationId__"].ToString();
+                    else
+                        ViewState["__RegID__"] = RegID;
+                    ViewState["__Name__"] = Name;
+                    ViewState["__NameBn__"] = NameBn;
+                    ViewState["__NID__"] = NID;
+                    ViewState["__ContactNumber__"] = ContactNumber;
+                    ViewState["__DptID__"] = getDptID(Department);
+                    ViewState["__DsgID__"] = getDsgID(ViewState["__DptID__"].ToString(), Designation);
+                    ViewState["__GID__"] = getGID(ViewState["__DptID__"].ToString(), Group);
+                    ViewState["__EmpTypeID__"] = (EmpType.ToLower() == "worker") ? "1" : "2";
+                    ViewState["__Gender__"] = Gender;
+                    ViewState["__EmoContactNumber__"] = ContactNumber;
+                    if (JoiningDate == "")
+                        ViewState["__JoiningDate__"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    else
+                        ViewState["__JoiningDate__"] = commonTask.ddMMyyyyTo_yyyyMMdd(JoiningDate);
+                    ViewState["__salaryType__"] = (SalaryType == "Scale") ? 0 : (SalaryType == "Gross") ? 1 : 2;
+
+                    ViewState["__shift__"] = getShifttID(Shift, ViewState["__DptID__"].ToString());
+                    ViewState["__dutyType__"] = (DutyType == "Roster") ? "1" : "0";
+                    ViewState["__weekendType__"] = (WeekendType=="Regular")?"0":"1";
+                    ViewState["__fatherName__"] = FathersName;
+                    ViewState["__mothersName__"] = MothersName;
+                    ViewState["__maritialStatus__"] = MaritialStatus;
+                    if (DateOfBirth == "")
+                    {
+                        ViewState["__dateOfBirth__"] = DateTime.Now.ToString("yyyy-MM-dd");
+                    }
+                    else
+                    {
+                        ViewState["__dateOfBirth__"] = commonTask.ddMMyyyyTo_yyyyMMdd(JoiningDate);
+                    }
+                    ViewState["__bloodGroup__"] = BloodGroup;
+                    ViewState["__religion__"] = getReligionId(Religion);
+                    string jj= getLasEducationId(LastEducationqualification);
+                    ViewState["__lastEducationQualification__"] = getLasEducationId(LastEducationqualification);
+                    ViewState["__totalNumberOfExperience__"] = TotalNumberOfExperience;
+                    ViewState["__HusbandOrWifeName__"] = HusbandOrWifeName;
+
+
+                   bool isImport= ImportEmployeeInfo();
+                    if (isImport)
+                    {
+                        lblMessage.InnerText = "Success-> Data Imported SuccessFully";
+                    }
+                    else
+                    {
+                        lblMessage.InnerText = "Success-> Data Imported Failed";
+                    }
+                  
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+        }
+        public void _ReadXL(string filename,string companyId)
         {
             try
             {
@@ -2453,10 +2687,53 @@ namespace SigmaERP.personnel
 
         }
 
+        private DataTable ReadExcel(string filePath)
+        {
+            DataTable dt = new DataTable();
+
+            // Enable EPPlus license (required in newer versions)
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                int rowCount = worksheet.Dimension.Rows;
+                int colCount = worksheet.Dimension.Columns;
+
+                if (rowCount < 2) return dt;
+
+          
+                for (int col = 1; col <= colCount; col++)
+                {
+                    dt.Columns.Add(worksheet.Cells[1, col].Text.Trim()); 
+                }
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    DataRow dr = dt.NewRow();
+                    for (int col = 1; col <= colCount; col++)
+                    {
+                        dr[col - 1] = worksheet.Cells[row, col].Text.Trim(); 
+                    }
+                    dt.Rows.Add(dr);
+                }
+            }
+            return dt;
+        }
+
         protected void btnImport_Click(object sender, EventArgs e)
         {
-            if(fuEmployeesData.HasFile)
-                ReadXL(fileUpload(fuEmployeesData, ddlBranch.SelectedValue), ddlBranch.SelectedValue);
+            if (fuEmployeesData.HasFile)
+            {
+                
+                    string filePath = Server.MapPath("~/AccessFile/") + fuEmployeesData.FileName;
+                    fuEmployeesData.SaveAs(filePath);
+  
+                    DataTable dt = ReadExcel(filePath);
+                    ReadXL(dt);
+            }
+                //_ReadXL(fileUpload(fuEmployeesData, ddlBranch.SelectedValue), ddlBranch.SelectedValue);
+     
         }
 
         private string getDptID(string DptName)
@@ -2473,6 +2750,47 @@ namespace SigmaERP.personnel
             return dt.Rows[0]["DptId"].ToString();
         }
 
+        private string getShifttID(string shfName,string DptId)
+        {
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select SftId from Hrd_shift where DptName='" + shfName + "' and DptId='"+ DptId + "'");
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                CRUD.Execute("insert into Hrd_shift(SftName,companyId,DptId) values('" + shfName + "','" + ddlBranch.SelectedValue + "','" + DptId + "') ");
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable("select SftId from Hrd_shift where SftName='" + shfName + "'");
+            }
+            return dt.Rows[0]["SftId"].ToString();
+        }
+        private string getReligionId(string Rname)
+        {
+            dt = new DataTable();
+            string query = " select RId,RName from HRD_Religion where RName='" + Rname + "'";
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+
+                CRUD.Execute("insert into HRD_Religion(RName) values('" + Rname + "',') ");
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable("select SftId from HRD_Religion where RName='" + Rname + "'");
+            }
+            return dt.Rows[0]["RId"].ToString();
+        }
+
+        private string getLasEducationId(string lastEducation)
+        {
+            dt = new DataTable();
+            string query = "select Qid, QName, CompanyId from HRD_Qualification where QName='"+ lastEducation + "' ";
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt == null || dt.Rows.Count == 0)
+            {
+                CRUD.Execute("insert into HRD_Qualification(QName) values('" + lastEducation + "',') ");
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable("select Qid from HRD_Qualification where QName='" + lastEducation + "'");
+            }
+            return dt.Rows[0]["Qid"].ToString();
+        }
         private string getDsgID(string DptId,string DsgName)
         {
 
@@ -2499,8 +2817,59 @@ namespace SigmaERP.personnel
             }
             return dt.Rows[0]["GID"].ToString();
         }
-        //---- End Data Import----
 
 
+        private void loadDepartMents()
+        {
+            if (Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+               
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "3")
+            {
+                
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
+               
+            }
+
+        }
+
+        private void  loadDepartMentWithCode()
+        {
+            if (Session["__dataAceesLevel__"].ToString() == "4")
+            {
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "3")
+            {
+
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+            }
+            else if (Session["__dataAceesLevel__"].ToString() == "2")
+            {
+                classes.commonTask.SearchDepartmentWithCode(ddlBranch.SelectedValue, ddlDepartment);
+
+            }
+        }
+
+        protected void dsMaritialStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(dsMaritialStatus.SelectedValue== "Married" ||dsMaritialStatus.SelectedValue== "Widow")
+            {
+                husbandOrWifeName.Visible = true;
+            }
+            else
+            {
+                husbandOrWifeName.Visible = false;
+            }
+           
+        }
+        //---- End Data Import----)
     }
 }

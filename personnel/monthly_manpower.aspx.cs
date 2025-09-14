@@ -10,19 +10,26 @@ using System.Globalization;
 using ComplexScriptingSystem;
 using System.Data.SqlClient;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
     public partial class monthly_manpower : System.Web.UI.Page
     {
+        //permission=279
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 279 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
 
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 txtDate.Text = "01-" + "01-" + DateTime.Now.Year.ToString();
                 txtFromDate.Text = "31-" + "12-" + DateTime.Now.Year.ToString();                
@@ -40,10 +47,11 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyy, ViewState["__CompanyId__"].ToString());
+               // string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyy, WarningMessage, tblGenerateType, btnPreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];
+               // AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyy, WarningMessage, tblGenerateType, btnPreview);
+               // ViewState["__ReadAction__"] = AccessPermission[0];
 
                 ddlCompanyy.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.LoadInitialShift(ddlShift, ddlCompanyy.SelectedValue);
@@ -121,7 +129,7 @@ namespace SigmaERP.personnel
                         if (dtTotal.Rows[0]["Female"].ToString() == "") PFemale = "0";
                         else PFemale = dtTotal.Rows[0]["Female"].ToString();
 
-
+                        string jjj = "Select Distinct Sum(Male) as Male,Sum(Female) as Female From v_ManpowerProcess where EmpJoiningDate between '" + FromDate[2] + "-" + FromDate[1] + "-" + FromDate[0] + "' and '" + TD + "'";
                     }
                     else
                     {

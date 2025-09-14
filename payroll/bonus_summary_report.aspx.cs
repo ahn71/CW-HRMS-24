@@ -1,5 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,13 +15,19 @@ namespace SigmaERP.payroll
     public partial class bonus_summary_report : System.Web.UI.Page
     {
         DataTable dt;
+        //permission=393
         protected void Page_Load(object sender, EventArgs e)
         {
+            int[] pagePermission = { 391 };
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.loadEmpTye(rblEmployeeType);
                 rblEmployeeType.SelectedValue = "1";
                 setPrivilege();
@@ -65,27 +73,27 @@ namespace SigmaERP.payroll
                     //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
                     //}
 
-                    sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_summary_report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
-                    if (dtSetPrivilege.Rows.Count > 0)
-                    {
-                        if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
-                        {
-                            btnPreview.CssClass = "Pbutton"; btnPreview.Enabled = true;
-                        }
-                        else
-                        {
-                            tblGenerateType.Visible = false;
-                            WarningMessage.Visible = true;
-                            btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                        }
+                    //sqlDB.fillDataTable("select * from UserPrivilege where PageName='bonus_summary_report.aspx' and UserId=" + getCookies["__getUserId__"].ToString() + "", dtSetPrivilege);
+                    //if (dtSetPrivilege.Rows.Count > 0)
+                    //{
+                    //    if (bool.Parse(dtSetPrivilege.Rows[0]["ReadAction"].ToString()).Equals(true))
+                    //    {
+                    //        btnPreview.CssClass = "Pbutton"; btnPreview.Enabled = true;
+                    //    }
+                    //    else
+                    //    {
+                    //        tblGenerateType.Visible = false;
+                    //        WarningMessage.Visible = true;
+                    //        btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                    //    }
 
-                    }
-                    else
-                    {
-                        tblGenerateType.Visible = false;
-                        WarningMessage.Visible = true;
-                        btnPreview.CssClass = ""; btnPreview.Enabled = false;
-                    }
+                    //}
+                    //else
+                    //{
+                    //    tblGenerateType.Visible = false;
+                    //    WarningMessage.Visible = true;
+                    //    btnPreview.CssClass = ""; btnPreview.Enabled = false;
+                    //}
 
                 }
 

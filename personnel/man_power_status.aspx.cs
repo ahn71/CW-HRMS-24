@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 
 namespace SigmaERP.personnel
 {
@@ -19,10 +20,18 @@ namespace SigmaERP.personnel
         string CompanyID = "";
         protected void Page_Load(object sender, EventArgs e)
         {
+         
+
             sqlDB.connectionString = Glory.getConnectionString();
             sqlDB.connectDB();
             if (!IsPostBack)
             {
+                int[] pagePermission = { 278 };
+                int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+
+                if (!userPagePermition.Any())
+                    Response.Redirect(Routing.defualtUrl);
+
                 classes.commonTask.LoadEmpTypeWithAll(rblEmpType);
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
@@ -41,11 +50,12 @@ namespace SigmaERP.personnel
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                string[] AccessPermission = new string[0];
+                classes.commonTask.LoadBranch(ddlCompanyy, ViewState["__CompanyId__"].ToString());
+                // string[] AccessPermission = new string[0];
                 //System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
-                AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyy, WarningMessage, tblGenerateType, btnpreview);
-                ViewState["__ReadAction__"] = AccessPermission[0];      
-            
+                //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "Employee.aspx", ddlCompanyy, WarningMessage, tblGenerateType, btnpreview);
+                //ViewState["__ReadAction__"] = AccessPermission[0];      
+
                 ddlCompanyy.Items.RemoveAt(0);
                 ddlCompanyy.SelectedValue = ViewState["__CompanyId__"].ToString();
                 classes.commonTask.LoadInitialShift(ddlShift, ddlCompanyy.SelectedValue);
@@ -187,7 +197,7 @@ namespace SigmaERP.personnel
                     else setPredicate += ",'" + lstSelected.Items[b].Value + "'";
                 }
                 string shiftlist=(ddlShift.SelectedValue=="00")?"":" and SftId='"+ddlShift.SelectedValue+"'";
-                string EmpTypeID = rblEmpType.SelectedValue.Equals("All") ? "" : " and EmpTypeId="+rblEmpType.SelectedValue+"";
+                string EmpTypeID = rblEmpType.SelectedValue.Equals("All") ? "" : " and EmpTypeId ="+rblEmpType.SelectedValue+"";
                 //dt = new DataTable();
                 //string sqlCmd = "Select Max(SN) as SN,EmpId From  v_ManPowerStatus where  DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " and EmpStatus in('1','8') and ActiveSalary='True' and IsActive=1 Group by EmpId";
                 //sqlDB.fillDataTable(sqlCmd, dt);
@@ -221,8 +231,9 @@ namespace SigmaERP.personnel
                 //        setEmpId += ",'" + dt.Rows[i].ItemArray[1].ToString() + "'";
                 //    }
                 //}
+                string ownempId = AccessControl.hasOwnEmpIdWithOtherDepartment();
                 dt = new DataTable();
-               string sqlCmd= "select DptId,DptName,DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from v_EmployeeDetails where DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " and IsActive=1 and EmpStatus in(1,8)" +
+               string sqlCmd= "select DptId,DptName,DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from v_EmployeeDetails where DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " "+ ownempId + " and IsActive=1 and EmpStatus in(1,8)" +
                     " Group by DptId,DptName,DsgId,DsgName";
                //sqlCmd = "Select * from v_ManPowerStatus where SN " + setSn + "";
                 sqlDB.fillDataTable(sqlCmd, dt);
