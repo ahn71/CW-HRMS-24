@@ -244,7 +244,7 @@ namespace SigmaERP.classes
 
                         //Payable amount calculation
 
-                        if(generateFor == "regular")
+                        //if(generateFor == "regular")
                             salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction, payRollPolicy["AbsentDeduction"].ToString());
                         
 
@@ -393,7 +393,13 @@ namespace SigmaERP.classes
             //Attendance Summary 
             dt = new DataTable();
 
-            string query = "select EmpId,sum(NightAllowCount) as NightAllowCount,sum(case when ATTStatus In('P', 'L') AND PaybleDays = '1' and Isnull(isweekend, 0) = 0 then 1 else 0 end) as P,sum(case when ATTStatus In('L') AND PaybleDays = '1' then 1 else 0 end) as L, Sum(Case when(ATTStatus = 'A' and Isnull(isweekend, 0) = 0) or  StateStatus = 'Leave Without Pay (LWP)' or(ATTStatus In('P', 'L') AND PaybleDays = '0') then 1 else 0 end) as A,Sum(case when StateStatus = 'Casual Leave' then 1 else 0 end) as 'CL',Sum(case when StateStatus = 'Sick Leave' then 1 else 0 end) as 'SL',Sum(case when StateStatus = 'Annual Leave' then 1 else 0 end) as 'EL', Sum(case when StateStatus = 'Maternity Leave' then 1 else 0 end) as 'ML', Sum(case when StateStatus = 'Leave Without Pay (LWP)' then 1 else 0 end) as 'LWP',sum(case when ATTStatus = 'Lv'then 1 else 0 end) as Lv from v_tblAttendanceRecord where  EmpId='" + salaryRecord.EmpId + "' And AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' group by EmpId";
+            string query = @"WITH h AS
+                    (
+                    SELECT CompanyId, HDate, 'H' AS AttStatus, 'Holiday' AS StateStatus
+                    FROM dbo.tblHolydayWork
+                    )
+                    select EmpId, sum(NightAllowCount) as NightAllowCount,sum(case  when h.HDate is null and v.ATTStatus In('P', 'L') AND PaybleDays = '1' and Isnull(isweekend, 0) = 0    then 1 else 0 end) as P,
+                    sum(case when h.HDate is null and  v.ATTStatus In('L') AND PaybleDays = '1' then 1 else 0 end) as L, Sum(Case when(h.HDate is null and v.ATTStatus = 'A' and Isnull(isweekend, 0) = 0) or  v.StateStatus = 'Leave Without Pay (LWP)' or(v.ATTStatus In('P', 'L') AND PaybleDays = '0')  then 1 else 0 end) as A,Sum(case when v.StateStatus = 'Casual Leave' then 1 else 0 end) as 'CL',Sum(case when v.StateStatus = 'Sick Leave' then 1 else 0 end) as 'SL',Sum(case when v.StateStatus = 'Annual Leave' then 1 else 0 end) as 'EL', Sum(case when v.StateStatus = 'Maternity Leave' then 1 else 0 end) as 'ML', Sum(case when v.StateStatus = 'Leave Without Pay (LWP)' then 1 else 0 end) as 'LWP',sum(case when v.ATTStatus = 'Lv'then 1 else 0 end) as Lv from v_tblAttendanceRecord v left outer join h on v.ATTDate=h.HDate  where  EmpId='" + salaryRecord.EmpId + "' And AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' group by EmpId";
 
             dt = CRUD.ExecuteReturnDataTable(query);
             if (dt != null && dt.Rows.Count > 0)

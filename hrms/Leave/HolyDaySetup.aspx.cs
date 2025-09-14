@@ -192,7 +192,7 @@ namespace SigmaERP.hrms.Leave
 
         private void SetValueToControl(string hid)
         {
-            string strSQL = @"select HCode, CONVERT(varchar(10), [HDate],105) as HDate, [Description],isOpen  from [tblHolydayWork]
+            string strSQL = @"select HCode, CONVERT(varchar(10), [HDate],105) as HDate, [Description],isnull(isOpen,0) as isOpen from [tblHolydayWork]
                                 where HCode='" + hid + "'";
             DataTable DTLocal = new DataTable();
 
