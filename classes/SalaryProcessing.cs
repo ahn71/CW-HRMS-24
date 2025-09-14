@@ -495,10 +495,16 @@ namespace SigmaERP.classes
             dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and (ATTStatus='W' or isWeekend=1)");
             salaryRecord.WeekendHoliday = dt.Rows.Count;
 
+            
+
             //FestivalHoliday
             dt = new DataTable();
-            dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and ATTStatus='H' ");
+            dt = CRUD.ExecuteReturnDataTable(@"WITH h AS(SELECT CompanyId, HDate, 'H' AS AttStatus, 'Holiday' AS StateStatus
+             FROM dbo.tblHolydayWork)
+            select distinct format(ATTDate, 'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord v left outer join h on v.ATTDate = h.HDate where ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and(h.HDate is not null or v.ATTStatus='H' )");
             salaryRecord.FestivalHoliday = dt.Rows.Count;
+
+            
 
             double PresentSalary = salaryRecord.EmpPresentSalary;
             if (salaryRecord.FromDate.Day > 1 || salaryRecord.ToDate.Day < salaryRecord.DaysInMonth)

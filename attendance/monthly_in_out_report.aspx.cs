@@ -158,10 +158,12 @@ namespace SigmaERP.attendance
                         GenerateJobCardReport_Marico();
                     else
                     {
-                        if(ViewState["__reportFor__"].ToString() == "regular")
-                            GenerateJobCardReportForActualAndCompliance();
+                        if(ViewState["__reportFor__"].ToString() == "jobcard")
+                            _GenerateJobCardReportForActualAndCompliance(); // for complaince
+
                         else
-                            _GenerateJobCardReportForActualAndCompliance();
+                            GenerateJobCardReportForActualAndCompliance();
+                        
 
 
 
@@ -623,7 +625,8 @@ SELECT
     EmpName,SftName,PSftName AS MobileNo,
     FORMAT(ATTDate,'dd-MM-yyyy') AS ATTDate,
     v.DptName,v.DsgName,MonthName,InHour,InMin,OutHour,OutMin,
-    CASE WHEN ODID > 0 THEN v.ATTStatus+'(OD)' ELSE v.ATTStatus END AS ATTStatus,
+   Case When h.HDate is not null then h.AttStatus else case  when isnull(v.IsWeekend,0)=1 then 'W' else  
+    CASE WHEN  ODID > 0 THEN v.ATTStatus+'(OD)' ELSE v.ATTStatus END end end  AS ATTStatus,
     StayTime,OverTime,v.DptId,
     CONVERT(VARCHAR(11),EmpJoiningDate,105) AS EmpJoiningDate,
     GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,
@@ -690,7 +693,8 @@ SELECT
     EmpName,SftName,PSftName AS MobileNo,
     FORMAT(ATTDate,'dd-MM-yyyy') AS ATTDate,
     v.DptName,v.DsgName,MonthName,InHour,InMin,OutHour,OutMin,
-    CASE WHEN ODID > 0 THEN v.ATTStatus+'(OD)' ELSE v.ATTStatus END AS ATTStatus,
+    Case When h.HDate is not null then h.AttStatus else case  when isnull(v.IsWeekend,0)=1 then 'W' else  
+    CASE WHEN  ODID > 0 THEN v.ATTStatus+'(OD)' ELSE v.ATTStatus END end end  AS ATTStatus,
     StayTime,OverTime,v.DptId,
     CONVERT(VARCHAR(11),EmpJoiningDate,105) AS EmpJoiningDate,
     GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,
@@ -730,7 +734,7 @@ From v_tblAttendanceRecord as v left outer join h on v.ATTDate = h.HDate Where v
     SELECT CompanyId, HDate, 'H' AS AttStatus, 'Holiday' AS StateStatus
     FROM dbo.tblHolydayWork
 )
-Select EmpId, SUM(CASE WHEN v.StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN v.StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN v.StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN v.StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN v.StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',
+Select EmpId, SUM(CASE WHEN h.HDate is null and  v.StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN v.StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN v.StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN v.StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN v.StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',
 
  SUM(CASE WHEN h.HDate IS NOT NULL THEN 1  ELSE 0 END) AS Holiday,
  SUM(CASE WHEN h.HDate IS NULL AND ISNULL(v.IsWeekend, 0) = 0 AND v.StateStatus = 'Present' THEN 1  ELSE 0 END) AS Present,
@@ -984,13 +988,13 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
         {
             string url = HttpContext.Current.Request.Url.ToString();
             string lastSegment = url.Split('/').Last();
-            ViewState["__reportFor__"] = lastSegment.Split('-').Last();
+            ViewState["__reportFor__"] = lastSegment;
 
-            if (ViewState["__reportFor__"].ToString() == "regular")
+            if (ViewState["__reportFor__"].ToString() == "jobcard")
             {
                 rblReportType.SelectedValue = "5";
                 trReportType.Visible = false;
-                hdMenu.InnerText = "Job Card(Actual)";
+                hdMenu.InnerText = "Job Card";
             }
         }
     }

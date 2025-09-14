@@ -327,11 +327,11 @@
 
 
                                             
-                                            <% if (IsRouteExists("attendance/monthly-report-regular"))
+                                            <% if (IsRouteExists("attendance/jobcard"))
                                                 { %>
                                             <li class="l_sidebar">
-                                                <a href="/hrms/attendance/monthly-report-regular" class="">
-                                                    <span class="menu-text">Job Card Actual</span>
+                                                <a href="/hrms/attendance/jobcard" class="">
+                                                    <span class="menu-text">Job Card</span>
                                                 </a>
                                             </li>
                                             <% } %>
