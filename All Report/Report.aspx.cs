@@ -163,6 +163,7 @@ namespace SigmaERP.All_Report
 
                 else if (query[0].Equals("JobCardReportActual")) loadJobCardReportActual();
                 else if (query[0].Equals("JobCardReportNew")) loadJobCardReportCompliance();
+                else if (query[0].Equals("JobCardReportNewRegular")) loadJobCardReportRegular();
                 else if (query[0].Equals("JobCardReportActualMarico")) loadJobCardReportActual_Marico();
                 else if (query[0].Equals("HolidayAndWeekendStatus")) MonthlyHolidayAndWeekendStatus();
                 else if (query[0].Equals("JobCardReport")) loadJobCardReport();
@@ -977,6 +978,34 @@ namespace SigmaERP.All_Report
             }
             catch { }
         }
+
+
+        private void loadJobCardReportRegular() // Job Card Report By Line
+        {
+            try
+            {
+
+                rpd = new ReportDocument();
+                rpd.Load(Server.MapPath("//All Report//Attendance//JobCardReportForRegular1.1.rpt"));
+                dt = (DataTable)Session["__dtJobCard__"];
+                rpd.SetDataSource(dt);
+
+                DataTable dtSub = new DataTable();
+                dtSub = (DataTable)Session["__dtSummary__"];
+                ReportDocument subReport = rpd.Subreports[0];
+                rpd.Subreports[0].SetDataSource(dtSub);
+
+                DataTable dtcompany = new DataTable();
+                sqlDB.fillDataTable("Select CompanyName,Address From HRD_CompanyInfo", dtcompany);
+                rpd.SetParameterValue(0, dtcompany.Rows[0]["CompanyName"].ToString());
+                rpd.SetParameterValue(1, dtcompany.Rows[0]["Address"].ToString());
+
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+
         private void loadJobCardReportActual_Marico() // Job Card Report By Line
         {
             try
