@@ -443,13 +443,34 @@
                 if (deptQuery) {
                     url += `&${deptQuery}`;
                 }
+            
                 if (empTypeQuery) {
                     url += `&${empTypeQuery}`;
                 }
-                if (unit) {
+                if (unit) {           
                     url += `&${unit}`;
                 }
 
+                var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+
+                var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+                var UserdptId = '<%=Session["__DptId__"]%>';
+                var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+                var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
+                if (deptQuery == '' || deptQuery == null) {
+                    if (DataAccessLevel == 2) {
+                       url += `&DptIds=${encodeURIComponent(UserdptId)}`;
+                    }
+                    else if (DataAccessLevel == 4) {
+                        var dptQueryString = departmentIds
+                            .map(function (id) {
+                                return 'DptIds=' + encodeURIComponent(id);
+                            })
+                            .join('&');
+
+                        url += '&' + dptQueryString;
+                    }
+                }
                 // API call
                 ApiCall(url, token)
                     .then(response => {
