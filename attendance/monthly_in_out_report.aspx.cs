@@ -239,48 +239,6 @@ namespace SigmaERP.attendance
                 else
                 {
                     dt = classes.BusinessLogic.get_Moanthly_Attendance_Sheet_Summary(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName);
-
-
-                    dt.Columns["ATTStatus"].ReadOnly = false;
-                    foreach (DataRow row in dt.Rows)
-                    {
-
-                        if (row["ATTStatus"].ToString() == "H" || row["ATTStatus"].ToString() == "W")
-                        {
-                            DateTime currentDate = DateTime.ParseExact(row["ATTDate"].ToString(), "dd-MM-yyyy", CultureInfo.InvariantCulture);
-                            string empId = row["EmpId"].ToString();
-
-                            // look backward
-                            DateTime backDate = currentDate.AddDays(-1);
-                            string backStatus = null;
-                            while (true)
-                            {
-                                DataRow[] prev = dt.Select($"EmpId = '{empId}' AND ATTDate = '{backDate:dd-MM-yyyy}'");
-                                if (prev.Length == 0) break;
-                                backStatus = prev[0]["ATTStatus"].ToString();
-                                if (backStatus != "H" && backStatus != "W") break; // stop when non-H/W found
-                                backDate = backDate.AddDays(-1);
-                            }
-
-                            // look forward
-                            DateTime nextDate = currentDate.AddDays(1);
-                            string forwardStatus = null;
-                            while (true)
-                            {
-                                DataRow[] next = dt.Select($"EmpId = '{empId}' AND ATTDate = '{nextDate:dd-MM-yyyy}'");
-                                if (next.Length == 0) break;
-                                forwardStatus = next[0]["ATTStatus"].ToString();
-                                if (forwardStatus != "H" && forwardStatus != "W") break;
-                                nextDate = nextDate.AddDays(1);
-                            }
-
-                            // condition: both sides are "A"
-                            if (backStatus == "A" && forwardStatus == "A")
-                            {
-                                row["ATTStatus"] = "A";
-                            }
-                        }
-                    }
                     type = "Att Summary";
                 }
 
