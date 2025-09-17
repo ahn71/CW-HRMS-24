@@ -247,7 +247,8 @@ namespace SigmaERP.classes
                         "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" + unitCondition + " "+ pSftCondition + " " +
                         "    GROUP BY EmpId, EmpCardNo,EmpProximityNo, PSftId,EmpName, DsgName,PSftName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering";
                 DataTable dt = new DataTable();
-                sqlDB.fillDataTable(query, dt);
+               
+                dt = CRUD.ExecuteReturnDataTable(query);
                 return dt;
             }
             catch {return null; }
