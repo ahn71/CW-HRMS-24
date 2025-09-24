@@ -468,6 +468,25 @@
                     });
                 }
 
+                var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
+                var dptIds = '<%=Session["__DptAccessPermission__"]%>';
+                var UserdptId = '<%=Session["__DptId__"]%>';
+                var departmentIds = dptIds ? JSON.parse(dptIds) : [];
+
+                // 🔹 Handle department IDs based on access level
+                if (!dptQueryString) {
+                    if (DataAccessLevel == 2) {
+                        // only one department
+                        formData.append("DptIds", UserdptId);
+                    } else if (DataAccessLevel == 4) {
+                        // multiple departments
+                        departmentIds.forEach(function (id) {
+                            formData.append("DptIds", id);
+                        });
+                    }
+                }
+
+
                 appendQueryStringToFormData(dptQueryString);
                 appendQueryStringToFormData(ctSftQueryString);
                 appendQueryStringToFormData(ptSftQueryString);
