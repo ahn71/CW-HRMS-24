@@ -723,46 +723,49 @@ namespace SigmaERP.classes
 
             if (!HasCompleteDutyDays())
                 return salaryRecord;
-
-            if (salaryRecord.AbsentDay > 0)
+            if (salaryRecord.AbsentDay == salaryRecord.LWP)
             {
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                Dictionary<string, object> data = (Dictionary<string, object>)serializer.DeserializeObject(AttendanceBonus);
+                object[] rules = (object[])data["rules"];
+                foreach (object ruleObj in rules)
+                {
+                    Dictionary<string, object> rule = (Dictionary<string, object>)ruleObj;
+                    bool isValid = true;
+
+                    if (rule.ContainsKey("emptype"))
+                    {
+                        int emptype = Convert.ToInt32(rule["emptype"]);
+                        if (salaryRecord.EmpTypeId != emptype)
+                            continue;
+                    }
+                    if (rule.ContainsKey("maxLeave"))
+                    {
+                        int maxLeave = Convert.ToInt32(rule["maxLeave"]);
+                        if (salaryRecord.TotalLeave > maxLeave)
+                            continue;
+                    }
+                    if (rule.ContainsKey("maxLate"))
+                    {
+                        int maxLate = Convert.ToInt32(rule["maxLate"]);
+                        if (maxLate != 0 && salaryRecord.LateDays > maxLate)
+                            continue;
+                    }
+                    if (isValid)
+                    {
+                        double bonus = Convert.ToDouble(rule["bonusAmount"]);
+                        salaryRecord.AttendanceBonus = bonus;
+                        break;
+                    }
+                }
                 return salaryRecord;
             }
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            Dictionary<string, object> data = (Dictionary<string, object>)serializer.DeserializeObject(AttendanceBonus);
-            object[] rules = (object[])data["rules"];
-            foreach (object ruleObj in rules)
-            {
-                Dictionary<string, object> rule = (Dictionary<string, object>)ruleObj;
-                bool isValid = true;            
-
-                if (rule.ContainsKey("emptype"))
-                {
-                    int emptype = Convert.ToInt32(rule["emptype"]);
-                    if (salaryRecord.EmpTypeId != emptype)                       
-                        continue;                        
-                }
-                if (rule.ContainsKey("maxLeave"))
-                {
-                    int maxLeave = Convert.ToInt32(rule["maxLeave"]);
-                    if (salaryRecord.TotalLeave > maxLeave)                    
-                        continue;  
-                }
-                if (rule.ContainsKey("maxLate"))
-                {
-                    int maxLate = Convert.ToInt32(rule["maxLate"]);
-                    if (maxLate!=0 && salaryRecord.LateDays > maxLate)                      
-                        continue;                        
-                }   
-                if (isValid)
-                {
-                    double bonus = Convert.ToDouble(rule["bonusAmount"]);
-                    salaryRecord.AttendanceBonus = bonus;
-                    break;
-                }
+            else if (salaryRecord.AbsentDay > 0)
+            { 
+                return salaryRecord;
             }
             return salaryRecord;
-           }
+        }
 
 
         
@@ -1158,6 +1161,10 @@ namespace SigmaERP.classes
             int totalDays = dt.Rows.Count;
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable("select distinct SftId, EmpId,Convert(varchar(11),ATTDate,111) as ATTDate,InHour,InMin,InSec,OutHour,OutMin,OutSec,ATTStatus from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND ATTStatus In ('P','L')  AND AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM") + '-' + "01" + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' AND PaybleDays='1' ");
+            totalDays += dt.Rows.Count;
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where  ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM") + "-" + "01" + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and ATTStatus in('LV') ");
             totalDays += dt.Rows.Count;
             if (totalDays != salaryRecord.DaysInMonth)
                 return false;
