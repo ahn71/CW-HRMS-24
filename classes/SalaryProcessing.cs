@@ -891,6 +891,7 @@ namespace SigmaERP.classes
         }
         private bool saveSalary(SalaryRecord salaryRecord)
         {
+            int actualAbsent = salaryRecord.AbsentDay - salaryRecord.LWP;
            return  CRUD.Execute(@"insert into Payroll_MonthlySalarySheet(CompanyId,SftId,EmpId,EmpCardNo,YearMonth,DaysInMonth,Activeday,WeekendHoliday,PayableDays,CasualLeave,SickLeave,
                             AnnualLeave,OthersLeave,FestivalHoliday,AbsentDay,PresentDay,EmpPresentSalary,BasicSalary,HouseRent,MedicalAllownce,ConvenceAllownce,FoodAllownce,TechnicalAllowance,
                             OthersAllownce,AdvanceDeduction,AbsentDeduction,AttendanceBonus,Payable,OverTime,OverTimeAmount,TotalOTHour,OTRate,TotalOTAmount,NetPayable,Stampdeduct,
@@ -898,7 +899,7 @@ namespace SigmaERP.classes
                             OthersPay,OthersDeduction,ProfitTax,NightbilAmount,NightBillDays,EmpNetGross,FromDate,ToDate,LWP,EmpSeparationId)
                             values('" + salaryRecord .CompanyId+@"',"+ salaryRecord.SftId + @",'"+ salaryRecord .EmpId+ @"','"+salaryRecord.EmpCardNo + @"','"+ salaryRecord.YearMonth.ToString("yyyy-MM-dd") + 
                             @"',"+salaryRecord.DaysInMonth+@","+salaryRecord.Activeday+@","+ salaryRecord.WeekendHoliday+ @","+ salaryRecord.PayableDays + @","+ salaryRecord.CasualLeave +
-                            @"," + salaryRecord.SickLeave + @"," + salaryRecord.AnnualLeave + @"," + salaryRecord.OthersLeave + @"," + salaryRecord.FestivalHoliday + @"," + salaryRecord.AbsentDay +
+                            @"," + salaryRecord.SickLeave + @"," + salaryRecord.AnnualLeave + @"," + salaryRecord.OthersLeave + @"," + salaryRecord.FestivalHoliday + @"," + actualAbsent +
                             @"," + salaryRecord.PresentDay + @",'" + salaryRecord.EmpPresentSalary + @"','" + salaryRecord.BasicSalary + @"','" + salaryRecord.HouseRent +
                             @"','" + salaryRecord.MedicalAllownce + @"','" + salaryRecord.ConvenceAllownce + @"','" + salaryRecord.FoodAllownce +
                             @"','" + salaryRecord.TechnicalAllowance + @"','" + salaryRecord.OthersAllownce + @"','" + salaryRecord.AdvanceDeduction + @"','" + salaryRecord.AbsentDeduction +
@@ -918,6 +919,7 @@ namespace SigmaERP.classes
 
         private bool saveSalaryComplaince(SalaryRecord salaryRecord)
         {
+            int actualAbsent = salaryRecord.AbsentDay - salaryRecord.LWP;
             return CRUD.Execute(@"insert into Payroll_monthlysalarysheet_Compliances(CompanyId,SftId,EmpId,EmpCardNo,YearMonth,DaysInMonth,Activeday,WeekendHoliday,PayableDays,CasualLeave,SickLeave,
                             AnnualLeave,OthersLeave,FestivalHoliday,AbsentDay,PresentDay,EmpPresentSalary,BasicSalary,HouseRent,MedicalAllownce,ConvenceAllownce,FoodAllownce,TechnicalAllowance,
                             OthersAllownce,AdvanceDeduction,AbsentDeduction,AttendanceBonus,Payable,OverTime,OverTimeAmount,TotalOTHour,OTRate,TotalOTAmount,NetPayable,Stampdeduct,
@@ -925,7 +927,7 @@ namespace SigmaERP.classes
                             OthersPay,OthersDeduction,ProfitTax,NightbilAmount,NightBillDays,EmpNetGross,FromDate,ToDate,LWP,EmpSeparationId)
                             values('" + salaryRecord.CompanyId + @"'," + salaryRecord.SftId + @",'" + salaryRecord.EmpId + @"','" + salaryRecord.EmpCardNo + @"','" + salaryRecord.YearMonth.ToString("yyyy-MM-dd") +
                              @"'," + salaryRecord.DaysInMonth + @"," + salaryRecord.Activeday + @"," + salaryRecord.WeekendHoliday + @"," + salaryRecord.PayableDays + @"," + salaryRecord.CasualLeave +
-                             @"," + salaryRecord.SickLeave + @"," + salaryRecord.AnnualLeave + @"," + salaryRecord.OthersLeave + @"," + salaryRecord.FestivalHoliday + @"," + salaryRecord.AbsentDay +
+                             @"," + salaryRecord.SickLeave + @"," + salaryRecord.AnnualLeave + @"," + salaryRecord.OthersLeave + @"," + salaryRecord.FestivalHoliday + @"," + actualAbsent +
                              @"," + salaryRecord.PresentDay + @",'" + salaryRecord.EmpPresentSalary + @"','" + salaryRecord.BasicSalary + @"','" + salaryRecord.HouseRent +
                              @"','" + salaryRecord.MedicalAllownce + @"','" + salaryRecord.ConvenceAllownce + @"','" + salaryRecord.FoodAllownce +
                              @"','" + salaryRecord.TechnicalAllowance + @"','" + salaryRecord.OthersAllownce + @"','" + salaryRecord.AdvanceDeduction + @"','" + salaryRecord.AbsentDeduction +
