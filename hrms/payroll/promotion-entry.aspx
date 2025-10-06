@@ -394,7 +394,7 @@
             var getGroupUrl = `${rootUrl}/api/Group/basicInfo?CompanyId=${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
             var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
-            var PostSalarySaveURL = `${rootUrl}/api/Salary/salary-save`;
+            var PostSalarySaveURL = `${rootUrl}/api/Salary/PromotionOrIncrement/save`;
 
 
 
@@ -1176,7 +1176,7 @@
                 const inputs = {};
 
                 $('#salaryFieldsContainer input').each(function () {
-                    const name = $(this).attr('name');
+                    const name = $(this).attr('name'); 
                     const val = parseFloat($(this).val()) || 0;
                     inputs[name] = val;
                 });
@@ -1282,8 +1282,6 @@
                 }
             }
 
-
-
             function SaveSalary() {
                 let empType = '';
 
@@ -1294,6 +1292,41 @@
                 } else {
                     empType = '3';
                 }
+
+                // --- Get dropdown values ---
+                const dptId = $('#ddlDepartment').val();
+                const dsgId = $('#ddlDesignation').val();
+                const grpId = $('#ddlGroup').val();
+
+                // --- Reset error messages ---
+                $('#ddlDepartmentError').text('');
+                $('#ddlDesignationError').text('');
+                $('#ddlGroupError').text('');
+
+                let isValid = true;
+
+                // --- Validation rules ---
+                if (dptId === '' || dptId === '1') {
+                    $('#ddlDepartmentError').text('Please select a valid Department.');
+                    isValid = false;
+                }
+
+                if (dsgId === '' || dsgId === '1') {
+                    $('#ddlDesignationError').text('Please select a valid Designation.');
+                    isValid = false;
+                }
+
+                if (grpId === '' || grpId === '1') {
+                    $('#ddlGroupError').text('Please select a valid Group.');
+                    isValid = false;
+                }
+
+                // Stop if validation failed
+                if (!isValid) {
+                    return;
+                }
+
+                // --- Prepare data for API ---
                 const salaryData = {
                     empId: selectedEmpId,
                     empType: empType,
@@ -1304,27 +1337,30 @@
                     basicSalary: parseFloat($('#txtBasic').val()) || 0,
                     overTime: $('#ddlOvertTime').val() === "1" ? true : $('#ddlOvertTime').val() === "0" ? false : null,
                     grdId: $('#ddlGrade').val(),
-                    companyId: CompanyID
+                    companyId: CompanyID,
+
+                    // ✅ Add new fields here
+                    dptId: dptId,
+                    dsgId: dsgId,
+                    grpId: parseInt(grpId) || 0,
+                    type: 'Increment'
+
                 };
 
+                // --- Optional fields ---
                 const txtMedical = document.getElementById('txtMedical');
-                if (txtMedical) {
-                    salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
-                }
+                if (txtMedical) salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
+
                 const txtConveyance = document.getElementById('txtConveyance');
-                if (txtConveyance) {
-                    salaryData.conveyanceAllowance = parseFloat(txtConveyance.value) || 0;
-                }
+                if (txtConveyance) salaryData.conveyanceAllowance = parseFloat(txtConveyance.value) || 0;
 
                 const txtHouseRent = document.getElementById('txtHouse_rent');
-                if (txtHouseRent) {
-                    salaryData.houseRent = parseFloat(txtHouseRent.value) || 0;
-                }
-                const txtFood = document.getElementById('txtFood');
-                if (txtFood) {
-                    salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
-                }
+                if (txtHouseRent) salaryData.houseRent = parseFloat(txtHouseRent.value) || 0;
 
+                const txtFood = document.getElementById('txtFood');
+                if (txtFood) salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
+
+                // --- API Call ---
                 ApiCallPost(PostSalarySaveURL, token, salaryData)
                     .then(response => {
                         if (response.statusCode === 200) {
@@ -1334,13 +1370,15 @@
                                 text: 'Thank you!',
                                 confirmButtonText: 'OK'
                             });
+
                             const newSalary = parseInt($('#txtGross').val()) || 0;
-                            const empId = selectedEmpId; 
+                            const empId = selectedEmpId;
 
                             const index = allEmployeeData.findIndex(emp => emp.empId == empId);
                             if (index !== -1) {
                                 allEmployeeData[index].empPresentSalary = newSalary;
                             }
+
                             const row = $(`.adv-table tbody tr`).filter(function () {
                                 return $(this).find('a.user-name').data('id') == empId;
                             });
@@ -1348,8 +1386,8 @@
                             if (row.length) {
                                 row.find('td').eq(4).text(newSalary);
                             }
-                                $('#salaryModal').modal('hide');
-                            
+
+                            $('#salaryModal').modal('hide');
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -1370,6 +1408,94 @@
                         });
                     });
             }
+
+
+            //function SaveSalary() {
+            //    let empType = '';
+
+            //    if (selectedEmpType === 'Worker') {
+            //        empType = '1';
+            //    } else if (selectedEmpType === 'Staff') {
+            //        empType = '2';
+            //    } else {
+            //        empType = '3';
+            //    }
+            //    const salaryData = {
+            //        empId: selectedEmpId,
+            //        empType: empType,
+            //        paymentMethod: parseInt($('#ddlPaymentMethod').val()),
+            //        bankId: parseInt($('#ddlSalaryBank').val()),
+            //        empAccountNo: $('#txtAccountNo').val().trim(),
+            //        empPresentSalary: parseFloat($('#txtGross').val()),
+            //        basicSalary: parseFloat($('#txtBasic').val()) || 0,
+            //        overTime: $('#ddlOvertTime').val() === "1" ? true : $('#ddlOvertTime').val() === "0" ? false : null,
+            //        grdId: $('#ddlGrade').val(),
+            //        companyId: CompanyID
+            //    };
+
+            //    const txtMedical = document.getElementById('txtMedical');
+            //    if (txtMedical) {
+            //        salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
+            //    }
+            //    const txtConveyance = document.getElementById('txtConveyance');
+            //    if (txtConveyance) {
+            //        salaryData.conveyanceAllowance = parseFloat(txtConveyance.value) || 0;
+            //    }
+
+            //    const txtHouseRent = document.getElementById('txtHouse_rent');
+            //    if (txtHouseRent) {
+            //        salaryData.houseRent = parseFloat(txtHouseRent.value) || 0;
+            //    }
+            //    const txtFood = document.getElementById('txtFood');
+            //    if (txtFood) {
+            //        salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
+            //    }
+
+            //    ApiCallPost(PostSalarySaveURL, token, salaryData)
+            //        .then(response => {
+            //            if (response.statusCode === 200) {
+            //                Swal.fire({
+            //                    icon: 'success',
+            //                    title: 'Salary Saved Successfully',
+            //                    text: 'Thank you!',
+            //                    confirmButtonText: 'OK'
+            //                });
+            //                const newSalary = parseInt($('#txtGross').val()) || 0;
+            //                const empId = selectedEmpId; 
+
+            //                const index = allEmployeeData.findIndex(emp => emp.empId == empId);
+            //                if (index !== -1) {
+            //                    allEmployeeData[index].empPresentSalary = newSalary;
+            //                }
+            //                const row = $(`.adv-table tbody tr`).filter(function () {
+            //                    return $(this).find('a.user-name').data('id') == empId;
+            //                });
+
+            //                if (row.length) {
+            //                    row.find('td').eq(4).text(newSalary);
+            //                }
+            //                    $('#salaryModal').modal('hide');
+                            
+            //            } else {
+            //                Swal.fire({
+            //                    icon: 'error',
+            //                    title: 'API Error',
+            //                    text: response.message || 'Unexpected response from server.',
+            //                    confirmButtonText: 'OK'
+            //                });
+            //                console.error('API Error:', response.message);
+            //            }
+            //        })
+            //        .catch(error => {
+            //            console.error('Request failed:', error);
+            //            Swal.fire({
+            //                icon: 'error',
+            //                title: 'Request Failed',
+            //                text: 'Something went wrong while saving salary.',
+            //                confirmButtonText: 'OK'
+            //            });
+            //        });
+            //}
 
 
 
