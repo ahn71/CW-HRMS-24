@@ -63,9 +63,9 @@
         .form-control {
             height: 40px !important;
         }
-        /*.table-responsive{
+        .table-responsive{
             overflow-x: hidden;
-        }*/
+        }
 
     </style>
 </asp:Content>
@@ -143,8 +143,33 @@
                                 </aside>
                             </div>
                         </div>
-                    </div>
+                                     <div class="card">
+                            <div id="togglePerShift" class="card-header px-20 py-15" style="cursor: pointer;">
+                                <h6 class="d-flex justify-between align-items-center fw-500 w-100">
+                                    <span class="d-flex align-items-center" style="font-size:16px; color:black";>
+                                        <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
+                                        Filter By Permanent Shift
+                                    </span>
+                                    <i id="arrowIconPerShift" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <aside class="">
+                                    <div class="card border-0 shadow-none multi-collapse mt-10 collapse show" id="multiCollapseExample3">
+                                        <div class="product-brands" overflow-y: auto;">
+                                           <ul id="PerShiftList">
 
+                                              
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                    </div>
+                    
+                 
                                           
 
 <%--                    <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
@@ -186,50 +211,63 @@
                                                             <div class="col">
                                                                 <label for="txtEmpCardNo" class="form-label mb-1 p-0">Employee ID</label>
                                                                 <input type="text" id="txtEmpCardNo" class="form-control" placeholder="Employee ID...">
+                                                                 <label id="txtEmpCardNoError" class="form-label mb-1 p-0"></label>
                                                             </div>
 
                                                             <!-- Effective Date -->
                                                             <div class="col">
-                                                                <label for="txtEffectiveDate" class="form-label mb-1 p-0">Effective Date</label>
+                                                                <label for="txtEffectiveDate" class="form-label mb-1 p-0">Effective Date <span style="color:red">*</span></label>
                                                                 <input type="date" id="txtEffectiveDate" class="form-control">
+                                                                  <label id="txtEffectiveDateError" class="form-label mb-1 p-0"></label>
                                                             </div>
 
                                                             <!-- Employee Maturity -->
                                                             <div class="col">
-                                                                <label for="ddlEmployeeMaturity" class="form-label mb-1 p-0">Employee Maturity</label>
+                                                                <label for="ddlEmployeeMaturity" class="form-label mb-1 p-0">Employee Maturity<span style="color:red">*</span></label>
                                                                 <select id="ddlEmployeeMaturity" class="form-control">
                                                                     <option value="all">All</option>
                                                                     <option value="1">1 Year</option>
                                                                     <option value="0">Less than 1 Year</option>
                                                                 </select>
+                                                                
+                                                                  <label id="ddlEmployeeMaturityError" class="form-label mb-1 p-0"></label>
                                                             </div>
 
                                                             <!-- Increment On -->
                                                             <div class="col">
-                                                                <label for="ddlIncrementOn" class="form-label mb-1 p-0">Increment On</label>
+                                                                <label for="ddlIncrementOn" class="form-label mb-1 p-0">Increment On<span style="color:red">*</span></label>
                                                                 <select id="ddlIncrementOn" class="form-control">
                                                                     <option value="">----Select----</option>
                                                                     <option value="Gross">Gross</option>
                                                                     <option value="Basic">Basic</option>
                                                                 </select>
+                                                                <label id="ddlIncrementOnError" class="form-label mb-1 p-0"></label>
                                                             </div>
 
                                                             <!-- Increment Pers + Buttons -->
-                                                            <div class="col d-flex flex-column">
-                                                                <label for="txtIncrementPers" class="form-label mb-1 p-0">Increment Pers</label>
+                                                            <div class="col d-flex flex-column" style="margin:auto">
+                                                                <label for="txtIncrementPers" class="form-label mb-1 p-0">
+                                                                    Increment %<span style="color: red">*</span>
+                                                                </label>
+
                                                                 <div class="d-flex align-items-center gap-2">
                                                                     <input type="text" id="txtIncrementPers" class="form-control">
+
                                                                     <button type="button" title="Search" id="btnSearch" onclick="SearchEmployee()"
                                                                         class="btn btn-sm btn-primary d-flex align-items-center justify-content-center"
                                                                         style="height: 36px; width: 36px;">
                                                                         <i class="fas fa-search"></i>
                                                                     </button>
+
                                                                     <button type="button" onclick="AttendanceProcess()" title="Save" id="btnProcessing"
                                                                         class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
                                                                         style="height: 36px; width: 36px;">
                                                                         <i class="uil uil-save" style="font-size: 20px"></i>
                                                                     </button>
                                                                 </div>
+
+                                                                <!-- ❗ Moved here for alignment consistency -->
+                                                                <label for="txtIncrementPers" id="txtIncrementPersError" class="form-label mb-1 p-0"></label>
                                                             </div>
 
                                                         </div>
@@ -239,7 +277,7 @@
                                                     <%--Close--%>
                                                 </div>
                                                
-                                                <div id="employeeContainer">
+                                                <div id="employeeContainer" style="overflow-x: auto; white-space: nowrap;">
                                                     <table class="table mb-0 packagesTable table-borderless adv-table"
                                                         data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
                                                     </table>
@@ -288,6 +326,7 @@
         var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
         var getEmployeeUrl = `${rootUrl}/api/Salary/Increment/employee`;
         var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
+        var getPerShiftUrl = `${rootUrl}/api/Roster/permanent-shift?CompanyId=${CompanyID}`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
         var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
@@ -311,7 +350,9 @@
             $('#toggleEmpType').on('click', function () {
                 EmpTypetToggle();
             });
-
+            $('#togglePerShift').on('click', function () {
+                PermanentShiftToggle();
+            });
 
             const today = new Date();
             const formattedDate = formatDate(today);
@@ -324,9 +365,9 @@
 
             GetEmpType();
             GetUnit();
-            GetEmployee();
+          //  GetEmployee();
             GetDepartment();
-
+            GetPermanentShift();
             if (AttdMetchin === "zk(access)") {
                 $("#AttdMetchinFileSection").show();
             } else {
@@ -370,7 +411,18 @@
                     arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
             }
+        function PermanentShiftToggle() {
+            const unitList = $('#PerShiftList');
+            const arrowIcon = $('#arrowIconPerShift');
 
+            unitList.toggle(); // Corrected variable
+
+            if (unitList.is(':visible')) {
+                arrowIcon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            } else {
+                arrowIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            }
+        }
             function DepartmentToggle() {
                 const unitList = $('#departmentList');
                 const arrowIcon = $('#arrowIcondpt');
@@ -403,6 +455,87 @@
                     console.error('Error occurred while fetching data:', error);
                 });
         }
+            function GetPermanentShift() {
+                ApiCall(getPerShiftUrl, token)
+                    .then(function (response) {
+                        if (response.statusCode === 200) {
+                            const permShifts = response.data;
+                            console.log('Before table Data Bind', permShifts);
+
+                            bindPermanentShifts(permShifts);
+
+                            console.log('After Table Data Bind', permShifts);
+                        } else {
+                            console.error('Error occurred while fetching data:', response.message);
+                        }
+                    })
+                    .catch(function (error) {
+                        $('.loaderCosting').hide();
+                        console.error('Error occurred while fetching data:', error);
+                    });
+            }
+
+            function bindPermanentShifts(permShifts) {
+                const $list = $('#PerShiftList');
+                $list.empty(); // Clear existing list
+
+                // Add "Select All" checkbox
+                const selectAllItem = `
+        <li>
+            <div class="checkbox-theme-default custom-checkbox">
+                <input type="checkbox" id="selectAllPerShift">
+                <label for="selectAllPerShift">
+                    <span class="checkbox-text" style="margin-left:20px">
+                        Select All
+                    </span>
+                </label>
+            </div>
+        </li>
+    `;
+                $list.append(selectAllItem);
+
+                // Add permShift checkboxes
+                permShifts.forEach((shift, index) => {
+                    const checkboxId = `permShift-check-${index}`;
+                    const listItem = `
+            <li>
+                <div class="checkbox-theme-default custom-checkbox">
+                    <input type="checkbox" class="PermShiftCheckbox" id="${checkboxId}" value="${shift.id}">
+                    <label for="${checkboxId}">
+                        <span class="checkbox-text" style="margin-left:20px">
+                            ${shift.name}
+                        </span>
+                    </label>
+                </div>
+            </li>
+        `;
+                    $list.append(listItem);
+                });
+            }
+
+            // Select All checkbox toggle
+            $(document).on('change', '#selectAllPerShift', function () {
+                const isChecked = $(this).is(':checked');
+                $('.PermShiftCheckbox').prop('checked', isChecked);
+            });
+
+            // Sync "Select All" state with individual checkboxes
+            $(document).on('change', '.PermShiftCheckbox', function () {
+                const total = $('.PermShiftCheckbox').length;
+                const checked = $('.PermShiftCheckbox:checked').length;
+                $('#selectAllPerShift').prop('checked', total === checked);
+            });
+
+            // Optional: Get selected permShift IDs as query string
+            function getSelectedShiftIdsQuery() {
+                return $('.PermShiftCheckbox:checked')
+                    .map(function () {
+                        return $(this).val(); // e.g., "3705"
+                    })
+                    .get(); // returns ["3705", "3706"]
+            }
+
+
         // Function to bind EmpType list
         function bindEmpType(empTypeList) {
             const $list = $('#empTypeList');
@@ -685,15 +818,50 @@
 
 
         function GetEmployee() {
+            // --- Clear previous error messages ---
+            $('#txtEffectiveDateError').text('');
+            $('#ddlEmployeeMaturityError').text('');
+            $('#ddlIncrementOnError').text('');
+            $('#txtIncrementPersError').text('');
+
+            // --- Get field values ---
             const empCardNo = $('#txtEmpCardNo').val();
             const effectiveDate = $('#txtEffectiveDate').val();
             const empMaturityType = $('#ddlEmployeeMaturity').val();
             const incrementOn = $('#ddlIncrementOn').val();
             const incrementPer = $('#txtIncrementPers').val();
 
-            // --- Get other data from your helper functions ---
-            const deptIds = getSelectedDepartmentQuery(); // make sure this returns an array
-            const shiftIds = getSelectedUnitQuery(); // or whichever represents shifts
+            let isValid = true;
+
+            // --- Validation checks ---
+            if (!effectiveDate) {
+                $('#txtEffectiveDateError').text('Effective Date is required').css('color', 'red');
+                isValid = false;
+            }
+            if (!empMaturityType) {
+                $('#ddlEmployeeMaturityError').text('Employee Maturity is required').css('color', 'red');
+                isValid = false;
+            }
+            if (!incrementOn) {
+                $('#ddlIncrementOnError').text('Increment On is required').css('color', 'red');
+                isValid = false;
+            }
+            if (!incrementPer) {
+                $('#txtIncrementPersError').text('Increment % is required').css('color', 'red');
+                isValid = false;
+            } else if (isNaN(incrementPer) || incrementPer <= 0) {
+                $('#txtIncrementPersError').text('Enter a valid percentage').css('color', 'red');
+                isValid = false;
+            }
+
+            // --- Stop execution if validation fails ---
+            if (!isValid) {
+                return;
+            }
+
+            // --- Get other data ---
+            const deptIds = getSelectedDepartmentQuery();
+            const shiftIds = getSelectedShiftIdsQuery();
 
             // --- Build the POST body ---
             const postData = {
@@ -701,16 +869,16 @@
                 empMaturityType: empMaturityType === "all" ? null : parseInt(empMaturityType),
                 incrementOn: incrementOn,
                 incrementPer: parseFloat(incrementPer),
-                companyId: CompanyID, // static or dynamic if needed
+                companyId: CompanyID,
                 empCard: empCardNo || "",
-                deptIds: Array.isArray(deptIds) ? deptIds : [deptIds],
-                shiftIds: Array.isArray(shiftIds) ? shiftIds : [shiftIds]
+                deptIds: deptIds.length > 0 ? deptIds : [""],
+                shiftIds: shiftIds.length > 0 ? shiftIds : [""]
             };
 
             console.log("POST BODY:", postData);
 
-            const url = getEmployeeUrl; // base API URL only (no query params)
-
+            // --- Call API ---
+            const url = getEmployeeUrl;
             ApiCallPost(url, token, postData)
                 .then(response => {
                     if (response.statusCode === 200) {
@@ -725,6 +893,7 @@
                     bindTableData([]);
                 });
         }
+
 
 
         let allEmployeeData = [];
@@ -772,14 +941,14 @@
                 { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                 { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                 { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
-                { name: "departmentName", title: "Department", className: "userDatatable-content" },
+                { name: "empJoiningDate", title: "Joining Date", className: "userDatatable-content" },
+
                 { name: "empPresentSalary", title: "Salary", className: "userDatatable-content" },
                 { name: "basicSalary", title: "Basic", className: "userDatatable-content" },
-                { name: "houseRent", title: "House Rent", className: "userDatatable-content" },
+                { name: "houseRent", title: "House", className: "userDatatable-content" },
                 { name: "newGrossSalary", title: "New Salary", className: "userDatatable-content" },
                 { name: "newBasicSalary", title: "New Basic", className: "userDatatable-content" },
-                { name: "newHouseRent", title: "New House", className: "userDatatable-content" },
-                { name: "empJoiningDate", title: "Joining Date", className: "userDatatable-content" },
+                { name: "newHouseRent", title: "New House", className: "userDatatable-content" }
 
             ];
 
@@ -904,12 +1073,12 @@
 
 
         function getSelectedDepartmentQuery() {
+            // Collect all checked department checkboxes
             return $('.rowCheckbox:checked')
                 .map(function () {
-                    return 'DptIds=' + $(this).val();
+                    return $(this).val(); // e.g., "0001", "0002"
                 })
-                .get()
-                .join('&');
+                .get(); // returns ["0001", "0002"]
         }
 
 
