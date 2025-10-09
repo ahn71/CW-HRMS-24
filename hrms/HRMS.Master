@@ -975,7 +975,7 @@
                                                 <% if (IsRouteExists("salary/salary-increment"))
                                                     { %>
                                                 <li>
-                                                    <a class="" href="salary/salary-increment" runat="server">Increment Entry Panel</a>
+                                                    <a class="" href="salary/salary-increment" runat="server">Common Increment</a>
                                                 </li>
                                                 <% } %>
 

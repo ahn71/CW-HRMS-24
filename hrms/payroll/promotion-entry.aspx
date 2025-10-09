@@ -154,6 +154,12 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
+                                                             <div class="col-lg-4">
+                                                                
+                                                                <div class="input-group ">
+                                                                   <h6>Promotion / Increment Panel</h6>
+                                                                </div>
+                                                            </div>
 
                                                         </div>
                                                     </div>
@@ -203,7 +209,76 @@
                                                                 
                                                                             <div class="col-lg-8 mb-10">
                                                                                 <div class="row">
-                                                                               
+                                                                                  <div class="col-lg-4">
+                                                                            <label for="ddlPromotionType" class="color-dark fs-14 fw-500 align-center">Type</label>
+                                                                            <div class="input-group">
+                                                                                
+                                                                                <select name="ddlPromotionType" id="ddlPromotionType" class="form-control ih-medium ip-gray radius-xs b-light">
+                                                                                    <option value="">---Select---</option>
+                                                                                    <option value="2">Special Increment</option>
+                                                                                    <option value="3">Promotion</option>
+                                                                                    <option value="4">Promotion with Increment</option>
+                                                                                </select>
+                                                                            </div>
+                                                                            <span class="text-danger" id="errordlPromotionType"></span>
+                                                                                      </div>
+                                                                                          <div class="col-lg-4 mb-10">
+                                                                                        <label for="ddlEmpType" class="color-dark fs-14 fw-500 mb-1">Employee Type</label>
+                                                                                        <div class="input-group">
+
+                                                                                          <select
+                                                                                                      name="ddlEmpType"
+                                                                                                      id="ddlEmpType"
+                                                                                                      class="form-control ih-medium ip-gray radius-xs b-light">
+                                                                                                      <option value="">--- Select ---</option>
+                                                                                                      <option value="1">Worker</option>
+                                                                                                      <option value="2">Staff</option>
+                                                                                                      <option value="3">Officer</option>
+                                                                                                  </select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="errorEmpType"></span>
+                                                                                    </div>
+                                                                                    <div class="col-lg-4 mb-10" id="divDepartment">
+                                                                                        <label for="ddlDepartment" class="color-dark fs-14 fw-500 mb-1">Department</label>
+                                                                                        <div class="input-group">
+                                                                                            <select name="ddlDepartment" id="ddlDepartment" class="form-control ih-medium ip-gray radius-xs b-light"></select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="ddlDepartmentError"></span>
+                                                                                    </div>
+
+                                                                                    <!-- Designation -->
+                                                                                    <div class="col-lg-4 mb-10" id="divDesignation">
+                                                                                        <label for="ddlDesignation" class="color-dark fs-14 fw-500 mb-1">Designation</label>
+                                                                                        <div class="input-group">
+                                                                                            <select name="ddlDesignation" id="ddlDesignation" class="form-control ih-medium ip-gray radius-xs b-light"></select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="ddlDesignationError"></span>
+                                                                                    </div>
+
+                                                                                    <!-- Group -->
+                                                                                    <div class="col-lg-4 mb-10" id="divGroup">
+                                                                                        <label for="ddlGroup" class="color-dark fs-14 fw-500 mb-1">Group</label>
+                                                                                        <div class="input-group">
+                                                                                            <select name="ddlGroup" id="ddlGroup" class="form-control ih-medium ip-gray radius-xs b-light"></select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="ddlGroupError"></span>
+                                                                                    </div>
+                                                                                     <div class="col-lg-4 mb-10">
+                                                                                        <label for="ddlOvertTime" class="color-dark fs-14 fw-500 align-center">Over Time </label>
+                                                                                        <div class="input-group">
+
+                                                                                            <select name="ddlOvertTime" id="ddlOvertTime" class="form-control ih-medium ip-gray radius-xs b-light">
+                                                                                                
+                                                                                                <option value="1" selected >Yes</option>
+                                                                                                <option value="0">No</option>
+                                                                                                <option value="">Single Rate</option>
+                                                                                           
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="ddlOvertTimeError"></span>
+                                                                                    </div>
+                                                                                     
+                                                                                      
                                                                                     <div class="col-lg-4">
                                                                             <label for="ddlPaymentMethod" class="color-dark fs-14 fw-500 align-center">Payment Method</label>
                                                                             <div class="input-group">
@@ -242,77 +317,61 @@
                                                                                         </div>
                                                                                     </div>
 
-                                                                                     <div class="col-lg-4 mb-10">
+
+
+
+
+
+                                                                                    <div class="col-lg-4 mb-10" id="divGrade">
                                                                                         <label for="ddlGrade" class="color-dark fs-14 fw-500 mb-1">Grade</label>
                                                                                         <div class="input-group">
-
-                                                                                            <select name="ddlGrade" id="ddlGrade" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                               <%-- <option value="0">---Select---</option>
-                                                                                                <option value="3">1st</option>
-                                                                                                <option value="2">2nd</option>
-                                                                                                <option value="1">3rd</option>--%>
-                                                                                           
-                                                                                            </select>
+                                                                                            <select name="ddlGrade" id="ddlGrade" class="form-control ih-medium ip-gray radius-xs b-light"></select>
                                                                                         </div>
                                                                                         <span class="text-danger" id="ddlGradeError"></span>
                                                                                     </div>
-                                                                                                           <div class="col-lg-4 mb-10">
-                                                                                        <label for="ddlDepartment" class="color-dark fs-14 fw-500 mb-1">Department</label>
+                                                                                    <div class="col-lg-4 mb-10" id="divIncrementAmount">
+                                                                                        <label for="txtIncrementAmount" class="color-dark fs-14 fw-500 mb-1">Increment Amount</label>
                                                                                         <div class="input-group">
-
-                                                                                            <select name="ddlDepartment" id="ddlDepartment" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                           
-                                                                                            </select>
+                                                                                            <input type="number" id="txtIncrementAmount" name="txtIncrementAmount"
+                                                                                                class="form-control ih-medium ip-gray radius-xs b-light"  />
                                                                                         </div>
-                                                                                        <span class="text-danger" id="ddlDepartmentError"></span>
+                                                                                        <span class="text-danger" id="txtIncrementAmountError"></span>
                                                                                     </div>
-                                                                                        <div class="col-lg-4 mb-10">
-                                                                                        <label for="ddlDesignation" class="color-dark fs-14 fw-500 mb-1">Designation</label>
-                                                                                        <div class="input-group">
 
-                                                                                            <select name="ddlDesignation" id="ddlDesignation" class="form-control ih-medium ip-gray radius-xs b-light">
-
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <span class="text-danger" id="ddlDesignationError"></span>
-                                                                                    </div>
-                                                                                       <div class="col-lg-4 mb-10">
-                                                                                        <label for="ddlGroup" class="color-dark fs-14 fw-500 mb-1">Group</label>
-                                                                                        <div class="input-group">
-
-                                                                                            <select name="ddlGroup" id="ddlGroup" class="form-control ih-medium ip-gray radius-xs b-light">
-
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <span class="text-danger" id="ddlGroupError"></span>
-                                                                                    </div>
-                                                                                     <div class="col-lg-4 mb-10">
-                                                                                        <label for="ddlOvertTime" class="color-dark fs-14 fw-500 align-center">Over Time </label>
-                                                                                        <div class="input-group">
-
-                                                                                            <select name="ddlOvertTime" id="ddlOvertTime" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                                
-                                                                                                <option value="1" selected >Yes</option>
-                                                                                                <option value="0">No</option>
-                                                                                                <option value="">Single Rate</option>
-                                                                                           
-                                                                                            </select>
-                                                                                        </div>
-                                                                                        <span class="text-danger" id="ddlOvertTimeError"></span>
-                                                                                    </div>
                                                                                      <div class="col-lg-4">
                                                                                         <div class="form-group">
                                                                                             <label for="txtGross" class=" color-dark fs-14 fw-500 align-center">Gross</label>
                                                                                             <div class="with-icon">
                                                                                                 <span class="las la-money-bill"></span>
-                                                                                                <input type="number" class="form-control ih-medium ip-gray radius-xs b-light" id="txtGross">
+                                                                                                <input type="number" disabled class="form-control ih-medium ip-gray radius-xs b-light" id="txtGross">
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    
+                                                                                    <div class="col-lg-4 mb-10">
+                                                                                        <label for="txtEffectiveDate" class="color-dark fs-14 fw-500 mb-1">Effective Date</label>
+                                                                                        <div class="input-group">
+
+                                                                                             <input
+                                                                                                      type="date"
+                                                                                                      name="txtEffectiveDate"
+                                                                                                      id="txtEffectiveDate"
+                                                                                                      class="form-control ih-medium ip-gray radius-xs b-light" />
+                                                                                        </div>
+                                                                                        <span class="text-danger" id="errortxtEffectiveDate"></span>
+                                                                                    </div>
                                                                             
                                                                                 </div>
-                                                                                 <div class="row" id="salaryFieldsContainer"></div>
+                                                                                <div style="display: flex; justify-content: center; margin-top: 5px; margin-bottom: 5px;">
+                                                                                    <button id="btnToggleDetails" type="button"
+                                                                                        style="padding: 4px 10px; font-size: 12px; border-radius: 4px; border: 1px solid #007bff; background-color: #007bff; color: white; cursor: pointer;">
+                                                                                        Show Details <i class="fas fa-chevron-down"></i>
+                                                                                    </button>
+                                                                                </div>
+
+
+
+
+                                                                                <div class="row" id="salaryFieldsContainer"style="display:none"></div>
 
 
 
@@ -333,73 +392,13 @@
                                                                               <!-- Details -->
                                                                               <ul class="list-group list-group-flush mt-3 text-start">
                                                                                 <li class="list-group-item py-1"><strong>Employee Id:</strong> <span id="empCardNo"></span></li>
-                                                                               <%-- <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType"></span></li>--%>
-                                                                                  <li class="list-none mb-3 mt-1">
-                                                                                      <div class="row align-items-center">
-                                                                                          <!-- Label -->
-                                                                                          <div class="col-lg-4 col-md-4 col-sm-12">
-                                                                                              <label for="ddlEmpType" class="color-dark fs-14 fw-500 mb-0">Emp Type</label>
-                                                                                          </div>
+                                                                                <li class="list-group-item py-1"><strong>Type:</strong> <span id="empType"></span></li>
+                                                                                <li class="list-group-item py-1"><strong>Grade:</strong> <span id="grdName"></span></li>
+                                                                                <li class="list-group-item py-1"><strong>Joining Date:</strong> <span id="joiningDate"></span></li>
+                                                                                <li class="list-group-item py-1"><strong>Current Salary:</strong> <span id="empSalary"></span></li>
 
-                                                                                          <!-- Dropdown -->
-                                                                                          <div class="col-lg-8 col-md-8 col-sm-12">
-                                                                                              <div class="input-group">
-                                                                                                  <select
-                                                                                                      name="ddlEmpType"
-                                                                                                      id="ddlEmpType"
-                                                                                                      class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                                      <option value="">--- Select ---</option>
-                                                                                                      <option value="Worker">Worker</option>
-                                                                                                      <option value="Staff">Staff</option>
-                                                                                                  </select>
-                                                                                              </div>
-                                                                                              <span class="text-danger fs-13" id="errorEmpType"></span>
-                                                                                          </div>
-                                                                                      </div>
-                                                                                  </li>
-
-                                                                                    <li class="list-none mb-3 mt-1">
-                                                                                      <div class="row align-items-center">
-                                                                                          <!-- Label -->
-                                                                                          <div class="col-lg-4 col-md-4 col-sm-12">
-                                                                                           <label for="ddlPromotionType" class="color-dark fs-14 fw-500 align-center">Promotion Type</label>
-                                                                                          </div>
-
-                                                                                          <!-- Dropdown -->
-                                                                                          <div class="col-lg-8 col-md-8 col-sm-12">
-                                                                                              <div class="input-group">
-                                                                                                   <select name="ddlPromotionType" id="ddlPromotionType" class="form-control ih-medium ip-gray radius-xs b-light">
-                                                                                    <option value="">---Select---</option>
-                                                                                    <option value="2">Special</option>
-                                                                                    <option value="3">Promotion</option>
-                                                                                    <option value="4">Promotion with Increment</option>
-                                                                                </select>
-                                                                                              </div>
-                                                                                              <span class="text-danger fs-13" id="errordlPromotionType"></span>
-                                                                                          </div>
-
-                                                                                      </div>
-                                                                                  </li>
-                                                                                  <li class="list-none mb-3 mt-1">
-                                                                                      <div class="row align-items-center">
-                                                                                          <!-- Label -->
-                                                                                          <div class="col-lg-4 col-md-4 col-sm-12">
-                                                                                              <label for="txtEffectiveDate" class="color-dark fs-14 fw-500 align-center">Effective Date</label>
-                                                                                          </div>
-
-                                                                                          <!-- Date Picker -->
-                                                                                          <div class="col-lg-8 col-md-8 col-sm-12">
-                                                                                              <div class="input-group">
-                                                                                                  <input
-                                                                                                      type="date"
-                                                                                                      name="txtEffectiveDate"
-                                                                                                      id="txtEffectiveDate"
-                                                                                                      class="form-control ih-medium ip-gray radius-xs b-light" />
-                                                                                              </div>
-                                                                                              <span class="text-danger fs-13" id="errortxtEffectiveDate"></span>
-                                                                                          </div>
-                                                                                      </div>
-                                                                                  </li>
+                                                                                
+                                                                            
 
 
                                                                               </ul>
@@ -491,7 +490,8 @@
 
                 $('#txtStartDate').val(formattedDate);
                 $('#txtEndDate').val(formattedDate);
-          
+
+
                 GetUnit();
                 GetDepartment();
                 GetSalaryStracture();
@@ -1074,8 +1074,13 @@
                                 GetGroup(selectedDptId, data.gId ?? '0');
                             }
                             $('#empCardNo').text(data.empCardNo ? data.empCardNo.slice(-6) : 'N/A');
-                            //$('#empType').text(data.empType ?? 'N/A');
-                            $('#ddlEmpType').val(data.empType ?? 'N/A');
+                            $('#empType').text(data.empType ?? 'N/A');
+                            $('#ddlEmpType').val(data.empTypeId ?? 'N/A');
+                            $('#grdName').text(data.grdName ?? 'N/A');
+                           $('#joiningDate').text(formatDateToDDMMYYYY(data.empJoiningDate));
+
+
+                            $('#empSalary').text(data.empPresentSalary ?? 'N/A');
 
                             // Profile Image Handling
                             let imagePath = data.empPicture && data.empPicture.trim() !== ''
@@ -1098,6 +1103,63 @@
                     GetGroup(newDptId, selectedGidId);
                 }
             });
+            $('#ddlEmpType').on('change', function () {
+                // Get selected value
+                const selectedVal = $(this).val();
+                let roleKey = '';
+
+                // Check value and assign text manually
+                if (selectedVal === "1") {
+                    roleKey = "worker";
+                } else if (selectedVal === "2") {
+                    roleKey = "staff";
+                } else if (selectedVal === "3") {
+                    roleKey = "officer";
+                } else {
+                    roleKey = "";
+                }
+
+                // Call your function with the determined roleKey
+                $("#txtIncrementAmount").val('');
+
+                renderDynamicSalaryFields(roleKey);
+            });
+            $('#ddlPromotionType').on('change', function () {
+                handleIncrementTypeChange();
+            });
+            function handleIncrementTypeChange() {
+                const selectedVal = $("#ddlPromotionType").val();
+
+                // Hide all first
+                $("#divDepartment, #divDesignation, #divGroup, #divGrade, #divIncrementAmount").hide();
+
+                if (selectedVal === "2") {
+                    // Special Increment
+                    $("#divIncrementAmount, #divGrade").show();
+
+                } else if (selectedVal === "3") {
+                    // Promotion
+                    $("#divDepartment, #divDesignation, #divGroup").show();
+
+                } else if (selectedVal === "4") {
+                    // Promotion with Increment
+                    $("#divIncrementAmount, #divGrade, #divDepartment, #divDesignation, #divGroup").show();
+                }
+            }
+
+            function formatDateToDDMMYYYY(dateString) {
+                if (!dateString) return 'N/A';
+
+                const date = new Date(dateString);
+                if (isNaN(date)) return 'N/A';
+
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+
+                return `${day}-${month}-${year}`;
+            }
+
             function GetBankInfo() {
                 ApiCall(GetBankInfoURL, token)
                     .then(function (response) {
@@ -1284,7 +1346,46 @@
 
                 return formulas;
             }
-            
+            document.getElementById('txtIncrementAmount').addEventListener('input', function () {
+
+                // Get increment amount
+                const incrementValue = parseFloat(document.getElementById('txtIncrementAmount').value) || 0;
+
+                // Get employee salary (input or label)
+                const grossValue = parseFloat($('#empSalary').val() || $('#empSalary').text() || 0);
+
+                // Calculate total = salary + increment
+                const total = grossValue + incrementValue;
+
+                // ✅ Update txtGross with total value
+                $('#txtGross').val(total);
+
+                // ✅ Pass total to calculateSalary()
+                calculateSalary(total);
+            });
+
+            $(document).ready(function () {
+                var $btn = $("#btnToggleDetails");
+                var $container = $("#salaryFieldsContainer");
+                var $icon = $btn.find("i"); // find the Font Awesome icon inside the button
+
+                if ($btn.length === 0 || $container.length === 0) return; // safety check
+
+                $btn.on("click", function () {
+                    if ($container.is(":hidden")) {
+                        $container.css("display", "flex"); // show container
+                        $btn.contents().first()[0].nodeValue = "Hide Details "; // update text only
+                        $icon.removeClass("fa-chevron-down").addClass("fa-chevron-up"); // rotate arrow
+                    } else {
+                        $container.hide(); // hide container
+                        $btn.contents().first()[0].nodeValue = "Show Details "; // update text only
+                        $icon.removeClass("fa-chevron-up").addClass("fa-chevron-down"); // rotate arrow
+                    }
+                });
+            });
+
+
+
             document.getElementById('txtGross').addEventListener('input', function () {
                 const grossValue = parseFloat(this.value);
                 if (!isNaN(grossValue)) {
@@ -1352,7 +1453,6 @@
                     }
                 }
             }
-
             function SaveSalary() {
                 // --- Get Dropdown and Input Values ---
                 const empTypeVal = $('#ddlEmpType').val();
@@ -1360,7 +1460,8 @@
                 const dptId = $('#ddlDepartment').val();
                 const dsgId = $('#ddlDesignation').val();
                 const grpId = $('#ddlGroup').val();
-                const effectiveDate = $('#txtEffectiveDate').val(); // ✅ Added
+                const effectiveDate = $('#txtEffectiveDate').val();
+                const incrementAmount = $('#txtIncrementAmount').val();
 
                 // --- Reset all error messages ---
                 $('#errorEmpType').text('');
@@ -1368,7 +1469,8 @@
                 $('#ddlDepartmentError').text('');
                 $('#ddlDesignationError').text('');
                 $('#ddlGroupError').text('');
-                $('#errortxtEffectiveDate').text(''); // ✅ Added reset
+                $('#errortxtEffectiveDate').text('');
+                $('#txtIncrementAmountError').text('');
 
                 let isValid = true;
 
@@ -1381,6 +1483,14 @@
                 if (!promotionType || promotionType === '') {
                     $('#errordlPromotionType').text('Please select a Promotion Type.');
                     isValid = false;
+                }
+
+                // Increment amount validation for Special Increment (2) and Promotion with Increment (4)
+                if (promotionType === '2' || promotionType === '4') {
+                    if (!incrementAmount || parseFloat(incrementAmount) <= 0) {
+                        $('#txtIncrementAmountError').text('Increment Amount is required.');
+                        isValid = false;
+                    }
                 }
 
                 if (dptId === '' || dptId === '1') {
@@ -1398,34 +1508,27 @@
                     isValid = false;
                 }
 
-                // ✅ Effective Date Validation
+                // Effective Date validation
                 if (!effectiveDate || effectiveDate.trim() === '') {
                     $('#errortxtEffectiveDate').text('Please select an Effective Date.');
                     isValid = false;
-                } else {
-                    const selectedDate = new Date(effectiveDate);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-
-                    if (selectedDate < today) {
-                        $('#errortxtEffectiveDate').text('Effective Date cannot be in the past.');
-                        isValid = false;
-                    }
                 }
 
                 // --- Stop if any validation fails ---
                 if (!isValid) return;
 
-                // --- Convert Employee Type into code ---
-                let empType = '';
-                if (empTypeVal === 'Worker') empType = '1';
-                else if (empTypeVal === 'Staff') empType = '2';
-                else empType = '3';
+                const selectedDate = new Date(effectiveDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
 
-                // --- Prepare Data for API ---
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(today.getMonth() - 1);
+                oneMonthAgo.setHours(0, 0, 0, 0);
+
+                // --- Prepare Salary Data (before saving) ---
                 const salaryData = {
                     empId: selectedEmpId,
-                    empType: empType,
+                    empType: empTypeVal,
                     updateType: parseInt(promotionType),
                     dptId: dptId,
                     dsgId: dsgId,
@@ -1444,10 +1547,15 @@
                                 : null,
                     grdId: $('#ddlGrade').val(),
                     companyId: CompanyID,
-                    updatedDate: effectiveDate // ✅ Added Effective Date field
+                    updatedDate: effectiveDate
                 };
 
-                // --- Optional Allowances ---
+                // Include increment amount if applicable
+                if (promotionType === '2' || promotionType === '4') {
+                    salaryData.incrementAmount = parseFloat(incrementAmount);
+                }
+
+                // Optional Allowances
                 const txtMedical = document.getElementById('txtMedical');
                 if (txtMedical) salaryData.medicalAllowance = parseFloat(txtMedical.value) || 0;
 
@@ -1460,54 +1568,89 @@
                 const txtFood = document.getElementById('txtFood');
                 if (txtFood) salaryData.foodAllowance = parseFloat(txtFood.value) || 0;
 
-                // --- API Call ---
-                ApiCallPost(PostSalarySaveURL, token, salaryData)
-                    .then(response => {
-                        if (response.statusCode === 200) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Salary Saved Successfully',
-                                text: 'Thank you!',
-                                confirmButtonText: 'OK'
-                            });
+                // --- Function to call API ---
+                const executeSave = () => {
+                    ApiCallPost(PostSalarySaveURL, token, salaryData)
+                        .then(response => {
+                            if (response.statusCode === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Salary Saved Successfully',
+                                    text: 'Thank you!',
+                                    confirmButtonText: 'OK'
+                                });
 
-                            const newSalary = parseInt($('#txtGross').val()) || 0;
-                            const empId = selectedEmpId;
+                                const newSalary = parseInt($('#txtGross').val()) || 0;
+                                const empId = selectedEmpId;
 
-                            const index = allEmployeeData.findIndex(emp => emp.empId == empId);
-                            if (index !== -1) {
-                                allEmployeeData[index].empPresentSalary = newSalary;
+                                const index = allEmployeeData.findIndex(emp => emp.empId == empId);
+                                if (index !== -1) {
+                                    allEmployeeData[index].empPresentSalary = newSalary;
+                                }
+
+                                const row = $(`.adv-table tbody tr`).filter(function () {
+                                    return $(this).find('a.user-name').data('id') == empId;
+                                });
+
+                                if (row.length) {
+                                    row.find('td').eq(4).text(newSalary);
+                                }
+
+                                $('#salaryModal').modal('hide');
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'API Error',
+                                    text: response.message || 'Unexpected response from server.',
+                                    confirmButtonText: 'OK'
+                                });
+                                console.error('API Error:', response.message);
                             }
-
-                            const row = $(`.adv-table tbody tr`).filter(function () {
-                                return $(this).find('a.user-name').data('id') == empId;
-                            });
-
-                            if (row.length) {
-                                row.find('td').eq(4).text(newSalary);
-                            }
-
-                            $('#salaryModal').modal('hide');
-                        } else {
+                        })
+                        .catch(error => {
+                            console.error('Request failed:', error);
                             Swal.fire({
                                 icon: 'error',
-                                title: 'API Error',
-                                text: response.message || 'Unexpected response from server.',
+                                title: 'Request Failed',
+                                text: 'Something went wrong while saving salary.',
                                 confirmButtonText: 'OK'
                             });
-                            console.error('API Error:', response.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Request failed:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Request Failed',
-                            text: 'Something went wrong while saving salary.',
-                            confirmButtonText: 'OK'
                         });
+                };
+
+                // --- Date check logic ---
+                if (selectedDate < oneMonthAgo) {
+                    // SweetAlert confirmation for older dates
+                    Swal.fire({
+                        title: "Previous Month Selected",
+                        html: `
+                You’ve selected <b>${selectedDate.toLocaleDateString()}</b> as the effective date.<br><br>
+                This date belongs to a <b>previous month</b> and may affect your <b>existing salary records</b>.<br><br>
+                Are you sure you want to continue with this date?
+            `,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, Continue",
+                        cancelButtonText: "Cancel",
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#errortxtEffectiveDate').text('');
+                            executeSave(); // ✅ Save only after user confirms
+                        } else {
+                            $('#errortxtEffectiveDate').text('Please review your selected date.');
+                        }
                     });
+
+                    return; // ⛔ Stop further execution until SweetAlert resolves
+                }
+
+                // --- If date is within 1 month, save directly ---
+                executeSave();
             }
+
+
 
 
 
