@@ -67,6 +67,11 @@
         .table-responsive{
             overflow-x: hidden;
         }
+        .loaderDaily {
+            position: absolute;
+            left: 50%;
+            top: 30%;
+        }
 
     </style>
 </asp:Content>
@@ -278,6 +283,17 @@
                                                     <%--Close--%>
                                                 </div>
                                                
+                                                <div class="loader-size loaderDaily" style="display:none">
+                                                    <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                    </div>
+                                                </div>
+                                                 <div id="alertContainer" class="alert alert-info text-center mt-3" role="alert" style="height: 200px">
+                                                    <strong>Note:</strong> First, select a date to search, then select the employee and submit for increment.
+                                                </div>
                                                 <div id="employeeContainer" style="overflow-x: auto; white-space: nowrap;">
                                                     <table class="table mb-0 packagesTable table-borderless adv-table"
                                                         data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
@@ -532,10 +548,18 @@
             function getSelectedShiftIdsQuery() {
                 return $('.PermShiftCheckbox:checked')
                     .map(function () {
-                        return $(this).val(); // e.g., "3705"
+                        return $(this).val()
                     })
-                    .get(); // returns ["3705", "3706"]
+                    .get(); 
             }
+        function getSelectedEmpTypeQuery() {
+            return $('.empTypeCheckbox:checked')
+                .map(function () {
+                    return $(this).val();
+                })
+                .get();
+        }
+
 
 
         // Function to bind EmpType list
@@ -587,15 +611,7 @@
         });
 
         // Get selected EmpType query string
-        function getSelectedEmpTypeQuery() {
-            return $('.empTypeCheckbox:checked')
-                .map(function () {
-                    return 'EmpTypeIds=' + $(this).val();
-                })
-                .get()
-                .join('&');
-        }
-
+     
 
         function GetUnit() {
             ApiCall(getUnitUrl, token)
@@ -796,10 +812,11 @@
             if (!isValid) {
                 return;
             }
-
+              $('.loaderDaily').show();
             // --- Get other data ---
             const deptIds = getSelectedDepartmentQuery();
             const shiftIds = getSelectedShiftIdsQuery();
+            const empTypeIds = getSelectedEmpTypeQuery();
 
             // --- Build the POST body ---
             const postData = {
@@ -810,7 +827,8 @@
                 companyId: CompanyID,
                 empCard: empCardNo || "",
                 deptIds: deptIds.length > 0 ? deptIds : [""],
-                shiftIds: shiftIds.length > 0 ? shiftIds : [""]
+                shiftIds: shiftIds.length > 0 ? shiftIds : [""],
+                empType: empTypeIds.length > 0 ? empTypeIds.map(Number) : [] 
             };
 
             console.log("POST BODY:", postData);
@@ -821,14 +839,18 @@
                 .then(response => {
                     if (response.statusCode === 200) {
                         bindTableData(response.data);
+                        $('.loaderDaily').hide();
+                        $('#alertContainer').hide();
                     } else {
                         console.error("API Error:", response.message);
                         bindTableData([]);
+                        $('.loaderDaily').hide();
                     }
                 })
                 .catch(error => {
                     console.error("Network Error:", error);
                     bindTableData([]);
+                     $('.loaderDaily').hide();
                 });
         }
 
@@ -879,6 +901,7 @@
                 { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                 { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                 { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
+                { name: "empType", title: "Emp Type", className: "userDatatable-content" },
                 { name: "empJoiningDate", title: "Joining Date", className: "userDatatable-content" },
 
                 { name: "empPresentSalary", title: "Salary", className: "userDatatable-content" },
@@ -902,26 +925,28 @@
                 });
             } catch (error) {
                 console.error("Error initializing table:", error);
+                  $('.footable-loader').hide();
             }
         }
 
+        // Select All
         // Select All
         $(document).on('change', '#selectAllEmployee', function () {
             const isChecked = $(this).is(':checked');
             allEmployeeData.forEach(emp => {
                 if (isChecked) {
                     selectedEmployees.set(emp.empId, {
-                        empId: empData.empId,
-                    empType: empData.empTyp,
-                    companyId: empData.companyId,
-                    type: 'Increment',
-                    empPresentSalary: empData.newGrossSalary,
-                    basicSalary: empData.newBasicSalary,
-                    medicalAllowance: empData.newMedicalAllownce,
-                    foodAllowance: empData.newFoodAllownce,
-                    conveyanceAllowance: empData.newConvenceAllownce,
-                    houseRent: empData.newHouseRent,
-                    updatedDate: empData.effectiveDate
+                        empId: emp.empId,
+                        empType: emp.empTyp,
+                        companyId: emp.companyId,
+                        type: 'Increment',
+                        empPresentSalary: emp.newGrossSalary,
+                        basicSalary: emp.newBasicSalary,
+                        medicalAllowance: emp.newMedicalAllownce,
+                        foodAllowance: emp.newFoodAllownce,
+                        conveyanceAllowance: emp.newConvenceAllownce,
+                        houseRent: emp.newHouseRent,
+                        updatedDate: emp.effectiveDate
                     });
                 } else {
                     selectedEmployees.delete(emp.empId);
@@ -985,68 +1010,43 @@
                 return;
             }
 
-            // Show progress section
             const progressSection = document.getElementById("progress-section");
             const progressBar = document.getElementById("progress-bar");
+
             progressSection.style.display = "block";
             progressBar.style.width = "0%";
             progressBar.innerText = "0%";
 
-            const total = selectedEmployeeList.length;
+            // Map all employees
+            const payload = selectedEmployeeList.map(emp => ({
+                empId: emp.empId,
+                empType: parseInt(emp.empType),
+                companyId: emp.companyId,
+                updatedDate: emp.updatedDate,
+                empPresentSalary: parseFloat(emp.empPresentSalary) || 0,
+                basicSalary: parseFloat(emp.basicSalary) || 0,
+                medicalAllowance: parseFloat(emp.medicalAllowance) || 0,
+                foodAllowance: parseFloat(emp.foodAllowance) || 0,
+                conveyanceAllowance: parseFloat(emp.conveyanceAllowance) || 0,
+                houseRent: parseFloat(emp.houseRent) || 0
+            }));
 
             try {
-                for (let i = 0; i < total; i++) {
-                    const emp = selectedEmployeeList[i];
+                const response = await ApiCallPostForProgress(PostCommonIncrementURL, token, JSON.stringify(payload));
 
-                    // Only required fields → array of one employee
-                    const payload = [
-                        {
-                            empId: emp.empId,
-                            empType: parseInt(emp.empType),
-                            companyId: emp.companyId,
-                            updatedDate: emp.updatedDate,
-                            empPresentSalary: parseFloat(emp.empPresentSalary) || 0,
-                            basicSalary: parseFloat(emp.basicSalary) || 0,
-                            medicalAllowance: parseFloat(emp.medicalAllowance) || 0,
-                            foodAllowance: parseFloat(emp.foodAllowance) || 0,
-                            conveyanceAllowance: parseFloat(emp.conveyanceAllowance) || 0,
-                            houseRent: parseFloat(emp.houseRent) || 0
-                        }
-                    ];
-
-                    // Send API request
-                    const response = await ApiCallPostForProgress(PostCommonIncrementURL, token, JSON.stringify(payload));
-
-                    if (response.statusCode !== 200) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message || `Error processing employee ${emp.empId}`
-                        });
-                        progressSection.style.display = "none";
-                        return;
-                    }
-
-                    // Update progress bar
-                    const percent = ((i + 1) / total) * 100;
-                    progressBar.style.width = `${percent}%`;
-                    progressBar.innerText = `${percent.toFixed(0)}%`;
+                if (response.statusCode === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'All employee increments processed successfully.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Error processing increments.'
+                    });
                 }
-
-                // Success
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'All employee increments processed successfully.'
-                });
-
-                // Reset UI
-                selectedEmployees.clear();
-                $('#selectAllEmployee').prop('checked', false);
-                $('.EmployeerowCheckbox').prop('checked', false);
-
-                progressSection.style.display = "none";
-
             } catch (error) {
                 console.error("Error:", error);
                 Swal.fire({
@@ -1054,22 +1054,18 @@
                     title: 'Network Error',
                     text: 'Unable to process increments at this time.'
                 });
-
+            } finally {
                 progressSection.style.display = "none";
             }
         }
 
 
-
-
-
-
-
         // SignalR connection to ProgressHub
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/progressHub") // Replace with your hub URL
+            .withUrl( rootUrl+"/hubs/incrementProgress") // Correct hub URL
             .withAutomaticReconnect()
             .build();
+
 
         // Listen for progress updates
         connection.on("ReceiveProgress", function (percent) {
@@ -1077,8 +1073,10 @@
             if (progressBar) {
                 progressBar.style.width = `${percent}%`;
                 progressBar.innerText = `${percent.toFixed(0)}%`;
+                console.log(percent);
             }
         });
+
 
         // Start connection
         async function startConnection() {
@@ -1091,10 +1089,6 @@
             }
         }
         startConnection();
-        document.getElementById("progress-section").style.display = "block";
-        const progressBar = document.getElementById("progress-bar");
-        progressBar.style.width = "0%";
-        progressBar.innerText = "0%";
 
 
         function GetDepartment() {
@@ -1103,7 +1097,6 @@
                     if (response.statusCode === 200) {
                         var responseData = response.data;
                         console.log('Before table Data Bind', responseData);
-                        $('.footable-loader').show();
                         bindDepartments(responseData);
 
                         console.log('after Table Data Bind ', responseData);
