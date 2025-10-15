@@ -759,6 +759,9 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);                
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
                 cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
+                int userId = Convert.ToInt32(Session["__GetUserId__"]);
+
+                cmd.Parameters.AddWithValue("@CreatedBy", userId);
 
                 int result = (int)cmd.ExecuteScalar();
 
@@ -1210,6 +1213,9 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
                 cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
+                int userId = Convert.ToInt32(Session["__GetUserId__"]);
+
+                cmd.Parameters.AddWithValue("@CreatedBy", userId);
 
                 int result = (int)cmd.ExecuteScalar();
 
