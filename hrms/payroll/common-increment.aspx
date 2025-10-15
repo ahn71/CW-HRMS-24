@@ -2,6 +2,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
@@ -65,6 +66,11 @@
         }
         .table-responsive{
             overflow-x: hidden;
+        }
+        .loaderDaily {
+            position: absolute;
+            left: 50%;
+            top: 30%;
         }
 
     </style>
@@ -259,7 +265,7 @@
                                                                         <i class="fas fa-search"></i>
                                                                     </button>
 
-                                                                    <button type="button" onclick="AttendanceProcess()" title="Save" id="btnProcessing"
+                                                                    <button type="button" onclick="SaveCommonIncrement()" title="Save" id="btnProcessing"
                                                                         class="btn btn-sm btn-success d-flex align-items-center justify-content-center"
                                                                         style="height: 36px; width: 36px;">
                                                                         <i class="uil uil-save" style="font-size: 20px"></i>
@@ -277,6 +283,17 @@
                                                     <%--Close--%>
                                                 </div>
                                                
+                                                <div class="loader-size loaderDaily" style="display:none">
+                                                    <div class="dm-spin-dots  dot-size dot-sizedot-sizedot-sizedot-size spin-sm">
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                        <span class="spin-dot badge-dot dot-primary"></span>
+                                                    </div>
+                                                </div>
+                                                 <div id="alertContainer" class="alert alert-info text-center mt-3" role="alert" style="height: 200px">
+                                                    <strong>Note:</strong> First, select a date to search, then select the employee and submit for increment.
+                                                </div>
                                                 <div id="employeeContainer" style="overflow-x: auto; white-space: nowrap;">
                                                     <table class="table mb-0 packagesTable table-borderless adv-table"
                                                         data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
@@ -290,10 +307,9 @@
                                     </div>
 
                                     <div id="progress-section" style="position: absolute; top: 15%; width: 70%; left: 15%; display: none; padding: 50px;">
-                                        <div class="card " style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; padding: 40px">
+                                        <div class="card" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; padding: 40px">
                                             <div class="card-body position-relative" style="padding-top: 15px !important;">
-
-                                                <div class="userDatatable adv-table-table global-shadow border-light-0 w-100 ">
+                                                <div class="userDatatable adv-table-table global-shadow border-light-0 w-100">
                                                     <div class="progress" style="height: 20px; margin: 10px; font-size: 12px;">
                                                         <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%">
                                                             0%
@@ -303,7 +319,8 @@
                                             </div>
                                         </div>
                                     </div>
-                             
+
+
                                 </div>
 
                             </div>
@@ -325,7 +342,8 @@
         var AttdMetchin = '<%= Session["__GetAttdMetchinName__"]%>';
         var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
         var getEmployeeUrl = `${rootUrl}/api/Salary/Increment/employee`;
-        var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
+        var PostCommonIncrementURL = `${rootUrl}/api/Salary/common_increment/save`;
+
         var getPerShiftUrl = `${rootUrl}/api/Roster/permanent-shift?CompanyId=${CompanyID}`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
@@ -530,10 +548,18 @@
             function getSelectedShiftIdsQuery() {
                 return $('.PermShiftCheckbox:checked')
                     .map(function () {
-                        return $(this).val(); // e.g., "3705"
+                        return $(this).val()
                     })
-                    .get(); // returns ["3705", "3706"]
+                    .get(); 
             }
+        function getSelectedEmpTypeQuery() {
+            return $('.empTypeCheckbox:checked')
+                .map(function () {
+                    return $(this).val();
+                })
+                .get();
+        }
+
 
 
         // Function to bind EmpType list
@@ -585,15 +611,7 @@
         });
 
         // Get selected EmpType query string
-        function getSelectedEmpTypeQuery() {
-            return $('.empTypeCheckbox:checked')
-                .map(function () {
-                    return 'EmpTypeIds=' + $(this).val();
-                })
-                .get()
-                .join('&');
-        }
-
+     
 
         function GetUnit() {
             ApiCall(getUnitUrl, token)
@@ -687,70 +705,6 @@
 
 
 
-        let pollingInterval;
-        function AttendanceProcess() {
-            const startDate = $('#txtStartDate').val();
-            const endDate = $('#txtEndDate').val();
-            const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
-
-            if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'No Employee Selected',
-                    text: 'Please select at least one employee before processing attendance.',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            $('#progress-section').show();
-            $('#progress-bar').css('width', '0%').text('0%');
-
-            pollingInterval = setInterval(fetchProgress, 500);
-
-            ApiCallPostAttendProcess(
-                PostAttendanceProcessURL,
-                token,
-                'AttFile',
-                CompanyID,
-                startDate,
-                endDate,
-                employeeQuery
-            )
-                .then(response => {
-                    if (response.statusCode === 200) {
-                        console.log('Attendance processing started...');
-                        bindAttdTableData(response.data);
-                        $('#progress-section').hide();
-                        $('#attendanceContainer').show();
-                       console.log('Missing Data', response.missingData);
-                        sessionStorage.setItem('__MessingRosterData__', JSON.stringify(response.missingData));
-                        const totalMessing = response.missingData?.length || 0;
-                        console.log('Total Missing Data:', totalMessing);
-                        $('#totalMessingRoster').text('Messing Roster ' + '('+ totalMessing+ ')');
-
-                        if (totalMessing === 0) {
-                            $('#totalMessingRoster').hide();
-                        } else {
-                            $('#totalMessingRoster').show();
-                        }
-                        selectedEmployeeIds.clear();
-                        $('#selectAllEmployee').prop('checked', false);
-                        $('.EmployeerowCheckbox').prop('checked', false);
-                    } else {
-                        console.error('API Error:', response.message);
-                        $('.footable-loader').hide();
-                        $('#progress-section').hide();
-                       
-                    }
-                })
-                .catch(error => {
-                    console.error('Network Error:', error);
-                    $('.footable-loader').hide();
-                    $('#progress-section').hide();
-                
-                });
-        }
 
         function ApiCallPostAttendProcess(apiUrl, token, fileInputId, companyId, fromDate, toDate, empIds) {
             return new Promise(function (resolve, reject) {
@@ -858,10 +812,11 @@
             if (!isValid) {
                 return;
             }
-
+              $('.loaderDaily').show();
             // --- Get other data ---
             const deptIds = getSelectedDepartmentQuery();
             const shiftIds = getSelectedShiftIdsQuery();
+            const empTypeIds = getSelectedEmpTypeQuery();
 
             // --- Build the POST body ---
             const postData = {
@@ -872,7 +827,8 @@
                 companyId: CompanyID,
                 empCard: empCardNo || "",
                 deptIds: deptIds.length > 0 ? deptIds : [""],
-                shiftIds: shiftIds.length > 0 ? shiftIds : [""]
+                shiftIds: shiftIds.length > 0 ? shiftIds : [""],
+                empType: empTypeIds.length > 0 ? empTypeIds.map(Number) : [] 
             };
 
             console.log("POST BODY:", postData);
@@ -883,21 +839,26 @@
                 .then(response => {
                     if (response.statusCode === 200) {
                         bindTableData(response.data);
+                        $('.loaderDaily').hide();
+                        $('#alertContainer').hide();
                     } else {
                         console.error("API Error:", response.message);
                         bindTableData([]);
+                        $('.loaderDaily').hide();
                     }
                 })
                 .catch(error => {
                     console.error("Network Error:", error);
                     bindTableData([]);
+                     $('.loaderDaily').hide();
                 });
         }
 
 
 
         let allEmployeeData = [];
-        const selectedEmployeeIds = new Set();
+        // Change from Set to Map to store full data
+        const selectedEmployees = new Map();
 
         function bindTableData(data) {
             const $table = $('.adv-table');
@@ -912,21 +873,20 @@
             data.forEach((row, index) => {
                 row.serial = index + 1;
                 row.userImage = null;
-                const userImage = row.userImage || defaultImage;
-             row.userImage = `
+                const userImage = row.userPicture || defaultImage;
+                row.userImage = `
             <div class="user-details-container d-flex align-items-center">
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
                 <div>
                     <a href="javascript:void(0)" class="user-name" data-id="${row.empId}">${row.empName}</a>
-                    <div class="user-role">${row.departmentName},${row.designationName}</div>
-                    <div class="user-role"></div>
+                    <div class="user-role">${row.departmentName}, ${row.designationName}</div>
                 </div>
             </div>
         `.trim();
 
                 row.select = `
             <input type="checkbox" class="EmployeerowCheckbox" data-id="${row.empId}" value="${row.empId}"
-                ${selectedEmployeeIds.has(row.empId) ? 'checked' : ''} />
+                ${selectedEmployees.has(row.empId) ? 'checked' : ''} />
         `;
             });
 
@@ -941,6 +901,7 @@
                 { name: "serial", title: "SL", breakpoints: "xs sm", type: "number", className: "userDatatable-content" },
                 { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                 { name: "empCardNo", title: "Employee ID", className: "userDatatable-content" },
+                { name: "empType", title: "Emp Type", className: "userDatatable-content" },
                 { name: "empJoiningDate", title: "Joining Date", className: "userDatatable-content" },
 
                 { name: "empPresentSalary", title: "Salary", className: "userDatatable-content" },
@@ -949,7 +910,6 @@
                 { name: "newGrossSalary", title: "New Salary", className: "userDatatable-content" },
                 { name: "newBasicSalary", title: "New Basic", className: "userDatatable-content" },
                 { name: "newHouseRent", title: "New House", className: "userDatatable-content" }
-
             ];
 
             try {
@@ -965,28 +925,57 @@
                 });
             } catch (error) {
                 console.error("Error initializing table:", error);
+                  $('.footable-loader').hide();
             }
         }
 
-
+        // Select All
+        // Select All
         $(document).on('change', '#selectAllEmployee', function () {
             const isChecked = $(this).is(':checked');
             allEmployeeData.forEach(emp => {
                 if (isChecked) {
-                    selectedEmployeeIds.add(emp.empId);
+                    selectedEmployees.set(emp.empId, {
+                        empId: emp.empId,
+                        empType: emp.empTyp,
+                        companyId: emp.companyId,
+                        type: 'Increment',
+                        empPresentSalary: emp.newGrossSalary,
+                        basicSalary: emp.newBasicSalary,
+                        medicalAllowance: emp.newMedicalAllownce,
+                        foodAllowance: emp.newFoodAllownce,
+                        conveyanceAllowance: emp.newConvenceAllownce,
+                        houseRent: emp.newHouseRent,
+                        updatedDate: emp.effectiveDate
+                    });
                 } else {
-                    selectedEmployeeIds.delete(emp.empId);
+                    selectedEmployees.delete(emp.empId);
                 }
             });
             bindTableData(allEmployeeData);
         });
 
+        // Individual row selection
         $(document).on('change', '.EmployeerowCheckbox', function () {
             const empId = $(this).val();
+            const empData = allEmployeeData.find(emp => emp.empId === empId);
+
             if ($(this).is(':checked')) {
-                selectedEmployeeIds.add(empId);
+                selectedEmployees.set(empId, {
+                    empId: empData.empId,
+                    empType: empData.empTyp,
+                    companyId: empData.companyId,
+                    type: 'Increment',
+                    empPresentSalary: empData.newGrossSalary,
+                    basicSalary: empData.newBasicSalary,
+                    medicalAllowance: empData.newMedicalAllownce,
+                    foodAllowance: empData.newFoodAllownce,
+                    conveyanceAllowance: empData.newConvenceAllownce,
+                    houseRent: empData.newHouseRent,
+                    updatedDate: empData.effectiveDate
+                });
             } else {
-                selectedEmployeeIds.delete(empId);
+                selectedEmployees.delete(empId);
             }
 
             updateSelectAllCheckbox();
@@ -994,14 +983,112 @@
 
         function updateSelectAllCheckbox() {
             const allIds = allEmployeeData.map(emp => emp.empId);
-            const isAllSelected = allIds.every(id => selectedEmployeeIds.has(id));
+            const isAllSelected = allIds.every(id => selectedEmployees.has(id));
             $('#selectAllEmployee').prop('checked', isAllSelected);
         }
 
+        // Get query string of selected employees (or full data)
         function getSelectedEmployeeQuery() {
-            return Array.from(selectedEmployeeIds).map(id => `empIds=${id}`).join('&');
+            return Array.from(selectedEmployees.values()).map(emp => `empIds=${emp.empId}`).join('&');
         }
 
+        // If you need the full data instead of query
+        function getSelectedEmployeeData() {
+            return Array.from(selectedEmployees.values());
+        }
+
+        let pollingInterval;
+        async function SaveCommonIncrement() {
+            const selectedEmployeeList = Array.from(selectedEmployees.values());
+
+            if (!selectedEmployeeList.length) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Employee Selected',
+                    text: 'Please select at least one employee before processing.'
+                });
+                return;
+            }
+
+            const progressSection = document.getElementById("progress-section");
+            const progressBar = document.getElementById("progress-bar");
+
+            progressSection.style.display = "block";
+            progressBar.style.width = "0%";
+            progressBar.innerText = "0%";
+
+            // Map all employees
+            const payload = selectedEmployeeList.map(emp => ({
+                empId: emp.empId,
+                empType: parseInt(emp.empType),
+                companyId: emp.companyId,
+                updatedDate: emp.updatedDate,
+                empPresentSalary: parseFloat(emp.empPresentSalary) || 0,
+                basicSalary: parseFloat(emp.basicSalary) || 0,
+                medicalAllowance: parseFloat(emp.medicalAllowance) || 0,
+                foodAllowance: parseFloat(emp.foodAllowance) || 0,
+                conveyanceAllowance: parseFloat(emp.conveyanceAllowance) || 0,
+                houseRent: parseFloat(emp.houseRent) || 0
+            }));
+
+            try {
+                const response = await ApiCallPostForProgress(PostCommonIncrementURL, token, JSON.stringify(payload));
+
+                if (response.statusCode === 200) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'All employee increments processed successfully.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Error processing increments.'
+                    });
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Network Error',
+                    text: 'Unable to process increments at this time.'
+                });
+            } finally {
+                progressSection.style.display = "none";
+            }
+        }
+
+
+        // SignalR connection to ProgressHub
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl( rootUrl+"/hubs/incrementProgress") // Correct hub URL
+            .withAutomaticReconnect()
+            .build();
+
+
+        // Listen for progress updates
+        connection.on("ReceiveProgress", function (percent) {
+            const progressBar = document.getElementById("progress-bar");
+            if (progressBar) {
+                progressBar.style.width = `${percent}%`;
+                progressBar.innerText = `${percent.toFixed(0)}%`;
+                console.log(percent);
+            }
+        });
+
+
+        // Start connection
+        async function startConnection() {
+            try {
+                await connection.start();
+                console.log("SignalR connected.");
+            } catch (err) {
+                console.error(err);
+                setTimeout(startConnection, 5000); // retry
+            }
+        }
+        startConnection();
 
 
         function GetDepartment() {
@@ -1010,7 +1097,6 @@
                     if (response.statusCode === 200) {
                         var responseData = response.data;
                         console.log('Before table Data Bind', responseData);
-                        $('.footable-loader').show();
                         bindDepartments(responseData);
 
                         console.log('after Table Data Bind ', responseData);
@@ -1022,6 +1108,14 @@
                     $('.loaderCosting').hide();
                     console.error('Error occurred while fetching data:', error);
                 });
+        }
+        function formatDateToDateOnly(dateValue) {
+            if (!dateValue) return null;
+            const date = new Date(dateValue);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function bindDepartments(departments) {
@@ -1082,129 +1176,8 @@
         }
 
 
-        function DateWiseEmpWeekendSetup() {
-            const startDate = $('#txtStartDate').val();
-            const endDate = $('#txtEndDate').val(); // Optional use
-            const employeeQuery = getSelectedEmployeeQuery();
-            const urlParams = new URLSearchParams(employeeQuery);
-            const empIds = urlParams.getAll('empIds');
 
-            if (empIds.length === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'No Employee Selected',
-                    text: 'Please select at least one employee before processing attendance.',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            const apiUrl = PostAttendanceProcessURL;
-            const tokenValue = token;
-            const companyId = CompanyID;
-            const weekendDate = startDate;
-
-            const postData = {
-                empIds: empIds,
-                companyId: companyId,
-                weekendDay: weekendDate
-            };
-
-            ApiCallPost(apiUrl, tokenValue, postData)
-                .then(data => {
-                    if (data.statusCode === 200) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Date Wise Weekend Setup Success',
-                            text: 'Thanks!',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'API Error',
-                            text: data.message || 'Unexpected response from server.',
-                            confirmButtonText: 'OK'
-                        });
-                        console.error('API Error:', data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Request failed:', error);
-                });
-        }
-        $(document).on('click', '#totalMessingRoster', function () {
-            const rawData = sessionStorage.getItem('__MessingRosterData__');
-            const missingDetails = rawData ? JSON.parse(rawData) : [];
-
-            if (!missingDetails.length) {
-                alert('No missing roster entries found.');
-                return;
-            }
-
-            const companyName = 'ABR SPINNING MILLS LIMITED';
-            const companyAddress = 'House# 10, (Lift-7) Road-90, Gulshan-2, Dhaka-1212';
-            const reportTitle = 'Missing Roster Report';
-            const generatedDate = 'Generated on: ' + new Date().toLocaleString();
-
-            // 🔁 Step 1: Define field mappings (key: original key, value: new label)
-            const headerMap = {
-                empCardNo: 'Employee ID',
-                empName: 'Employee Name',
-                dptName: 'Department',
-                dsgName: 'Designation',
-                perShift: 'Permanent Shift',
-                attDate: 'Attendance Date',
-                reason: 'Reason'
-            };
-
-            // ✅ Step 2: Create array of header labels
-            const headers = Object.values(headerMap);
-
-            // ✅ Step 3: Convert data to rows based on the header map
-            const dataRows = missingDetails.map(item =>
-                Object.keys(headerMap).map(key => item[key] ?? '')
-            );
-
-            // ✅ Step 4: Build full worksheet data with company info and headers
-            const worksheetData = [
-                [companyName],
-                [companyAddress],
-                [reportTitle],
-                [generatedDate],
-                [],
-                headers,
-                ...dataRows
-            ];
-
-            const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-            // ✅ Step 5: Merge and style top header rows
-            const mergeAcross = headers.length - 1;
-            worksheet['!merges'] = [
-                { s: { r: 0, c: 0 }, e: { r: 0, c: mergeAcross } },
-                { s: { r: 1, c: 0 }, e: { r: 1, c: mergeAcross } },
-                { s: { r: 2, c: 0 }, e: { r: 2, c: mergeAcross } },
-                { s: { r: 3, c: 0 }, e: { r: 3, c: mergeAcross } },
-            ];
-
-            // 🔧 Optional: Style the title rows (center align, bold, font size)
-            ['A1', 'A2', 'A3', 'A4'].forEach(cell => {
-                if (worksheet[cell]) {
-                    worksheet[cell].s = {
-                        alignment: { horizontal: 'center', vertical: 'center' },
-                        font: { bold: true, sz: 16 }
-                    };
-                }
-            });
-
-            worksheet['!cols'] = headers.map(() => ({ wch: 22 }));
-
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, 'MissingRoster');
-
-            XLSX.writeFile(workbook, 'MissingRoster_Report.xlsx');
-        });
+ 
     </script>
 
 

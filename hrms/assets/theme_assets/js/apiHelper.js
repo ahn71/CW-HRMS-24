@@ -377,7 +377,7 @@ function ApiCallPost(url, token, postData) {
             error: function (xhr, status, error) {
                 //console.error('Error occurred while fetching data:', status, error);
                 var response = JSON.parse(xhr.responseText);
-
+                console.log('post api error test :',response);
                 Swal.fire({
                     icon: 'warning',
                     title: 'Warning',
@@ -412,6 +412,38 @@ function ApiCallPostForm(url, token, formData) {
                     title: 'Warning',
                     text: message
                 });
+                reject(error);
+            }
+        });
+    });
+}
+
+function ApiCallPostForProgress(url, token, postData) {
+    return new Promise(function (resolve, reject) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data: postData, // already stringified
+            success: function (data) {
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                try {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log('API Error:', response);
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Warning',
+                        text: response.message || "Something went wrong"
+                    });
+                } catch (e) {
+                    console.error("Cannot parse error response:", xhr.responseText);
+                }
                 reject(error);
             }
         });
