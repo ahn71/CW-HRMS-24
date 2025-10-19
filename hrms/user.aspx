@@ -316,10 +316,10 @@
         var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
         var empUrl = '/api/Employee/EmployeeName';
         if (DataAccessLevel == 2) {
-            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=["${dptId}"]`;
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
         }
         else {
-            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
         }
 
 

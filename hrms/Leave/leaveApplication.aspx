@@ -383,10 +383,10 @@
         var departmentIds = dptIds ? JSON.parse(dptIds) : [];
         var dptParam = encodeURIComponent(JSON.stringify(departmentIds));
         if (DataAccessLevel == 2) {
-            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=["${dptId}"]`;
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
         }
         else {
-            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}&DptIds=${dptParam}`;
+            var getEmployeeUrl = `${rootUrl}${empUrl}?CompanyId=${CompanyID}`;
         }
 
         var getLeaveTypeUrl = rootUrl + '/api/Leave/LeaveType';
@@ -725,7 +725,7 @@
         }
 
         function GetLeaves() {
-            ApiCallwithEmp(getLeavesApplicationUrl, token, CompanyID, loginempId)
+            ApiCallwithEmp(getLeavesApplicationUrl, token, CompanyID, userId)
                 .then(function (response) {
                     if (response.statusCode === 200) {
                         var responseData = response.data;
@@ -788,6 +788,7 @@
              const columns = [
                  { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, 
                     { "name": "empPicture", "title": "User", "className": "userDatatable-content" }, 
+                 { "name": "dptName", "title": "Department", "className": "userDatatable-content" },
                  { "name": "leaveName", "title": "Leave Type", "className": "userDatatable-content" },
                  { "name": "leaveStartDate", "title": "Start Date", "className": "userDatatable-content" },
                  { "name": "leaveEndDate", "title": "End Date", "className": "userDatatable-content" },
