@@ -164,7 +164,8 @@ namespace SigmaERP.personnel
                     }
                 }
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN " + setSn + " and "+ condition + "  order by DptCode,CustomOrdering", dt);              
+                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN " + setSn + " and "+ condition + "  order by DptCode,CustomOrdering", dt);
+                string aa = "Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where SN " + setSn + " and " + condition + "  order by DptCode,CustomOrdering";
                 Session["__EmployeeBloodGroup__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=EmployeeBloodGroup');", true);  //Open New Tab for Sever side code
             }
@@ -199,7 +200,8 @@ namespace SigmaERP.personnel
                     return;
                 }
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where CompanyId='" + CompanyId + "' and BloodGroup='" + dsBloodGroup.SelectedItem.Text.Trim().ToString() + "' " + EmpTypeID + " and ActiveSalary='True' and  "+ condition + " order by DptCode,CustomOrdering", dt);
+                sqlDB.fillDataTable("Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where isactive=1 and  CompanyId='" + CompanyId + "' and BloodGroup='" + dsBloodGroup.SelectedItem.Text.Trim().ToString() + "' " + EmpTypeID + " and ActiveSalary='True' and  "+ condition + " order by DptCode,CustomOrdering", dt);
+                string kk = "Select EmpId,substring(EmpCardNo,8,15) as EmpCardNo,EmpName,DsgName,DptName,BloodGroup,CompanyName,Address From v_EmployeeDetails where isactive=1 and  CompanyId='" + CompanyId + "' and BloodGroup='" + dsBloodGroup.SelectedItem.Text.Trim().ToString() + "' " + EmpTypeID + " and ActiveSalary='True' and  " + condition + " order by DptCode,CustomOrdering";
                 if (dt.Rows.Count < 1)
                 {
                     lblMessage.InnerText = "warning-> Any Employees Are Not Founded of (" + dsBloodGroup.SelectedItem.Text + ") Blood Group."; return;
