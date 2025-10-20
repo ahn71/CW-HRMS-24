@@ -321,6 +321,7 @@ namespace SigmaERP.personnel
                    // ddlEmpCardNo.SelectedIndex = 1;
                   //  ddlEmpCardNo.SelectedItem.Value = ddlValue;
                   //  ddlEmpCardNo.SelectedValue = ddlValue;
+                  
                     ddlEmpCardNo.Enabled = false;
                 }
                 else if (e.CommandName == "Remove")
