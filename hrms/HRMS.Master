@@ -1698,7 +1698,9 @@
                         <div class="col-md-12">
                             <div class="footer-copyright d-flex justify-content-center align-items-center p-3">
                                 <p class="mb-0">
-                                    <span>©2024 Developed by</span><a href="https://www.codewareltd.com">Codeware LTD</a>
+                                   <span>&copy;<span id="dynamicYear"></span> Developed by </span> 
+                                         <a href="https://www.codewareltd.com">Codeware LTD</a>
+                                       
                                 </p>
                             </div>
                         </div>
@@ -1787,7 +1789,10 @@
 
     <script>
 
-
+         const currentYear = new Date().getFullYear();
+  document.getElementById("dynamicYear").textContent = currentYear;
+  console.log("Current Year:", currentYear);
+             
 
          var token = '<%= Session["__UserToken__"] %>';
          //var rootUrl = 'http://localhost:5081';
@@ -1806,7 +1811,7 @@
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
 
         $(document).ready(function () {
-             
+           
             GetLeavesNotification();
             var userImage = '<%= Session["__UserImageLink__"] %>';
 

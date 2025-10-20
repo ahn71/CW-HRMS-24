@@ -1738,7 +1738,7 @@ namespace SigmaERP.personnel
                 txtName.Text = dtall.Rows[0]["EmpName"].ToString();
                 txtNickName.Text = dtall.Rows[0]["NickName"].ToString();
                 txtNameBangla.Text = dtall.Rows[0]["EmpNameBn"].ToString();
-                ddlUnit.SelectedValue = dtall.Rows[0]["UnitId"].ToString();
+                ddlUnit.SelectedValue = string.IsNullOrEmpty(dtall.Rows[0]["UnitId"].ToString())?"0": dtall.Rows[0]["UnitId"].ToString();
                 ddlWeekend.SelectedValue = dtall.Rows[0]["Weekend"].ToString();
                 //classes.commonTask.SearchDepartment(ddlBranch.SelectedValue, ddlDepartment);
                 if (ViewState["__CardNoType__"].ToString().Equals("True"))
