@@ -378,8 +378,8 @@ namespace SigmaERP.classes
                 string condition = AccessControl.loadEmpCardNumber(CompanyId);
 
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and "+ condition + " and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='"+ CompanyId + "' and IsActive=0) and IsActive=1 order by EmpCardNo", dt);
-                string jjjj = "elect  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where EmpStatus in ('1','8') and " + condition + " and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='" + CompanyId + "' and IsActive=0) and IsActive=1 order by EmpCardNo";
+                sqlDB.fillDataTable("Select  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where IsActive=1 and EmpStatus in ('1','8') and " + condition + " and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='"+ CompanyId + "' and IsActive=0) order by EmpCardNo", dt);
+                string jjjj = "Select  (Convert(nvarchar(50),EmpCardNo)+' '+EmpName) as EmpCardNo,(EmpId+'|'+(Convert(nvarchar(50),EmpCardNo))+'|'+convert(varchar(2),EmpTypeId)) as EmpId From v_Personnel_EmpCurrentStatus where IsActive=1 and EmpStatus in ('1','8') and " + condition + " and EmpId not in (select EmpId from Personnel_EmpSeparation where  CompanyId='" + CompanyId + "' and IsActive=0) order by EmpCardNo";
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "EmpId";
