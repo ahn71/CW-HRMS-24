@@ -468,7 +468,7 @@ namespace SigmaERP.personnel
                         FROM 
                             Personnel_EmpSeparation AS pes
                         INNER JOIN 
-                            Personnel_EmpCurrentStatus AS pecs ON pes.EmpId = pecs.EmpId
+                            Personnel_EmpCurrentStatus AS pecs ON pes.EmpId = pecs.EmpId  and pecs.Isactive=1
                         LEFT JOIN 
                             Users AS us ON pes.UserId = us.UserId
                         INNER JOIN 
@@ -476,10 +476,10 @@ namespace SigmaERP.personnel
                         INNER JOIN 
                             HRD_EmployeeType AS Etyp ON pes.EmpTypeId = Etyp.EmpTypeId
                         INNER JOIN 
-                            Hrd_EmpStatus AS es ON pecs.EmpStatus = es.EmpStatus
+                            Hrd_EmpStatus AS es ON pes.SeparationType = es.EmpStatus
                         LEFT JOIN 
                             Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID 
-	                        where pes.IsActive=1 and pecs."+condition+"";
+	                        where pes.IsActive=1 and pecs." + condition+"";
                 sqlDB.fillDataTable(query, dt);               
                 gvCurrentSeperationList.DataSource = dt;
                 gvCurrentSeperationList.DataBind();
@@ -536,16 +536,16 @@ namespace SigmaERP.personnel
 
                     //query = "select SUBSTRING(v_EmployeeDetails.EmpCardNo,8,10) as EmpCardNo ,v_EmployeeDetails.EmpName,EmpType,DptName,DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join v_EmployeeDetails on psal.EmpId=v_EmployeeDetails.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID  where v_EmployeeDetails.CompanyId= " + condition + " order by ActiveDate desc";
 
-                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
+                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  and pecs.isActive=1  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
                       HRD_EmployeeType AS Etyp ON pei.EmpTypeId = Etyp.EmpTypeId
 				      Inner Join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId
-					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei."+ condition + " order by ActiveDate desc";
+					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei." + condition + " order by ActiveDate desc";
 
                     sqlDB.fillDataTable(query, dt);
                 }
                 else
                 {
-                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId  left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
+                    query = @"select SUBSTRING(pei.EmpCardNo,8,10) as EmpCardNo ,pei.EmpName,Etyp.EmpType,dpt.DptName,dsg.DsgName,format(ActiveDate,'dd-MM-yyyy') as ActiveDate, CASE WHEN ISNULL(creator.EmpName, '') = '' THEN (us.FirstName + ' ' + us.LastName) ELSE creator.EmpName END AS UName, Remark from Personnel_SeparationActivation_Log as psal inner join Personnel_EmployeeInfo as pei on psal.EmpId=pei.EmpId inner join Users as us  on psal.UserId=us.UserId left join Personnel_EmpCurrentStatus as pecs on psal.EmpId=pecs.EmpId   and pecs.isActive=1 left join Personnel_EmployeeInfo AS creator ON creator.EmpId = us.ReferenceID INNER JOIN 
                       HRD_EmployeeType AS Etyp ON pei.EmpTypeId = Etyp.EmpTypeId
 				      Inner Join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId
 					  Inner Join HRD_Department as dpt on pecs.DptId=dpt.DptId where pei." + condition + " and pei.EmpCardNo like'%" + txtCardnoActive.Text.Trim() + "' order by ActiveDate desc";

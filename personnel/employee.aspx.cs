@@ -273,6 +273,7 @@ namespace SigmaERP.personnel
                     if (MaxCardNo.ToString().Length >int.Parse( hdfCardnoDigits.Value))
                     hdfCardnoDigits.Value = MaxCardNo.ToString().Length.ToString();
                     NewCardNo = (int.Parse(MaxCardNo) + 1).ToString();
+
                     if (hdfCardnoDigits.Value.ToString() == "3")
                     {
                         if (NewCardNo.Length == 1) NewCardNo = "00" + NewCardNo;
