@@ -162,8 +162,8 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("ShortLeaveApplication")) loadshortLeaveApplicationReportForSG();
 
                 else if (query[0].Equals("JobCardReportActual")) loadJobCardReportActual();
-                else if (query[0].Equals("JobCardReportNew")) loadJobCardReportCompliance();
-                else if (query[0].Equals("JobCardReportNewRegular")) loadJobCardReportRegular();
+                else if (query[0].Equals("JobCardReportNew")) loadJobCardReportCompliance(); //for complaince
+                else if (query[0].Equals("JobCardReportNewRegular")) loadJobCardReportRegular();//for regular
                 else if (query[0].Equals("JobCardReportActualMarico")) loadJobCardReportActual_Marico();
                 else if (query[0].Equals("HolidayAndWeekendStatus")) MonthlyHolidayAndWeekendStatus();
                 else if (query[0].Equals("JobCardReport")) loadJobCardReport();
@@ -986,7 +986,8 @@ namespace SigmaERP.All_Report
             {
 
                 rpd = new ReportDocument();
-                rpd.Load(Server.MapPath("//All Report//Attendance//JobCardReportForRegular1.1.rpt"));
+                //rpd.Load(Server.MapPath("//All Report//Attendance//JobCardReportForRegular1.1.rpt"));
+                rpd.Load(Server.MapPath("//All Report//Attendance//JobCardReportActual.rpt"));
                 dt = (DataTable)Session["__dtJobCard__"];
                 rpd.SetDataSource(dt);
 
