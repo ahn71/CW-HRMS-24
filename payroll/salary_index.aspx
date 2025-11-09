@@ -203,11 +203,13 @@
                         Earn Leave Payment Sheet</a>
                 </div>
                   <% } %>
+                       <% if (IsRouteExists("salary/other-deduction"))   { %>
                     <div runat="server" id="div1" class="col-md-3" title="Earn Leave Payment Sheet">
-                    <a class="ds_Settings_Basic_Text " href="/payroll/Punishment_OthersPay.aspx">
+                    <a class="ds_Settings_Basic_Text " href="/salary/other-deduction">
                        <i class="fas fa-gavel FsiconStyle"></i><br />
                         Punishment & Other's Pay</a>
                 </div>
+                 <% } %>
                    
 <%--                 <div class=" col-md-2" title="Punishment&Other's Pay">
                       <a class="ds_Settings_Basic_Text Pbox" href="/payroll/Punishment_OthersPay.aspx"><img class="image_width_for_module" src="../images/common/qualification.ico" /><br />Punishment&Other's Pay</a> 

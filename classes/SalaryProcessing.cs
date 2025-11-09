@@ -195,7 +195,7 @@ namespace SigmaERP.classes
                         salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
 
                     //get Others Deduction
-                    salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
+                    //salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
                     
                     //get PF Deduction 
                     if (hasPF)
