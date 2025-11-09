@@ -364,7 +364,7 @@ namespace SigmaERP.personnel
             }
 
         }
-
+       
         protected void btnAddAllItem_Click(object sender, EventArgs e)
         {
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "loadcardNo();", true);
