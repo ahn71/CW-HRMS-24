@@ -69,13 +69,13 @@
         <div class="products_page product_page--grid mb-30">
             <div class="container-fluid">
                 <div class="row justify-content-center">
-                    <div class="col-lg-3 col-sm-12 mb-lg-0 mb-30">
+                    <div class="col-lg-2 col-sm-12 mb-lg-0 mb-30">
                          <div class="card" id="EmpTypeSection">
                             <div id="toggleEmpType" class="card-header px-20 py-15" style="cursor: pointer;">
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size: 16px; color: black;">
                                         <img src="../img/svg/sliders.svg" alt="sliders" class="me-2" style="height: 16px; width: 16px;">
-                                        Filter by EmpType
+                                         EmpType
                                     </span>
                                     <i id="arrowIconEmpType" class="fas fa-chevron-down"></i>
                                 </h6>
@@ -95,7 +95,7 @@
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center" style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2" style="height: 16px !important; width: 16px !important">
-                                        Filter bye Unit
+                                         Unit
                                     </span>
                                     <i id="arrowIcon" class="fas fa-chevron-down"></i> <!-- Arrow icon -->
                                 </h6>
@@ -117,7 +117,7 @@
                                 <h6 class="d-flex justify-between align-items-center fw-500 w-100">
                                     <span class="d-flex align-items-center"  style="font-size:16px; color:black";>
                                         <img src="../img/svg/sliders.svg" alt="sliders" class=" me-2"  style="height: 16px !important; width: 16px !important">
-                                        Filter bye Department
+                                         Department
                                     </span>
                                     <i id="arrowIcondpt" class="fas fa-chevron-down"></i>
                                 </h6>
@@ -134,7 +134,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class=" col-lg-9 mt-xl-0 mt-lg-30">
+                    <div class=" col-lg-10 mt-xl-0 mt-lg-30">
 
                         <div class="row product-page-list justify-content-center">
                             <div class="col-12 mb-25 px-10">
@@ -156,6 +156,14 @@
                                                                         <label for="ddlShift" class="form-label mb-1">Permanent Shift</label>
                                                                         <select name="ddlShift" id="ddlShift" class="form-control">
                                                                             <!-- Options -->
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <label for="ddlDutyType" class="form-label mb-1">Duty Type</label>
+                                                                        <select name="ddlDutyType" id="ddlDutyType" class="form-control">
+                                                                            <option value="">---Select---</option>
+                                                                            <option value="Roster">Roster</option>
+                                                                            <option value="Regular">Regular</option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="col-md-3">
@@ -240,6 +248,7 @@
             var CompanyID = '<%= Session["__GetCompanyId__"]%>';
             var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
             var getEmployeeeUrl = `${rootUrl}/api/Employee/employees`;
+            var DeleteEmployeeUrl = rootUrl + '/api/Employee/delete';
 
             var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
@@ -412,6 +421,7 @@
                 const FromDate = $('#txtStartDate').val();
                 const ToDate = $('#txtEndDate').val();
                 const Shift = $('#ddlShift').val();
+                const DeautyType = $('#ddlDutyType').val();
 
                 const deptQuery = getSelectedDepartmentQuery(); // string: DptIds=0002&DptIds=0003
                 const empTypeQuery = getSelectedEmpTypeQuery(); // string: EmpTypeIds=2&EmpTypeIds=1
@@ -427,8 +437,10 @@
                 if (Shift && Shift !== 'null') {
                     params.append('SftId', Shift);
                 }
-
-                params.append('DeautyType', 'Roster');
+                if (DeautyType && DeautyType !== 'null') {
+                    params.append('DeautyType', DeautyType);
+                }
+                //params.append('DeautyType', 'Roster');
 
                 // Show loader
                 $('.loaderDaily').show();
@@ -649,19 +661,15 @@
                     row.userImage = null;
                     const userImage = row.empImage || defaultImage;
 
-            //        row.action = `
-            //<div class="actions">
-            //    <ul class="">
-            //        <li>
-            //            <a href="javascript:void(0)"
-            //             data-emp-id="${row.empId}" 
-            //             data-emp-type="${row.empType}" 
-            //             class="btn btn-primary btn-sm text-white delete-btn remove">
-            //                <i class="uil uil-money-insert"></i>Set Salary
-            //            </a>
-            //        </li>
-            //    </ul>
-            //</div>`;
+                   row.action = `
+            <div class="actions">
+                <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
+                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.userId}"><i class="uil uil-eye"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.userId}" class="edit-btn edit"><i class="uil uil-edit"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.empId}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li> 
+                </ul>
+            </div>
+        `;
                     row.userImage = `
             <div class="user-details-container d-flex align-items-center">
                 <img src="${userImage}" alt="User Image" class="user-image" style="width: 25px; height: 25px; margin-right: 10px;">
@@ -691,11 +699,12 @@
                     { name: "userImage", title: "Name", className: "userDatatable-content", type: "html" },
                     { name: "empCardNo", title: "Emp. ID", className: "userDatatable-content" },
                     { name: "empType", title: "Emp Type", className: "userDatatable-content" },
+                    { name: "deautyType", title: "Duty Type", className: "userDatatable-content" },
                     { name: "shift", title: "P. Shift", className: "userDatatable-content" },
                     { name: "joiningDate", title: "Joining Date", className: "userDatatable-content" },
                     //{ name: "deautyType", title: "D. Type", className: "userDatatable-content" },
                     //{ name: "newWeekend", title: "New Weekend", className: "userDatatable-content" },
-                    //{ name: "action", title: "Action", className: "userDatatable-content" }
+                    { name: "action", title: "Action", className: "userDatatable-content" }
                 ];
 
                 try {
@@ -716,22 +725,36 @@
 
                 }
 
-                let selectedEmpId = null;
-                let selectedEmpType = null;
+                $('.adv-table').off('click', '.edit-btn').on('click', '.edit-btn', function () {
+                    const userId = $(this).data('id');
+                    FetchDataForEdit(userId);
+                    console.log('Edit button clicked for ID:', userId);
+                });
 
-                $(document).off('click', '.delete-btn').on('click', '.delete-btn', function () {
-                    selectedEmpId = $(this).data('emp-id');
-                    selectedEmpType = $(this).data('emp-type');
+                $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                    const id = $(this).data('id');
+                    Delete(id);
+                    console.log('Delete button clicked for ID:', id);
+                });
 
-                    $('#empIdField').val(selectedEmpId);
+                $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
+                    const id = $(this).data('id');
+                    FetchDataForView(id);
+                    console.log('View button clicked for ID:', id);
+                });
 
-                    // Optional: You can store the empType in a hidden field too
-                    $('#empTypeField').val(selectedEmpType); 
+                $('.adv-table').off('click', '.feature-btn').on('click', '.feature-btn', function () {
+                    const id = $(this).data('id');
+                    console.log('Feature button clicked for ID:', id);
+                    // FetchDataForEdit(id);
+                });
 
-                    console.log(selectedEmpType)
-                    console.log(selectedEmpId)
+                $('.adv-table').off('click', '.user-name').on('click', '.user-name', function () {
+                    const userId = $(this).data('id');
+                    console.log('User name clicked for ID:', userId);
 
-                    $('#salaryModal').modal('show');
+                    // Redirect to userProfile.aspx with userId as a query parameter
+                    window.open(`/hrms/profile?userId=${userId}`, '_blank');
                 });
 
            
@@ -779,6 +802,39 @@
                 return Array.from(selectedEmployeeIds).map(id => `empIds=${id}`).join('&');
             }
 
+            function Delete(id) {
+             Swal.fire({
+                 title: 'Are you sure?',
+                 text: "Do you really want to delete this Employee?",
+                 icon: 'warning',
+                 showCancelButton: true,
+                 confirmButtonColor: '#3085d6',
+                 cancelButtonColor: '#d33',
+                 confirmButtonText: 'Yes, delete it!'
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     ApiDeleteById(DeleteEmployeeUrl, token, id)
+                         .then(function (response) {
+                             Swal.fire({
+                                 title: 'Success!',
+                                 text: 'Employee deleted successfully.',
+                                 icon: 'success',
+                                 confirmButtonText: 'OK'
+                             }).then(() => {
+                                 GetUsers();
+                             });
+                         })
+                         .catch(function (error) {
+                             Swal.fire({
+                                 title: 'Warning!',
+                                 text: 'An error occurred while deleting the employee.',
+                                 icon: 'Warning',
+                                 confirmButtonText: 'OK'
+                             });
+                         });
+                 }
+             });
+         }
 
             function GetUnit() {
                 ApiCall(getUnitUrl, token)

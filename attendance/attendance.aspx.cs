@@ -723,6 +723,8 @@ namespace SigmaERP.attendance
         }
         private string ConvertTo24Hour(string hourStr, string minuteStr, string amPm)
         {
+            if (hourStr == "00" && minuteStr == "00")
+                return "00:00";
             int hour = int.Parse(hourStr.Trim());
             int minute = int.Parse(minuteStr.Trim());
 

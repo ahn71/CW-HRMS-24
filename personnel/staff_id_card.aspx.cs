@@ -207,7 +207,9 @@ namespace SigmaERP.personnel
                     else setPredicate += ",'" + lstSelected.Items[b].Value + "'";
                 }
                 DataTable dt = new DataTable();
-                sqlDB.fillDataTable(" SELECT CompanyId, EmpProximityNo as EmpCardNo,convert(varchar(10), EmpJoiningDate,105) as EmpJoiningDate, AddressBangla, EmpNameBn, DptNameBn, DsgNameBn, NationIDCardNo, EmergencyPhoneNo, EmpPicture, BloodGroup, PerDstBangla, PerThNameBn, PerVillageBangla, PerPOBangla,SignatureImage,EmpName,DsgName,DptName FROM    v_EmployeeProfile where SN " + setPredicate + " and ActiveSalary='True'  order by DptCode,CustomOrdering", dt);
+                string query = "SELECT CompanyId, EmpProximityNo as EmpCardNo,convert(varchar(10), EmpJoiningDate,105) as EmpJoiningDate, AddressBangla, EmpNameBn, DptNameBn, DsgNameBn, NationIDCardNo, EmergencyPhoneNo, EmpPicture, BloodGroup, PerDstBangla, PerThNameBn, PerVillageBangla, PerPOBangla,SignatureImage,EmpName,DsgName,DptName FROM    v_EmployeeProfile where SN " + setPredicate + " and ActiveSalary='True'  order by DptCode,CustomOrdering";
+
+                sqlDB.fillDataTable(query, dt);
                 Session["__WorkerID__"] = dt;
                 if (dt.Rows.Count > 0)
                 {

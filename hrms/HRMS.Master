@@ -999,6 +999,15 @@
                                                     <a class="" href="salary/earn-leave-payment-sheet" runat="server">EL Payment Sheet</a>
                                                 </li>
                                                 <% } %>
+
+                                                <% if (IsRouteExists("salary/other-deduction"))
+                                                    { %>
+                                                <li>
+                                                    <a class="" href="salary/other-deduction" runat="server">Punishment & Other's Pay</a>
+                                                </li>
+                                                <% } %>
+
+
                                             </ul>
                                         </li>
                                         <%} %>
