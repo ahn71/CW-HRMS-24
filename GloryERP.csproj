@@ -2137,6 +2137,7 @@
     <Content Include="payroll\salary\salary_sheet_excel.aspx" />
     <Content Include="personnel\employee-list-allowing-compliance.aspx" />
     <Content Include="personnel\employee_profileview.aspx" />
+    <Content Include="personnel\employe_Idcard.aspx" />
     <Content Include="personnel\ImportEmployeInfo.aspx" />
     <Content Include="personnel\OtherReports.aspx" />
     <Content Include="personnel\promotion_sheetc.aspx" />
@@ -5354,6 +5355,13 @@
     </Compile>
     <Compile Include="personnel\employee_profileview.aspx.designer.cs">
       <DependentUpon>employee_profileview.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="personnel\employe_Idcard.aspx.cs">
+      <DependentUpon>employe_Idcard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="personnel\employe_Idcard.aspx.designer.cs">
+      <DependentUpon>employe_Idcard.aspx</DependentUpon>
     </Compile>
     <Compile Include="personnel\ImportEmployeInfo.aspx.cs">
       <DependentUpon>ImportEmployeInfo.aspx</DependentUpon>
