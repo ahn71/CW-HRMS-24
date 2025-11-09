@@ -212,7 +212,7 @@ namespace SigmaERP.personnel
                 if (dt.Rows.Count > 0)
                 {
                     Session["__ReportView__"] = rblreportview.SelectedValue;
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=" + report + "');", true);  //Open New Tab for Sever side code
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/personnel/employe_Idcard.aspx?for=" + report + "');", true);  //Open New Tab for Sever side code
                 }
             }
 
@@ -238,7 +238,7 @@ namespace SigmaERP.personnel
                 if (dt.Rows.Count > 0)
                 {
                     Session["__ReportView__"] = rblreportview.SelectedValue;
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=" + report + "-" + ddlEmpCardNo.SelectedValue + "');", true);  //Open New Tab for Sever side code
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/personnel/employe_Idcard.aspx?for=" + report + "');", true);  //Open New Tab for Sever side code
                 }
             }
         }
