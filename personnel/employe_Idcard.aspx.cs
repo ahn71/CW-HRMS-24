@@ -35,67 +35,123 @@ namespace SigmaERP.personnel
             foreach (DataRow row in dtEmployeInfo.Rows)
             {
                 html.Append($@"
-<div class='id-card-wrapper' style='display:flex; gap:20px; margin-bottom:25px; font-family:SutonnyMJ;'>
+<div class='id-card-wrapper' style='display:flex; gap:20px; margin-bottom:25px; font-family:SutonnyMJ, sans-serif; font-weight:bold;'>
+
     <!-- FRONT SIDE -->
-    <div style='width:320px; height:480px; border:1px solid #000; padding:12px; box-sizing:border-box;'>
-        <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;'>
+    <div class='id-card'>
+        <div class='card-header'>
             <img src='../EmployeeImages/CompanyLogo/logo.jpeg' style='width:60px; height:60px; object-fit:contain;' />
-            <img src='{rootURL}/{companyId}/EmployeeImage/{row["EmpPicture"]}' 
-                 style='width:85px; height:105px; object-fit:cover; border:1px solid #000;' />
+            <img src='https://localhost:7220/0001/EmployeeImage/' style='width:85px; height:105px; object-fit:cover; border:1px solid #000;' />
         </div>
 
-        <h2 style='text-align:center; margin:0; font-size:20px; font-weight:bold;'>H.we.Avi w¯úwbs wgjm wjt</h2>
-        <h3 style='text-align:center; margin:5px 0 12px 0; font-size:18px; text-decoration:underline;'>cwiPqcÎ</h3>
+        <h2 style='text-align:center; margin:0; font-size:20px; font-weight:bold; color:#82b8e0;'>H.we.Avi w¯úwbs wgjm wjt</h2>
+        <h3 style='text-align:center; margin:5px 0 12px 0; font-size:26px; font-weight:bold; text-decoration:underline; color:#215868;'>cwiPqcÎ</h3>
 
         <table style='width:100%; font-size:14px; border-collapse:collapse;'>
-            <tr><td style='padding:3px 6px; width:40%;'>AvBwW KvW© bs</td><td style='padding:3px 6px;'>: {row["EmpCardNo"]}</td></tr>
-            <tr><td style='padding:3px 6px;'>k«wg‡Ki bvg</td><td style='padding:3px 6px;'>: {row["EmpNameBn"]}</td></tr>
-            <tr><td style='padding:3px 6px;'>c`we</td><td style='padding:3px 6px;'>: {row["DsgNameBn"]}</td></tr>
-            <tr><td style='padding:3px 6px;'>wefvM/kvLv</td><td style='padding:3px 6px;'>: {row["DptNameBn"]}</td></tr>
-            <tr><td style='padding:3px 6px;'>‡hvM`v‡bi ZvwiL</td><td style='padding:3px 6px;'>: {Convert.ToDateTime(row["EmpJoiningDate"]).ToString("dd-MM-yyyy")}</td></tr>
-            <tr><td style='padding:3px 6px;'>Bm¨yi ZvwiL</td><td style='padding:3px 6px;'>: {DateTime.Now.ToString("dd-MM-yyyy")}</td></tr>
+            <tr>
+                <td style='padding:3px 6px; width:40%; color:#305991; font-size:20px;'>AvBwW KvW© bs</td>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {row["EmpCardNo"]}</td>
+            </tr>
+            <tr>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>k«wg‡Ki bvg</td>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {DateTime.Now:dd-MM-yyyy}</td>
+            </tr>
+            <tr>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>c`we</td>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {Convert.ToDateTime(row["EmpJoiningDate"]):dd-MM-yyyy}</td>
+            </tr>
+            <tr>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>wefvM / kvLv</td>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {row["DptNameBn"]}</td>
+            </tr>
+            <tr>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>‡hvM`v‡bi ZvwiL</td>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {Convert.ToDateTime(row["EmpJoiningDate"]):dd-MM-yyyy}</td>
+            </tr>
+            <tr>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>Bm¨yi ZvwiL</td>
+                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {DateTime.Now:dd-MM-yyyy}</td>
+            </tr>
         </table>
 
-        <div style='display:flex; justify-content:space-around; margin-top:35px; font-size:13px;'>
-            <div style='text-align:center;'>
-                <div style='border-top:1px solid #000; width:110px; margin:auto;'>k«wg‡Ki ¯^v¶i/div>
-            </div>
-            <div style='text-align:center;'>
-                <div style='border-top:1px solid #000; width:110px; margin:auto;'>KZ©…c‡¶i ¯^v¶i</div>
-            </div>
+        <div class='footasr'>
+            <div><div>k«wg‡Ki ¯^v¶i</div></div>
+            <div><div>KZ©…c‡¶i ¯^v¶i</div></div>
         </div>
     </div>
 
     <!-- BACK SIDE -->
-    <div style='width:320px; height:480px; border:1px solid #000; padding:15px; box-sizing:border-box; font-family:SutonnyMJ;'>
-        <h3 style='text-align:center; font-size:18px; margin-bottom:3px;'>If Found Please</h3>
-        <h3 style='text-align:center; font-size:18px; margin-bottom:12px;'>Return This Card To-</h3>
+    <div class='id-card id-card-back'>
+        <h3 style='text-align:center; font-size:18px; margin-bottom:3px; font-family:Cursive; color:#1f4267;'>If Found Please</h3>
+        <h3 style='text-align:center; font-size:18px; margin-bottom:12px; font-family:Cursive; color:#1f4267;'>Return This Card To-</h3>
 
-        <p style='text-align:center; font-size:16px; line-height:22px; margin-bottom:15px;'>
-            কারখানার ঠিকানা <br/>
+        <p style='text-align:center; font-size:16px; line-height:22px; margin-bottom:15px; color:#82b8e0;'>
+            কারখানার ঠিকানা<br/>
             গোধার, মির্জাপুর, টাঙ্গাইল।
         </p>
 
-        <p style='font-size:14px; margin-bottom:12px;'>
-            অফিস মোবাইল নং : ০১৮৬০-৩১২৩১৮
-        </p>
+        <p style='font-size:14px; margin-bottom:12px;'>অফিস মোবাইল নং : ০১৮৬০-৩১২৩১৮</p>
+        
+        <h4 style='font-size:16px; margin-bottom:8px; text-decoration:underline; font-weight:bold;'>শ্রমিকের স্থায়ী ঠিকানা</h4>
 
-        <h4 style='font-size:16px; margin-bottom:8px; text-decoration:underline;'>শ্রমিকের স্থায়ী ঠিকানা</h4>
-
-        <table style='width:100%; font-size:14px; border-collapse:collapse;'>
-            <tr><td style='padding:2px 6px; width:40%;'>গ্রাম</td><td style='padding:2px 6px;'>: {row["PerVillageBangla"]}</td></tr>
-            <tr><td style='padding:2px 6px;'>ডাকঘর</td><td style='padding:2px 6px;'>: {row["PerPOBangla"]}</td></tr>
-            <tr><td style='padding:2px 6px;'>থানা</td><td style='padding:2px 6px;'>: {row["PerThNameBn"]}</td></tr>
-            <tr><td style='padding:2px 6px;'>জেলা</td><td style='padding:2px 6px;'>: {row["PerDstBangla"]}</td></tr>
+        <table style='width:100%; font-size:14px; border-collapse:collapse; font-family:SutonnyMJ;'>
+            <tr>
+                <td style='padding:2px 6px; width:40%;'>গ্রাম</td>
+                <td style='padding:2px 6px;'>: {row["PerVillageBangla"]}</td>
+            </tr>
+            <tr>
+                <td style='padding:2px 6px;'>ডাকঘর</td>
+                <td style='padding:2px 6px;'>: {row["PerPOBangla"]}</td>
+            </tr>
+            <tr>
+                <td style='padding:2px 6px;'>থানা</td>
+                <td style='padding:2px 6px;'>: {row["PerThNameBn"]}</td>
+            </tr>
+            <tr>
+                <td style='padding:2px 6px;'>জেলা</td>
+                <td style='padding:2px 6px;'>: {row["PerDstBangla"]}</td>
+            </tr>
         </table>
 
         <p style='font-size:14px; margin-top:14px;'>জরুরী ফোন নম্বর : {row["EmergencyPhoneNo"]}</p>
         <p style='font-size:14px;'>জাতি পরিচয় পত্র নং : {row["NationIDCardNo"]}</p>
         <p style='font-size:14px;'>রক্তের গ্রুপ : {row["BloodGroup"]}</p>
     </div>
+
 </div>
 ");
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             //            foreach (DataRow row in dtEmployeInfo.Rows)
