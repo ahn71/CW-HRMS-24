@@ -36,7 +36,7 @@
         /* ID card common styles */
         .id-card {
             width: 290px;
-            height: 423px;
+            height: 471px;
             border: 1px solid #000;
             padding: 12px;
             box-sizing: border-box;

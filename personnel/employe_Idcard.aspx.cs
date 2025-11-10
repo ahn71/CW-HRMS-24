@@ -40,6 +40,7 @@ namespace SigmaERP.personnel
             foreach (DataRow row in dtEmployeInfo.Rows)
             {
                 string jjj = row["EmpJoiningDate"].ToString();
+                string signatureFile = row["SignatureImage"]?.ToString();
 
                 DateTime date = DateTime.TryParseExact(row["EmpJoiningDate"].ToString(),
                     new[] { "dd-MM-yyyy", "MM-dd-yyyy", "yyyy-MM-dd", "yyyy/MM/dd", "dd/MM/yyyy", "MM/dd/yyyy" },
@@ -55,7 +56,7 @@ namespace SigmaERP.personnel
                 <img src='../EmployeeImages/CompanyLogo/logo.jpeg' 
                      style='width:60px; height:60px; object-fit:contain; 
                      -webkit-print-color-adjust: exact; print-color-adjust: exact;' />
-                <img src='https://localhost:7220/0001/EmployeeImage/{row["EmpPicture"]}' 
+                <img src='{rootURL}/{companyId}/EmployeeImage/{row["EmpPicture"]}' 
                      style='width:76px; height:88px; object-fit:cover; border:1px solid #000;
                      -webkit-print-color-adjust: exact; print-color-adjust: exact;' />
             </div>
@@ -63,7 +64,7 @@ namespace SigmaERP.personnel
             <h2 style='text-align:center; margin:0; font-size:25px; font-weight:normal; 
                 color:#0070c0 !important; 
                 -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important;'>H.we.Avi w¯úwbs wgjm wjt</h2>
+                print-color-adjust: exact !important;'>{row["AddressBangla"]}</h2>
             
             <h3 style='text-align:center; margin:5px 0 12px 0; font-size:26px; font-weight:bold; 
                 text-decoration:underline; color:#215868 !important;
@@ -124,7 +125,8 @@ namespace SigmaERP.personnel
 
 
             <div class='footasr' style=' -webkit-print-color-adjust: exact; print-color-adjust: exact;''>
-                <div><img style='height:30px; width:100%' src='https://localhost:7220/0001/EmployeeSignature/{row["SignatureImage"]}'/>
+                <div><img style='height:30px; width:100%; {(string.IsNullOrEmpty(signatureFile) ? "opacity:0;" : "")}' 
+             src='{rootURL}/{companyId}/EmployeeSignature/{signatureFile}'/>
 
                 <div style='color: #4e587e!important;
                 -webkit-print-color-adjust: exact !important; 
