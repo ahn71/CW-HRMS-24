@@ -878,6 +878,21 @@ namespace SigmaERP.classes
             catch { }
         }
 
+        public static void SearchDesignation( DropDownList dl)
+        {
+            try
+            {
+                da = new SqlDataAdapter("SELECT DsgId, DsgName FROM HRD_Designation", sqlDB.connection);
+                da.Fill(dt = new DataTable());
+                dl.DataValueField = "DsgId";
+                dl.DataTextField = "DsgName";
+                dl.DataSource = dt;
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
         public static void SearchLine(string DptId, DropDownList dl)
         {
             try
