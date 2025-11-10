@@ -25,102 +25,177 @@ namespace SigmaERP.personnel
 
         {
             StringBuilder html = new StringBuilder();
+         
 
             DataTable dtEmployeInfo = (DataTable)Session["__WorkerID__"];
             string rootURL = System.Configuration.ConfigurationManager.AppSettings["rootURLForAPI"];
             string companyId = Session["__GetCompanyId__"].ToString();
 
+           
+
             var companyInfo = getComapnyInfo();
+            html.Append(@"<div class='wrapperx'>
+                <div class='grid-container'>");
 
             foreach (DataRow row in dtEmployeInfo.Rows)
             {
+                string jjj = row["EmpJoiningDate"].ToString();
+
+                DateTime date = DateTime.TryParseExact(row["EmpJoiningDate"].ToString(),
+                    new[] { "dd-MM-yyyy", "MM-dd-yyyy", "yyyy-MM-dd", "yyyy/MM/dd", "dd/MM/yyyy", "MM/dd/yyyy" },
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out DateTime d) ? d : DateTime.MinValue;
+
                 html.Append($@"
-<div class='id-card-wrapper' style='display:flex; gap:20px; margin-bottom:25px; font-family:SutonnyMJ, sans-serif; font-weight:bold;'>
-
-    <!-- FRONT SIDE -->
-    <div class='id-card'>
-        <div class='card-header'>
-            <img src='../EmployeeImages/CompanyLogo/logo.jpeg' style='width:60px; height:60px; object-fit:contain;' />
-            <img src='https://localhost:7220/0001/EmployeeImage/' style='width:85px; height:105px; object-fit:cover; border:1px solid #000;' />
-        </div>
-
-        <h2 style='text-align:center; margin:0; font-size:20px; font-weight:bold; color:#82b8e0;'>H.we.Avi w¯úwbs wgjm wjt</h2>
-        <h3 style='text-align:center; margin:5px 0 12px 0; font-size:26px; font-weight:bold; text-decoration:underline; color:#215868;'>cwiPqcÎ</h3>
-
-        <table style='width:100%; font-size:14px; border-collapse:collapse;'>
-            <tr>
-                <td style='padding:3px 6px; width:40%; color:#305991; font-size:20px;'>AvBwW KvW© bs</td>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {row["EmpCardNo"]}</td>
-            </tr>
-            <tr>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>k«wg‡Ki bvg</td>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {DateTime.Now:dd-MM-yyyy}</td>
-            </tr>
-            <tr>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>c`we</td>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {Convert.ToDateTime(row["EmpJoiningDate"]):dd-MM-yyyy}</td>
-            </tr>
-            <tr>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>wefvM / kvLv</td>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {row["DptNameBn"]}</td>
-            </tr>
-            <tr>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>‡hvM`v‡bi ZvwiL</td>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {Convert.ToDateTime(row["EmpJoiningDate"]):dd-MM-yyyy}</td>
-            </tr>
-            <tr>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>Bm¨yi ZvwiL</td>
-                <td style='padding:3px 6px; color:#4e587e; font-size:18px;'>: {DateTime.Now:dd-MM-yyyy}</td>
-            </tr>
-        </table>
-
-        <div class='footasr'>
-            <div><div>k«wg‡Ki ¯^v¶i</div></div>
-            <div><div>KZ©…c‡¶i ¯^v¶i</div></div>
-        </div>
-    </div>
-
-    <!-- BACK SIDE -->
-    <div class='id-card id-card-back'>
-        <h3 style='text-align:center; font-size:18px; margin-bottom:3px; font-family:Cursive; color:#1f4267;'>If Found Please</h3>
-        <h3 style='text-align:center; font-size:18px; margin-bottom:12px; font-family:Cursive; color:#1f4267;'>Return This Card To-</h3>
-
-        <p style='text-align:center; font-size:16px; line-height:22px; margin-bottom:15px; color:#82b8e0;'>
-            কারখানার ঠিকানা<br/>
-            গোধার, মির্জাপুর, টাঙ্গাইল।
-        </p>
-
-        <p style='font-size:14px; margin-bottom:12px;'>অফিস মোবাইল নং : ০১৮৬০-৩১২৩১৮</p>
+    <div class='id-card-wrapper'>
         
-        <h4 style='font-size:16px; margin-bottom:8px; text-decoration:underline; font-weight:bold;'>শ্রমিকের স্থায়ী ঠিকানা</h4>
+        <!-- FRONT SIDE -->
+        <div class='id-card'>
+            <div class='card-header'>
+                <img src='../EmployeeImages/CompanyLogo/logo.jpeg' 
+                     style='width:60px; height:60px; object-fit:contain; 
+                     -webkit-print-color-adjust: exact; print-color-adjust: exact;' />
+                <img src='https://localhost:7220/0001/EmployeeImage/{row["EmpPicture"]}' 
+                     style='width:76px; height:88px; object-fit:cover; border:1px solid #000;
+                     -webkit-print-color-adjust: exact; print-color-adjust: exact;' />
+            </div>
 
-        <table style='width:100%; font-size:14px; border-collapse:collapse; font-family:SutonnyMJ;'>
-            <tr>
-                <td style='padding:2px 6px; width:40%;'>গ্রাম</td>
-                <td style='padding:2px 6px;'>: {row["PerVillageBangla"]}</td>
-            </tr>
-            <tr>
-                <td style='padding:2px 6px;'>ডাকঘর</td>
-                <td style='padding:2px 6px;'>: {row["PerPOBangla"]}</td>
-            </tr>
-            <tr>
-                <td style='padding:2px 6px;'>থানা</td>
-                <td style='padding:2px 6px;'>: {row["PerThNameBn"]}</td>
-            </tr>
-            <tr>
-                <td style='padding:2px 6px;'>জেলা</td>
-                <td style='padding:2px 6px;'>: {row["PerDstBangla"]}</td>
-            </tr>
-        </table>
+            <h2 style='text-align:center; margin:0; font-size:25px; font-weight:normal; 
+                color:#0070c0 !important; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>H.we.Avi w¯úwbs wgjm wjt</h2>
+            
+            <h3 style='text-align:center; margin:5px 0 12px 0; font-size:26px; font-weight:bold; 
+                text-decoration:underline; color:#215868 !important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>cwiPqcÎ</h3>
 
-        <p style='font-size:14px; margin-top:14px;'>জরুরী ফোন নম্বর : {row["EmergencyPhoneNo"]}</p>
-        <p style='font-size:14px;'>জাতি পরিচয় পত্র নং : {row["NationIDCardNo"]}</p>
-        <p style='font-size:14px;'>রক্তের গ্রুপ : {row["BloodGroup"]}</p>
+            <table class='id-card-table'>
+                <tr>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>AvBwW KvW© bs</td>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>: {row["EmpCardNo"]}</td>
+                </tr>
+                <tr>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>k«wg‡Ki bvg</td>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>:  {row["EmpNameBn"]}</td>
+                </tr>
+                <tr>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>c`we</td>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>: {row["DsgNameBn"]}</td>
+                </tr>
+                <tr>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>wefvM / kvLv</td>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>: {row["DptNameBn"]}</td>
+                </tr>
+                <tr>
+                    <td style='color:#4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>‡hvM`v‡bi ZvwiL</td>
+                    <td style='color:#4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>: {date:dd-MM-yyyy}</td>
+                </tr>
+                <tr>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>Bm¨yi ZvwiL</td>
+                    <td style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>: {DateTime.Now:dd-MM-yyyy}</td>
+                </tr>
+            </table>
+
+
+
+            <div class='footasr' style=' -webkit-print-color-adjust: exact; print-color-adjust: exact;''>
+                <div><img style='height:30px; width:100%' src='https://localhost:7220/0001/EmployeeSignature/{row["SignatureImage"]}'/>
+
+                <div style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>
+                   k«wg‡Ki ¯^v¶i</div>
+              </div>
+
+
+                <div><img style='height:30px; width:100%; opacity:0;' src='https://localhost:7220/0001/EmployeeSignature/{row["SignatureImage"]}'/> <div style='color: #4e587e!important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;'>KZ©…c‡¶i ¯^v¶i</div></div>
+            </div>
+        </div>
+
+        <!-- BACK SIDE -->
+        <div class='id-card id-card-back'>
+            <h3 style='text-align:center; font-size:16px; margin-bottom:10px; font-family:Cursive; 
+                color:#1f4267 !important;
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; margin-bottom:10px;'>If Found Please Return </br> This Card To-</h3>
+            
+            
+
+            <p style='text-align:center; font-size:16px; line-height:22px; margin-bottom:15px; 
+               color:#0070c0 !important;
+               -webkit-print-color-adjust: exact !important; 
+               print-color-adjust: exact !important;'>
+                কারখানার ঠিকানা<br/>
+                গোধার, মির্জাপুর, টাঙ্গাইল।
+            </p>
+
+            <p style='font-size:16px; margin-bottom:12px;'>Awdm ‡gvevBj bs : ০১৮৬০-৩১২৩১৮</p>
+            
+            <h4 style='font-size:16px; margin-bottom:8px; text-decoration:underline; font-weight:bold;'>kÖwg‡Ki ¯’vqx wVKvbv</h4>
+
+            <table class='id-card-table'>
+                <tr>
+                    <td>MÖvg</td>
+                    <td>: {row["PerVillageBangla"]}</td>
+                </tr>
+                <tr>
+                    <td>WvKNi</td>
+                    <td>: {row["PerPOBangla"]}</td>
+                </tr>
+                <tr>
+                    <td>_vbv</td>
+                    <td>: {row["PerThNameBn"]}</td>
+                </tr>
+                <tr>
+                    <td>‡Rjv</td>
+                    <td>: {row["PerDstBangla"]}</td>
+                </tr>
+                <tr>
+                    <td>Riæix †dvb b¤^i</td>
+                    <td>: {row["EmergencyPhoneNo"]}</td>
+                </tr>
+                <tr>
+                    <td>Rvt cwitcÎ bs</td>
+                    <td>: {row["NationIDCardNo"]}</td>
+                </tr>
+                <tr>
+                    <td>i‡³i Mªc</td>
+                    <td>: {row["BloodGroup"]}</td>
+                </tr>
+            </table>
+        </div>
     </div>
-
-</div>
 ");
             }
+
+            html.Append(@"</div></div>");
 
 
 
