@@ -64,7 +64,7 @@ namespace SigmaERP.personnel
             <h2 style='text-align:center; margin:0; font-size:25px; font-weight:normal; 
                 color:#0070c0 !important; 
                 -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important;'>{row["AddressBangla"]}</h2>
+                print-color-adjust: exact !important;'>{row["CompanyNameBangla"]}</h2>
             
             <h3 style='text-align:center; margin:5px 0 12px 0; font-size:26px; font-weight:bold; 
                 text-decoration:underline; color:#215868 !important;
@@ -155,10 +155,10 @@ namespace SigmaERP.personnel
                -webkit-print-color-adjust: exact !important; 
                print-color-adjust: exact !important;'>
                 কারখানার ঠিকানা<br/>
-                গোধার, মির্জাপুর, টাঙ্গাইল।
+                {row["AddressBangla"]}
             </p>
 
-            <p style='font-size:16px; margin-bottom:12px;'>Awdm ‡gvevBj bs : ০১৮৬০-৩১২৩১৮</p>
+            <p style='font-size:16px; margin-bottom:12px;'>Awdm ‡gvevBj bs : {row["Telephone"]}</p>
             
             <h4 style='font-size:16px; margin-bottom:8px; text-decoration:underline; font-weight:bold;'>kÖwg‡Ki ¯’vqx wVKvbv</h4>
 
