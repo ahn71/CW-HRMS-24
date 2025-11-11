@@ -354,6 +354,7 @@ namespace SigmaERP.classes
                 var payRollPolicy = getPayrollPolicy(CompanyId,"regular");
                 // getting selected employees  for separation
                 DataTable dtEmployees = getSeparationEmployees(CompanyId, EmpId, ToDate.ToString("yyyy-MM"));
+                DataTable dtearnLeavePolicy = getEarnLeaveSettings();
 
                 if (dtEmployees != null && dtEmployees.Rows.Count > 0)
                 {
@@ -387,7 +388,7 @@ namespace SigmaERP.classes
                         // Deduction days for Notice pay
                         noticeDay = int.Parse(employee["DeductionDaysNoticePay"].ToString());
 
-                        InsertPayrollFinalSettlement(employee["EmpId"].ToString(), employee["EmpTypeId"].ToString(), employee["EmpName"].ToString(), Convert.ToInt32(employee["DsgId"]), Convert.ToInt32(employee["DptId"]), employee["EmpCardNo"].ToString(), employee["EmpSeparationId"].ToString(), Convert.ToDateTime(employee["EmpJoiningDate"]), Convert.ToDateTime(employee["EffectiveDate"]), Convert.ToInt32(employee["SalaryCount"]), Convert.ToSingle(employee["BasicSalary"]), Convert.ToSingle(employee["HouseRent"]), Convert.ToSingle(employee["MedicalAllownce"]), Convert.ToSingle(employee["FoodAllownce"]), Convert.ToSingle(employee["ConvenceAllownce"]), Convert.ToSingle(employee["EmpPresentSalary"]), employee["CompanyId"].ToString(), SelectedDate, _stampDeduct, noticeDay);
+                        InsertPayrollFinalSettlement(employee["EmpId"].ToString(), employee["EmpTypeId"].ToString(), employee["EmpName"].ToString(), Convert.ToInt32(employee["DsgId"]), Convert.ToInt32(employee["DptId"]), employee["EmpCardNo"].ToString(), employee["EmpSeparationId"].ToString(), Convert.ToDateTime(employee["EmpJoiningDate"]), Convert.ToDateTime(employee["EffectiveDate"]), Convert.ToInt32(employee["SalaryCount"]), Convert.ToSingle(employee["BasicSalary"]), Convert.ToSingle(employee["HouseRent"]), Convert.ToSingle(employee["MedicalAllownce"]), Convert.ToSingle(employee["FoodAllownce"]), Convert.ToSingle(employee["ConvenceAllownce"]), Convert.ToSingle(employee["EmpPresentSalary"]), employee["CompanyId"].ToString(), SelectedDate, _stampDeduct, noticeDay, dtearnLeavePolicy);
                     }
 
                 }
@@ -397,6 +398,20 @@ namespace SigmaERP.classes
             {
                 return ex.Message;
             }
+        }
+
+
+
+        private DataTable getEarnLeaveSettings()
+        {
+            try
+            {
+                string query = @"select PaymentOn,WithdrawablePer from Earnleave_Setting";
+                DataTable dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable(query);
+                return dt;
+            }
+            catch { return null; }
         }
 
         private DateTime setFromDate(string CompanyId,DateTime FromDate, DateTime ToDate)
@@ -1291,7 +1306,7 @@ namespace SigmaERP.classes
 
 
         public void InsertPayrollFinalSettlement(string empId, string empTypeId, string empName, int dsgId, int dptId, string empCard, string empSeparationId, DateTime empJoiningDate, DateTime effectiveDate, int totalWorkingDays, float basicSalary,
-       float houseRent, float medicalAllowenece, float foodAllowenece, float convenceAllowenece, float empPresentSalary, string companyId, string yearMonth, double stamDeducation, int noticeDay)
+       float houseRent, float medicalAllowenece, float foodAllowenece, float convenceAllowenece, float empPresentSalary, string companyId, string yearMonth, double stamDeducation, int noticeDay,DataTable dtEarnLeave)
         {
 
             int NetPayable = 0;
@@ -1305,6 +1320,7 @@ namespace SigmaERP.classes
             string totalOtHour = "00:00:00";
             DataTable dtEL = earnLeave(empId, yearMonth);
             DataTable dtSalary = getLastMonthSalary(empId, yearMonth, companyId);
+            string paymentFor = dtEarnLeave.Rows[0]["PaymentOn"].ToString();
             if (dtSalary.Rows.Count > 0)
             {
                 NetPayable = Convert.ToInt32(dtSalary.Rows[0]["NetPayable"].ToString());
@@ -1323,6 +1339,12 @@ namespace SigmaERP.classes
                 if (payableEarnLeaveAmount == 0)
                     payableEarnLeaveDays = 0;
             }
+           
+            if (paymentFor == "Basic")
+                payableEarnLeaveAmount = (double.Parse(dtSalary.Rows[0]["BasicSalary"].ToString())/ int.Parse(dtSalary.Rows[0]["DaysInMonth"].ToString()))* payableEarnLeaveDays;
+            else
+                payableEarnLeaveAmount = (double.Parse(dtSalary.Rows[0]["EmpPresentSalary"].ToString())/ int.Parse(dtSalary.Rows[0]["DaysInMonth"].ToString()))* payableEarnLeaveDays; 
+          
             double totalDays = (effectiveDate - empJoiningDate).TotalDays;
             // get service benefit
             var (ServiceBenefitAmount, serviceBefitDays) = CalculateServiceBenefit(empJoiningDate, effectiveDate, basicSalary, totalDays);
@@ -1406,7 +1428,7 @@ namespace SigmaERP.classes
             {
                 string date = new DateTime(DateTime.ParseExact(yearMonth, "dd-MM-yyyy", null).Year, DateTime.ParseExact(yearMonth, "dd-MM-yyyy", null).Month, 1).ToString("yyyy-MM-dd");
 
-                string query = "select OverTime,OverTimeAmount,OTRate,AttendanceBonus,OthersDeduction,NetPayable,PayableDays  from Payroll_MonthlySalarySheet Where CompanyId='" + comapnyId + "' and EmpId='" + empId + "' and YearMonth='" + date + "' and IsSeperationGeneration=1";
+                string query = "select DaysInMonth,EmpPresentSalary,BasicSalary,OverTime,OverTimeAmount,OTRate,AttendanceBonus,OthersDeduction,NetPayable,PayableDays  from Payroll_MonthlySalarySheet Where CompanyId='" + comapnyId + "' and EmpId='" + empId + "' and YearMonth='" + date + "' and IsSeperationGeneration=1";
                 DataTable dt = CRUD.ExecuteReturnDataTable(query);
                 return dt;
             }
