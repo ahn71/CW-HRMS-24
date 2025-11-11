@@ -51,6 +51,7 @@
                                             <asp:RadioButtonList ID="rblProcessOn" runat="server"  ClientIDMode="Static" RepeatDirection="Horizontal" AutoPostBack="true" OnSelectedIndexChanged="rblProcessOn_SelectedIndexChanged" >
                                                 <asp:ListItem Selected="True" Value="0">Regular Employees</asp:ListItem>
                                                 <asp:ListItem Value="1">Separation Employees</asp:ListItem>
+                                                <asp:ListItem Value="2">Final Settlement</asp:ListItem>
                                             </asp:RadioButtonList>
                                         </td>
                                        

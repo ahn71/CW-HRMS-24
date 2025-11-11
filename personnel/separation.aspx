@@ -150,6 +150,21 @@
 
                                     </td>
                                 </tr>
+
+
+
+                                 <tr>
+                                    <td>Deduction Days(Notice pay) <span class="requerd1">*</span>
+                                    </td>
+                                    <td>:
+                                    </td>
+                                    <td>
+                                       <asp:TextBox runat="server" ID="txtdeductNotice"  CssClass="form-control select_width"></asp:TextBox>
+
+                                    </td>
+                                </tr>
+
+
                                 <tr>
                                     <td>Remarks
                                     </td>
@@ -220,7 +235,7 @@
 
 
                                 <%--<div id="divSeparationList" runat="server" style="width: 508px; height: 599px;"></div>--%>
-                                <asp:GridView ID="gvSeparationList" Width="100%" CssClass="display" HeaderStyle-BackColor="#750000" HeaderStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="White" HeaderStyle-Font-Bold="true" HeaderStyle-Font-Size="11px" runat="server" AutoGenerateColumns="false" HeaderStyle-Height="28px"  DataKeyNames="EmpSeparationId,EmpTypeId,Remarks,EmpId" AllowPaging="true" PageSize="20" OnRowCommand="gvSeparationList_RowCommand" OnPageIndexChanging="gvSeparationList_PageIndexChanging" OnRowDataBound="gvSeparationList_RowDataBound">
+                                <asp:GridView ID="gvSeparationList" Width="100%" CssClass="display" HeaderStyle-BackColor="#750000" HeaderStyle-HorizontalAlign="Center" HeaderStyle-ForeColor="White" HeaderStyle-Font-Bold="true" HeaderStyle-Font-Size="11px" runat="server" AutoGenerateColumns="false" HeaderStyle-Height="28px"  DataKeyNames="EmpSeparationId,EmpTypeId,Remarks,EmpId,DeductionDaysNoticePay" AllowPaging="true" PageSize="20" OnRowCommand="gvSeparationList_RowCommand" OnPageIndexChanging="gvSeparationList_PageIndexChanging" OnRowDataBound="gvSeparationList_RowDataBound">
                                     <PagerStyle CssClass="gridview" />                                
                                     <Columns>
                                         <asp:BoundField DataField="EmpSeparationId" HeaderText="EmpSeparationId" Visible="false" />
@@ -233,6 +248,7 @@
                                         <asp:BoundField DataField="EffectiveDate" HeaderText="Effective Date" Visible="true" />
                                         <asp:BoundField DataField="EmpStatusName" HeaderText="Sep.Type" Visible="true" />
                                         <asp:BoundField DataField="EntryDate" HeaderText="Entry Date" Visible="true" />
+                                        <asp:BoundField DataField="DeductionDaysNoticePay" HeaderText="Deduction(NoticeDay)" Visible="true" />
                                         <asp:BoundField DataField="Remarks" HeaderText="Remarks" Visible="false" />
                                         <asp:TemplateField HeaderText="Edit">
                                             <ItemTemplate>

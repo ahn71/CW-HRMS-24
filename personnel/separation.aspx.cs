@@ -165,7 +165,7 @@ namespace SigmaERP.personnel
             try
             {
                // SQLOperation.selectBySetCommandInDatatable("select EmpId from Personnel_EmployeeInfo where EmpCardNo=" + txtEmpCardNo.Text.Trim() + "", dt = new DataTable(), sqlDB.connection);
-                cmd = new SqlCommand("insert into Personnel_EmpSeparation (EmpId,EmpCardNo,EffectiveDate,SeparationType,Remarks,EmpTypeId,EntryDate,IsActive,UserId) values (@EmpId,@EmpCardNo,@EffectiveDate,@SeparationType,@Remarks,@EmpTypeId,@EntryDate,@IsActive,@UserId)", sqlDB.connection);
+                cmd = new SqlCommand("insert into Personnel_EmpSeparation (EmpId,EmpCardNo,EffectiveDate,SeparationType,Remarks,EmpTypeId,EntryDate,IsActive,UserId,DeductionDaysNoticePay) values (@EmpId,@EmpCardNo,@EffectiveDate,@SeparationType,@Remarks,@EmpTypeId,@EntryDate,@IsActive,@UserId,@DeductionDaysNoticePay)", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__G_EmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@EmpCardNo", ViewState["__G_EmpCardNo__"].ToString());
                 cmd.Parameters.AddWithValue("@EffectiveDate",convertDateTime.getCertainCulture(txtEffectiveDate.Text));
@@ -177,6 +177,8 @@ namespace SigmaERP.personnel
                 //else cmd.Parameters.AddWithValue("@IsActive", 0);
                 cmd.Parameters.AddWithValue("@IsActive", 0);
                 cmd.Parameters.AddWithValue("UserId", ViewState["__G_UserId__"].ToString());
+                cmd.Parameters.AddWithValue("@DeductionDaysNoticePay",Convert.ToInt32(txtdeductNotice.Text.Trim()));
+
                 int result = cmd.ExecuteNonQuery();
                 if (result==1)
                 {
@@ -211,13 +213,14 @@ namespace SigmaERP.personnel
                     return;
                 }
 
-                cmd = new SqlCommand("update Personnel_EmpSeparation set  EffectiveDate=@EffectiveDate,SeparationType=@SeparationType,Remarks=@Remarks,IsActive=@IsActive where EmpSeparationId=" + ViewState["__SeparationId__"].ToString() + "", sqlDB.connection);
+                cmd = new SqlCommand("update Personnel_EmpSeparation set  EffectiveDate=@EffectiveDate,SeparationType=@SeparationType,Remarks=@Remarks,IsActive=@IsActive,DeductionDaysNoticePay=@DeductionDaysNoticePay where EmpSeparationId=" + ViewState["__SeparationId__"].ToString() + "", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EffectiveDate", convertDateTime.getCertainCulture(txtEffectiveDate.Text));
                 cmd.Parameters.AddWithValue("@SeparationType", ddlSeparationType.SelectedValue.ToString());
                 cmd.Parameters.AddWithValue("@Remarks", txtRemarks.Text.Trim());
                 //if (txtEffectiveDate.Text.Trim() == DateTime.Now.ToString("dd-MM-yyyy")) cmd.Parameters.AddWithValue("@IsActive", 1);
                 //else cmd.Parameters.AddWithValue("@IsActive", 0);
                 cmd.Parameters.AddWithValue("@IsActive", 0);
+                cmd.Parameters.AddWithValue("@DeductionDaysNoticePay", Convert.ToInt32(txtdeductNotice.Text.Trim()));
                 int result = cmd.ExecuteNonQuery();
                 if (result == 1)
                 {
@@ -293,6 +296,7 @@ namespace SigmaERP.personnel
                   //  txtEmpCardNo.Text = gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[2].Text;
                     txtEffectiveDate.Text = gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[5].Text;
                     txtRemarks.Text = gvSeparationList.DataKeys[Convert.ToInt32(e.CommandArgument.ToString())].Values[2].ToString();
+                    txtdeductNotice.Text = gvSeparationList.DataKeys[Convert.ToInt32(e.CommandArgument.ToString())].Values[4].ToString();
 
                     if (gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[6].Text.ToLower().Equals("dismissed")) ddlSeparationType.SelectedValue = "3"; 
                     else if (gvSeparationList.Rows[Convert.ToInt32(e.CommandArgument)].Cells[6].Text.ToLower().Equals("resigned")) ddlSeparationType.SelectedValue = "4";
