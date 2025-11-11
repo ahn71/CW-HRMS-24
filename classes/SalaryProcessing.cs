@@ -326,7 +326,7 @@ namespace SigmaERP.classes
                 DateTime FromDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-01");
                 DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
 
-                var payRollPolicy = getPayrollPolicy(CompanyId, generateFor);
+                var payRollPolicy = getPayrollPolicy(CompanyId,"regular");
                 // getting selected employees  for separation
                 DataTable dtEmployees = getSeparationEmployees(CompanyId, EmpId, ToDate.ToString("yyyy-MM"));
 
@@ -1278,7 +1278,7 @@ namespace SigmaERP.classes
                 otRate = Convert.ToDouble(dtSalary.Rows[0]["OTRate"]);
                 totalOtAmount = Convert.ToDouble(dtSalary.Rows[0]["OverTimeAmount"]);
                 othersDeduction = Convert.ToDouble(dtSalary.Rows[0]["OthersDeduction"]);
-                attendanceBonus = Convert.ToDouble(dtSalary.Rows[0]["OthersDeduction"]);
+                attendanceBonus = Convert.ToDouble(dtSalary.Rows[0]["AttendanceBonus"]);
 
             }
             if (dtEL.Rows.Count > 0)
