@@ -1,5 +1,6 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using Newtonsoft.Json.Linq;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
 using System;
@@ -85,7 +86,9 @@ namespace SigmaERP.payroll
                 if (txtEmpCardNo.Text.Trim() != "")
                 {
                     sqlCmd = "select EmpId from Personnel_EmployeeInfo where EmpCardNo like '%"+ txtEmpCardNo.Text.Trim() + "'";
-                    sqlDB.fillDataTable(sqlCmd, dt = new DataTable());// check valid employee 
+                   
+                    dt = CRUD.ExecuteReturnDataTable(sqlCmd);
+                   /* sqlDB.fillDataTable(sqlCmd, dt = new DataTable());*/// check valid employee 
                     if (dt != null && dt.Rows.Count > 0)
                     {
                         EmpIDforIndividual =  dt.Rows[0]["EmpId"].ToString();                        
@@ -100,23 +103,23 @@ namespace SigmaERP.payroll
                 string ExceptedEmpCardNo = "";
                 if (txtExceptedEmpCardNo.Text.Trim() != "")
                 {
-                    ExceptedEmpCardNo = " and el.EmpID not in(select EmpId from Personnel_EmployeeInfo where SUBSTRING(EmpCardNo,8,6) in(" + txtExceptedEmpCardNo.Text.Trim() + ") and CompanyId='" + CompanyId + "')";
+                    ExceptedEmpCardNo = " and el.EmpID not in(select EmpId from Personnel_EmployeeInfo where SUBSTRING(EmpCardNo,8,6) in(" + txtExceptedEmpCardNo.Text.Trim() + ") and pei.CompanyId='" + CompanyId + "'";
                 }
 
                 if (rbGenaratingType.SelectedValue == "1")
                 {
                     IsSeparated = "1";
                     EmpIDforIndividualCondition=(EmpIDforIndividual=="")?"": " and EmpId ='" + dt.Rows[0]["EmpId"].ToString() + "'";
-                    sqlCmd = "select convert(varchar(10), pei.EmpJoiningDate,120) EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,sum(EarnLeaveDays) as EarnLeaveDays,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdName,pe.EmpPresentSalary,pe.BasicSalary from Earnleave_BalanceDetailsLog as el inner join Personnel_EmployeeInfo pei on el.EmpID=pei.EmpId inner join Personnel_EmpCurrentStatus as pe on el.EmpID=pe.EmpId and pe.IsActive=1 " +
-                    "  where pe.CompanyId='" + CompanyId + "' and  EarnLeaveLastDate>='" +StartDate + "' and EarnLeaveLastDate<='" + EndDate + "' and el.EmpId in(select EmpId from Personnel_EmpSeparation  where format(EffectiveDate, 'yyyy-MM') = '" + EndDate.ToString("yyyy-MM") + "' "+ EmpIDforIndividualCondition + ") "+ ExceptedEmpCardNo + " and CompanyId='" + CompanyId + "')" +
-                    "  group by pei.EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdName,pe.EmpPresentSalary,pe.BasicSalary";
+                    sqlCmd = "select pe.PaymentMethod,convert(varchar(10), pei.EmpJoiningDate,120) EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,sum(EarnLeaveDays) as EarnLeaveDays,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdId,pe.EmpPresentSalary,pe.BasicSalary from Earnleave_BalanceDetailsLog as el inner join Personnel_EmployeeInfo pei on el.EmpID=pei.EmpId inner join Personnel_EmpCurrentStatus as pe on el.EmpID=pe.EmpId and pe.IsActive=1 " +
+                    "  where pe.CompanyId='" + CompanyId + "' and  EarnLeaveLastDate>='" +StartDate + "' and EarnLeaveLastDate<='" + EndDate + "' and el.EmpId in(select EmpId from Personnel_EmpSeparation  where format(EffectiveDate, 'yyyy-MM') = '" + EndDate.ToString("yyyy-MM") + "' "+ EmpIDforIndividualCondition + ") "+ ExceptedEmpCardNo + " and pei.CompanyId='" + CompanyId + "'" +
+                    "  group by pe.PaymentMethod,pei.EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdId,pe.EmpPresentSalary,pe.BasicSalary";
                 }
                 else
                 {
                     IsSeparated = "0";
                     EmpIDforIndividualCondition = (EmpIDforIndividual == "") ? "" : " and el.EmpId ='" + dt.Rows[0]["EmpId"].ToString() + "'";
-                    sqlCmd = "select convert(varchar(10), pei.EmpJoiningDate,120) EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,sum(EarnLeaveDays) as EarnLeaveDays,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdName,pe.EmpPresentSalary,pe.BasicSalary from Earnleave_BalanceDetailsLog as el inner join Personnel_EmpCurrentStatus as pe on el.EmpID=pe.EmpId and pe.IsActive=1  and pe.EmpStatus in(1,8)  inner join Personnel_EmployeeInfo pei on el.EmpID=pei.EmpId " +
-                    "  where pe.CompanyId='"+CompanyId+"' and EarnLeaveLastDate>='" + StartDate + "' and EarnLeaveLastDate<='" + EndDate.ToString("yyyy-MM-dd") + "' " + EmpIDforIndividualCondition + ExceptedEmpCardNo+"  group by  pei.EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdName,pe.EmpPresentSalary,pe.BasicSalary";
+                    sqlCmd = "select pe.PaymentMethod,convert(varchar(10), pei.EmpJoiningDate,120) EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,sum(EarnLeaveDays) as EarnLeaveDays,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdId,pe.EmpPresentSalary,pe.BasicSalary from Earnleave_BalanceDetailsLog as el inner join Personnel_EmpCurrentStatus as pe on el.EmpID=pe.EmpId and pe.IsActive=1  and pe.EmpStatus in(1,8)  inner join Personnel_EmployeeInfo pei on el.EmpID=pei.EmpId " +
+                    "  where pe.CompanyId='"+CompanyId+"' and EarnLeaveLastDate>='" + StartDate + "' and EarnLeaveLastDate<='" + EndDate.ToString("yyyy-MM-dd") + "' " + EmpIDforIndividualCondition + ExceptedEmpCardNo+ "  group by pe.PaymentMethod, pei.EmpJoiningDate,el.EmpID,pe.EmpStatus,pe.EmpTypeId,pe.CompanyId,pe.DptId,pe.GId,pe.DsgId,pe.GrdName,pe.EmpPresentSalary,pe.BasicSalary";
                 }
                     
 
@@ -124,8 +127,9 @@ namespace SigmaERP.payroll
                 sqlDB.fillDataTable(sqlCmd, dtEarnLeaveEmployee = new DataTable());// get emplyee's earnleave info.               
                 deleteExEarnLeave(CompanyId, StartDate, EndDate.ToString("yyyy-MM-dd"), IsSeparated, EmpIDforIndividual);// delete existing record
                 if (dtEarnLeaveEmployee != null && dtEarnLeaveEmployee.Rows.Count > 0)
-                {                
-                dt = new DataTable();
+                {
+                 var payRollPolicy = getPayrollPolicy(CompanyId, "regular");
+                 dt = new DataTable();
                 dt= getEarnLeaveSettings();
                 string PaymentOn = dt.Rows[0]["PaymentOn"].ToString();
                     double WithdrawableEarnLeavePer = double.Parse(dt.Rows[0]["WithdrawablePer"].ToString());
@@ -136,7 +140,11 @@ namespace SigmaERP.payroll
                     sqlDB.fillDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)", dtStampDeduct = new DataTable()); 
                     for (int i = 0; i < dtEarnLeaveEmployee.Rows.Count; i++)
                     {
-                        StampDeduction = double.Parse(dtStampDeduct.Rows[0]["StampDeduct"].ToString());
+                        string paymentMethod = dtEarnLeaveEmployee.Rows[i]["PaymentMethod"].ToString() == null ? "0" : dtEarnLeaveEmployee.Rows[i]["PaymentMethod"].ToString();
+
+                        double _stampDeduct = getStampDeduction(payRollPolicy["StampDeduction"].ToString(), paymentMethod);
+
+                        StampDeduction = _stampDeduct;
                         DateTime EmpJoiningDate = DateTime.Parse(dtEarnLeaveEmployee.Rows[i]["EmpJoiningDate"].ToString());
                         double EmpPresentSalary = double.Parse(dtEarnLeaveEmployee.Rows[i]["EmpPresentSalary"].ToString());
                         double BasicSalary = double.Parse(dtEarnLeaveEmployee.Rows[i]["BasicSalary"].ToString());
@@ -196,7 +204,7 @@ namespace SigmaERP.payroll
                             StampDeduction = 0;
 
 
-                        int PaymentID = saveToEarnleavePaymentSheet(CompanyId, EmpId, dtEarnLeaveEmployee.Rows[i]["EmpTypeId"].ToString(), dtEarnLeaveEmployee.Rows[i]["EmpStatus"].ToString(), YearMonth, StartDate, EndDate.ToString("yyyy-MM-dd"),CurrentYearEarnLeaveDays,PreviousYearEarnLeaveDays, TotalEarnLeaveDays, SepntEarnLeaveDays, PayableEarnLeaveDays, WithdrawableEarnLeaveDays, PayableAmount,StampDeduction,TotalAmount, EmpPresentSalary, BasicSalary, OneDaySalary, dtEarnLeaveEmployee.Rows[i]["DptId"].ToString(), dtEarnLeaveEmployee.Rows[i]["GId"].ToString(), dtEarnLeaveEmployee.Rows[i]["DsgId"].ToString(), dtEarnLeaveEmployee.Rows[i]["GrdName"].ToString(), IsSeparated, WithdrawableEarnLeavePer);
+                        int PaymentID = saveToEarnleavePaymentSheet(CompanyId, EmpId, dtEarnLeaveEmployee.Rows[i]["EmpTypeId"].ToString(), dtEarnLeaveEmployee.Rows[i]["EmpStatus"].ToString(), YearMonth, StartDate, EndDate.ToString("yyyy-MM-dd"),CurrentYearEarnLeaveDays,PreviousYearEarnLeaveDays, TotalEarnLeaveDays, SepntEarnLeaveDays, PayableEarnLeaveDays, WithdrawableEarnLeaveDays, PayableAmount,StampDeduction,TotalAmount, EmpPresentSalary, BasicSalary, OneDaySalary, dtEarnLeaveEmployee.Rows[i]["DptId"].ToString(), dtEarnLeaveEmployee.Rows[i]["GId"].ToString(), dtEarnLeaveEmployee.Rows[i]["DsgId"].ToString(), dtEarnLeaveEmployee.Rows[i]["GrdId"].ToString(), IsSeparated, WithdrawableEarnLeavePer);
                         if (PaymentID > 0)
                         {
                             string ReserveFor = (EndDate.AddDays(1)).ToString("yyyy-MM-dd");
@@ -217,6 +225,27 @@ namespace SigmaERP.payroll
             }
             
 
+        }
+
+
+        private Dictionary<string, string> getPayrollPolicy(string companyId, string compailance)
+        {
+            Dictionary<string, string> payrollPolicyDict = new Dictionary<string, string>();
+
+            string query = "select PolicyType,PolicyJson from Payroll_Policies where CompanyId='" + companyId + "' and PolicyCategory like '%" + compailance + "%'";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            foreach (DataRow row in dt.Rows)
+            {
+                string policyType = row["PolicyType"].ToString();
+                string policyJson = row["PolicyJson"].ToString();
+
+                if (!payrollPolicyDict.ContainsKey(policyType))
+                {
+                    payrollPolicyDict.Add(policyType, policyJson);
+                }
+            }
+            return payrollPolicyDict;
         }
         private DataTable  getEarnLeaveSettings()
         {
@@ -310,6 +339,29 @@ namespace SigmaERP.payroll
                 return CRUD.Execute(sqlCmd, sqlDB.connection);
             }
             catch (Exception ex) { lblMessage.InnerText = "error-> " + ex.Message; return false; }
+        }
+
+
+
+        private double getStampDeduction(string StampPolicy, string paymentMethod)
+        {
+
+            JObject obj = JObject.Parse(StampPolicy);
+            JArray conditions = (JArray)obj["conditions"];
+
+            foreach (JObject condition in conditions)
+            {
+                if (condition["paymentMethod"]?.ToString() == paymentMethod)
+                {
+                    return int.Parse(condition["deductAmount"]?.ToString() ?? "0");
+                }
+            }
+            return 0;
+
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)");
+            return double.Parse(dt.Rows[0]["StampDeduct"].ToString());
         }
     }
 }
