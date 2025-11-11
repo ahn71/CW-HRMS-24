@@ -903,8 +903,8 @@ namespace SigmaERP.classes
         }
         private double getOTRate(double Salary)
         {
-          //return Math.Round((Salary / 208) *2, 2); // here 208 is static.                
-          return Math.Round((Salary * .005), 2); // 0.5 % of Gross for Mollah Fashion          
+          return Math.Round((Salary / 208) *2, 2); // here 208 is static.                
+          //return Math.Round((Salary * .005), 2); // 0.5 % of Gross for Mollah Fashion          
         }
         private double getOTAmout(string OverTime,double OTRate)
         {            
@@ -923,8 +923,8 @@ namespace SigmaERP.classes
         }
         private SalaryRecord getOverTime(SalaryRecord salaryRecord,DataRow employee)
         {
-            //salaryRecord.OTRate = getOTRate(double.Parse(employee["BasicSalary"].ToString()));
-            salaryRecord.OTRate = getOTRate(double.Parse(employee["EmpPresentSalary"].ToString())); // Gross for Mollah Fashion
+            salaryRecord.OTRate = getOTRate(double.Parse(employee["BasicSalary"].ToString()));
+           // salaryRecord.OTRate = getOTRate(double.Parse(employee["EmpPresentSalary"].ToString())); // Gross for Mollah Fashion
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(@"DECLARE @maxOT VARCHAR(8) = '02:00:00' 
                                            Select  isnull(CAST(SUM(DATEDIFF(second, 0, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end)) / 3600 AS varchar(12)) + ':' + RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end)) / 60 % 60 AS varchar(2)), 2) + ':' +RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end)) % 60 AS varchar(2)), 2),'00:00:00') AS OverTime,isnull(CAST(SUM(DATEDIFF(second, 0, TotalOverTime)) / 3600 AS varchar(12)) + ':' + RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, TotalOverTime)) / 60 % 60 AS varchar(2)), 2) + ':' +RIGHT('0' + CAST(SUM(DATEDIFF(second, 0, TotalOverTime)) % 60 AS varchar(2)), 2),'00:00:00') AS TotalOverTime from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND AttDate >='" +salaryRecord.FromDate.ToString("yyyy-MM-dd") + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "'  and IsOverTime='1' and IsActive='1'");
