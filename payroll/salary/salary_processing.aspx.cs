@@ -111,15 +111,35 @@ namespace SigmaERP.payroll.salary
             SalaryProcessing sp = new SalaryProcessing();
             string EmpID = (rbGenaratingType.SelectedValue == "0") ? "0" : ddlEmpCardNo.SelectedValue;
             string SelectDate = txtGenerateMonth.Text.Trim();
-            if (rblProcessOn.SelectedValue == "1") //Separation
+         
+            if (rblProcessOn.SelectedValue == "2")
             {
                 string[] MonthYear = ddlMonthID.SelectedValue.Split('-');
                 SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]), int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
+
+                sp.FinalSattlementProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, false, txtExceptedEmpCardNo.Text.Trim(), 0, ViewState["__salaryGenerateFor__"].ToString());
+            }
+            else
+            {
+                if (rblProcessOn.SelectedValue == "1") //Separation
+                {
+                    string[] MonthYear = ddlMonthID.SelectedValue.Split('-');
+                    SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]), int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
+                }
+                sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, ckbLateDeduction.Checked, txtExceptedEmpCardNo.Text.Trim(), ViewState["__salaryGenerateFor__"].ToString());
             }
 
-            sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, ckbLateDeduction.Checked, txtExceptedEmpCardNo.Text.Trim(), ViewState["__salaryGenerateFor__"].ToString());
+           
             loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
             return;
+
+
+
+
+
+
+
+
             string[] getDays = txtGenerateMonth.Text.Trim().Split('-');
             int DaysInMonth = DateTime.DaysInMonth(int.Parse(getDays[2]), int.Parse(getDays[1]));
             ViewState["__FromDate__"] = getDays[2] + "-" + getDays[1] + "-01";

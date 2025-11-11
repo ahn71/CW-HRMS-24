@@ -341,6 +341,63 @@ namespace SigmaERP.classes
             }
         }
 
+        public string FinalSattlementProcessing(string IsSeperationGeneration, string UserId, string CompanyId, string EmpId, string SelectedDate, bool hasPF, bool hasSpesialGross, string PersentOfGross, bool hasAdvanceDeduction, bool hasStampDeductionAll, bool hasStampDeductionOnlyCash, string ExceptedEmpCardNo, int noticeDay,string generateFor)
+        {
+            //Note: ProcessNo is 1 for Separation Employees and 0 for Regular Employees
+            try
+            {
+                string errorData = "";
+                string[] getDays = SelectedDate.Split('-');
+                DateTime FromDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-01");
+                DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
+
+                var payRollPolicy = getPayrollPolicy(CompanyId, generateFor);
+                // getting selected employees  for separation
+                DataTable dtEmployees = getSeparationEmployees(CompanyId, EmpId, ToDate.ToString("yyyy-MM"));
+
+                if (dtEmployees != null && dtEmployees.Rows.Count > 0)
+                {
+
+                    /// deleteing existing FinalSattlementsalary 
+                    ClearFinalSattlementSheet(ToDate, CompanyId, EmpId);
+                    //get stamp Amount
+                    //double stampDeduct = getStampDeduction();
+                    
+                    foreach (DataRow employee in dtEmployees.Rows)
+                    {
+
+                        string paymentMethod = employee["PaymentMethod"].ToString() == null ? "0" : employee["PaymentMethod"].ToString();
+
+                        double _stampDeduct = (hasStampDeductionAll) ? getStampDeduction(payRollPolicy["StampDeduction"].ToString(), paymentMethod) : 0;
+
+                        //// set stamp deduction 
+                        // SalaryCount 'False' means 'Cash Salary'.
+                       
+                        //if (hasStampDeductionAll)
+                        //    _stampDeduct = stampDeduct;
+
+                        // excepted employee ignore here 
+                        if (ExceptedEmpCardNo != "")
+                        {
+                            string EmpCardNo = employee["EmpCardNo"].ToString().Substring(employee["EmpCardNo"].ToString().Length - 6);
+
+                            if (ExceptedEmpCardNo.Contains(EmpCardNo))
+                                continue;
+                        }
+                        // Deduction days for Notice pay
+                        noticeDay = int.Parse(employee["DeductionDaysNoticePay"].ToString());
+
+                        InsertPayrollFinalSettlement(employee["EmpId"].ToString(), employee["EmpTypeId"].ToString(), employee["EmpName"].ToString(), Convert.ToInt32(employee["DsgId"]), Convert.ToInt32(employee["DptId"]), employee["EmpCardNo"].ToString(), employee["EmpSeparationId"].ToString(), Convert.ToDateTime(employee["EmpJoiningDate"]), Convert.ToDateTime(employee["EffectiveDate"]), Convert.ToInt32(employee["SalaryCount"]), Convert.ToSingle(employee["BasicSalary"]), Convert.ToSingle(employee["HouseRent"]), Convert.ToSingle(employee["MedicalAllownce"]), Convert.ToSingle(employee["FoodAllownce"]), Convert.ToSingle(employee["ConvenceAllownce"]), Convert.ToSingle(employee["EmpPresentSalary"]), employee["CompanyId"].ToString(), SelectedDate, _stampDeduct, noticeDay);
+                    }
+
+                }
+                return errorData;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
 
         private DateTime setFromDate(string CompanyId,DateTime FromDate, DateTime ToDate)
         {
@@ -364,7 +421,11 @@ namespace SigmaERP.classes
         {
 
             EmpId = (EmpId == "0" )?"": " and s.EmpId='" + EmpId + "'";
+
             string query = "select s.EmpSeparationId,cs.CompanyId,  CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth ,CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,ISNULL(cs.ConvenceAllownce,0) as ConvenceAllownce, ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus,cs.LunchCount,ISNULL(cs.LunchAllownce,0) as LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,  convert(varchar(10), s.EffectiveDate,120) as EffectiveDate,cs.PaymentMethod from  Personnel_EmpSeparation s inner join dbo.Personnel_EmployeeInfo ei on  s.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  where cs.CompanyId = '" + CompanyId + "' AND  CONVERT(varchar(7), s.EffectiveDate, 126) = '" + YearMonth + "' AND s.IsActive = 'True' AND IsLastSeparation=1 "+ EmpId +"" ;
+
+            string query = "select cs.SalaryCount, s.EmpSeparationId,cs.CompanyId,  CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth ,CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,ISNULL(cs.ConvenceAllownce,0) as ConvenceAllownce, ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus,cs.LunchCount,ISNULL(cs.LunchAllownce,0) as LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,  convert(varchar(10), s.EffectiveDate,120) as EffectiveDate,cs.PaymentMethod,isnull(s.DeductionDaysNoticePay,0) as DeductionDaysNoticePay from  Personnel_EmpSeparation s inner join dbo.Personnel_EmployeeInfo ei on  s.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  where cs.CompanyId = '" + CompanyId + "' AND  CONVERT(varchar(7), s.EffectiveDate, 126) = '" + YearMonth + "' AND s.IsActive = 'True' AND IsLastSeparation=1";
+
 
             return CRUD.ExecuteReturnDataTable(query);
         }
@@ -1205,7 +1266,154 @@ namespace SigmaERP.classes
 
 
 
+        private void ClearFinalSattlementSheet(DateTime ToDate, string CompanyId, string EmpId)
+        {
+            try
+            {
+                EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
+                CRUD.Execute("delete from Payroll_FinalSettlemnet where CompanyId='" + CompanyId + "'  AND convert(varchar(7),RetirementEffectiveDate)='" + ToDate.ToString("yyyy-MM") + "'" + EmpId);
+            }
+            catch (Exception ex) { }
+        }
 
+
+
+        private double getStampDeduction()
+        {
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable("select StampDeduct from HRD_AllownceSetting where AllownceId =(select max(AllownceId) from HRD_AllownceSetting)");
+            return double.Parse(dt.Rows[0]["StampDeduct"].ToString());
+        }
+
+
+
+        public void InsertPayrollFinalSettlement(string empId, string empTypeId, string empName, int dsgId, int dptId, string empCard, string empSeparationId, DateTime empJoiningDate, DateTime effectiveDate, int totalWorkingDays, float basicSalary,
+       float houseRent, float medicalAllowenece, float foodAllowenece, float convenceAllowenece, float empPresentSalary, string companyId, string yearMonth, double stamDeducation, int noticeDay)
+        {
+
+            int NetPayable = 0;
+            int paybleDays = 0;
+            double otRate = 0;
+            double totalOtAmount = 0;
+            double othersDeduction = 0;
+            double attendanceBonus = 0;
+            double payableEarnLeaveDays = 0;
+            double payableEarnLeaveAmount = 0;
+            string totalOtHour = "00:00:00";
+            DataTable dtEL = earnLeave(empId, yearMonth);
+            DataTable dtSalary = getLastMonthSalary(empId, yearMonth, companyId);
+            if (dtSalary.Rows.Count > 0)
+            {
+                NetPayable = Convert.ToInt32(dtSalary.Rows[0]["NetPayable"].ToString());
+                paybleDays = Convert.ToInt32(dtSalary.Rows[0]["PayableDays"].ToString());
+                totalOtHour = dtSalary.Rows[0]["OverTime"].ToString();
+                otRate = Convert.ToDouble(dtSalary.Rows[0]["OTRate"]);
+                totalOtAmount = Convert.ToDouble(dtSalary.Rows[0]["OverTimeAmount"]);
+                othersDeduction = Convert.ToDouble(dtSalary.Rows[0]["OthersDeduction"]);
+                attendanceBonus = Convert.ToDouble(dtSalary.Rows[0]["OthersDeduction"]);
+
+            }
+            if (dtEL.Rows.Count > 0)
+            {
+                payableEarnLeaveDays = Convert.ToDouble(dtEL.Rows[0]["PayableEarnLeaveDays"]);
+                payableEarnLeaveAmount = Convert.ToDouble(dtEL.Rows[0]["PayableAmount"]);
+                if (payableEarnLeaveAmount == 0)
+                    payableEarnLeaveDays = 0;
+            }
+            double totalDays = (effectiveDate - empJoiningDate).TotalDays;
+            // get service benefit
+            var (ServiceBenefitAmount, serviceBefitDays) = CalculateServiceBenefit(empJoiningDate, effectiveDate, basicSalary, totalDays);
+            double noticeDeduction = CalculateNoticePay(basicSalary, noticeDay);
+            double total = (NetPayable + payableEarnLeaveAmount + ServiceBenefitAmount) - (noticeDeduction + stamDeducation);
+
+            string insertQuery = $@"INSERT INTO Payroll_FinalSettlemnet 
+                    (EmpId,EmpTypeId, DsgId, DptId, EmpCard, RegistrationId, EmpJoiningDate, RetirementEffectiveDate, TotalWorkingDays, Basic, HomeAllowence, MedicalAllowenece, FoodAllowence, ConvenceAllowence, EmpTotalSalary, MonthlyPayroll, TotalOtHours, OtRate, TotalOtAmount, AttendanceBonus, 
+                    RetirementBenefits_Days, RetirementBenefits_Amount, EarnLeave, EarnLeaveAmount, StampDeduction, OthersDeducation, NoticeDeduction_Days, NoticeDeduction_Amount, ServiceBenefits_Days, ServiceBenefits_Amount, SuspensionAllowance, CompensationAmount_Days, CompensationAmount_Amount, TerminationNotice120DaysWages, Total, CompanyId,PayableDays) 
+                    VALUES 
+                    ('{empId}',{empTypeId}, {dsgId}, {dptId}, '{empCard}', '{empSeparationId}', '{empJoiningDate:yyyy-MM-dd}', '{effectiveDate:yyyy-MM-dd}', {totalDays}, {basicSalary}, {houseRent}, {medicalAllowenece}, {foodAllowenece}, {convenceAllowenece}, {empPresentSalary}, {NetPayable}, 
+                    '{totalOtHour}', {otRate}, {totalOtAmount}, {attendanceBonus}, 
+                    0, 
+                    0,
+                    {payableEarnLeaveDays}, {payableEarnLeaveAmount}, {stamDeducation}, {othersDeduction}, 
+                    {noticeDay}, 
+                    {noticeDeduction},
+                    {serviceBefitDays}, -- ServiceBenefits_Days 
+                    {ServiceBenefitAmount}, -- ServiceBenefits_Amount 
+                    0, -- SuspensionAllowance 
+                    0, -- CompensationAmount_Days 
+                    0, -- CompensationAmount_Amount 
+                    0, -- TerminationNotice120DaysWages 
+                    {total}, '{companyId}',{paybleDays})";
+
+            CRUD.Execute(insertQuery);
+
+        }
+
+
+
+
+        private (double ServiceBenefitAmount, double serviceBefitDays) CalculateServiceBenefit(DateTime empJoiningDate, DateTime effectiveDate, float basicSalary, double totalDays)
+        {
+            double payableYears = totalDays / 365;
+            double serviceBenefitAmnt = 0;
+            double days = 0;
+
+            if (payableYears >= 5 && payableYears < 10)
+            {
+                days = Math.Round(payableYears * 14, 2);
+                serviceBenefitAmnt = Math.Round((basicSalary / 30) * days, 0);
+            }
+            else if (payableYears >= 10)
+            {
+                days = Math.Round(payableYears * 30, 2);
+                serviceBenefitAmnt = Math.Round((basicSalary / 30) * days, 0);
+            }
+            return (serviceBenefitAmnt, days);
+        }
+
+
+        private double CalculateNoticePay(float totalSalary, int days)
+        {
+            double noticeDeduction = (totalSalary / 30) * days;
+            return noticeDeduction;
+        }
+
+        private DataTable earnLeave(string empId, string yearMonth)
+        {
+            try
+            {
+                string date = new DateTime(DateTime.ParseExact(yearMonth, "dd-MM-yyyy", null).Year, DateTime.ParseExact(yearMonth, "dd-MM-yyyy", null).Month, 1).ToString("yyyy-MM-dd");
+
+                string query = "select PayableEarnLeaveDays,Round(PayableAmount,0)as PayableAmount from Payroll_EarnLeavePaymentSheet  where EmpId='" + empId + "' and YearMonth='" + date + "' and IsSeparated=1";
+                DataTable dt = CRUD.ExecuteReturnDataTable(query);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+
+                return dt;
+            }
+
+        }
+
+
+        private DataTable getLastMonthSalary(string empId, string yearMonth, string comapnyId)
+        {
+            try
+            {
+                string date = new DateTime(DateTime.ParseExact(yearMonth, "dd-MM-yyyy", null).Year, DateTime.ParseExact(yearMonth, "dd-MM-yyyy", null).Month, 1).ToString("yyyy-MM-dd");
+
+                string query = "select OverTime,OverTimeAmount,OTRate,AttendanceBonus,OthersDeduction,NetPayable,PayableDays  from Payroll_MonthlySalarySheet Where CompanyId='" + comapnyId + "' and EmpId='" + empId + "' and YearMonth='" + date + "' and IsSeperationGeneration=1";
+                DataTable dt = CRUD.ExecuteReturnDataTable(query);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                return dt;
+            }
+
+        }
 
     }
 }
