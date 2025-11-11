@@ -14,12 +14,34 @@ namespace SigmaERP.classes
         string query = "";
         DataTable dt;
         SalaryRecord salaryRecord;
+        public string GetEmpIdString(DataTable dtEmployees)
+        {
+            if (dtEmployees == null || dtEmployees.Rows.Count == 0)
+                return string.Empty;
+
+            // Collect EmpId values
+            List<string> empList = new List<string>();
+
+            foreach (DataRow row in dtEmployees.Rows)
+            {
+                string empId = row["EmpId"].ToString();
+                if (!string.IsNullOrEmpty(empId))
+                {
+                    empList.Add("'" + empId + "'");
+                }
+            }
+
+            // Join with comma
+            return string.Join(",", empList);
+        }
+
         public string  salaryProcessing(string IsSeperationGeneration, string UserId, string CompanyId,string EmpId,string SelectedDate,bool hasPF, bool hasSpesialGross, string PersentOfGross,bool hasAdvanceDeduction,bool hasStampDeduction,bool hasLateDeduction,string ExceptedEmpCardNo,string generateFor)
         {
             //Note: ProcessNo is 1 for Separation Employees and 0 for Regular Employees
             try
             {
                 string errorData = "";
+                string EmpIdS = "";
             string[] getDays = SelectedDate.Split('-');
             DateTime FromDate=DateTime.Parse( getDays[2] + "-" + getDays[1] + "-01");
             DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
@@ -33,9 +55,12 @@ namespace SigmaERP.classes
                     // check half month salary and set From Date            
                     FromDate = setFromDate(CompanyId, FromDate, ToDate);
                     dtEmployees = getEmployees(CompanyId, EmpId, ToDate.ToString("yyyy-MM-dd"));
-                }                    
+                }
                 else
+                {
                     dtEmployees = getSeparationEmployees(CompanyId, EmpId, ToDate.ToString("yyyy-MM"));
+                    EmpIdS = GetEmpIdString(dtEmployees);
+                }
 
                 if (dtEmployees != null && dtEmployees.Rows.Count > 0)
                 {
@@ -44,7 +69,7 @@ namespace SigmaERP.classes
                     if (IsSeperationGeneration == "1")
                     {
                         if (generateFor == "regular")
-                            salarySheetClearForSeparation(ToDate, CompanyId, EmpId);
+                            salarySheetClearForSeparation(ToDate, CompanyId, EmpIdS);
                         else
                             salarySheetClearForSeparation_complaince(ToDate, CompanyId, EmpId);
 
@@ -339,7 +364,7 @@ namespace SigmaERP.classes
         {
 
             EmpId = (EmpId == "0" )?"": " and s.EmpId='" + EmpId + "'";
-            string query = "select s.EmpSeparationId,cs.CompanyId,  CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth ,CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,ISNULL(cs.ConvenceAllownce,0) as ConvenceAllownce, ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus,cs.LunchCount,ISNULL(cs.LunchAllownce,0) as LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,  convert(varchar(10), s.EffectiveDate,120) as EffectiveDate,cs.PaymentMethod from  Personnel_EmpSeparation s inner join dbo.Personnel_EmployeeInfo ei on  s.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  where cs.CompanyId = '" + CompanyId + "' AND  CONVERT(varchar(7), s.EffectiveDate, 126) = '" + YearMonth + "' AND s.IsActive = 'True' AND IsLastSeparation=1";
+            string query = "select s.EmpSeparationId,cs.CompanyId,  CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth ,CONVERT(varchar(7), s.EffectiveDate, 126) as YearMonth,cs.DptId,cs.DsgId,grd.GrdName,cs.EmpId,cs.EmpCardNo,ei.EmpName,et.EmpType, cs.EmpTypeId,cs.EmpStatus,cs.ActiveSalary,cs.IsActive,cs.CompanyId,cs.SftId,cs.OverTime,cs.EmpDutyType, cs.PfMember, CONVERT(VARCHAR(10), cs.PfDate, 120) AS PfDate, ISNULL(cs.PFAmount, 0) AS PFAmount, ISNULL(cs.IncomeTax, 0) AS TaxAmount, cs.BasicSalary,ISNULL(cs.MedicalAllownce,0) as MedicalAllownce,ISNULL(cs.FoodAllownce,0) as FoodAllownce,ISNULL(cs.ConvenceAllownce,0) as ConvenceAllownce, ISNULL(cs.HouseRent,0) as HouseRent,ISNULL(cs.TechnicalAllownce,0) as TechnicalAllownce,ISNULL(cs.OthersAllownce,0) as OthersAllownce,ISNULL(cs.EmpPresentSalary,0) as EmpPresentSalary,ISNULL(cs.AttendanceBonus,0) as AttendanceBonus,cs.LunchCount,ISNULL(cs.LunchAllownce,0) as LunchAllownce,CONVERT(VARCHAR(10), ei.EmpJoiningDate, 120) AS EmpJoiningDate,  convert(varchar(10), s.EffectiveDate,120) as EffectiveDate,cs.PaymentMethod from  Personnel_EmpSeparation s inner join dbo.Personnel_EmployeeInfo ei on  s.EmpId=ei.EmpId inner join dbo.Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId and cs.isActive=1 INNER JOIN dbo.HRD_EmployeeType et ON cs.EmpTypeId = et.EmpTypeId LEFT JOIN dbo.HRDGrade grd ON cs.GrdId = grd.GradeID  where cs.CompanyId = '" + CompanyId + "' AND  CONVERT(varchar(7), s.EffectiveDate, 126) = '" + YearMonth + "' AND s.IsActive = 'True' AND IsLastSeparation=1 "+ EmpId +"" ;
 
             return CRUD.ExecuteReturnDataTable(query);
         }
@@ -991,12 +1016,16 @@ namespace SigmaERP.classes
             catch { }
         }
 
-        private void salarySheetClearForSeparation(DateTime ToDate, string CompanyId, string EmpId)
+        private void salarySheetClearForSeparation(DateTime ToDate, string CompanyId, string EmpIds)
         {
             try
             {
-                EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
-                CRUD.Execute("delete from Payroll_MonthlySalarySheet where CompanyId='" + CompanyId + "'  AND YearMonth='" + ToDate.ToString("yyyy-MM") + "-01'  AND IsSeperationGeneration='1' " + EmpId);
+                // EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
+                //CRUD.Execute("delete from Payroll_MonthlySalarySheet where CompanyId='" + CompanyId + "'  AND YearMonth='" + ToDate.ToString("yyyy-MM") + "-01'  AND IsSeperationGeneration='1' " + EmpId);
+                CRUD.Execute(@"DELETE FROM Payroll_MonthlySalarySheet 
+               WHERE CompanyId = '" + CompanyId + @"' 
+               AND YearMonth = '" + ToDate.ToString("yyyy-MM") + @"-01' 
+               AND EmpId IN (" + EmpIds + ")");
             }
             catch { }
         }

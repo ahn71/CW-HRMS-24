@@ -16,6 +16,51 @@ namespace SigmaERP.classes
     public class Payroll
     {
         static DataTable dt;
+
+        public static string NumberToBanglaWords(long number)
+        {
+            if (number == 0) return "k~b¨";
+
+
+            List<string> parts = new List<string>();
+
+            int crore = (int)(number / 10000000);
+            number %= 10000000;
+
+            int lakh = (int)(number / 100000);
+            number %= 100000;
+
+            int thousand = (int)(number / 1000);
+            number %= 1000;
+
+            int hundred = (int)(number / 100);
+            number %= 100;
+
+            if (crore > 0) parts.Add(ConvertToBangla(crore) + " ‡KvwU");
+            if (lakh > 0) parts.Add(ConvertToBangla(lakh) + " j¶");
+            if (thousand > 0) parts.Add(ConvertToBangla(thousand) + " nvRvi");
+            if (hundred > 0) parts.Add(ConvertToBangla(hundred) + " kZ");
+            if (number > 0) parts.Add(ConvertToBangla((int)number));
+
+            return string.Join(" ", parts);
+        }
+
+        static string ConvertToBangla(int num)
+        {
+            string[] banglaNumbers = new string[]
+    {"","GK", "`yB", "wZb", "Pvi", "cvuP", "Qh়", "mvZ", "AvU", "bh়", "`k",
+    "GMv‡iv", "ev‡iv", "‡Z‡iv", "‡PŠÏ", "c‡b‡iv", "‡lv‡jv", "m‡Z‡iv", "AvVv‡iv", "Dwbk", "wek",
+    "GKyk", "evBk", "‡ZBk", "PweŸk", "cuwPk", "QvweŸk", "mvZvk", "AvUvk", "DbwÎk", "wÎk",
+    "GKwÎk", "ewÎk", "‡ZwÎk", "‡PŠwÎk", "cuBwÎk", "QwÎk", "mvuBwÎk", "AvUwÎk", "DbPwjøk", "Pwjøk",
+    "GKPwjøk", "weh়vwjøk", "‡ZZvwjøk", "Pyh়vwjøk", "cuBZvwjøk", "‡QPwjøk", "mvZPwjøk", "AvUPwjøk", "DbcÂvk", "cÂvk",
+    "GKvbœ", "evnvbœ", "wZàvbœ", "Pyh়vbœ", "cÂvbœ", "Qvàvbœ", "mvZvbœ", "AvUvbœ", "DblvU", "lvU",
+    "GKlwÆ", "evlwÆ", "‡ZlwÆ", "‡PŠlwÆ", "cuBlwÆ", "‡QlwÆ", "mvZlwÆ", "AvUlwÆ", "DbmËi", "mËi",
+    "GKvËi", "evnvËi", "wZh়vËi", "Pyh়vËi", "cuPvËi", "wQh়vËi", "mvZvËi", "AvUvËi", "DbAvwk", "Avwk",
+    "GKvwk", "weivwk", "wZivwk", "Pyivwk", "cuPvwk", "wQh়vwk", "mvZvwk", "AvUvwk", "DbbeŸB", "beŸB",
+    "GKvbeŸB", "weivbeŸB", "wZivbeŸB", "PyivbeŸB", "cuPvbeŸB", "wQh়vbeŸB", "mvZvbeŸB", "AvUvbeŸB", "wbivbeŸB"};
+
+            return banglaNumbers[num];
+        }
         public static double getHourlyAmount(int DaysInMonth, double Salary, string isHalfOT, string IsSingleRateOT)
         {
             try
