@@ -72,7 +72,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("1stAbsentLetter")) show1stAbsentLetter();
                 else if (query[0].Equals("2ndAbsentLetter")) show2ndAbsentLetter();
                 else if (query[0].Equals("3rddAbsentLetter")) show3rdAbsentLetter();
-
+                else if (query[0].Equals("FinalSettlementV1")) showFinalSettlement_v1(query[1], query[2]);
 
                 else if (query[0].Equals("PromotionLetterWorker")) PromotionLetterWorker(query[1], query[2] + "-" + query[3]);
                 else if (query[0].Equals("PromotionSheet")) PromotionSheet(query[1]);
@@ -304,6 +304,62 @@ namespace SigmaERP.All_Report
                 CrystalReportViewer1.ReportSource = null; ;
                 GC.Collect();
             }
+        }
+
+        private void showFinalSettlement_v1(string CompanyId, string Language)
+        {
+            try
+            {
+                lblErrorMsg.Text += "called showFinalSettlement_v1";
+                rpd = new ReportDocument();
+                lblErrorMsg.Text += ">> rpt path-> //All Report//Payroll//FinalSettelmentENG_v1.rpt";
+                if (Language == "BN")
+                {
+                    rpd.Load(Server.MapPath("//All Report//Payroll//FinalSettelmentBNG_v1.rpt"));
+                    dt = new DataTable();
+                    dt = (DataTable)Session["__final_settlement__"];
+                    rpd.SetDataSource(dt);
+                    DataTable dtSub = new DataTable();
+                    dtSub = classes.commonTask.getSignaturesBN(CompanyId, "All");
+                    ReportDocument subReport = rpd.Subreports[0];
+                    rpd.Subreports[0].SetDataSource(dtSub);
+
+                 
+                    lblErrorMsg.Text += ">> Own Company ";
+                    rpd.SetParameterValue(0, dt.Rows[0]["CompanyNameBangla"].ToString());
+                    rpd.SetParameterValue(1, dt.Rows[0]["AddressBangla"].ToString());
+
+                    
+                    //rpd.SetParameterValue(3," "+classes.Payroll.NumberToBanglaWords(170239) + " UvKv gvÎ");
+                }
+                else
+                {
+                    rpd.Load(Server.MapPath("//All Report//Payroll//FinalSettelmentENG_v1.rpt"));
+                    dt = new DataTable();
+                    dt = (DataTable)Session["__final_settlement__"];
+                    rpd.SetDataSource(dt);
+                    DataTable dtSub = new DataTable();
+                    dtSub = classes.commonTask.getSignatures(CompanyId, "All");
+                    ReportDocument subReport = rpd.Subreports[0];
+                    rpd.Subreports[0].SetDataSource(dtSub);
+
+                    lblErrorMsg.Text += ">> Own Company ";
+                    rpd.SetParameterValue(0, dt.Rows[0]["CompanyName"].ToString());
+                    rpd.SetParameterValue(1, dt.Rows[0]["Address"].ToString());
+
+
+                    
+                 
+                }
+
+
+
+                lblErrorMsg.Text += ">>  Company Loaded";
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+                lblErrorMsg.Text += ">>  Done";
+            }
+            catch (Exception ex) { lblErrorMsg.Text += ">> erorr:" + ex.Message; }
         }
         private void loadIndividualTaxReport()
         {

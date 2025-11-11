@@ -132,9 +132,9 @@
                                      <asp:DropDownList ID="ddlOthersCompany" runat="server" ClientIDMode="Static" CssClass="form-control select_width" >
                                     </asp:DropDownList>
                                 </td>--%>
-                             <td><span runat="server" id="lblLanguage" Visible="false">Language</span></td>                                
+                             <td><span runat="server" id="lblLanguage">Language</span></td>                                
                                 <td>                                   
-                                 <asp:RadioButtonList Visible="false" ID="rblLanguage" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
+                                 <asp:RadioButtonList ID="rblLanguage" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
                                                         <asp:ListItem Value="EN" Selected="True">English</asp:ListItem>
                                                         <asp:ListItem Value="BN">Bangla</asp:ListItem>
                                     </asp:RadioButtonList>

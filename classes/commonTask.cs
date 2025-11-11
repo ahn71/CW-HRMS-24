@@ -72,6 +72,35 @@ namespace SigmaERP.classes
             }
         }
 
+        public static DataTable getSignatures(string CompanyId, string Sheet)
+        {
+            try
+            {
+                sqlCmd = @"SELECT  Signature
+FROM HRD_SignaturesOfSheets
+WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
+    CHARINDEX('" + CompanyId + @"', Companies) > 0  order by Ordering";
+                dt = new DataTable();
+                sqlDB.fillDataTable(sqlCmd, dt);
+                return dt;
+            }
+            catch { return null; }
+        }
+        public static DataTable getSignaturesBN(string CompanyId, string Sheet)
+        {
+            try
+            {
+                sqlCmd = @"SELECT SignatureBN as Signature
+FROM HRD_SignaturesOfSheets
+WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
+    CHARINDEX('" + CompanyId + @"', Companies) > 0  order by Ordering";
+                dt = new DataTable();
+                sqlDB.fillDataTable(sqlCmd, dt);
+                return dt;
+            }
+            catch { return null; }
+        }
+
         public static List<string> ConvertFilesToBase64(System.Web.UI.WebControls.FileUpload fileUpload)
         {
             List<string> base64Files = new List<string>();
