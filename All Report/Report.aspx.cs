@@ -310,9 +310,8 @@ namespace SigmaERP.All_Report
         {
             try
             {
-                lblErrorMsg.Text += "called showFinalSettlement_v1";
+              
                 rpd = new ReportDocument();
-                lblErrorMsg.Text += ">> rpt path-> //All Report//Payroll//FinalSettelmentENG_v1.rpt";
                 if (Language == "BN")
                 {
                     rpd.Load(Server.MapPath("//All Report//Payroll//FinalSettelmentBNG_v1.rpt"));
@@ -325,9 +324,7 @@ namespace SigmaERP.All_Report
                     rpd.Subreports[0].SetDataSource(dtSub);
 
                  
-                    lblErrorMsg.Text += ">> Own Company ";
-                    rpd.SetParameterValue(0, dt.Rows[0]["CompanyNameBangla"].ToString());
-                    rpd.SetParameterValue(1, dt.Rows[0]["AddressBangla"].ToString());
+              
 
                     
                     //rpd.SetParameterValue(3," "+classes.Payroll.NumberToBanglaWords(170239) + " UvKv gvÎ");
@@ -342,22 +339,13 @@ namespace SigmaERP.All_Report
                     dtSub = classes.commonTask.getSignatures(CompanyId, "All");
                     ReportDocument subReport = rpd.Subreports[0];
                     rpd.Subreports[0].SetDataSource(dtSub);
-
-                    lblErrorMsg.Text += ">> Own Company ";
-                    rpd.SetParameterValue(0, dt.Rows[0]["CompanyName"].ToString());
-                    rpd.SetParameterValue(1, dt.Rows[0]["Address"].ToString());
-
-
-                    
-                 
                 }
 
 
 
-                lblErrorMsg.Text += ">>  Company Loaded";
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
-                lblErrorMsg.Text += ">>  Done";
+              
             }
             catch (Exception ex) { lblErrorMsg.Text += ">> erorr:" + ex.Message; }
         }
@@ -909,8 +897,6 @@ namespace SigmaERP.All_Report
                     year = year.Substring(0,4);
                 rpd.SetParameterValue(0, classes.commonTask.returnBanglaMonth(month) + "-" + year);
 
-
-
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
@@ -924,20 +910,35 @@ namespace SigmaERP.All_Report
                 DataTable dtcompany = new DataTable();
 
                 dt = (DataTable)Session["__PaySlip__"];
-                //rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New.rpt"));
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string companyId = Session["__GetCompanyId__"]?.ToString();
+                string EmpImageurl = ConfigurationManager.AppSettings["employeeImageFolder"];
+
+
+                // Always load the report before setting parameter values
                 rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New_Mollah.rpt"));
                 rpd.SetDataSource(dt);
+
                 if (year.Trim().Length > 4)
-                    year = year.Substring(0,4);
+                    year = year.Substring(0, 4);
+
                 rpd.SetParameterValue(0, classes.commonTask.returnBanglaMonth(month) + "-" + year);
-
-
+                rpd.SetParameterValue(1, EmpImageurl);
 
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Show full error details (useful for debugging)
+                Console.WriteLine($"Error loading payslip: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+
+                // Optional: Display error on page for admins or debugging
+                // lblError.Text = "Error: " + ex.Message;
+            }
         }
+
 
         private void loadPaySlip2() // Job Card Report By Line Pay Slip 2
         {

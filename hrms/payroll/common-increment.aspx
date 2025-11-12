@@ -821,7 +821,7 @@
             // --- Build the POST body ---
             const postData = {
                 date: effectiveDate,
-                empMaturityType: empMaturityType === "all" ? null : parseInt(empMaturityType),
+                empMaturityType: empMaturityType === "all" ? 2 : parseInt(empMaturityType),
                 incrementOn: incrementOn,
                 incrementPer: parseFloat(incrementPer),
                 companyId: CompanyID,
