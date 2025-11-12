@@ -1,5 +1,13 @@
 ﻿<%@ Page Title="ID Card" Language="C#" MasterPageFile="~/Glory.Master" AutoEventWireup="true" CodeBehind="staff_id_card.aspx.cs" Inherits="SigmaERP.personnel.staff_id_card" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
                .punishment_against1 {
   overflow: hidden;
@@ -106,7 +114,7 @@
                                     <td>Card No / Name</td>
                                     <td>:</td>
                                     <td class="tdWidth">
-                                        <asp:DropDownList runat="server" ID="ddlEmpCardNo" CssClass="form-control select_width" ClientIDMode="Static"></asp:DropDownList></td>
+                                        <asp:DropDownList ClientIDMode="Static" runat="server" ID="ddlEmpCardNo" CssClass="form-control select_width" ></asp:DropDownList></td>
                                 </tr>
                                  <tr  runat="server" visible="false">
                                         <td>Report View
@@ -168,19 +176,31 @@
             </ContentTemplate>
         </asp:UpdatePanel>
     <script type="text/javascript">
+
+        <!-- jQuery (must come first) -->
+
         $(document).ready(function () {
             $("#ddlEmpCardNo").select2();
             $("#ddlDepName").select2();
+            $("#trddlempcardno").select2();
 
         });
         function loadcardNo() {
             $("#ddlEmpCardNo").select2();
             $("#ddlDepName").select2();
+            $("#trddlempcardno").select2();
+
         }
         function goToNewTabandWindow(url) {
             window.open(url);
             loadcardNo();
         }
+
+        
+         function goToNewTabandWindow(url) {
+             window.open(url);
+             loadcardNo();
+         }      
 
     </script>
 </asp:Content>
