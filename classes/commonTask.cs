@@ -2769,7 +2769,8 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
             string rpermissionId = string.Join(",", permissionID);
             try
             {
-                sqlDB.fillDataTable("select userPermId,PermissionName from userpermission where userPermId in("+ rpermissionId + ")", dt = new DataTable());
+                string query = "select userPermId,PermissionName from userpermission where userPermId in(" + rpermissionId + ")";
+;                sqlDB.fillDataTable(query, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "userPermId";
                 dl.DataTextField = "PermissionName";
