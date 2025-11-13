@@ -1,5 +1,14 @@
 ﻿<%@ Page Title="ID Card" Language="C#" MasterPageFile="~/Glory.Master" AutoEventWireup="true" CodeBehind="staff_id_card.aspx.cs" Inherits="SigmaERP.personnel.staff_id_card" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
     <style>
                .punishment_against1 {
   overflow: hidden;
@@ -106,7 +115,7 @@
                                     <td>Card No / Name</td>
                                     <td>:</td>
                                     <td class="tdWidth">
-                                        <asp:DropDownList runat="server" ID="ddlEmpCardNo" CssClass="form-control select_width" ClientIDMode="Static"></asp:DropDownList></td>
+                                        <asp:DropDownList runat="server" ID="ddlEmpCardNo" CssClass="form-control select_width" ClientIDMode="Static" onChange="getCardNo()"></asp:DropDownList></td>
                                 </tr>
                                  <tr  runat="server" visible="false">
                                         <td>Report View
@@ -167,20 +176,31 @@
             </div>
             </ContentTemplate>
         </asp:UpdatePanel>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $("#ddlEmpCardNo").select2();
-            $("#ddlDepName").select2();
 
-        });
-        function loadcardNo() {
-            $("#ddlEmpCardNo").select2();
-            $("#ddlDepName").select2();
-        }
-        function goToNewTabandWindow(url) {
-            window.open(url);
-            loadcardNo();
-        }
+<script type="text/javascript">
+    $(document).ready(function () {
+        load();
+    });
+
+    function load() {
+        $("#ddlEmpCardNo").select2();
+    }
+
+    function getCardNo() {
+        var getId = document.getElementById('ddlEmpCardNo');
+        var val = getId.options[getId.selectedIndex].text;
+        var getCardNo = val.split(' ');
+    }
+
+    function loadcardNo() {
+        $("#ddlEmpCardNo").select2();
+        $("#ddlDepName").select2();
+    }
+
+    function goToNewTabandWindow(url) {
+        window.open(url);
+        loadcardNo();
+    }
 
     </script>
 </asp:Content>

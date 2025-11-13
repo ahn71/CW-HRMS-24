@@ -424,7 +424,7 @@ namespace SigmaERP.personnel
         protected void rblEmpType_SelectedIndexChanged(object sender, EventArgs e)
         {
             rdbDeptWise.Checked = false;
-            rdbIndividual.Checked = true;
+            rdbIndividual.Checked = false;
             trddldepname.Visible = false;
             trddlempcardno.Visible = false;
             workerlist.Visible = true;
