@@ -64,6 +64,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("nominee_report")) showNomineeReport();
                 else if (query[0].Equals("wages_statment")) showWagesStatment();
                 else if (query[0].Equals("DismissLetter")) showDismissLetter();
+                else if (query[0].Equals("SuspensionLetter")) showSuspensionLetter();
                 else if (query[0].Equals("ShowCauseLetter")) showCauseLetter();
                 else if (query[0].Equals("PromotionLetter")) showPromotionLetter();
                 else if (query[0].Equals("IncrementLetter")) showIncrementletter();
@@ -668,6 +669,23 @@ namespace SigmaERP.All_Report
 
                 dt = new DataTable();
                 dt = (DataTable)Session["__Dismiss_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showSuspensionLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//SuspensionLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Suspension_Letter__"];
                 rpd.SetDataSource(dt);
                 rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
                 CrystalReportViewer1.ReportSource = rpd;

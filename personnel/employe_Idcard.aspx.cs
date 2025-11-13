@@ -150,7 +150,7 @@ namespace SigmaERP.personnel
             
             
 
-            <p style='text-align:center; font-size:14px; line-height:15px; margin-bottom:8px; margin-top:-2px; 
+            <p style='text-align:center; font-size:12px; line-height:15px; margin-bottom:8px; margin-top:-2px; 
                color:#0070c0 !important;
                -webkit-print-color-adjust: exact !important; 
                print-color-adjust: exact !important;'>
@@ -180,11 +180,11 @@ namespace SigmaERP.personnel
                     <td>: {row["PerDstBangla"]}</td>
                 </tr>
                 <tr>
-                    <td>Riæix †dvb b¤^i</td>
+                    <td>†dvb bs</td>
                     <td>: {row["EmergencyPhoneNo"]}</td>
                 </tr>
                 <tr>
-                    <td>Rvt cwitcÎ bs</td>
+                    <td>Rvt cwitcÎ</td>
                     <td>: {row["NationIDCardNo"]}</td>
                 </tr>
                 <tr>

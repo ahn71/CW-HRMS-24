@@ -100,8 +100,8 @@
         }
                .grid-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 5px;
             width: 100%;
              box-sizing: border-box;
              height: 100vh;

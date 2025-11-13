@@ -87,7 +87,7 @@ namespace SigmaERP.personnel
                 classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, ddlCompany.SelectedValue, rblEmpType.SelectedValue);
                 if (ddlCardNo != null)
                     ddlCardNo.Items.Insert(0, new ListItem("Select For Individual", "0"));
-                int[] reportPermission = { 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465,467 };
+                int[] reportPermission = { 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465,467, 489 };
                 int[] userPagePermition = AccessControl.hasPermission(reportPermission);
                 commonTask.loadReportName(ddlReportType, userPagePermition);
 
@@ -181,7 +181,7 @@ namespace SigmaERP.personnel
             } //Lady worker night format
             else if (ddlReportType.SelectedValue == "456")
             {
-                Cmd = "SELECT pep.EmpId, RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, cmp.CompanyNameBangla, cmp.AddressBangla, cmp.CompanyLogo, pei.EmpNameBn, ISNULL(pea.PreVillageBangla, '') + ',' +ISNULL(pea.PrePOBangla, '') + ',' + ISNULL(preThana.ThaNameBangla, '') + ',' + ISNULL(preDistrict.DstBangla,'') AS PresentAddress, pep.FatherNameBn, pep.MotherNameBN, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth,ISNULL(pea.PerVillageBangla, '') + ',' +ISNULL(pea.PerPOBangla, '') + ',' +ISNULL(perThana.ThaNameBangla, '') + ',' +ISNULL(perDistrict.DstBangla, '') AS PermanentAddress, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, pep.Sex, CASE WHEN pep.DateOfBirth IS NULL THEN 0 ELSE DATEDIFF(YEAR, pep.DateOfBirth, GETDATE()) - CASE WHEN DATEADD(YEAR, DATEDIFF(YEAR, pep.DateOfBirth, GETDATE()), pep.DateOfBirth) > GETDATE() THEN 1 ELSE 0 END END AS Age FROM Personnel_EmployeeInfo as pei LEFT JOIN Personnel_EmpPersonnal as pep ON pei.EmpId = pep.EmpId LEFT JOIN Personnel_EmpAddress as pea ON pei.EmpId = pea.EmpId LEFT JOIN Personnel_EmpNominee as pen ON pei.EmpId = pen.EmpId LEFT JOIN HRD_District as perDistrict ON pea.PreCity = perDistrict.DstId LEFT JOIN HRDThanaInfo as perThana ON pea.PerThanaId = perThana.ThaId LEFT JOIN HRD_District as preDistrict ON pea.PreCity = preDistrict.DstId Inner join Personnel_EmpCurrentStatus as pecs on pei.EmpId = pecs.EmpId and pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId LEFT JOIN HRDThanaInfo as preThana ON pea.PreThanaId = preThana.ThaId left join HRD_Department as dpt on pecs.DptId = dpt.DptId" + condition + " order by CustomOrdering";
+                Cmd = "SELECT pep.EmpId, RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, cmp.CompanyNameBangla, cmp.AddressBangla, cmp.CompanyLogo, pei.EmpNameBn, ISNULL(pea.PreVillageBangla, '') + ',' +ISNULL(pea.PrePOBangla, '') + ',' + ISNULL(preThana.ThaNameBangla, '') + ',' + ISNULL(preDistrict.DstBangla,'') AS PresentAddress, pep.FatherNameBn, pep.MotherNameBN, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth,ISNULL(pea.PerVillageBangla, '') + ',' +ISNULL(pea.PerPOBangla, '') + ',' +ISNULL(perThana.ThaNameBangla, '') + ',' +ISNULL(perDistrict.DstBangla, '') AS PermanentAddress, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, pep.Sex, CASE WHEN pep.DateOfBirth IS NULL THEN 0 ELSE DATEDIFF(YEAR, pep.DateOfBirth, GETDATE()) - CASE WHEN DATEADD(YEAR, DATEDIFF(YEAR, pep.DateOfBirth, GETDATE()), pep.DateOfBirth) > GETDATE() THEN 1 ELSE 0 END END AS Age FROM Personnel_EmployeeInfo as pei LEFT JOIN Personnel_EmpPersonnal as pep ON pei.EmpId = pep.EmpId LEFT JOIN Personnel_EmpAddress as pea ON pei.EmpId = pea.EmpId LEFT JOIN Personnel_EmpNominee as pen ON pei.EmpId = pen.EmpId LEFT JOIN HRD_District as perDistrict ON pea.perCity = perDistrict.DstId LEFT JOIN HRDThanaInfo as perThana ON pea.PerThanaId = perThana.ThaId LEFT JOIN HRD_District as preDistrict ON pea.PreCity = preDistrict.DstId Inner join Personnel_EmpCurrentStatus as pecs on pei.EmpId = pecs.EmpId and pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId LEFT JOIN HRDThanaInfo as preThana ON pea.PreThanaId = preThana.ThaId left join HRD_Department as dpt on pecs.DptId = dpt.DptId" + condition + " and pecs.IsActive=1  order by CustomOrdering";
                 if (DataFill(Cmd))
                 {
                     Session["__medical_formet__"] = dt;
@@ -236,6 +236,17 @@ namespace SigmaERP.personnel
                 }
             }  //Dismiss Letter
 
+            else if (ddlReportType.SelectedValue == "489") //Suspension Letter
+            {
+                Cmd = "SELECT pep.EmpId,pei.EmpNameBn, dsg.DsgNameBN,  RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, dpt.DptNameBn, grp.GNameBN,cmp.CompanyLogo,cmp.CompanyNameBangla,cmp.AddressBangla,cmp.CompanyName   FROM Personnel_EmployeeInfo as pei Inner join Personnel_EmpCurrentStatus as pecs on pei.EmpId = pecs.EmpId and pecs.IsActive = 1 LEFT JOIN Personnel_EmpPersonnal as pep  ON pei.EmpId = pep.EmpId Inner join HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId left join HRD_Department as dpt on pecs.DptId = dpt.DptId left join HRD_Designation as dsg on pecs.DsgId= dsg.DsgId left join HRD_Group as grp on pecs.GId = grp.GId " + condition + " order by CustomOrdering";
+
+                if (DataFill(Cmd))
+                {
+                    Session["__Suspension_Letter__"] = dt;
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SuspensionLetter');", true);
+                }
+            }
+
             else if (ddlReportType.SelectedValue == "459")
             {
                 Cmd = "SELECT pep.EmpId,pei.EmpNameBn, dsg.DsgNameBN,  RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, dpt.DptNameBn, grp.GNameBN,cmp.CompanyLogo,cmp.CompanyNameBangla,cmp.AddressBangla  FROM Personnel_EmployeeInfo as pei Inner join Personnel_EmpCurrentStatus as pecs on pei.EmpId = pecs.EmpId and pecs.IsActive = 1 LEFT JOIN Personnel_EmpPersonnal as pep  ON pei.EmpId = pep.EmpId Inner join HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId left join HRD_Department as dpt on pecs.DptId = dpt.DptId left join HRD_Designation as dsg on pecs.DsgId= dsg.DsgId left join HRD_Group as grp on pecs.GId = grp.GId " + condition + " order by CustomOrdering";
@@ -258,7 +269,7 @@ namespace SigmaERP.personnel
             } //Promotion Letter
             else if (ddlReportType.SelectedValue == "467")
             {
-                Cmd = "SELECT pep.EmpId,pei.EmpNameBn,CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, pecs.EffectiveMonth ,promDsg.DsgNameBn as PromotionDsgNameBn, dsg.DsgNameBN,  RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, dpt.DptNameBn, grp.GNameBN,cmp.CompanyLogo, cmp.CompanyNameBangla,cmp.AddressBangla  FROM Personnel_EmployeeInfo as pei Inner join Personnel_EmpCurrentStatus as pecs on pei.EmpId = pecs.EmpId and pecs.IsActive = 1 LEFT JOIN Personnel_EmpPersonnal as pep  ON pei.EmpId = pep.EmpId Inner join HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId left join HRD_Department as dpt on pecs.DptId = dpt.DptId left join HRD_Designation as dsg on pecs.PreDsgId= dsg.DsgId left join HRD_Designation as promDsg on pecs.DsgId= promDsg.DsgId left join HRD_Group as grp on pecs.GId = grp.GId" + condition + " order by CustomOrdering";
+                Cmd = "SELECT pep.EmpId,pei.EmpNameBn,CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, pecs.EffectiveMonth, dsg.DsgNameBN,dsg.DsgName,  RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, dpt.DptNameBn, grp.GNameBN,cmp.CompanyLogo, cmp.CompanyNameBangla,cmp.AddressBangla  FROM Personnel_EmployeeInfo as pei Inner join Personnel_EmpCurrentStatus as pecs on pei.EmpId = pecs.EmpId and pecs.IsActive = 1 LEFT JOIN Personnel_EmpPersonnal as pep  ON pei.EmpId = pep.EmpId Inner join HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId left join HRD_Department as dpt on pecs.DptId = dpt.DptId left join HRD_Designation as dsg on pecs.DsgId=dsg.DsgId left join HRD_Group as grp on pecs.GId = grp.GId" + condition + " and pecs.IsActive=1 order by CustomOrdering";
 
                 if (DataFill(Cmd))
                 {
