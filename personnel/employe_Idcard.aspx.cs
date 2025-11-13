@@ -54,19 +54,19 @@ namespace SigmaERP.personnel
         <div class='id-card'>
             <div class='card-header'>
                 <img src='../EmployeeImages/CompanyLogo/logo.jpeg' 
-                     style='width:60px; height:60px; object-fit:contain; 
+                     style='width:39px; height:44px; object-fit:contain; 
                      -webkit-print-color-adjust: exact; print-color-adjust: exact;' />
                 <img src='{rootURL}/{companyId}/EmployeeImage/{row["EmpPicture"]}' 
-                     style='width:76px; height:88px; object-fit:cover; border:1px solid #000;
+                     style='width:43px; height:55px; object-fit:cover; border:1px solid #000;
                      -webkit-print-color-adjust: exact; print-color-adjust: exact;' />
             </div>
 
-            <h2 style='text-align:center; margin:0; font-size:25px; font-weight:normal; 
+            <h2 style='text-align:center; margin:0; font-size:18px; font-weight:normal; 
                 color:#0070c0 !important; 
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important;'>{row["CompanyNameBangla"]}</h2>
             
-            <h3 style='text-align:center; margin:5px 0 12px 0; font-size:26px; font-weight:bold; 
+            <h3 style='text-align:center; margin:2px 0 0px 0; font-size:20px; font-weight:bold; 
                 text-decoration:underline; color:#215868 !important;
                 -webkit-print-color-adjust: exact !important; 
                 print-color-adjust: exact !important;'>cwiPqcÎ</h3>
@@ -143,14 +143,14 @@ namespace SigmaERP.personnel
 
         <!-- BACK SIDE -->
         <div class='id-card id-card-back'>
-            <h3 style='text-align:center; font-size:16px; margin-bottom:10px; font-family:Cursive; 
+            <h3 style='text-align:center; font-size:13px; margin-bottom:5px; font-family:Cursive; 
                 color:#1f4267 !important;
                 -webkit-print-color-adjust: exact !important; 
-                print-color-adjust: exact !important; margin-bottom:10px;'>If Found Please Return </br> This Card To-</h3>
+                print-color-adjust: exact !important; margin-bottom:10px; margin-top:-4px;'>If Found Please Return </br> This Card To-</h3>
             
             
 
-            <p style='text-align:center; font-size:16px; line-height:22px; margin-bottom:15px; 
+            <p style='text-align:center; font-size:14px; line-height:15px; margin-bottom:8px; margin-top:-2px; 
                color:#0070c0 !important;
                -webkit-print-color-adjust: exact !important; 
                print-color-adjust: exact !important;'>
@@ -158,9 +158,9 @@ namespace SigmaERP.personnel
                 {row["AddressBangla"]}
             </p>
 
-            <p style='font-size:16px; margin-bottom:12px;'>Awdm ‡gvevBj bs : {row["Telephone"]}</p>
+            <p style='font-size:13px; margin-bottom:8px;  margin-top:-2px'>Awdm ‡gvevBj bs : {row["Telephone"]}</p>
             
-            <h4 style='font-size:16px; margin-bottom:8px; text-decoration:underline; font-weight:bold;'>kÖwg‡Ki ¯’vqx wVKvbv</h4>
+            <h4 style='font-size:14px; margin-bottom:0px; margin-top:-4px; text-decoration:underline; font-weight:bold;'>kÖwg‡Ki ¯’vqx wVKvbv</h4>
 
             <table class='id-card-table'>
                 <tr>
