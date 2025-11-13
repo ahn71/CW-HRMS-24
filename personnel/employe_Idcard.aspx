@@ -35,10 +35,10 @@
 
         /* ID card common styles */
         .id-card {
-            width: 290px;
-            height: 471px;
+            width: 2in;
+            height: 3.10in;
             border: 1px solid #000;
-            padding: 12px;
+            padding: 0px;
             box-sizing: border-box;
             background-color: white;
             margin-bottom: 10px;
@@ -61,8 +61,8 @@
         .footasr {
             display: flex;
             justify-content: space-around;
-            margin-top: 10px;
-            font-size: 15px;
+            margin-top: 0px;
+            font-size: 13px;
         }
 
         .footasr div {
@@ -71,7 +71,7 @@
 
         .footasr div div {
             border-top: 1px solid #000;
-            width: 110px;
+            width: 86px;
             margin: auto;
             color: #4e587e;
         }
@@ -84,18 +84,18 @@
         }
         
 .id-card-table td {
-    padding: 3px 6px;
+    padding: 1px 2px;
     color: #4e587e;
-    font-size: 16px !important;
+    font-size: 13px !important;
 }
         
         .id-card-table td:first-child {
-            width: 40%;
+            width: 45%;
             color: #305991;
             font-size: 18px;
         }
         .id-card-back .id-card-table tr td{
-            font-size: 17px !important;
+            font-size: 13px !important;
             color: #000 !important;
         }
                .grid-container {
