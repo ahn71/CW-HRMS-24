@@ -182,5 +182,18 @@ namespace SigmaERP.personnel
                 closeTab();
             }
         }
+
+        protected void btnNext_Click(object sender, EventArgs e)
+        {
+            string EmpId = ViewState["__EmpId__"].ToString().Trim();
+            if (EmpId != null && EmpId != "")
+            {
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindowsClose('/personnel/EmployeeNominee.aspx?EmpId=" + EmpId + "');", true);  //Open New Tab for Sever side code
+            }
+            else
+            {
+                closeTab();
+            }
+        }
     }
 }

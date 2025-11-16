@@ -62,6 +62,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("medical_formet")) showmedical_formet();
                 else if (query[0].Equals("JobApplicationWorkerCopy")) showjob_application();
                 else if (query[0].Equals("nominee_report")) showNomineeReport();
+                else if (query[0].Equals("nominee_report_v2")) showNomineeReportV2();
                 else if (query[0].Equals("wages_statment")) showWagesStatment();
                 else if (query[0].Equals("DismissLetter")) showDismissLetter();
                 else if (query[0].Equals("SuspensionLetter")) showSuspensionLetter();
@@ -622,7 +623,27 @@ namespace SigmaERP.All_Report
             }
             catch { }
         }
-
+        private void showNomineeReportV2()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+                string EmpImageurl = ConfigurationManager.AppSettings["employeeImageFolder"];
+                rpd.Load(Server.MapPath("//All Report//Personnel//NomineeReport_v2.rpt"));
+                 
+                dt = new DataTable();
+                dt = (DataTable)Session["__nominee_report_v2__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//EmpNomineeImage//"));
+                rpd.SetParameterValue(1, EmpImageurl);
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
 
         private void showNomineeReport()
         {

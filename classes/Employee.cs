@@ -29,6 +29,20 @@ namespace SigmaERP.classes
             }
             catch { }
         }
+        public static void LoadEmpCardNoForRefarencedEmp(DropDownList dl, string CompanyId)// For payroll Entry
+        {
+            try
+            {
+                dt = new DataTable();
+                sqlDB.fillDataTable("Select  SN,EmpId, (Convert(nvarchar(50),EmpCardNo)+' '+EmpName+' '+DptName) as EmpCardNo,EmpId From v_Personnel_EmpCurrentStatus where IsActive=1 and CompanyId='" + CompanyId + "' and EmpStatus in ('1','8')  order by DptOrdering , DsgOrdering, CustomOrdering", dt);
+                dl.DataSource = dt;
+                dl.DataTextField = "EmpCardNo";
+                dl.DataValueField = "EmpId";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
         public static void LoadEmpCardNoWithName(DropDownList dl,string EmpType)
         {
             try

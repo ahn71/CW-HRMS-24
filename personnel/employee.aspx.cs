@@ -596,6 +596,22 @@ namespace SigmaERP.personnel
             }
             catch { }
         }
+
+
+        protected void btnEmployyeeNominee_Click(object sender, EventArgs e)
+        {
+            Session["_EmpStatus_"] = "";
+            Session["_EmpId_"] = ddlEmpCardNo.SelectedValue;
+            if (ddlEmpCardNo.SelectedIndex < 1)
+            {
+                lblMessage.InnerText = "warning->Please, Select an Employee First!";
+                ddlEmpCardNo.Focus();
+                return;
+            }
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeeNominee.aspx?EmpId=" + ddlEmpCardNo.SelectedValue + "');", true);
+
+            // Response.Redirect("/personnel/EmployeeNominee.aspx?EmpId=" + ddlEmpCardNo.SelectedValue, false);
+        }
         private string LoadEmpId()
         {
             try

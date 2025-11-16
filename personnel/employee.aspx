@@ -702,6 +702,7 @@
                             <asp:Button ID="btnEmployeeAd" runat="server" CssClass="em_right_button" OnClientClick="return divEmpAddress();" Text="Employee's Address" OnClick="btnEmployeeAd_Click" /><br />
                             <asp:Button ID="btnExperience" runat="server" CssClass="em_right_button" OnClientClick="return divEmpExperienceList();" Text="Experience" OnClick="btnExperience_Click" /><br />
                             <asp:Button ID="btnEducation" runat="server" CssClass="em_right_button" OnClientClick="return divEducationList();" Text="Education" OnClick="btnEducation_Click" /><br />
+                                 <asp:Button ID="btnEmployyeeNominee" runat="server" CssClass="em_right_button" OnClientClick="return divEmpNominee();" Text=" Nominee" OnClick="btnEmployyeeNominee_Click" /><br />
                             <asp:Button Visible="false" ID="btnFindEmployee" runat="server" CssClass="em_right_button" Text="Find Employee" OnClick="btnFindEmployee_Click" />
                             <asp:TextBox Visible="false" ID="txtCardNo" PLaceHolder="Type Card No" runat="server" style="color: Green; font-weight: bold; text-align: center; width: 181px; border-radius: 0px;" ClientIDMode="Static" CssClass="form-control text_box_width_import"></asp:TextBox>
 

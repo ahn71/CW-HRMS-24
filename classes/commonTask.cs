@@ -1579,9 +1579,11 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
         {
             try
             {
-                sqlCmd = @"SELECT DISTINCT CASE 
-        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
-        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'i' AND CompanyId = '" + CompanyId + "' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
+                //        sqlCmd = @"SELECT DISTINCT CASE 
+                //WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+                //ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'i' AND CompanyId = '" + CompanyId + "' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
+
+                sqlCmd = "select distinct FORMAT(updatedDate, 'MMMM-yyyy') as MonthName, updatedDate as EffectiveMonth from v_Promotion_Increment  where updatedDate is not null   and CompanyId = '" + CompanyId + "' and  TypeOfChange = 'i' ";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";

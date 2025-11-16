@@ -87,7 +87,7 @@ namespace SigmaERP.personnel
                 classes.commonTask.LoadEmpCardNoByEmpType(ddlCardNo, ddlCompany.SelectedValue, rblEmpType.SelectedValue);
                 if (ddlCardNo != null)
                     ddlCardNo.Items.Insert(0, new ListItem("Select For Individual", "0"));
-                int[] reportPermission = { 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465,467, 489 };
+                int [] reportPermission = { 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465,467, 489, 2488 };
                 int[] userPagePermition = AccessControl.hasPermission(reportPermission);
                 commonTask.loadReportName(ddlReportType, userPagePermition);
 
@@ -201,7 +201,7 @@ namespace SigmaERP.personnel
             }  //Job Application
             else if (ddlReportType.SelectedValue == "454")
             {
-                Cmd = "SELECT pep.EmpId,  RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, pei.EmpNameBn, cmp.CompanyLogo, cmp.CompanyNameBangla, cmp.AddressBangla, pea.PreVillageBangla + ',' + pea.PerPOBangla + ',' + preThana.ThaNameBangla + ',' + preDistrict.DstBangla AS PresentAddress, pep.FatherNameBn, pep.MotherNameBN, pep.HusbandOrWifeNameBN, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, pea.PerVillageBangla, pea.PerPOBangla,Grd.GrdName, perThana.ThaNameBangla, perDistrict.DstBangla AS PermanentAddress, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dpt.DptNameBn, grp.GNameBn, pen.NomineeNameBN, pen.NomineeAge, pen.NomineeNID, pen.NomineeAddressBN, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pen.NomineeRelationBN FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId LEFT OUTER JOIN dbo.Personnel_EmpAddress AS pea ON pei.EmpId = pea.EmpId LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN HRD_Grade as Grd on pecs.GrdId=Grd.GrdId LEFT OUTER JOIN dbo.Personnel_EmpNominee AS pen ON pei.EmpId = pen.EmpId LEFT OUTER JOIN dbo.HRD_District AS perDistrict ON pea.PreCity = perDistrict.DstId LEFT OUTER JOIN dbo.HRDThanaInfo AS perThana ON pea.PerThanaId = perThana.ThaId LEFT OUTER JOIN dbo.HRD_District AS preDistrict ON pea.PreCity = preDistrict.DstId LEFT OUTER JOIN dbo.HRDThanaInfo AS preThana ON pea.PreThanaId = preThana.ThaId " + condition + " order by CustomOrdering ";
+                Cmd = "SELECT pep.EmpId,  RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo, pei.EmpNameBn, cmp.CompanyLogo, cmp.CompanyNameBangla, cmp.AddressBangla,  ISNULL(pea.PreVillageBangla, '') + ',' + ISNULL(pea.PrePOBangla, '') + ',' + ISNULL(preThana.ThaNameBangla, '') + ',' + ISNULL(preDistrict.DstBangla, '') AS PresentAddress, pep.FatherNameBn, pep.MotherNameBN, pep.HusbandOrWifeNameBN, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, pea.PerVillageBangla, pea.PerPOBangla,Grd.GrdName, perThana.ThaNameBangla, perDistrict.DstBangla AS PermanentAddress, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dpt.DptNameBn, grp.GNameBn, pen.NomineeNameBN, pen.NomineeAge, pen.NomineeNID, pen.NomineeAddressBN, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pen.NomineeRelationBN FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId LEFT OUTER JOIN dbo.Personnel_EmpAddress AS pea ON pei.EmpId = pea.EmpId LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN HRD_Grade as Grd on pecs.GrdId=Grd.GrdId LEFT OUTER JOIN dbo.Personnel_EmpNominee AS pen ON pei.EmpId = pen.EmpId LEFT OUTER JOIN dbo.HRD_District AS perDistrict ON pea.PreCity = perDistrict.DstId LEFT OUTER JOIN dbo.HRDThanaInfo AS perThana ON pea.PerThanaId = perThana.ThaId LEFT OUTER JOIN dbo.HRD_District AS preDistrict ON pea.PreCity = preDistrict.DstId LEFT OUTER JOIN dbo.HRDThanaInfo AS preThana ON pea.PreThanaId = preThana.ThaId" + condition + " order by CustomOrdering ";
 
 
 
@@ -215,6 +215,22 @@ namespace SigmaERP.personnel
 
 
             } //Nominee Report
+            else if (ddlReportType.SelectedValue == "2488")
+            {
+                Cmd = "SELECT pep.EmpId,  pei.EmpProximityNo as EmpCardNo, pei.EmpNameBn, cmp.CompanyLogo, cmp.CompanyNameBangla, cmp.AddressBangla, pea.PreVillageBangla + ',' + pea.PrePOBangla + ',' + preThana.ThaNameBangla + ',' + preDistrict.DstBangla AS PresentAddress, pen.NomineeImage as MotherNameBN, pei.EmpPicture as HusbandOrWifeNameBN, pep.FatherNameBn, pep.MotherNameBN, pep.HusbandOrWifeNameBN, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, pea.PerVillageBangla, pea.PerPOBangla, perThana.ThaNameBangla, perDistrict.DstBangla AS PermanentAddress, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dpt.DptNameBn, grp.GNameBn, pen.NomineeNameBN, pen.NomineeAge, pen.NomineeNID,pen.NomineeMobile as EmpStatus, pen.NomineeAddressBN, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pen.NomineeRelationBN FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo as cmp on pei.CompanyId = cmp.CompanyId LEFT OUTER JOIN dbo.Personnel_EmpAddress AS pea ON pei.EmpId = pea.EmpId LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN dbo.HRD_Grade AS Grd ON pecs.GrdId = Grd.GrdId LEFT OUTER JOIN dbo.Personnel_EmpNominee AS pen ON pei.EmpId = pen.EmpId LEFT OUTER JOIN dbo.HRD_District AS perDistrict ON pea.PerCity = perDistrict.DstId LEFT OUTER JOIN dbo.HRDThanaInfo AS perThana ON pea.PerThanaId = perThana.ThaId LEFT OUTER JOIN dbo.HRD_District AS preDistrict ON pea.PreCity = preDistrict.DstId LEFT OUTER JOIN dbo.HRDThanaInfo AS preThana ON pea.PreThanaId = preThana.ThaId" + condition + " order by CustomOrdering ";
+
+
+
+                //Cmd = "select EmpId,EmpCardNo,EmpNameBn, PresentAddress,FatherNameBn, MotherNameBN,HusbandOrWifeNameBN,DateOfBirth,PerVillageBangla,PerPOBangla,ThaNameBangla,PermanentAddress,EmpJoiningDate,DsgNameBn,DptNameBn,GNameBn,NomineeNameBN, NomineeAge,NomineeNId,NomineeAddressBN,Sex,Age,NomineeRelationBN from v_Nominee_info   " + condition + " order by CustomOrdering ";
+
+                if (DataFill(Cmd))
+                {
+                    Session["__nominee_report_v2__"] = dt;
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=nominee_report_v2');", true);
+                }
+
+            }
+
 
             else if (ddlReportType.SelectedValue == "455")
             {

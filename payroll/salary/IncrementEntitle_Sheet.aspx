@@ -1,0 +1,62 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/payroll_nested.Master" AutoEventWireup="true" CodeBehind="IncrementEntitle_Sheet.aspx.cs" Inherits="SigmaERP.payroll.salary.IncrementEntitle_Sheet" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JavaScript Bundle (includes Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+           th {
+            background: #4c9b4c !important;
+            color: white !important;
+        }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+        <form id="form1" runat="server">
+        <div>
+            <h3 runat="server" id="header"></h3>
+            <asp:GridView runat="server" ID="gventitleList" AutoGenerateColumns="false" CssClass="table">
+                 <Columns>
+              <asp:TemplateField HeaderText="SL">
+                    <ItemTemplate>
+                        <%# Container.DataItemIndex + 1 %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+             <asp:BoundField DataField="EmpCardNo" HeaderText="Emp. Card" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+             <asp:BoundField DataField="EmpName" HeaderText="Name" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+             <asp:BoundField DataField="DsgName" HeaderText="Designation" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+
+                <asp:BoundField DataField="DptName" HeaderText="Department" />
+         
+                <asp:BoundField DataField="EmpJoiningDate" HeaderText="Joining Date" DataFormatString="{0:dd-MM-yyyy}" />
+                <asp:BoundField DataField="PreBasicSalary" HeaderText="Pre. Basic" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+                <asp:BoundField DataField="PreHouseRent" HeaderText="Pre. House Rent" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+                <asp:BoundField DataField="PreEmpSalary" HeaderText="Pre. Gross" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+                     <asp:BoundField DataField="IncrementType" HeaderText="Increment Type" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true"/>
+                <asp:BoundField DataField="IncrementMonth" HeaderText="Increment Month" DataFormatString="{0:MMMM-yyyy}" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" />
+
+              <asp:BoundField DataField="CommonIncrementMonth" HeaderText="Increment Month (Common)" DataFormatString="{0:MMMM-yyyy}" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" />
+                           
+                <asp:BoundField DataField="IncrementAmount" HeaderText="Increment Amount" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" />
+                <asp:BoundField DataField="BasicSalary" HeaderText="New Basic" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+               <asp:BoundField DataField="HouseRent" HeaderText="N_HouseRent" Visible="true" 
+                        ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" />
+                <asp:BoundField DataField="EmpPresentSalary" HeaderText="New Gross" Visible="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" />
+                 
+
+                 <asp:BoundField DataField="n_EffecctiveMonth" HeaderText="Effective Month" DataFormatString="{0:MMMM-yyyy}" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" ItemStyle-Font-Bold="true" />
+                           
+            
+       
+
+            
+        </Columns>
+            </asp:GridView>
+
+            <asp:GridView runat="server" ClientIDMode="Static" ID="gvPromotionSheet" AutoGenerateColumns="true">                  
+            </asp:GridView>
+            <asp:Button runat="server" ID="btnExport" Text="Export" CssClass="btn btn-success" OnClick="btnExport_Click"/>
+        </div>
+    </form>
+</asp:Content>
