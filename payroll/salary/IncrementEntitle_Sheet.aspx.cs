@@ -8,7 +8,6 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
 namespace SigmaERP.payroll.salary
 {
     public partial class IncrementEntitle_Sheet : System.Web.UI.Page
@@ -20,9 +19,8 @@ namespace SigmaERP.payroll.salary
                 BindData();
 
             }
-
-
         }
+
 
         private void BindData()
         {
@@ -356,12 +354,19 @@ namespace SigmaERP.payroll.salary
 
         private string getDate_MMMM_yyyy()
         {
-            if (ViewState["__monthName__"].ToString().ToString() == "")
+            if (string.IsNullOrEmpty(ViewState["__monthName__"]?.ToString()))
                 return "";
+
             string inputDate = ViewState["__monthName__"].ToString();
-            DateTime parsedDate = DateTime.ParseExact(inputDate, "MM-yyyy", null);
-            string formattedDate = parsedDate.ToString("MMMM-yyyy");
-            return formattedDate;
+
+            DateTime parsedDate = DateTime.ParseExact(
+                inputDate,
+                "MM-d-yyyy h:mm:ss tt",
+                System.Globalization.CultureInfo.InvariantCulture
+            );
+
+            return parsedDate.ToString("MMMM-yyyy");
         }
+
     }
 }

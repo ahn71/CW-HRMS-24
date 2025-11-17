@@ -74,7 +74,6 @@
                                             <asp:ListItem Value="0" Selected="True">All</asp:ListItem>
                                             <asp:ListItem Value="1">Common</asp:ListItem>
                                             <asp:ListItem Value="2">Special</asp:ListItem>
-
                                         </asp:RadioButtonList>
                                     </td>
                                 </tr>
