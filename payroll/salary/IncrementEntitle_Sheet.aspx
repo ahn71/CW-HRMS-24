@@ -16,12 +16,23 @@
             background: #4c9b4c !important;
             color: white !important;
         }
+        tbody, td, tfoot, th, thead, tr {
+            border-width: 1px !important;
+        }
+        td{
+            text-align:center !important;
+        }
     </style>
 </head>
 <body>
-    <form id="form1" runat="server" class="m-5">
+    <form id="form1" runat="server" class="m-3">
         <div>
-            <h3 runat="server" id="header" class=""></h3>
+            <div class="d-flex justify-content-between mb-2">
+               <h3 runat="server" id="header" class=""></h3>
+             <asp:Button runat="server" ID="btnExport" Text="Export" CssClass="btn btn-success" OnClick="btnExport_Click"/>
+            </div>
+        
+
             <asp:GridView runat="server" ID="gventitleList" AutoGenerateColumns="false" CssClass="table">
                  <Columns>
               <asp:TemplateField HeaderText="SL">
@@ -62,7 +73,6 @@
 
             <asp:GridView runat="server" ClientIDMode="Static" ID="gvPromotionSheet" AutoGenerateColumns="true">                  
             </asp:GridView>
-            <asp:Button runat="server" ID="btnExport" Text="Export" CssClass="btn btn-success" OnClick="btnExport_Click"/>
         </div>
     </form>
 </body>

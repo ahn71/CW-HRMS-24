@@ -54,7 +54,8 @@ namespace SigmaERP.personnel
 
                 classes.commonTask.LoadMonthForIncreament(ddlMonthName, ViewState["__CompanyId__"].ToString());
                 //classes.Employee.LoadEmpCardIncPro(ddlCardNo, "i", ViewState["__CompanyId__"].ToString());
-                classes.Employee.LoadEmpCardNoForRefarencedEmp(ddlCardNo, ViewState["__CompanyId__"].ToString());
+                //classes.Employee.LoadEmpCardNoForRefarencedEmp(ddlCardNo, ViewState["__CompanyId__"].ToString());
+                classes.Employee.LoadEmpCardNoForPayroll_EmpID(ddlCardNo, ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
 
 
@@ -367,8 +368,8 @@ namespace SigmaERP.personnel
                 // , dpt.DptName as [New Department],dsg.DsgName as [New Designation],cs.GrdName as [New Grade],cs.PreBasicSalary as [Pre. Basic],cs.PreHouseRent as [Pre. House Rent],cs.PreEmpSalary as [Pre. Gross],cs.IncrementAmount as [Increment],cs.BasicSalary as [New Basic],cs.HouseRent as [New House Rent],cs.EmpPresentSalary as [New Gross],FORMAT(cs.PromotionMonth, 'MMMM-yyyy') as [Promotion Month] 
                 // From Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId  left join HRD_Department pDpt on cs.PreDptId = pDpt.DptId left join HRD_Designation pDsg on cs.PreDsgId = pDsg.DsgId   left join HRD_Department dpt on cs.DptId = dpt.DptId left join HRD_Designation dsg on cs.DsgId = dsg.DsgId where " + condition + " ORDER BY " + ordering;
 
-                string query = @"select ROW_NUMBER() OVER (ORDER BY  " + ordering + @") AS [SL], UpdateType,cs.PreDsgId, cs.DsgId, SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' as [Emp. Card],ei.EmpName as [Name], convert(varchar(10),ei.EmpJoiningDate,105) as [Joining Date],pDpt.DptName as [Pre. Department],pDsg.DsgName as [Pre. Designation],prevGrade.GrdName as [Pre. Grade] ,FORMAT(cs.UpdatedDate, 'yyyy-MM') as UpdateDate,
-                 dpt.DptName as [New Department],dsg.DsgName as [New Designation],newGrade.GrdName as [New Grade],cs.PreBasicSalary as [Pre. Basic],cs.PreHouseRent as [Pre. House Rent],cs.PreEmpSalary as [Pre. Gross],cs.IncrementAmount as [Increment],cs.BasicSalary as [New Basic],cs.HouseRent as [New House Rent],cs.EmpPresentSalary as [New Gross],FORMAT(cs.PromotionMonth, 'MMMM-yyyy') as [Promotion Month] 
+                string query = @"select ROW_NUMBER() OVER (ORDER BY  " + ordering + @") AS [SL], UpdateType,cs.PreDsgId, cs.DsgId, SUBSTRING(ei.EmpCardNo,8,6)+' ('+ei.EmpProximityNo+')' as [Emp. Card],ei.EmpName as [Name], convert(varchar(10),ei.EmpJoiningDate,105) as [Joining Date],pDpt.DptName as [Department],pDsg.DsgName as [Designation],prevGrade.GrdName as [Grade] ,FORMAT(cs.UpdatedDate, 'yyyy-MM') as UpdateDate,
+                 dpt.DptName as [New Department],dsg.DsgName as [New Designation],newGrade.GrdName as [New Grade],cs.PreBasicSalary as [Basic],cs.PreHouseRent as [House],cs.PreEmpSalary as [Gross],cs.IncrementAmount as [Increment],cs.BasicSalary as [New Basic],cs.HouseRent as [New House],cs.EmpPresentSalary as [New Gross],FORMAT(cs.PromotionMonth, 'MMMM-yyyy') as [Promotion Month] 
                  From Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus cs on ei.EmpId = cs.EmpId  left join HRD_Department pDpt on cs.PreDptId = pDpt.DptId left join HRD_Designation pDsg on cs.PreDsgId = pDsg.DsgId   left join HRD_Department dpt on cs.DptId = dpt.DptId left join HRD_Designation dsg on cs.DsgId = dsg.DsgId Left Join HRDGrade as prevGrade on cs.PreGrdId = prevGrade.GradeID Left join HRDGrade as newGrade on cs.GrdId = newGrade.GradeID where " + condition + " ORDER BY " + ordering;
 
                 data = CRUD.ExecuteReturnDataTable(query);
@@ -384,7 +385,7 @@ namespace SigmaERP.personnel
                 string emptype = rbEmpList.SelectedItem.Text.Trim();
                 string companyId = ddlCompany.SelectedValue;
                 string month = (rbEmpList.SelectedValue == "00") ? "" : ddlMonthName.SelectedValue.Replace('-', '/');
-                string url = $"../payroll/salary/IncrementEntitle_Sheet.aspx?for={emptype}-{companyId}-{month}-{3}";
+                string url = $"/payroll/salary/IncrementEntitle_Sheet.aspx?for={emptype}-{companyId}-{month}-{3}";
 
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", $"goToNewTabandWindow('{url}');", true);
             }
@@ -445,7 +446,7 @@ namespace SigmaERP.personnel
 
                 //string query = "select ecs.UpdateType,case when ecs.UpdateType=1 then 'Common' else 'Special' end as IncrementType, ecs.EmpTypeId, ecs.EmpId,SubString(ecs.EmpCardNo,8,16)+' ('+EmpProximityNo+')' EmpCardNo, ei.EmpId,ei.EmpName,hd.DptId,hd.DptName,ecs.EffectiveMonth,hdgs.DsgName,ei.EmpJoiningDate, ecs.PreEmpSalary,ecs.EmpPresentSalary,ecs.PreIncrementAmount,ecs.IncrementAmount,ecs.PreBasicSalary,ecs.BasicSalary, ecs.PreMedicalAllownce,'" + effectiveMonths + "' as n_EffecctiveMonth,ecs.CommonIncrementMonth,ecs.MedicalAllownce,ecs.PreFoodAllownce, ecs.FoodAllownce, ecs.PreConvenceAllownce, ecs.ConvenceAllownce, ecs.PreHouseRent,ecs.HouseRent, ecs.PreTechnicalAllownce,ecs.TechnicalAllownce, ecs.IncrementMonth,ecs.IsActive from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus ecs on ei.EmpId=ecs.EmpId inner join HRD_Designation hdgs on ecs.DsgId=hdgs.DsgId inner join HRD_Department hd on ecs.DptId=hd.DptId where " + condition + " ORDER BY " + ordering;
                 //string query = @"select ROW_NUMBER() OVER (ORDER BY " + ordering + @") AS [SL],SubString(ecs.EmpCardNo,8,16)+' ('+EmpProximityNo+')' as [Emp. Card], ei.EmpName as [Name],hd.DptName as [Department],hdgs.DsgName as [Designation],convert(varchar(10),ei.EmpJoiningDate,105) as [Joining Date],ecs.PreBasicSalary as [Pre. Basic],ecs.PreHouseRent as [Pre. House Rent],ecs.PreEmpSalary as [Pre. Gross],ecs.UpdateType,case when ecs.UpdateType=1 then 'Common' else 'Special' end as [Increment Type],FORMAT (IncrementMonth,'MMMM-yyyy') as [Increment Month],FORMAT (CommonIncrementMonth,'MMMM-yyyy') as [Increment Month (Common)],ecs.IncrementAmount as [Increment Amount],ecs.BasicSalary as [New Basic],ecs.HouseRent as [New House Rent],ecs.EmpPresentSalary as [New Gross] from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus ecs on ei.EmpId=ecs.EmpId inner join HRD_Designation hdgs on ecs.DsgId=hdgs.DsgId inner join HRD_Department hd on ecs.DptId=hd.DptId where " + condition + " ORDER BY " + ordering;
-                string query = @"select ROW_NUMBER() OVER (ORDER BY "+ordering+ ") AS [SL],SubString(ecs.EmpCardNo,8,16)+' ('+EmpProximityNo+')' as [Emp. Card], ei.EmpName as [Name],hd.DptName as [Department],hdgs.DsgName as [Designation],convert(varchar(10),ei.EmpJoiningDate,105) as [Joining Date],ecs.PreBasicSalary as [Pre. Basic],ecs.PreHouseRent as [Pre. House Rent],ecs.PreEmpSalary as [Pre. Gross],ecs.UpdateType,CASE WHEN ecs.UpdateType = 1 THEN 'Common Inc' WHEN ecs.UpdateType = 2 THEN 'Special Inc' WHEN ecs.UpdateType = 4 THEN 'Inc + Promotion' ELSE 'Other' END AS[Increment Type], FORMAT (UpdatedDate,'MMMM-yyyy') as [Increment Month],FORMAT (CommonIncrementMonth,'MMMM-yyyy') as [Increment Month (Common)],ecs.IncrementAmount as [Increment Amount],ecs.BasicSalary as [New Basic],ecs.HouseRent as [New House Rent],ecs.EmpPresentSalary as [New Gross] from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus ecs on ei.EmpId=ecs.EmpId inner join HRD_Designation hdgs on ecs.DsgId=hdgs.DsgId inner join HRD_Department hd on ecs.DptId=hd.DptId where " + condition + " ORDER BY " + ordering;
+                string query = @"select ROW_NUMBER() OVER (ORDER BY "+ordering+ ") AS [SL],SubString(ecs.EmpCardNo,8,16)+' ('+EmpProximityNo+')' as [Emp. Card], ei.EmpName as [Name],hd.DptName as [Department],hdgs.DsgName as [Designation],convert(varchar(10),ei.EmpJoiningDate,105) as [Joining Date],ecs.PreBasicSalary as [Basic],ecs.PreHouseRent as [House],ecs.PreEmpSalary as [Gross],ecs.UpdateType as Type,CASE WHEN ecs.UpdateType = 1 THEN 'Common Inc' WHEN ecs.UpdateType = 2 THEN 'Special Inc' WHEN ecs.UpdateType = 4 THEN 'Inc + Promotion' ELSE 'Other' END AS[Inc. Type], FORMAT (UpdatedDate,'MMMM-yyyy') as [Inc. Month],FORMAT (CommonIncrementMonth,'MMMM-yyyy') as [Inc. Month (Com)],ecs.IncrementAmount as [Inc. Amount],ecs.BasicSalary as [New Basic],ecs.HouseRent as [New House],ecs.EmpPresentSalary as [New Gross] from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus ecs on ei.EmpId=ecs.EmpId inner join HRD_Designation hdgs on ecs.DsgId=hdgs.DsgId inner join HRD_Department hd on ecs.DptId=hd.DptId where " + condition + " ORDER BY " + ordering;
 
                 data = CRUD.ExecuteReturnDataTable(query);
                 if (data.Rows.Count == 0)
@@ -460,7 +461,7 @@ namespace SigmaERP.personnel
                 string emptype = rbEmpList.SelectedItem.Text.Trim();
                 string companyId = ddlCompany.SelectedValue;
                 string month = (rbEmpList.SelectedValue == "00") ? "" : ddlMonthName.SelectedValue.Replace('-', '/');
-                string url = $"../payroll/salary/IncrementEntitle_Sheet.aspx?for={emptype}-{companyId}-{month}-{rblIncrementType.SelectedValue.ToString()}";
+                string url = $"/payroll/salary/IncrementEntitle_Sheet.aspx?for={emptype}-{companyId}-{month}-{rblIncrementType.SelectedValue.ToString()}";
 
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", $"goToNewTabandWindow('{url}');", true);
             }

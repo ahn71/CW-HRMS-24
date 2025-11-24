@@ -3654,9 +3654,12 @@ namespace SigmaERP.All_Report
                 rpd = new ReportDocument();
                 //rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG.rpt"));
                 if (EmpType == "(Staff)")
-                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff.rpt"));
+                   // rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff.rpt"));
+                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff-ABR.rpt"));
                 else
-                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_worker.rpt"));
+                    //rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_worker.rpt"));
+                    //rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_worker-ABR.rpt"));
+                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff-ABR.rpt"));
 
                 rpd.SetDataSource(dt);
 
