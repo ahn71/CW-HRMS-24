@@ -270,6 +270,28 @@
                                                </div>
                                            </div>
                                        </div>
+                                       <div class="col-lg-3 col-md-6 col-sm-12">
+                                           <div class="text-dark px-2 py-1 hader-style d-flex justify-content-between ">
+                                               <h6 class=" d-inline">Leave Statement</h6>
+                                           <h6 class="text-dark px-2 py-1 hader-style d-inline">Emp Joining date: 
+    <span id="empJoiningDate"></span>
+                                           </h6>
+                                           </div>
+                                           
+                                           <table class="report-tbl  table table-bordered table-sm mt-2" style="border: 1px solid #ddd;">
+                                               <thead class="table-light">
+                                                   <tr>
+                                                       <th>Type of Leave</th>
+                                                       <th>Entitled</th>
+                                                       <th>Availed</th>
+                                                       <th>Balance</th>
+                                                   </tr>
+                                               </thead>
+                                               <tbody id="leaveStatementTableBody">
+                                               </tbody>
+                                           </table>
+                                       </div>
+
                                        <div class="col-lg-3  col-md-6 col-sm-12">
                                            <div class="form-group">
                                                <label style="opacity: 0;" for="formGroupExampleInput"
@@ -370,6 +392,7 @@
          var getLeaveByIdUrl = rootUrl + `/api/Leave/lvApplication`;
          var getLvDeleteUrl = rootUrl + '/api/Leave/delete';
         var getCompanyUrl = rootUrl + `/api/Company/GetDropdownCompanies?IsAdministrator=false&CompanyId=${CompanyID}`;
+         var getEmplyeeLeaveBalanceUrl = rootUrl+`/api/Leave/LeaveBalance`;
          var empUrl = '/api/Employee/EmployeeName';
 
          var DataAccessLevel = '<%=Session["__UserDataAccessLevel__"]%>';
@@ -550,6 +573,8 @@
             }
 
 
+            
+ 
 
           
         });
@@ -678,6 +703,17 @@
             const startDate = new Date(startDateValue);
             const endDate = new Date(endDateValue);
 
+            
+
+
+            var empId = $('#ddlEmpName').val();
+
+            if (empId !== "0") {
+                GetEmplyeeLeaveBalance(empId, formatLocalDate(startDate));
+            }
+
+
+
             // Check if both dates are valid
             if (startDate && endDate && startDate <= endDate) {
                 // Calculate the total days
@@ -691,7 +727,56 @@
                 document.getElementById('totalDay').value = '';
             }
         }
-        
+
+
+        function GetEmplyeeLeaveBalance(EmpId,startDate) {
+
+            var url = `${getEmplyeeLeaveBalanceUrl}?EmpId=${EmpId}&companyID=${CompanyID}&LeaveStartDate=${startDate}`;
+
+            ApiCall(url, token)
+                .then(function (response) {
+
+                    if (response.statusCode === 200) {
+                        var leaveData = response.data;
+                        console.log(leaveData);
+
+                        BindLeaveStatement(leaveData);
+                    }
+                    else {
+                        console.error('Error:', response.message);
+                    }
+
+                    $('.loaderCosting').hide();
+                })
+
+                .catch(function (error) {
+                    $('.loaderCosting').hide();
+                    console.error('Error occurred while fetching data:', error);
+                });
+        }
+
+        function BindLeaveStatement(leaveList) {
+            if (leaveList.length > 0) {
+                document.getElementById("empJoiningDate").textContent = leaveList[0].joiningDate;
+            }
+            let rows = "";
+
+            leaveList.forEach(item => {
+                rows += `
+            <tr>
+                <td>${item.leaveName}</td>
+                <td>${item.entitled}</td>
+                <td>${item.availed}</td>
+                <td>${item.balance}</td>
+            </tr>
+        `;
+            });
+
+            document.querySelector("#leaveStatementTableBody").innerHTML = rows;
+        }
+
+
+
         function GetCompany() {
             ApiCall(getCompanyUrl, token)
                 .then(function (response) {
@@ -1236,6 +1321,7 @@ function FetchDataForView(Id) {
                       <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Department:</strong> ${data.dptName}</div>
                       <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Shift:</strong> ${data.sftName}</div>
                       <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Employee Type:</strong> ${data.empType}</div>
+                      <div class="col-md-4 text-dark" style="font-size: 11px;"><strong>Joining Date:</strong> ${data.empJoiningdate}</div>
                     </div>
 
                     <h6 class="text-dark px-2 py-1 mt-1 hader-style">Leave Details</h6>
@@ -1313,7 +1399,7 @@ function FetchDataForView(Id) {
                         <strong>Enjoyed Date:</strong> ${lastLave.leaveStartDate} - ${lastLave.leaveEndDate}
                     </div>
                     <div class="col-md-4 text-dark" style="font-size: 11px;">
-                        <strong>Leave Type:</strong> ${lastLave.leaveTypeName || '-'}
+                        <strong>Leave Type:</strong> ${lastLave.leaveType || '-'}
                     </div>
                     <div class="col-md-4 text-dark" style="font-size: 11px;">
                         <strong>Total Days :</strong> ${lastLave.totalDays ?? '-'}
