@@ -3699,11 +3699,6 @@ namespace SigmaERP.All_Report
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
 
-
-
-
-
-
             }
             catch { }
         }
