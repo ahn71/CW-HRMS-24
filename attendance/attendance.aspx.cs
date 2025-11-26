@@ -387,8 +387,9 @@ namespace SigmaERP.attendance
                     string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
                     string attStatus = ddlAttendanceTemplate.SelectedValue.ToString();
 
+                    string[] Leave_Infos = classes.mZK_Shrink_Data_SqlServer.Check_Any_Leave_Are_Exist(AttDate.ToString("yyyy-MM-dd"), Get_Needed_EmployeeInfo[0]);
 
-                    if (attStatus =="Lv")
+                    if (Leave_Infos[0].ToString() == "0")
                     {
                         lblMessage.InnerText = "error->Approved Leave application must be needed before Give attendance";
                         return;
@@ -396,7 +397,11 @@ namespace SigmaERP.attendance
 
 
                     var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal, AttStatus: attStatus);
+           
 
+        
+
+               
 
                     lblMessage.InnerText = "success-> Successfully Manualy Attendance Counted";
 
