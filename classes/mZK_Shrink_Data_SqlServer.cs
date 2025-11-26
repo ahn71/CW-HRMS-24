@@ -568,9 +568,12 @@ namespace SigmaERP.classes
         {
             try
             {
+                //"select LACode,LeaveName from v_Leave_LeaveApplicationDetails where LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "' and IsApproved=1"
                 DataTable dt = new DataTable();
                 string[] Leave_Info = new string[2];
-                sqlDB.fillDataTable("select LACode,LeaveName from v_Leave_LeaveApplicationDetails where LeaveDate='" + SelectedDate + "' AND EmpId='" + EmpId + "' and IsApproved=1", dt);
+
+                string query = "select Id as LACode,ApplicationId as LeaveName  from Leave_LeaveApplications  where LeaveStartDate='" + SelectedDate + "' and approvalStatus=1 and  EmpId='" + EmpId + "' ";
+                sqlDB.fillDataTable(query, dt);
                 if (dt.Rows.Count > 0)
                 {
                     Leave_Info[0] = dt.Rows[0]["LACode"].ToString();
