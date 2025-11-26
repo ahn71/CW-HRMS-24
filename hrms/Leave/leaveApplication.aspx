@@ -270,7 +270,7 @@
                                                </div>
                                            </div>
                                        </div>
-                                       <div class="col-lg-3 col-md-6 col-sm-12">
+                                       <div class="col-lg-3 col-md-6 col-sm-12 d-none">
                                            <div class="text-dark px-2 py-1 hader-style d-flex justify-content-between ">
                                                <h6 class=" d-inline">Leave Statement</h6>
                                            <h6 class="text-dark px-2 py-1 hader-style d-inline">Emp Joining date: 
@@ -854,7 +854,7 @@
                  row.action = `
             <div class="actions">
                 <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.id}"><i class="uil uil-eye"></i></a></li>
+                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.id}"  data-start="${row.leaveStartDate}"><i class="uil uil-eye"></i></a></li>
                     <li><a href="javascript:void(0)" data-id="${row.id}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li> 
                 </ul>
             </div>
@@ -911,7 +911,8 @@
 
              $('.adv-table').off('click', '.view-btn').on('click', '.view-btn', function () {
                  const id = $(this).data('id');
-                 FetchDataForView(id);
+                 const startDate = $(this).data('start');
+                 FetchDataForView(id, startDate);
                  console.log('View button clicked for ID:', id);
               });
 
@@ -1245,8 +1246,8 @@
             });
         }
 
-function FetchDataForView(Id) {
-    ApiCall(`${getLeaveByIdUrl}/${Id}?CompanyId=${CompanyID}`, token)
+function FetchDataForView(Id,startDate) {
+    ApiCall(`${getLeaveByIdUrl}/${Id}?CompanyId=${CompanyID}&LeaveStartDate=${startDate}`, token)
         .then(function (responseData) {
             var data = responseData.data.leaveInfo;
             var balance = responseData.data.balance;

@@ -253,7 +253,7 @@ namespace SigmaERP.hrms.Leave
                                 SUM(CASE WHEN MONTH(elb.GenerateDate) = 4 THEN elb.EarnLeaveDays ELSE 0 END) AS April,
                                 SUM(CASE WHEN MONTH(elb.GenerateDate) = 5 THEN elb.EarnLeaveDays ELSE 0 END) AS May,
                                 SUM(CASE WHEN MONTH(elb.GenerateDate) = 6 THEN elb.EarnLeaveDays ELSE 0 END) AS June,
-                                SUM(CASE WHEN MONTH(elb.GenerateDate) = 7 THEN elb.EarnLeaveDays ELSE 0 END) AS July,
+                                SUM(CASE WHEN MONTH(elb.GenerateDate) = 7 THEN elb.EarnLeaveDays ELSE 0 END) AS Julay,
                                 SUM(CASE WHEN MONTH(elb.GenerateDate) = 8 THEN elb.EarnLeaveDays ELSE 0 END) AS August,
                                 SUM(CASE WHEN MONTH(elb.GenerateDate) = 9 THEN elb.EarnLeaveDays ELSE 0 END) AS September,
                                 SUM(CASE WHEN MONTH(elb.GenerateDate) = 10 THEN elb.EarnLeaveDays ELSE 0 END) AS October,
