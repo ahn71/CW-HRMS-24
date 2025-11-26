@@ -388,6 +388,13 @@ namespace SigmaERP.attendance
                     string attStatus = ddlAttendanceTemplate.SelectedValue.ToString();
 
 
+                    if (attStatus =="Lv")
+                    {
+                        lblMessage.InnerText = "error->Approved Leave application must be needed before Give attendance";
+                        return;
+                    }
+
+
                     var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal, AttStatus: attStatus);
 
 
