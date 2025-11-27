@@ -389,7 +389,7 @@ namespace SigmaERP.attendance
 
                     string[] Leave_Infos = classes.mZK_Shrink_Data_SqlServer.Check_Any_Leave_Are_Exist(AttDate.ToString("yyyy-MM-dd"), Get_Needed_EmployeeInfo[0]);
 
-                    if (Leave_Infos[0].ToString() == "0")
+                    if (attStatus=="Lv"  && Leave_Infos[0].ToString() == "0")
                     {
                         lblMessage.InnerText = "error->Approved Leave application must be needed before Give attendance";
                         return;
