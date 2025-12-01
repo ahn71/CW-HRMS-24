@@ -270,7 +270,7 @@
                                                </div>
                                            </div>
                                        </div>
-                                       <div class="col-lg-3 col-md-6 col-sm-12 d-none">
+                                       <div class="col-lg-3 col-md-6 col-sm-12">
                                            <div class="text-dark px-2 py-1 hader-style d-flex justify-content-between ">
                                                <h6 class=" d-inline">Leave Statement</h6>
                                            <h6 class="text-dark px-2 py-1 hader-style d-inline">Emp Joining date: 
@@ -572,11 +572,26 @@
 
             }
 
-
-            
  
 
           
+        });
+
+
+        $('#ddlEmpName').on('change', function () {
+
+            var startDateValue = $.trim($('#datepicker').val());
+
+            var startDate = startDateValue
+                ? new Date(startDateValue)
+                : new Date();   // fallback today
+
+            var empId = $(this).val();
+
+            if (empId && empId !== "0") {
+                GetEmplyeeLeaveBalance(empId, formatLocalDate(startDate));
+            }
+
         });
 
        
@@ -872,7 +887,8 @@
 
              const columns = [
                  { "name": "serial", "title": "SL", "breakpoints": "xs sm", "type": "number", "className": "userDatatable-content" }, 
-                    { "name": "empPicture", "title": "User", "className": "userDatatable-content" }, 
+                 { "name": "empPicture", "title": "User", "className": "userDatatable-content" }, 
+                 { "name": "empCardNo", "title": "Employee ID", "className": "userDatatable-content" },
                  { "name": "dptName", "title": "Department", "className": "userDatatable-content" },
                  { "name": "leaveName", "title": "Leave Type", "className": "userDatatable-content" },
                  { "name": "leaveStartDate", "title": "Start Date", "className": "userDatatable-content" },
