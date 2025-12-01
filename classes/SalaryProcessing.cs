@@ -1119,7 +1119,7 @@ namespace SigmaERP.classes
                     if (rule["maxAbsent"] != null)
                     {
                         int maxAbsent = (int)rule["maxAbsent"];
-                        if (absentDays < maxAbsent)
+                        if (absentDays <= maxAbsent)
                         {
                             if (rule["deductFrom"].ToString() == "Basic")
                             {
