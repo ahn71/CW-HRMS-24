@@ -735,7 +735,7 @@ namespace SigmaERP.attendance
         }
         private string ConvertTo24Hour(string hourStr, string minuteStr, string amPm)
         {
-            if (hourStr == "00" && minuteStr == "00")
+            if ((hourStr == "00" && minuteStr == "00") ||( hourStr=="" && minuteStr==""))
                 return "00:00";
             int hour = int.Parse(hourStr.Trim());
             int minute = int.Parse(minuteStr.Trim());
@@ -777,8 +777,8 @@ namespace SigmaERP.attendance
                     formData["FromDate"] = fromDate;
                     formData["ToDate"] = toDate;
                     formData["CompanyId"] = companyId;
-                    formData["Inpunch"] = inPunch;
-                    formData["Outpunch"] = outPunch;
+                    formData["Inpunch"] = inPunch == "00:00" ? null : inPunch;
+                    formData["Outpunch"] = outPunch == "00:00" ? null : outPunch;
                     formData["AttStatus"] = AttStatus;
 
                     // ✅ Send form-encoded POST request
