@@ -1272,6 +1272,10 @@ namespace SigmaERP.classes
             catch { }
         }
 
+
+
+
+
         public static void loadEmpCardNoByCompany(DropDownList dl, string CompanyId)
         {
             try

@@ -1165,6 +1165,7 @@
     <Content Include="hrms\attendance\roster\roster-entry.aspx" />
     <Content Include="hrms\attendance\roster\roster-list.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
+    <Content Include="hrms\Leave\LieuLeaveReport.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
     <Content Include="hrms\assets\theme_assets\js\apiHelper.js" />
@@ -3731,6 +3732,13 @@
       <DependentUpon>dashbordUser.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\DTO\ShiftDTO.cs" />
+    <Compile Include="hrms\Leave\LieuLeaveReport.aspx.cs">
+      <DependentUpon>LieuLeaveReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\LieuLeaveReport.aspx.designer.cs">
+      <DependentUpon>LieuLeaveReport.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\packages\AppSettings.aspx.cs">
       <DependentUpon>AppSettings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
