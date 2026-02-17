@@ -108,6 +108,14 @@
                  </div>
                   <% } %>
 
+                    <% if (IsRouteExists("leave/lieu-leave"))
+               { %>
+                 <div runat="server" id="div1" class="col-lg-2 col-md-3 col-sm-6" title="Lieu leave Report">
+                      <a class="ds_Settings_Basic_Text" href="/hrms/leave/lieu-leave"><i class="uil uil-file-bookmark-alt iconStyle"></i><br />Lieu leave Report</a>
+                 </div>
+
+             <% } %>
+
                 <% if (IsRouteExists("leave/el-processing"))
                    { %>
                     <%--      <div class=" col-lg-2 col-md-3 col-sm-6" title="Official Purpose Report">

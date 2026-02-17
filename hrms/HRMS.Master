@@ -870,6 +870,15 @@
                                             </li>
                                             <% } %>
 
+                                            
+                                            <% if (IsRouteExists("leave/lieu-leave"))
+                                                { %>
+                                            <li class="">
+                                                <a href="leave/lieu-leave" runat="server">Lieu leave Report</a>
+                                            </li>
+                                            <% } %>
+
+
                                             <% if (IsRouteExists("leave/leave-status-report"))
                                                 { %>
                                             <li class="">

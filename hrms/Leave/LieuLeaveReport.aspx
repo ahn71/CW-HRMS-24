@@ -7,12 +7,16 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     
     <style>
+        * {
+    box-sizing: border-box;
+}
         .report-container {
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 25px;
             margin: 20px 0;
+            overflow-x: hidden;
         }
         
         .page-header {
@@ -38,13 +42,16 @@
         .form-row {
             display: flex;
             flex-wrap: wrap;
-            margin: 0 -10px;
+            margin-right: -10px; 
+            margin-left: -10px;
+            
         }
         
         .form-group {
             flex: 0 0 25%;
             padding: 0 10px;
             margin-bottom: 20px;
+            box-sizing: border-box;
         }
         
         .form-group label {
@@ -149,6 +156,7 @@
             width: 100%;
             border-collapse: collapse;
             background: white;
+            table-layout: fixed;
         }
         
         .gridview th {
@@ -174,6 +182,12 @@
         
         .gridview tr:hover {
             background-color: #e9ecef;
+        }
+        .gridview th:first-child,
+        .gridview td:first-child {
+            width: 50px;
+            max-width: 50px;
+            text-align: center;
         }
         
         @media (max-width: 1200px) {
@@ -242,7 +256,7 @@
                 <div class="filter-section">
                     <div class="form-row">
                         <!-- Company Dropdown -->
-                        <div class="form-group">
+                        <div class="col-lg-3">
                             <label>Company <span class="required">*</span></label>
                             <asp:DropDownList ID="ddlCompany" runat="server" CssClass="form-control" 
                                 AutoPostBack="true">
@@ -250,7 +264,7 @@
                         </div>
                         
                         <!-- Employee Dropdown -->
-                        <div class="form-group">
+                        <div class="col-lg-3">
                             <label>Employee</label>
                             <asp:DropDownList ID="ddlEmployee" runat="server" CssClass="form-control select2">
                                 <asp:ListItem Value="0" Text="All Employees"></asp:ListItem>
@@ -258,7 +272,7 @@
                         </div>
                         
                         <!-- Department Dropdown -->
-                        <div class="form-group">
+                        <div class="col-lg-3">
                             <label>Department</label>
                             <asp:DropDownList ID="ddlDepartment" runat="server" CssClass="form-control select2" 
                                 AutoPostBack="true">
@@ -267,14 +281,14 @@
                         </div>
                         
                         <!-- Designation Dropdown -->
-                        <div class="form-group">
+                        <div class="col-lg-3">
                             <label>Designation</label>
                             <asp:DropDownList ID="ddlDesignation" runat="server" CssClass="form-control select2">
                                 <asp:ListItem Value="0" Text="All Designations"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         
-                        <!-- From Date -->
+                       <%-- <!-- From Date -->
                         <div class="form-group">
                             <label>From Date</label>
                             <asp:TextBox ID="txtFromDate" runat="server" CssClass="form-control" 
@@ -286,7 +300,7 @@
                             <label>To Date</label>
                             <asp:TextBox ID="txtToDate" runat="server" CssClass="form-control" 
                                 TextMode="Date"></asp:TextBox>
-                        </div>
+                        </div>--%>
                     </div>
                     
                     <div class="btn-group">
@@ -300,38 +314,42 @@
             <Triggers>
                 <asp:AsyncPostBackTrigger ControlID="ddlCompany" EventName="SelectedIndexChanged" />
                 <asp:AsyncPostBackTrigger ControlID="ddlDepartment" EventName="SelectedIndexChanged" />
+                <asp:PostBackTrigger ControlID="btnExport" />
             </Triggers>
         </asp:UpdatePanel>
         
-        <asp:UpdatePanel ID="UpdatePanelGrid" runat="server" UpdateMode="Conditional">
-            <ContentTemplate>
-                <div class="grid-container">
-                    <asp:GridView ID="gvLieuLeaveReport" runat="server" 
-                        CssClass="gridview" 
-                        AutoGenerateColumns="false"
-                        EmptyDataText="No records found"
-                      
-                       >
-                        <Columns>
-                            <asp:BoundField DataField="EmployeeCode" HeaderText="Employee Code" />
-                            <asp:BoundField DataField="EmployeeName" HeaderText="Employee Name" />
-                            <asp:BoundField DataField="Department" HeaderText="Department" />
-                            <asp:BoundField DataField="Designation" HeaderText="Designation" />
-                            <asp:BoundField DataField="OTDate" HeaderText="OT Date" DataFormatString="{0:dd-MMM-yyyy}" />
-                            <asp:BoundField DataField="OTHours" HeaderText="OT Hours" />
-                            <asp:BoundField DataField="LieuLeaveEarned" HeaderText="Lieu Leave Earned" />
-                            <asp:BoundField DataField="LieuLeaveUsed" HeaderText="Lieu Leave Used" />
-                            <asp:BoundField DataField="LieuLeaveBalance" HeaderText="Balance" />
-                            <asp:BoundField DataField="Status" HeaderText="Status" />
-                        </Columns>
-                        <PagerStyle CssClass="pagination" HorizontalAlign="Center" />
-                    </asp:GridView>
-                </div>
-            </ContentTemplate>
-            <Triggers>
-                <asp:AsyncPostBackTrigger ControlID="btnSearch" EventName="Click" />
-            </Triggers>
-        </asp:UpdatePanel>
+          <asp:UpdatePanel ID="UpdatePanelGrid" runat="server" UpdateMode="Conditional">
+              <ContentTemplate>
+                  <div class="grid-container">
+                      <asp:GridView ID="gvLieuLeaveReport" runat="server"
+                          CssClass="gridview"
+                          AutoGenerateColumns="false"
+                          EmptyDataText="No records found"
+                          AllowPaging="true"
+                          PageSize="11" OnPageIndexChanging="gvLieuLeaveReport_PageIndexChanging">
+                          <Columns>
+                              <asp:TemplateField HeaderText="SL">
+                                  <ItemTemplate>
+                                      <%# Container.DataItemIndex + 1 + (gvLieuLeaveReport.PageIndex * gvLieuLeaveReport.PageSize) %>
+                                  </ItemTemplate>
+                              </asp:TemplateField>
+                               <asp:BoundField DataField="EmpCard" HeaderText="CardNum" />
+                              <asp:BoundField DataField="EmpName" HeaderText="Employee Name" />
+                               <asp:BoundField DataField="DsgName" HeaderText="Designation" />
+                              <asp:BoundField DataField="DptName" HeaderText="Department" />
+                              <asp:BoundField DataField="EarnedLeave" HeaderText="Lieu Leave Earned" />
+                              <asp:BoundField DataField="UsedLeave" HeaderText="Lieu Leave Used" />
+                              <asp:BoundField DataField="BalanceLeave" HeaderText="Balance" />
+
+                          </Columns>
+                          <PagerStyle CssClass="pagination" HorizontalAlign="Center" />
+                      </asp:GridView>
+                  </div>
+              </ContentTemplate>
+              <Triggers>
+                  <asp:AsyncPostBackTrigger ControlID="btnSearch" EventName="Click" />
+              </Triggers>
+          </asp:UpdatePanel>
     </div>
     
     <div class="loading-overlay" id="loadingOverlay">
@@ -382,12 +400,12 @@
             var toDate = today.toISOString().split('T')[0];
             
             // Set values if empty
-            if (!$('#<%= txtFromDate.ClientID %>').val()) {
+           <%-- if (!$('#<%= txtFromDate.ClientID %>').val()) {
                 $('#<%= txtFromDate.ClientID %>').val(fromDate);
             }
             if (!$('#<%= txtToDate.ClientID %>').val()) {
                 $('#<%= txtToDate.ClientID %>').val(toDate);
-            }
+            }--%>
         }
     </script>
 
