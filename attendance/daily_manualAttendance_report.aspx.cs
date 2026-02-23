@@ -99,7 +99,7 @@ namespace SigmaERP.attendance
             string[] Tdmy = txtTDate.Text.Split('-');
             string F_YMD = Fdmy[2] + "-" + Fdmy[1]+"-"+ Fdmy[0];
             string T_YMD = Tdmy[2] + "-" + Tdmy[1] + "-" + Tdmy[0];
-            string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and ar.AttStatus='" + rblAttStatus.SelectedValue + "' ";
+            string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and at.AttStatus='" + rblAttStatus.SelectedValue + "' ";
             //if (classes.commonTask.IsWeekendORHoliday(y + "-" + m + "-" + d))
             //{
             //    if (rblAttStatus.SelectedValue == "P")
@@ -113,7 +113,7 @@ namespace SigmaERP.attendance
             //        AttStatus = "";
             //}
 
-            string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and ar.EmpTypeId=" + rblEmpType.SelectedValue + " ";
+            string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and at.EmpTypeId=" + rblEmpType.SelectedValue + " ";
             CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue.ToString();
 
 
@@ -135,7 +135,13 @@ namespace SigmaERP.attendance
 
 
             if (txtCardNo.Text.Trim().Length == 0)
-                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "' and ar.CompanyId " + CompanyList + "   AND ar.DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + "  "+ unitCondition + " order by convert(int,ar.DptCode),convert(int,ar.GId), convert(int,ar.SftId),ar.CustomOrdering ";               
+            {
+                 query = @"select at.EmpId,SUBSTRING(cs.EmpCardNo,10,6) as EmpCardNo, ei.EmpName,at.DptId,dpt.DptName,at.DsgId,dsg.DsgName,at.SftId,SftName,cs.GId,'' as GName,at.CompanyId,c.CompanyName,c.Address, CONVERT(VARCHAR(10), at.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,u.FirstName) as FirstName,LastName from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus cs on ei.EmpId=cs.EmpId and IsActive=1 inner join HRD_Designation dsg on cs.DsgId=dsg.DsgId inner join HRD_Department dpt on cs.DptId=dpt.DptId inner join tblAttendanceRecord at on cs.EmpId=at.EmpId inner join HRD_Shift sft on at.SftId=sft.SftId inner join HRD_CompanyInfo c on at.CompanyId=c.CompanyId 
+left join tblAttendanceRecordPunchLog pl on at.EmpId = pl.EmpId and at.ATTDate = pl.AttDate  left join users u on at.UserId = u.UserId where at.AttManual = 'MC'  and at.ATTDate>='" + F_YMD + "' and at.ATTDate<='" + T_YMD + "' and at.CompanyId " + CompanyList + "   AND at.DptId " + DepartmentList + "  " + EmpTypeID + " " + AttStatus + " " + ShiftName + "  " + unitCondition + "    order by convert(int,dpt.DptCode),convert(int,at.GId), convert(int,at.SftId),cs.CustomOrdering ";
+
+                query = "select   ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "' and ar.CompanyId " + CompanyList + "   AND ar.DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + "  " + unitCondition + " order by convert(int,ar.DptCode),convert(int,ar.GId), convert(int,ar.SftId),ar.CustomOrdering ";
+            }
+                      
             else
             {
                 if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
@@ -145,11 +151,18 @@ namespace SigmaERP.attendance
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
+
+                //                query = @"select at.EmpId,SUBSTRING(cs.EmpCardNo,10,6) as EmpCardNo, ei.EmpName,at.DptId,dpt.DptName,at.DsgId,dsg.DsgName,at.SftId,SftName,cs.GId,'' as GName,at.CompanyId,c.CompanyName,c.Address, CONVERT(VARCHAR(10), at.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,u.FirstName) as FirstName,LastName from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus cs on ei.EmpId=cs.EmpId and IsActive=1 inner join HRD_Designation dsg on cs.DsgId=dsg.DsgId inner join HRD_Department dpt on cs.DptId=dpt.DptId inner join tblAttendanceRecord at on cs.EmpId=at.EmpId inner join HRD_Shift sft on at.SftId=sft.SftId inner join HRD_CompanyInfo c on at.CompanyId=c.CompanyId 
+                //left join tblAttendanceRecordPunchLog pl on at.EmpId = pl.EmpId and at.ATTDate = pl.AttDate  left join users u on at.UserId = u.UserId where at.AttManual = 'MC'  and at.ATTDate>='" + F_YMD + "' and at.ATTDate<='" + T_YMD + "' and at.CompanyId " + CompanyList + "   and cs.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' " + AttStatus + " " + unitCondition + "    order by convert(int,dpt.DptCode),convert(int,at.GId), convert(int,at.SftId),cs.CustomOrdering ";
+
+
                 query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where ar.AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "'  and ar.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and ar.CompanyId " + CompanyList + " " + AttStatus + "  " + unitCondition + " ";
-               
+
             }
-            sqlDB.fillDataTable(query, dt = new DataTable());
-            if (dt.Rows.Count == 0)
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            //sqlDB.fillDataTable(query, dt = new DataTable());
+            if (dt == null)
             {
                 lblMessage.InnerText = "warning->No Manual Attendance Available";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);

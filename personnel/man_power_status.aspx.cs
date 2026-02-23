@@ -197,7 +197,7 @@ namespace SigmaERP.personnel
                     else setPredicate += ",'" + lstSelected.Items[b].Value + "'";
                 }
                 string shiftlist=(ddlShift.SelectedValue=="00")?"":" and SftId='"+ddlShift.SelectedValue+"'";
-                string EmpTypeID = rblEmpType.SelectedValue.Equals("All") ? "" : " and EmpTypeId ="+rblEmpType.SelectedValue+"";
+                string EmpTypeID = rblEmpType.SelectedValue.Equals("All") ? "" : " and cs.EmpTypeId ="+rblEmpType.SelectedValue+"";
                 //dt = new DataTable();
                 //string sqlCmd = "Select Max(SN) as SN,EmpId From  v_ManPowerStatus where  DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " and EmpStatus in('1','8') and ActiveSalary='True' and IsActive=1 Group by EmpId";
                 //sqlDB.fillDataTable(sqlCmd, dt);
@@ -233,9 +233,12 @@ namespace SigmaERP.personnel
                 //}
                 string ownempId = AccessControl.hasOwnEmpIdWithOtherDepartment();
                 dt = new DataTable();
-               string sqlCmd= "select DptId,DptName,DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from v_EmployeeDetails where DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + " "+ ownempId + " and IsActive=1 and EmpStatus in(1,8)" +
-                    " Group by DptId,DptName,DsgId,DsgName";
-               //sqlCmd = "Select * from v_ManPowerStatus where SN " + setSn + "";
+                string sqlCmd = "select DptId,DptName,DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from v_EmployeeDetails where DptId " + setPredicate + " " + shiftlist + " " + EmpTypeID + "  and IsActive=1 and EmpStatus in(1,8)" +
+                     " Group by DptId,DptName,DsgId,DsgName";
+
+                //                string sqlCmd = @"select cs.DptId,dpt.DptName,cs.DsgId,DsgName,sum( case when(Sex='Female') then 1 else 0 end) as Female ,sum( case when(ep.Sex='Male') then 1 else 0 end) as Male,sum( case when(Sex='Female') then 1 else 0 end) + sum( case when(Sex='Male') then 1 else 0 end) as Total from Personnel_EmployeeInfo ei inner join Personnel_EmpPersonnal ep on ei.EmpId=ep.EmpId inner join Personnel_EmpCurrentStatus cs on ei.EmpId=cs.EmpId and IsActive=1 inner join HRD_Designation dsg on cs.DsgId=dsg.DsgId inner join HRD_Department dpt on cs.DptId=dpt.DptId 
+                //where cs.DptId" + setPredicate + "  or cs.EmpId = 'null' " + EmpTypeID + " " + ownempId + " and IsActive = 1 and cs.EmpStatus in(1, 8) Group by cs.DptId,DptName,cs.DsgId,DsgName";
+                //sqlCmd = "Select * from v_ManPowerStatus where SN " + setSn + "";
                 sqlDB.fillDataTable(sqlCmd, dt);
                 Session["__ManPowerStatus__"] = dt;
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=ManPowerStatus-"+rblEmpType.SelectedItem.Text+"');", true);  //Open New Tab for Sever side code
