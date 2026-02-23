@@ -7,10 +7,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SigmaERP.payroll.salary {
+namespace SigmaERP.personnel {
     
     
-    public partial class salary_sheet {
+    public partial class increment_sheet_v2 {
         
         /// <summary>
         /// ScriptManager1 control.
@@ -40,15 +40,6 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblMessage;
         
         /// <summary>
-        /// heading control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl heading;
-        
-        /// <summary>
         /// up1 control.
         /// </summary>
         /// <remarks>
@@ -67,15 +58,6 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl WarningMessage;
         
         /// <summary>
-        /// tblGenerateType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblGenerateType;
-        
-        /// <summary>
         /// rblReportType control.
         /// </summary>
         /// <remarks>
@@ -85,202 +67,103 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.RadioButtonList rblReportType;
         
         /// <summary>
-        /// chkForAllCompany control.
+        /// tblGenerateType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkForAllCompany;
+        protected global::System.Web.UI.HtmlControls.HtmlTable tblGenerateType;
         
         /// <summary>
-        /// rblSheet control.
+        /// trCompanyName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblSheet;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trCompanyName;
         
         /// <summary>
-        /// trForCompanyList control.
+        /// ddlCompany control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trForCompanyList;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCompany;
         
         /// <summary>
-        /// ddlCompanyName control.
+        /// rbEmpList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCompanyName;
+        protected global::System.Web.UI.WebControls.RadioButtonList rbEmpList;
         
         /// <summary>
-        /// rblGenerateType control.
+        /// trIncrementType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblGenerateType;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trIncrementType;
         
         /// <summary>
-        /// ddlSelectMonth control.
+        /// rblIncrementType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSelectMonth;
+        protected global::System.Web.UI.WebControls.RadioButtonList rblIncrementType;
         
         /// <summary>
-        /// txtEmpCardNo control.
+        /// trCard control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmpCardNo;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trCard;
         
         /// <summary>
-        /// chkbanksheet control.
+        /// ddlCardNo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow chkbanksheet;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCardNo;
         
         /// <summary>
-        /// trHideForIndividualLabel control.
+        /// trMonth control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl trHideForIndividualLabel;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trMonth;
         
         /// <summary>
-        /// rblEmployeeType control.
+        /// ddlMonthName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblEmployeeType;
+        protected global::System.Web.UI.WebControls.DropDownList ddlMonthName;
         
         /// <summary>
-        /// rblPaymentType control.
+        /// divdepartment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblPaymentType;
-        
-        /// <summary>
-        /// chkIsBankfordQatar control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkIsBankfordQatar;
-        
-        /// <summary>
-        /// chkBankForwardingLetter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetter;
-        
-        /// <summary>
-        /// chkExcel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkExcel;
-        
-        /// <summary>
-        /// lblLanguage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblLanguage;
-        
-        /// <summary>
-        /// rblLanguage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblLanguage;
-        
-        /// <summary>
-        /// chkBankForwardingLetterXL control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkBankForwardingLetterXL;
-        
-        /// <summary>
-        /// chkBKashForwardingLetterXL control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkBKashForwardingLetterXL;
-        
-        /// <summary>
-        /// bankshhet control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow bankshhet;
-        
-        /// <summary>
-        /// ddlBankSheet control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlBankSheet;
-        
-        /// <summary>
-        /// pnl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnl1;
-        
-        /// <summary>
-        /// divDepartmentList control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDepartmentList;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divdepartment;
         
         /// <summary>
         /// lstAll control.
@@ -337,30 +220,39 @@ namespace SigmaERP.payroll.salary {
         protected global::System.Web.UI.WebControls.ListBox lstSelected;
         
         /// <summary>
-        /// UpdateProgress1 control.
+        /// btnpreview control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdateProgress UpdateProgress1;
+        protected global::System.Web.UI.WebControls.Button btnpreview;
         
         /// <summary>
-        /// btnPreview control.
+        /// btnPreviewDetails control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPreview;
+        protected global::System.Web.UI.WebControls.Button btnPreviewDetails;
         
         /// <summary>
-        /// Button3 control.
+        /// bntExcel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button3;
+        protected global::System.Web.UI.WebControls.Button bntExcel;
+        
+        /// <summary>
+        /// btnClose control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnClose;
     }
 }

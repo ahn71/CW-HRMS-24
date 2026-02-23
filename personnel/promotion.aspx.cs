@@ -239,7 +239,7 @@ namespace SigmaERP.personnel
         }
         protected void ddlNewDepartment_SelectedIndexChanged(object sender, EventArgs e)
         {
-            classes.commonTask.SearchDesignation(ddlNewDepartment.SelectedValue, ddlNewDesignation);
+            classes.commonTask.SearchDesignation(ddlNewDesignation);
             ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
 
         }

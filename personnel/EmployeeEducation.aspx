@@ -82,6 +82,10 @@
                                 <asp:Button ID="btnSaveEducation"  ClientIDMode="Static" class="emp_btn Ptbut" runat="server" Text="Save" OnClientClick="return InputValidation();" OnClick="btnSaveEducation_Click" />
                             </th>
                            <th><asp:Button ID="btnCloseEmpEducation" ClientIDMode="Static"  class="emp_btn Ptbut" runat="server" Text="Close" OnClick="btnCloseEmpEducation_Click"  /></th>
+                              <th>
+                                 <asp:Button ID="btnNext" ClientIDMode="Static" class="emp_btn Ptbut" runat="server" Text=">>"  ToolTip="Next Page" OnClick="btnNext_Click"/>
+                                
+                            </th>
                             
                             
                         </tr>
@@ -128,6 +132,10 @@
             {
 
             }
+        }
+        function goToNewTabandWindowsClose(url) {
+            window.open(url);
+            window.close();
         }
     </script>
 </asp:Content>

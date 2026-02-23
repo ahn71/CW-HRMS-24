@@ -10,7 +10,7 @@
 namespace SigmaERP.personnel {
     
     
-    public partial class EmployeeEducation {
+    public partial class EmployeeNominee {
         
         /// <summary>
         /// ScriptManager1 control.
@@ -67,40 +67,112 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.UpdatePanel UpdatePanel9;
         
         /// <summary>
-        /// txtDegree control.
+        /// txtNomineeName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDegree;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeName;
         
         /// <summary>
-        /// txtInstitute control.
+        /// txtNomineeNameBN control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtInstitute;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeNameBN;
         
         /// <summary>
-        /// txtYear control.
+        /// txtNomineeRelation control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtYear;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeRelation;
         
         /// <summary>
-        /// txtResult control.
+        /// txtNomineeRelationBN control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtResult;
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeRelationBN;
+        
+        /// <summary>
+        /// txtNomineeNID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeNID;
+        
+        /// <summary>
+        /// txtNomineeAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeAddress;
+        
+        /// <summary>
+        /// txtNomineeAddressBN control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeAddressBN;
+        
+        /// <summary>
+        /// txtNomineeMobileNo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeMobileNo;
+        
+        /// <summary>
+        /// ddlNomineeGender control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlNomineeGender;
+        
+        /// <summary>
+        /// txtNomineeAge control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNomineeAge;
+        
+        /// <summary>
+        /// imgProfile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgProfile;
+        
+        /// <summary>
+        /// FileUpload1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload FileUpload1;
         
         /// <summary>
         /// btnPrevious control.
@@ -112,30 +184,21 @@ namespace SigmaERP.personnel {
         protected global::System.Web.UI.WebControls.Button btnPrevious;
         
         /// <summary>
-        /// btnSaveEducation control.
+        /// btnSaveNominee control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSaveEducation;
+        protected global::System.Web.UI.WebControls.Button btnSaveNominee;
         
         /// <summary>
-        /// btnCloseEmpEducation control.
+        /// btnCloseEmpNominee control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCloseEmpEducation;
-        
-        /// <summary>
-        /// btnNext control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnNext;
+        protected global::System.Web.UI.WebControls.Button btnCloseEmpNominee;
     }
 }

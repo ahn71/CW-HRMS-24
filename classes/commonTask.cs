@@ -72,6 +72,35 @@ namespace SigmaERP.classes
             }
         }
 
+        public static DataTable getSignatures(string CompanyId, string Sheet)
+        {
+            try
+            {
+                sqlCmd = @"SELECT  Signature
+FROM HRD_SignaturesOfSheets
+WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
+    CHARINDEX('" + CompanyId + @"', Companies) > 0  order by Ordering";
+                dt = new DataTable();
+                sqlDB.fillDataTable(sqlCmd, dt);
+                return dt;
+            }
+            catch { return null; }
+        }
+        public static DataTable getSignaturesBN(string CompanyId, string Sheet)
+        {
+            try
+            {
+                sqlCmd = @"SELECT SignatureBN as Signature
+FROM HRD_SignaturesOfSheets
+WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
+    CHARINDEX('" + CompanyId + @"', Companies) > 0  order by Ordering";
+                dt = new DataTable();
+                sqlDB.fillDataTable(sqlCmd, dt);
+                return dt;
+            }
+            catch { return null; }
+        }
+
         public static List<string> ConvertFilesToBase64(System.Web.UI.WebControls.FileUpload fileUpload)
         {
             List<string> base64Files = new List<string>();
@@ -878,6 +907,21 @@ namespace SigmaERP.classes
             catch { }
         }
 
+        public static void SearchDesignation( DropDownList dl)
+        {
+            try
+            {
+                da = new SqlDataAdapter("SELECT DsgId, DsgName FROM HRD_Designation", sqlDB.connection);
+                da.Fill(dt = new DataTable());
+                dl.DataValueField = "DsgId";
+                dl.DataTextField = "DsgName";
+                dl.DataSource = dt;
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
         public static void SearchLine(string DptId, DropDownList dl)
         {
             try
@@ -1539,9 +1583,11 @@ namespace SigmaERP.classes
         {
             try
             {
-                sqlCmd = @"SELECT DISTINCT CASE 
-        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
-        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'i' AND CompanyId = '" + CompanyId + "' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
+                //        sqlCmd = @"SELECT DISTINCT CASE 
+                //WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+                //ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'i' AND CompanyId = '" + CompanyId + "' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
+
+                sqlCmd = "	SELECT FORMAT(DATEFROMPARTS(YEAR(updatedDate), MONTH(updatedDate), 1), 'MMMM-yyyy') AS MonthName, DATEFROMPARTS(YEAR(updatedDate), MONTH(updatedDate), 1) AS EffectiveMonth FROM Personnel_EmpCurrentStatus WHERE updatedDate IS NOT NULL AND CompanyId = '"+CompanyId+"' AND UpdateType IN(1,2,3, 4) GROUP BY YEAR(updatedDate), MONTH(updatedDate) ORDER BY EffectiveMonth";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";
@@ -2729,7 +2775,8 @@ namespace SigmaERP.classes
             string rpermissionId = string.Join(",", permissionID);
             try
             {
-                sqlDB.fillDataTable("select userPermId,PermissionName from userpermission where userPermId in("+ rpermissionId + ")", dt = new DataTable());
+                string query = "select userPermId,PermissionName from userpermission where userPermId in(" + rpermissionId + ")";
+;                sqlDB.fillDataTable(query, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataValueField = "userPermId";
                 dl.DataTextField = "PermissionName";

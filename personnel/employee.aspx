@@ -354,28 +354,7 @@
                                         </td>
                                     </tr>
                                     
-                                   
-                                </table>
-                            </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                    </div>
-                    <div class="col-lg-5">
-                    <div class="employee_box_center">
-                       
-                                <div>
-                                     <asp:UpdatePanel ID="UpdatePanel4" runat="server" UpdateMode="Conditional">
-                            <Triggers>
-                               <%-- <asp:AsyncPostBackTrigger ControlID="btnSave"/>--%>
-                                <asp:AsyncPostBackTrigger ControlID="ddlEmpCardNo" />
-                                <%--<asp:AsyncPostBackTrigger ControlID="ddlEmpType" />--%>
-
-                                <asp:AsyncPostBackTrigger ControlID="btnNew" />
-                                <asp:AsyncPostBackTrigger ControlID="btnFindEmployee" />
-                            </Triggers>
-                            <ContentTemplate>
-                                <table class="employee_table" style="height: 578px;">
-                                     <tr>
+                                                    <tr>
                                         <td>Joining Date <span class="requerd1">*</span>
                                         </td>
                                         <td>:
@@ -396,6 +375,27 @@
                                             <asp:CalendarExtender ID="CalendarExtender6" Format="d-M-yyyy" runat="server" TargetControlID="txtExpireDate"></asp:CalendarExtender>
                                         </td>
                                     </tr>
+                                </table>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                    </div>
+                    <div class="col-lg-5">
+                    <div class="employee_box_center">
+                       
+                                <div>
+                                     <asp:UpdatePanel ID="UpdatePanel4" runat="server" UpdateMode="Conditional">
+                            <Triggers>
+                               <%-- <asp:AsyncPostBackTrigger ControlID="btnSave"/>--%>
+                                <asp:AsyncPostBackTrigger ControlID="ddlEmpCardNo" />
+                                <%--<asp:AsyncPostBackTrigger ControlID="ddlEmpType" />--%>
+
+                                <asp:AsyncPostBackTrigger ControlID="btnNew" />
+                                <asp:AsyncPostBackTrigger ControlID="btnFindEmployee" />
+                            </Triggers>
+                            <ContentTemplate>
+                                <table class="employee_table" style="height: 578px;">
+                    
                                     <tr>
                                         <td style="width:175px;">Father's Name
                                         </td>
@@ -405,6 +405,15 @@
                                             <asp:TextBox ID="dsFatherName" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
                                         </td>
                                     </tr>
+                                         <tr>
+                                        <td>পিতার নাম 
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtFatherNameBN" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" style="font-family:SutonnyMJ;" ></asp:TextBox>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td>Mother's Name
                                         </td>
@@ -412,6 +421,15 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="dsMotherName" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                       <tr>
+                                        <td>মাতার নাম
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtMotherNameBN" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" style="font-family:SutonnyMJ;"></asp:TextBox>
                                         </td>
                                     </tr>
                                     <tr>
@@ -430,7 +448,7 @@
 
                                         </td>
                                     </tr>
-                                    <tr id="husbandOrWifeName" runat="server" visible="false">
+                                    <tr id="husbandOrWifeName" runat="server">
 
 
                                          <td>Husband&#39;s /Wife&#39;s Name </td>
@@ -440,7 +458,17 @@
                                          </td>
                                         </tr>
                                     <tr>
+                                        
 
+                                      <tr>
+                                        <td>স্বামী/স্ত্রীর নাম 
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtHusbandOrWifeBN" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" style="font-family:SutonnyMJ;"></asp:TextBox>
+                                        </td>
+                                    </tr>
 
                                          <td>Date of Birth </td>
                                          <td>: </td>
@@ -674,6 +702,7 @@
                             <asp:Button ID="btnEmployeeAd" runat="server" CssClass="em_right_button" OnClientClick="return divEmpAddress();" Text="Employee's Address" OnClick="btnEmployeeAd_Click" /><br />
                             <asp:Button ID="btnExperience" runat="server" CssClass="em_right_button" OnClientClick="return divEmpExperienceList();" Text="Experience" OnClick="btnExperience_Click" /><br />
                             <asp:Button ID="btnEducation" runat="server" CssClass="em_right_button" OnClientClick="return divEducationList();" Text="Education" OnClick="btnEducation_Click" /><br />
+                                 <asp:Button ID="btnEmployyeeNominee" runat="server" CssClass="em_right_button" OnClientClick="return divEmpNominee();" Text=" Nominee" OnClick="btnEmployyeeNominee_Click" /><br />
                             <asp:Button Visible="false" ID="btnFindEmployee" runat="server" CssClass="em_right_button" Text="Find Employee" OnClick="btnFindEmployee_Click" />
                             <asp:TextBox Visible="false" ID="txtCardNo" PLaceHolder="Type Card No" runat="server" style="color: Green; font-weight: bold; text-align: center; width: 181px; border-radius: 0px;" ClientIDMode="Static" CssClass="form-control text_box_width_import"></asp:TextBox>
 

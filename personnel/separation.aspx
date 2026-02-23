@@ -154,7 +154,7 @@
 
 
                                  <tr>
-                                    <td>Deduction Days(Notice pay) <span class="requerd1">*</span>
+                                    <td>Notice Pay (Deduction Days) <span class="requerd1">*</span>
                                     </td>
                                     <td>:
                                     </td>

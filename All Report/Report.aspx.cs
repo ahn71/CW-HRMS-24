@@ -62,8 +62,10 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("medical_formet")) showmedical_formet();
                 else if (query[0].Equals("JobApplicationWorkerCopy")) showjob_application();
                 else if (query[0].Equals("nominee_report")) showNomineeReport();
+                else if (query[0].Equals("nominee_report_v2")) showNomineeReportV2();
                 else if (query[0].Equals("wages_statment")) showWagesStatment();
                 else if (query[0].Equals("DismissLetter")) showDismissLetter();
+                else if (query[0].Equals("SuspensionLetter")) showSuspensionLetter();
                 else if (query[0].Equals("ShowCauseLetter")) showCauseLetter();
                 else if (query[0].Equals("PromotionLetter")) showPromotionLetter();
                 else if (query[0].Equals("IncrementLetter")) showIncrementletter();
@@ -72,7 +74,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("1stAbsentLetter")) show1stAbsentLetter();
                 else if (query[0].Equals("2ndAbsentLetter")) show2ndAbsentLetter();
                 else if (query[0].Equals("3rddAbsentLetter")) show3rdAbsentLetter();
-
+                else if (query[0].Equals("FinalSettlementV1")) showFinalSettlement_v1(query[1], query[2]);
 
                 else if (query[0].Equals("PromotionLetterWorker")) PromotionLetterWorker(query[1], query[2] + "-" + query[3]);
                 else if (query[0].Equals("PromotionSheet")) PromotionSheet(query[1]);
@@ -304,6 +306,50 @@ namespace SigmaERP.All_Report
                 CrystalReportViewer1.ReportSource = null; ;
                 GC.Collect();
             }
+        }
+
+        private void showFinalSettlement_v1(string CompanyId, string Language)
+        {
+            try
+            {
+              
+                rpd = new ReportDocument();
+                if (Language == "BN")
+                {
+                    rpd.Load(Server.MapPath("//All Report//Payroll//FinalSettelmentBNG_v1.rpt"));
+                    dt = new DataTable();
+                    dt = (DataTable)Session["__final_settlement__"];
+                    rpd.SetDataSource(dt);
+                    DataTable dtSub = new DataTable();
+                    dtSub = classes.commonTask.getSignaturesBN(CompanyId, "All");
+                    ReportDocument subReport = rpd.Subreports[0];
+                    rpd.Subreports[0].SetDataSource(dtSub);
+
+                 
+              
+
+                    
+                    //rpd.SetParameterValue(3," "+classes.Payroll.NumberToBanglaWords(170239) + " UvKv gvÎ");
+                }
+                else
+                {
+                    rpd.Load(Server.MapPath("//All Report//Payroll//FinalSettelmentENG_v1.rpt"));
+                    dt = new DataTable();
+                    dt = (DataTable)Session["__final_settlement__"];
+                    rpd.SetDataSource(dt);
+                    DataTable dtSub = new DataTable();
+                    dtSub = classes.commonTask.getSignatures(CompanyId, "All");
+                    ReportDocument subReport = rpd.Subreports[0];
+                    rpd.Subreports[0].SetDataSource(dtSub);
+                }
+
+
+
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+              
+            }
+            catch (Exception ex) { lblErrorMsg.Text += ">> erorr:" + ex.Message; }
         }
         private void loadIndividualTaxReport()
         {
@@ -577,7 +623,27 @@ namespace SigmaERP.All_Report
             }
             catch { }
         }
-
+        private void showNomineeReportV2()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+                string EmpImageurl = ConfigurationManager.AppSettings["employeeImageFolder"];
+                rpd.Load(Server.MapPath("//All Report//Personnel//NomineeReport_v2.rpt"));
+                 
+                dt = new DataTable();
+                dt = (DataTable)Session["__nominee_report_v2__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//EmpNomineeImage//"));
+                rpd.SetParameterValue(1, EmpImageurl);
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
 
         private void showNomineeReport()
         {
@@ -624,6 +690,23 @@ namespace SigmaERP.All_Report
 
                 dt = new DataTable();
                 dt = (DataTable)Session["__Dismiss_Letter__"];
+                rpd.SetDataSource(dt);
+                rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
+                CrystalReportViewer1.ReportSource = rpd;
+                CrystalReportViewer1.HasToggleGroupTreeButton = false;
+            }
+            catch { }
+        }
+        private void showSuspensionLetter()
+        {
+            try
+            {
+                rpd = new ReportDocument();
+
+                rpd.Load(Server.MapPath("//All Report//Personnel//SuspensionLetterBanglaFormate.rpt"));
+
+                dt = new DataTable();
+                dt = (DataTable)Session["__Suspension_Letter__"];
                 rpd.SetDataSource(dt);
                 rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//CompanyLogo//logo.jpeg"));
                 CrystalReportViewer1.ReportSource = rpd;
@@ -853,8 +936,6 @@ namespace SigmaERP.All_Report
                     year = year.Substring(0,4);
                 rpd.SetParameterValue(0, classes.commonTask.returnBanglaMonth(month) + "-" + year);
 
-
-
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
@@ -868,20 +949,35 @@ namespace SigmaERP.All_Report
                 DataTable dtcompany = new DataTable();
 
                 dt = (DataTable)Session["__PaySlip__"];
-                //rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New.rpt"));
+                string rootUrl = Session["__RootUrl__"]?.ToString();
+                string companyId = Session["__GetCompanyId__"]?.ToString();
+                string EmpImageurl = ConfigurationManager.AppSettings["employeeImageFolder"];
+
+
+                // Always load the report before setting parameter values
                 rpd.Load(Server.MapPath("//All Report//Payroll//PaySlipBangla_RSS_New_Mollah.rpt"));
                 rpd.SetDataSource(dt);
+
                 if (year.Trim().Length > 4)
-                    year = year.Substring(0,4);
+                    year = year.Substring(0, 4);
+
                 rpd.SetParameterValue(0, classes.commonTask.returnBanglaMonth(month) + "-" + year);
-
-
+                rpd.SetParameterValue(1, EmpImageurl);
 
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Show full error details (useful for debugging)
+                Console.WriteLine($"Error loading payslip: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+
+                // Optional: Display error on page for admins or debugging
+                // lblError.Text = "Error: " + ex.Message;
+            }
         }
+
 
         private void loadPaySlip2() // Job Card Report By Line Pay Slip 2
         {
@@ -3558,9 +3654,12 @@ namespace SigmaERP.All_Report
                 rpd = new ReportDocument();
                 //rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG.rpt"));
                 if (EmpType == "(Staff)")
-                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff.rpt"));
+                   // rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff.rpt"));
+                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff-ABR.rpt"));
                 else
-                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_worker.rpt"));
+                    //rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_worker.rpt"));
+                    //rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_worker-ABR.rpt"));
+                    rpd.Load(Server.MapPath("//All Report//Leave//LeaveBalanceReport_SG_staff-ABR.rpt"));
 
                 rpd.SetDataSource(dt);
 
@@ -3599,11 +3698,6 @@ namespace SigmaERP.All_Report
                 rpd.SetParameterValue(1, Year);
                 CrystalReportViewer1.ReportSource = rpd;
                 CrystalReportViewer1.HasToggleGroupTreeButton = false;
-
-
-
-
-
 
             }
             catch { }

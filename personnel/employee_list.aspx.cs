@@ -58,7 +58,7 @@ namespace SigmaERP.personnel
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
 
                 string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"0");
-                string query = "Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and " + condition + " order by DptCode, CustomOrdering";
+                string query = "Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and " + condition + " order by DptCode, CustomOrdering";
 
 
                  LoadAllEmployeeList(query);

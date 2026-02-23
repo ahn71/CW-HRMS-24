@@ -20,6 +20,7 @@
         <ContentTemplate>
     <div runat="server" id="divError"></div>
     <div>
+         <asp:Label runat="server" ID="lblErrorMsg" ClientIDMode="Static"></asp:Label>
         <CR:CrystalReportViewer ID="CrystalReportViewer1" runat="server"  AutoDataBind="true" ToolPanelView="None" PrintMode="ActiveX"   />
     </div>
         </ContentTemplate>

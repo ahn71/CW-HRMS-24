@@ -51,6 +51,7 @@
                                         <asp:ListItem Selected="True" Text="Sheet" Value="sheet"></asp:ListItem>
                                         <asp:ListItem Selected="False" Text="Summary" Value="summary"></asp:ListItem>
                                         <asp:ListItem Selected="False" Text="Pay Slip" Value="slip"></asp:ListItem>
+                                        <asp:ListItem Selected="False" Text="Final Settlement" Value="finalSettlement"></asp:ListItem>
                                     </asp:RadioButtonList>
                                         <asp:CheckBox ID="chkForAllCompany" runat="server" Text="For All Companies" AutoPostBack="True" Visible="False" />
                                     </td>                         
@@ -125,6 +126,22 @@
                              
                            
                             </tr>
+                             <tr>
+                           <%--     <td>Others Company</td>                                
+                                <td>                                   
+                                     <asp:DropDownList ID="ddlOthersCompany" runat="server" ClientIDMode="Static" CssClass="form-control select_width" >
+                                    </asp:DropDownList>
+                                </td>--%>
+                             <td><span runat="server" id="lblLanguage">Language</span></td>                                
+                                <td>                                   
+                                 <asp:RadioButtonList ID="rblLanguage" runat="server" RepeatDirection="Horizontal" RepeatLayout="Flow"   >
+                                                        <asp:ListItem Value="EN" Selected="True">English</asp:ListItem>
+                                                        <asp:ListItem Value="BN">Bangla</asp:ListItem>
+                                    </asp:RadioButtonList>
+                                     
+                                </td>
+                           
+                            </tr>
                          <tr>
                              <td></td>
                              <td></td>
@@ -150,6 +167,7 @@
                              </asp:DropDownList>
                                  </td>
                          </tr>
+
                    </table>
                 </div>
                         <asp:Panel id="pnl1" runat="server" >

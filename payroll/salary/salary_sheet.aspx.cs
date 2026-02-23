@@ -357,6 +357,43 @@ namespace SigmaERP.payroll.salary
                     }
 
                 }
+
+                else if (rblReportType.SelectedValue == "finalSettlement")
+                {
+                    if (rblGenerateType.SelectedItem.Text.Equals("All"))
+                    {
+                        getSQLCMD = @"SELECT pep.EmpId,pfs.EarnLeave,pfs.EarnLeaveAmount,pfs.MonthlyPayroll,pfs.NoticeDeduction_Amount,pfs.NoticeDeduction_Days,pfs.OtRate,pfs.RetirementBenefits_Amount,pfs.RetirementBenefits_Days,FORMAT(RetirementEffectiveDate, 'MMMM yyyy') AS RetirementEffectiveDate,pfs.ServiceBenefits_Amount,pfs.ServiceBenefits_Days,pfs.Total,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalWorkingDays, RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo,  pei.EmpNameBn, pei.EmpName, cmp.CompanyLogo,  CONVERT(VARCHAR(10), pes.EffectiveDate, 105) AS EmpResignDate,cmp.CompanyNameBangla, cmp.CompanyName, cmp.Address, cmp.AddressBangla, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dsg.DsgName, dpt.DptNameBn, dpt.DptName, grp.GNameBn, grp.GName, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pecs.BasicSalary, pecs.HouseRent, pecs.MedicalAllownce, pecs.FoodAllownce, pecs.ConvenceAllownce, pecs.OthersAllownce, pecs.EmpPresentSalary, pecs.PreBasicSalary, pecs.PreHouseRent, pecs.PreMedicalAllownce, pecs.PreFoodAllownce, pecs.PreConvenceAllownce, pecs.PreOthersAllownce, pecs.PreEmpSalary,pfs.StampDeduction,pfs.AttendanceBonus FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo AS cmp ON pei.CompanyId = cmp.CompanyId  LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN dbo.HRDGrade AS Grd ON pecs.GrdId = Grd.GradeID   left join Payroll_FinalSettlemnet as pfs on pecs.EmpId = pfs.EmpId left join Personnel_EmpSeparation as pes on pfs.EmpId=pes.EmpId and pfs.RegistrationId=pes.EmpSeparationId 
+                  WHERE convert(varchar(7), pfs.RetirementEffectiveDate)='" + ddlSelectMonth.SelectedValue.Substring(0, 7) + @"' 
+and pfs.EmpTypeId='" + rblEmployeeType.SelectedValue + "' and pecs.DptId " + DepartmentList + " and pecs.IsActive=1 order by dsg.Ordering,pecs.CustomOrdering";
+                    }
+                    else
+                        getSQLCMD = @"SELECT pep.EmpId,pfs.EarnLeave,pfs.EarnLeaveAmount,pfs.MonthlyPayroll,pfs.NoticeDeduction_Amount,pfs.NoticeDeduction_Days,pfs.OtRate,pfs.RetirementBenefits_Amount,pfs.RetirementBenefits_Days,FORMAT(RetirementEffectiveDate, 'MMMM yyyy') AS RetirementEffectiveDate,pfs.ServiceBenefits_Amount,pfs.ServiceBenefits_Days,pfs.Total,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalWorkingDays, RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo,  pei.EmpNameBn, pei.EmpName, cmp.CompanyLogo,  CONVERT(VARCHAR(10), pes.EffectiveDate, 105) AS EmpResignDate,cmp.CompanyNameBangla, cmp.CompanyName, cmp.Address, cmp.AddressBangla, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dsg.DsgName, dpt.DptNameBn, dpt.DptName, grp.GNameBn, grp.GName, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pecs.BasicSalary, pecs.HouseRent, pecs.MedicalAllownce, pecs.FoodAllownce, pecs.ConvenceAllownce, pecs.OthersAllownce, pecs.EmpPresentSalary, pecs.PreBasicSalary, pecs.PreHouseRent, pecs.PreMedicalAllownce, pecs.PreFoodAllownce, pecs.PreConvenceAllownce, pecs.PreOthersAllownce, pecs.PreEmpSalary,pfs.StampDeduction,pfs.AttendanceBonus FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo AS cmp ON pei.CompanyId = cmp.CompanyId  LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN dbo.HRDGrade AS Grd ON pecs.GrdId = Grd.GradeID   left join Payroll_FinalSettlemnet as pfs on pecs.EmpId = pfs.EmpId left join Personnel_EmpSeparation as pes on pfs.EmpId=pes.EmpId and pfs.RegistrationId=pes.EmpSeparationId 
+                  WHERE convert(varchar(7), pfs.RetirementEffectiveDate)='" + ddlSelectMonth.SelectedValue.Substring(0, 7) + @"' 
+and (pecs.EmpCardNo LIKE '%" + txtEmpCardNo.Text.Trim() + "' OR pei.EmpProximityNo ='" + txtEmpCardNo.Text.Trim() + "') and pecs.IsActive=1";
+
+                    sqlDB.fillDataTable(getSQLCMD, dt = new DataTable());
+                    if (dt.Rows.Count == 0)
+                    {
+                        lblMessage.InnerText = "warning-> Data no found."; return;
+                    }
+                    if (rblLanguage.SelectedValue == "BN")
+                    {
+                        dt.Columns["CompanyId"].MaxLength = -1; // -1 means no limit
+                        foreach (DataRow _row in dt.Rows)
+                        {
+                            try
+                            {
+                                string inWordBn = " " + classes.Payroll.NumberToBanglaWords(Math.Abs(long.Parse(_row["Total"].ToString()))) + " UvKv gvÎ";
+                                _row["CompanyId"] = inWordBn;
+                            }
+                            catch (Exception ex) { }
+                        }
+
+                    }
+                    Session["__final_settlement__"] = dt;
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=FinalSettlementV1-" + ddlCompanyName.SelectedValue + "-" + rblLanguage.SelectedValue + "');", true);
+                }
+
                 else // summary
                 {
                     if (rblSheet.SelectedValue == "0")

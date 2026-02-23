@@ -596,6 +596,22 @@ namespace SigmaERP.personnel
             }
             catch { }
         }
+
+
+        protected void btnEmployyeeNominee_Click(object sender, EventArgs e)
+        {
+            Session["_EmpStatus_"] = "";
+            Session["_EmpId_"] = ddlEmpCardNo.SelectedValue;
+            if (ddlEmpCardNo.SelectedIndex < 1)
+            {
+                lblMessage.InnerText = "warning->Please, Select an Employee First!";
+                ddlEmpCardNo.Focus();
+                return;
+            }
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeeNominee.aspx?EmpId=" + ddlEmpCardNo.SelectedValue + "');", true);
+
+            // Response.Redirect("/personnel/EmployeeNominee.aspx?EmpId=" + ddlEmpCardNo.SelectedValue, false);
+        }
         private string LoadEmpId()
         {
             try
@@ -2058,14 +2074,16 @@ namespace SigmaERP.personnel
             {
 
                 DataTable dt;
-                sqlDB.fillDataTable("Select Personnel_EmpPersonnal.HusbandOrWifeName, Personnel_EmpPersonnal.FatherName, Personnel_EmpPersonnal.MotherName, Personnel_EmpPersonnal.FatherNameBn, " +
-                    "Personnel_EmpPersonnal.MotherNameBN,Personnel_EmpPersonnal.RId, Personnel_EmpPersonnal.MaritialStatus,convert(varchar(11)," +
-                    "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
-                    " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
-                    " Personnel_EmpPersonnal.Nationality, Personnel_EmpPersonnal.NationIDCardNo,Personnel_EmpPersonnal.NumberofChild," +
-                    "Personnel_EmpPersonnal.LastEdQualification,Personnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
-                    "Left JOIN HRD_Qualification ON Personnel_EmpPersonnal.LastEdQualification=HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON " +
-                    "Personnel_EmpPersonnal.RId = HRD_Religion.RId  where Personnel_EmpPersonnal.EmpId='" + EmpId + "'", dt = new DataTable());
+                //sqlDB.fillDataTable("Select Personnel_EmpPersonnal.HusbandOrWifeName, Personnel_EmpPersonnal.FatherName, Personnel_EmpPersonnal.MotherName,Personnel_EmpPersonnal.HusbandOrWifeNameBN,Personnel_EmpPersonnal.FatherNameBn, " +
+                //    "Personnel_EmpPersonnal.MotherNameBN,Personnel_EmpPersonnal.RId, Personnel_EmpPersonnal.MaritialStatus,convert(varchar(11)," +
+                //    "Personnel_EmpPersonnal.DateOfBirth,105) as DateOfBirth, Personnel_EmpPersonnal.PlaceOfBirth, Personnel_EmpPersonnal.Height," +
+                //    " Personnel_EmpPersonnal.Weight, Personnel_EmpPersonnal.BloodGroup, Personnel_EmpPersonnal.Sex,  Personnel_EmpPersonnal.NoOfExperience," +
+                //    " Personnel_EmpPersonnal.Nationality, Personnel_EmpPersonnal.NationIDCardNo,Personnel_EmpPersonnal.NumberofChild," +
+                //    "Personnel_EmpPersonnal.LastEdQualification,Personnel_EmpPersonnal.EmpVisaNo,HRD_Qualification.QName,HRD_Religion.RName from Personnel_EmpPersonnal " +
+                //    "Left JOIN HRD_Qualification ON Personnel_EmpPersonnal.LastEdQualification=HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON " +
+                //    "Personnel_EmpPersonnal.RId = HRD_Religion.RId  where Personnel_EmpPersonnal.EmpId='" + EmpId + "'", dt = new DataTable());
+
+                sqlDB.fillDataTable("Select pep.FatherName,pep.FatherNameBn, pep.MotherName,pep.MotherNameBN,pep.HusbandOrWifeName,pep.HusbandOrWifeNameBN, pep.EmpVisaNo,pep.RId, pep.MaritialStatus, convert(varchar(11), pep.DateOfBirth, 105) as DateOfBirth, pep.PlaceOfBirth, pep.Height, pep.Weight, pep.BloodGroup, pep.Sex, pep.NoOfExperience,  pep.Nationality, pep.NationIDCardNo, pep.NumberofChild, pep.LastEdQualification, HRD_Qualification.QName, HRD_Religion.RName from Personnel_EmpPersonnal as pep Left JOIN HRD_Qualification ON pep.LastEdQualification = HRD_Qualification.QId LEFT OUTER JOIN HRD_Religion ON pep.RId = HRD_Religion.RId where pep.EmpId='" + EmpId + "'", dt = new DataTable());
                 if (dt.Rows.Count == 0)
                 {
                     ViewState["__IsSave__"] = "Yes";
@@ -2075,16 +2093,18 @@ namespace SigmaERP.personnel
                 dsBloodGroup.Text = dt.Rows[0]["BloodGroup"].ToString();
                 dsDateOfBirth.Text = dt.Rows[0]["DateOfBirth"].ToString();
                 dsFatherName.Text = dt.Rows[0]["FatherName"].ToString();
-                //dsFatherNameBn.Text = dt.Rows[0]["FatherNameBn"].ToString();
+                txtFatherNameBN.Text = dt.Rows[0]["FatherNameBn"].ToString();
                 dsHeight.Text = dt.Rows[0]["Height"].ToString();
                 ddlLastEdQualification.SelectedValue = dt.Rows[0]["LastEdQualification"].ToString();
                 dsMaritialStatus.Text = dt.Rows[0]["MaritialStatus"].ToString();
                 if(dsMaritialStatus.Text=="Married" || dsMaritialStatus.Text== "Widow")
                 {
                     txtHusbandOrwifeName.Text= dt.Rows[0]["HusbandOrWifeName"].ToString();
+                    txtHusbandOrWifeBN.Text = dt.Rows[0]["HusbandOrWifeNameBN"].ToString();
+
                 }
                 dsMotherName.Text = dt.Rows[0]["MotherName"].ToString();
-                //dsMotherNameBN.Text = dt.Rows[0]["MotherNameBN"].ToString();
+                txtMotherNameBN.Text = dt.Rows[0]["MotherNameBN"].ToString();
                 dsNationality.Text = dt.Rows[0]["Nationality"].ToString();
                 dsNationIDCardNo.Text = dt.Rows[0]["NationIDCardNo"].ToString();
                 dsNoOfExperience.Text = dt.Rows[0]["NoOfExperience"].ToString();
@@ -2142,13 +2162,16 @@ namespace SigmaERP.personnel
                 //DataTable dtEmp;
                 //sqlDB.fillDataTable("SELECT EmpId FROM v_HRD_Shift", dtEmp = new DataTable());
                 string EmpId = ViewState["__EmpId__"].ToString();
-                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName, MotherName, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo,HusbandOrWifeName)  values (@EmpId, @FatherName, @MotherName, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo,@HusbandOrWifeName) ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand("Insert into  Personnel_EmpPersonnal (EmpId, FatherName,FatherNameBn,HusbandOrWifeNameBN, MotherName,MotherNameBN, MaritialStatus, DateOfBirth,Age, PlaceOfBirth, Height, Weight, BloodGroup, Sex, RId, LastEdQualification, NoOfExperience, Nationality, NationIDCardNo,EmpVisaNo,HusbandOrWifeName)  values (@EmpId, @FatherName,@FatherNameBn,@HusbandOrWifeNameBN, @MotherName,@MotherNameBN, @MaritialStatus, @DateOfBirth,@Age, @PlaceOfBirth, @Height, @Weight, @BloodGroup, @Sex, @RId, @LastEdQualification, @NoOfExperience, @Nationality, @NationIDCardNo,@EmpVisaNo,@HusbandOrWifeName) ", sqlDB.connection);
 
                 cmd.Parameters.AddWithValue("@EmpId", ViewState["__EmpId__"].ToString());
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
                 cmd.Parameters.AddWithValue("@MotherName", dsMotherName.Text.Trim());
-                //cmd.Parameters.AddWithValue("@FatherNameBn", dsFatherNameBn.Text.Trim());
-                // cmd.Parameters.AddWithValue("@MotherNameBN", dsMotherNameBN.Text.Trim());
+                cmd.Parameters.AddWithValue("@FatherNameBn", txtFatherNameBN.Text.Trim());
+                cmd.Parameters.AddWithValue("@MotherNameBN", txtMotherNameBN.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeNameBN", txtHusbandOrWifeBN.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
+
                 cmd.Parameters.AddWithValue("@MaritialStatus", dsMaritialStatus.Text.Trim());
                 if (dsDateOfBirth.Text.Length == 0)
                 {
@@ -2178,7 +2201,6 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@Nationality", dsNationality.Text.Trim());
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
                 cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
-                cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text);
 
                 int result = (int)cmd.ExecuteNonQuery();
@@ -2368,12 +2390,12 @@ namespace SigmaERP.personnel
                 {
                     EmpId = ddlEmpCardNo.SelectedValue;
                 }
-                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName, MotherName=@MotherName,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo,HusbandOrWifeName=@HusbandOrWifeName where EmpId=@EmpId ", sqlDB.connection);
+                SqlCommand cmd = new SqlCommand(" update Personnel_EmpPersonnal  Set FatherName=@FatherName,FatherNameBn=@FatherNameBn, MotherName=@MotherName,MotherNameBN=@MotherNameBN,  MaritialStatus=@MaritialStatus, DateOfBirth=@DateOfBirth,Age=@Age, PlaceOfBirth=@PlaceOfBirth, Height=@Height, Weight=@Weight, BloodGroup=@BloodGroup, Sex=@Sex, RId=@RId, LastEdQualification=@LastEdQualification, NoOfExperience=@NoOfExperience, Nationality=@Nationality, NationIDCardNo=@NationIDCardNo,EmpVisaNo=@EmpVisaNo,HusbandOrWifeName=@HusbandOrWifeName ,HusbandOrWifeNameBN=@HusbandOrWifeNameBN where EmpId=@EmpId ", sqlDB.connection);
                 cmd.Parameters.AddWithValue("@EmpId", EmpId);
                 cmd.Parameters.AddWithValue("@FatherName", dsFatherName.Text.Trim());
                 cmd.Parameters.AddWithValue("@MotherName", dsMotherName.Text.Trim());
-                //cmd.Parameters.AddWithValue("@FatherNameBn", dsFatherNameBn.Text.Trim());
-                // cmd.Parameters.AddWithValue("@MotherNameBN", dsMotherNameBN.Text.Trim());
+                cmd.Parameters.AddWithValue("@FatherNameBn", txtFatherNameBN.Text.Trim());
+                cmd.Parameters.AddWithValue("@MotherNameBN", txtMotherNameBN.Text.Trim());
                 cmd.Parameters.AddWithValue("@MaritialStatus", dsMaritialStatus.Text.Trim());
                 if (dsDateOfBirth.Text.Length == 0)
                 {
@@ -2412,6 +2434,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@NationIDCardNo", dsNationIDCardNo.Text.Trim());
                 cmd.Parameters.AddWithValue("@EmpVisaNo", txtEmpVisaNo.Text.Trim());
                 cmd.Parameters.AddWithValue("@HusbandOrWifeName", txtHusbandOrwifeName.Text.Trim());
+                cmd.Parameters.AddWithValue("@HusbandOrWifeNameBN", txtHusbandOrWifeBN.Text.Trim());
 
                 // cmd.Parameters.AddWithValue("@NumberofChild", txtNumberofchild.Text.Trim());
 
