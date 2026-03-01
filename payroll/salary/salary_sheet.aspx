@@ -40,6 +40,7 @@
                         <asp:AsyncPostBackTrigger ControlID="chkForAllCompany" />
                         <asp:AsyncPostBackTrigger ControlID="rblGenerateType" />
                         <asp:AsyncPostBackTrigger ControlID="ddlSelectMonth" />
+                        <asp:AsyncPostBackTrigger ControlID="ddlShift" />
                     </Triggers>
                     <ContentTemplate>
                   <div class="bonus_generation" style="width: 61%; margin: 0px auto;">           
@@ -94,6 +95,16 @@
                                <asp:TextBox ID="txtEmpCardNo" runat="server" ClientIDMode="Static" PlaceHolder="For Individual" CssClass="form-control text_box_width_import" Enabled="False" ></asp:TextBox>
                                
                            </td>
+                       </tr>
+                         <tr>
+                          <td>Select Shift &nbsp;</td>
+                      
+                           <td>
+                                <asp:DropDownList ID="ddlShift" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True">
+                               </asp:DropDownList>
+                           </td>
+                  
+                           
                        </tr>
                          <tr runat="server" id="chkbanksheet" visible="false">
 
