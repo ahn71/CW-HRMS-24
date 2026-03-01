@@ -308,7 +308,7 @@
         var AttdMetchin = '<%= Session["__GetAttdMetchinName__"]%>';
         var IsAdministrator = '<%= Session["__GetISAdministetor__"]%>';
         var getEmployeeUrl = `${rootUrl}/api/Employee/active-employees-date-range?CompanyId=${CompanyID}`;
-        var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attedance/process`;
+        var PostAttendanceProcessURL = `${rootUrl}/api/Attendance/attendance/process`;
 
         var getDepartmentUrl = `${rootUrl}/api/Department/basicInfo/${CompanyID}`;
         var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
@@ -576,6 +576,218 @@
 
 
         let pollingInterval;
+        //function AttendanceProcess() {
+        //    const startDate = $('#txtStartDate').val();
+        //    const endDate = $('#txtEndDate').val();
+        //    const employeeQuery = JSON.stringify(Array.from(selectedEmployeeIds));
+
+        //    if (!selectedEmployeeIds || selectedEmployeeIds.size === 0) {
+        //        Swal.fire({
+        //            icon: 'warning',
+        //            title: 'No Employee Selected',
+        //            text: 'Please select at least one employee before processing attendance.',
+        //            confirmButtonText: 'OK'
+        //        });
+        //        return;
+        //    }
+
+        //    // ✅ Progress section show করুন
+        //    $('#progress-section').show();
+        //    $('#progress-bar').css('width', '0%').text('0%');
+
+        //    const processEndDate = new Date(2026, 2, 11); // January = 0
+
+        //    const today = new Date();
+        //    today.setHours(0, 0, 0, 0);
+
+        //    if (today >= processEndDate) {
+        //        //Swal.fire({
+        //        //    icon: 'error',
+        //        //    title: 'Process Closed',
+        //        //    text: 'Attendance process date is over.'
+        //        //});
+        //        return;
+        //    }
+
+
+        //    // ✅ আগের polling থাকলে clear করুন
+        //    if (pollingInterval) {
+        //        clearInterval(pollingInterval);
+        //    }
+
+        //    // ✅ নতুন polling start করুন
+        //    pollingInterval = setInterval(fetchProgress, 500);
+
+        //    ApiCallPostAttendProcess(
+        //        PostAttendanceProcessURL,
+        //        token,
+        //        'AttFile',
+        //        CompanyID,
+        //        startDate,
+        //        endDate,
+        //        employeeQuery
+        //    )
+        //        .then(response => {
+        //            // ✅ Polling stop করুন
+        //            if (pollingInterval) {
+        //                clearInterval(pollingInterval);
+        //            }
+
+        //            if (response.statusCode === 200) {
+        //                console.log('Attendance processing completed successfully!');
+        //                bindAttdTableData(response.data);
+
+        //                $('#progress-section').hide();
+        //                $('#attendanceContainer').show();
+
+        //                console.log('Missing Data:', response.missingData);
+        //                sessionStorage.setItem('__MessingRosterData__', JSON.stringify(response.missingData));
+
+        //                const totalMessing = response.missingData ?.length || 0;
+        //                console.log('Total Missing Data:', totalMessing);
+        //                $('#totalMessingRoster').text('Messing Roster (' + totalMessing + ')');
+
+        //                if (totalMessing === 0) {
+        //                    $('#totalMessingRoster').hide();
+        //                } else {
+        //                    $('#totalMessingRoster').show();
+        //                }
+
+        //                // ✅ Selection clear করুন
+        //                selectedEmployeeIds.clear();
+        //                $('#selectAllEmployee').prop('checked', false);
+        //                $('.EmployeerowCheckbox').prop('checked', false);
+
+        //                // ✅ Success message দেখান
+        //                Swal.fire({
+        //                    icon: 'success',
+        //                    title: 'Success!',
+        //                    text: 'Attendance processed successfully.',
+        //                    timer: 2000,
+        //                    showConfirmButton: false
+        //                });
+        //            } else {
+        //                console.error('API Error:', response.message);
+        //                $('.footable-loader').hide();
+        //                $('#progress-section').hide();
+        //            }
+        //        })
+        //        .catch(error => {
+        //            console.error('Network Error:', error);
+        //            $('.footable-loader').hide();
+        //            $('#progress-section').hide();
+
+        //            // ✅ Polling stop করুন
+        //            if (pollingInterval) {
+        //                clearInterval(pollingInterval);
+        //            }
+        //        });
+        //}
+        //function ApiCallPostAttendProcess(apiUrl, token, fileInputId, companyId, fromDate, toDate, empIds) {
+        //    return new Promise(function (resolve, reject) {
+        //        const fileInput = document.getElementById(fileInputId);
+
+        //        // File check (commented আছে, প্রয়োজন হলে uncomment করুন)
+        //        // if (!fileInput || fileInput.files.length === 0) {
+        //        //     Swal.fire({ 
+        //        //         icon: 'warning', 
+        //        //         title: 'File Missing', 
+        //        //         text: 'Please select a file to upload.' 
+        //        //     });
+        //        //     reject('No file selected');
+        //        //     return;
+        //        // }
+
+        //        const formData = new FormData();
+
+        //        // ✅ File থাকলে append করুন, না থাকলে skip
+        //        if (fileInput && fileInput.files.length > 0) {
+        //            formData.append('file', fileInput.files[0]);
+        //        }
+
+        //        formData.append('companyId', companyId);
+        //        formData.append('fromDate', fromDate);
+        //        formData.append('toDate', toDate);
+        //        formData.append('empIds', empIds);
+
+        //        $.ajax({
+        //            url: apiUrl,
+        //            type: 'POST',
+        //            headers: {
+        //                'Authorization': 'Bearer ' + token
+        //            },
+        //            data: formData,
+        //            processData: false,
+        //            contentType: false,
+
+        //            // ✅ CORS এর জন্য এটা যোগ করুন
+        //            xhrFields: {
+        //                withCredentials: true
+        //            },
+
+        //            // ✅ Timeout set করুন (file upload এর জন্য)
+        //            timeout: 300000, // 5 minutes
+
+        //            success: function (data) {
+        //                // ✅ Polling stop করুন
+        //                if (pollingInterval) {
+        //                    clearInterval(pollingInterval);
+        //                }
+        //                resolve(data);
+        //            },
+
+        //            error: function (xhr, status, error) {
+        //                // ✅ "xhrr" নয়, "xhr" লিখুন
+        //                console.log("XHR Response:", xhr);
+        //                console.log("Status:", status);
+        //                console.log("Error:", error);
+
+        //                // ✅ Response text দেখুন
+        //                if (xhr.responseText) {
+        //                    console.log("Response Text:", xhr.responseText);
+        //                }
+
+        //                // ✅ Status code check করুন
+        //                if (xhr.status === 0) {
+        //                    // Network error বা CORS issue
+        //                    Swal.fire({
+        //                        icon: 'error',
+        //                        title: 'Connection Error',
+        //                        text: 'Cannot connect to server. Please check your network connection.',
+        //                        confirmButtonText: 'OK'
+        //                    });
+        //                } else if (xhr.status === 401) {
+        //                    // Unauthorized
+        //                    Swal.fire({
+        //                        icon: 'warning',
+        //                        title: 'Session Expired',
+        //                        text: 'Your session has expired. Please login again.',
+        //                        confirmButtonText: 'OK'
+        //                    }).then(() => {
+        //                        // Login page এ redirect করুন
+        //                        window.location.href = '/login';
+        //                    });
+        //                } else {
+        //                    // Other errors
+        //                    Swal.fire({
+        //                        icon: 'warning',
+        //                        title: 'Almost There!',
+        //                        text: 'Some issues occurred while processing attendance. Please retry or contact support if needed.',
+        //                        confirmButtonText: 'OK'
+        //                    });
+        //                }
+
+        //                // ✅ Polling stop করুন
+        //                if (pollingInterval) {
+        //                    clearInterval(pollingInterval);
+        //                }
+
+        //                reject(error);
+        //            }
+        //        });
+        //    });
+        //}
+
         function AttendanceProcess() {
             const startDate = $('#txtStartDate').val();
             const endDate = $('#txtEndDate').val();

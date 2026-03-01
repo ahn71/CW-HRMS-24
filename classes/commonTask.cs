@@ -124,6 +124,18 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
             }
             return base64Files;
         }
+        public static string ConvertTo_yyyyMMdd(string date)
+        {
+            try
+            {
+                DateTime dt = DateTime.Parse(date);
+                return dt.ToString("yyyy-MM-dd");
+            }
+            catch
+            {
+                return "";
+            }
+        }
 
 
         public static string ddMMyyyyTo_yyyyMMdd(string date)
@@ -1005,7 +1017,11 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 dl.DataBind();
                 dl.Items.Insert(0, new ListItem(string.Empty, "0"));
             }
-            catch { }
+            catch (Exception ex)
+            {
+                // Show error message (for debugging / admin)
+                throw new Exception("Error loading shift list: " + ex.Message, ex);
+            }
         }
         public static void LoadShiftOnlyIndependent(DropDownList dl, string CompanyId)
         {
@@ -1544,10 +1560,10 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
         {
             try
             {
-
-                sqlCmd = @"SELECT DISTINCT CASE 
-        WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
-        ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'p' AND CompanyId = '"+CompanyId+"' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
+                sqlCmd = "SELECT DISTINCT CASE  WHEN EffectiveMonth IS NULL OR UpdatedDate = '' THEN NULL  ELSE FORMAT(UpdatedDate, 'MMM-yyyy') END AS MonthName, UpdatedDate as EffectiveMonth FROM v_Promotion_Increment WHERE UpdateType in('3', '4') AND CompanyId = '"+ CompanyId + "'";
+        //        sqlCmd = @"SELECT DISTINCT CASE 
+        //WHEN EffectiveMonth IS NULL OR EffectiveMonth = '' THEN NULL  
+        //ELSE FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy' ) END AS MonthName, EffectiveMonth, SUBSTRING(EffectiveMonth, 4, 4) AS YearPart, SUBSTRING(EffectiveMonth, 1, 2) AS MonthPart FROM v_Promotion_Increment WHERE TypeOfChange = 'p' AND CompanyId = '"+CompanyId+"' AND (EffectiveMonth IS NOT NULL AND EffectiveMonth != '') AND FORMAT(TRY_CONVERT(DATETIME, CONCAT(SUBSTRING(EffectiveMonth, 4, 4), '-', SUBSTRING(EffectiveMonth, 1, 2), '-01')), 'MMM-yyyy') IS NOT NULL ORDER BY YearPart DESC, MonthPart DESC";
                 sqlDB.fillDataTable(sqlCmd, dt = new DataTable());
                 dl.DataSource = dt;
                 dl.DataTextField = "MonthName";

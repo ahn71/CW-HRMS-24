@@ -356,7 +356,9 @@ namespace SigmaERP.classes
             {
                 string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select Max(SN) as SN, (Convert(nvarchar(50),SubString(EmpCardNo,8,16))+' '+EmpName) as EmpCardNo,EmpId From v_Promotion_Increment where TypeOfChange='" + TypeOfChange + "' and "+ condition + "  Group by EmpCardNo,EmpId,EmpName order by EmpCardNo", dt);
+                string query = "";
+                query = "Select Max(SN) as SN, (Convert(nvarchar(50),SubString(EmpCardNo,8,16))+' '+EmpName) as EmpCardNo,EmpId From v_Promotion_Increment where UpdateType in (" + TypeOfChange + ") and "+ condition + "  Group by EmpCardNo,EmpId,EmpName order by EmpCardNo";
+                sqlDB.fillDataTable(query, dt);
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "EmpId";

@@ -9,7 +9,7 @@ namespace SigmaERP.classes
 {
     public class BusinessLogic
     {
-        public static DataTable get_MonthlyLoginLogOutTime(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition, string ShiftName)
+        public static DataTable get_MonthlyLoginLogOutTime(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition, string ShiftName, string isregular)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace SigmaERP.classes
                  "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                  ",DptId,DptName,PSftId as SftId,PSftName as GName,CompanyName,Address " +
                  "from v_tblAttendanceRecord " +
-                 "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + "group by EmpCardNo,EmpProximityNo, EmpId,EmpName,DptId,DptName,PSftId ,PSftName,CompanyName,Address,convert(int,DptCode), CustomOrdering " +
+                 "Where CompanyId " + CompanyId + "   AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + " "+ isregular + "group by EmpCardNo,EmpProximityNo, EmpId,EmpName,DptId,DptName,PSftId ,PSftName,CompanyName,Address,convert(int,DptCode), CustomOrdering " +
                          " order by PSftName,convert(int,DptCode),CustomOrdering";
                     sqlDB.fillDataTable(cmd, dt = new DataTable());
                 }
@@ -106,7 +106,7 @@ namespace SigmaERP.classes
         }
 
 
-        public static DataTable get_Moanthly_Attendance_Sheet(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition , string ShiftName)
+        public static DataTable get_Moanthly_Attendance_Sheet(string CompanyId,  string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition , string ShiftName, string isregular)
         {
             try
             {
@@ -148,8 +148,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
                     " DsgName, DptId,DptName,SftId,SftName,PSftName as GName,CompanyId,CompanyName,Address " +
                     "from v_tblAttendanceRecord " +
-                    "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + ""+
-                    "group by EmpId,EmpCardNo,EmpProximityNo,EmpName, PSftName, DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
+                    "Where CompanyId " + CompanyId + "  AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + "" + ShiftName + ""+ " " + isregular + " group by EmpId,EmpCardNo,EmpProximityNo,EmpName, PSftName, DsgName,DptId,DptName,SftId,SftName,CompanyId,CompanyName,Address,convert(int,DptCode), convert(int,SftId),CustomOrdering " +
                         " order by convert(int,DptCode), convert(int,SftId),CustomOrdering";
                     sqlDB.fillDataTable(
                         cmd, dt);
@@ -200,7 +199,7 @@ namespace SigmaERP.classes
             catch { return null; }
         }
 
-        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition,string pSftCondition)
+        public static DataTable get_Moanthly_Attendance_Sheet_Summary(string CompanyId, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID,string unitCondition,string pSftCondition,string isregular)
         {
             try
             {
@@ -223,8 +222,7 @@ namespace SigmaERP.classes
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as LV ,sum(NightAllowCount) as MonthlyTotalOT" +
                          "   FROM            dbo.v_tblAttendanceRecord " +
-                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + " " + pSftCondition + " " +
-                         "   GROUP BY EmpId, EmpCardNo,EmpProximityNo,PSftId, EmpName,PSftName ,DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
+                         "   Where CompanyId " + CompanyId + " AND DptId " + DepartmentList + " " + EmpTypeID + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' " + unitCondition + " " + pSftCondition + " " + isregular + "   GROUP BY EmpId, EmpCardNo,EmpProximityNo,PSftId, EmpName,PSftName ,DsgName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering  " +
                         " order by PSftName, convert(int,DptId), convert(int,GId),CustomOrdering";
                 
                 else
