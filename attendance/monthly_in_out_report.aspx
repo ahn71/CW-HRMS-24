@@ -14,6 +14,49 @@
             height:50px;
             border:1px solid silver;
         }*/
+        .switch-container {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-label {
+            position: absolute;
+            cursor: pointer;
+            background-color: #ccc;
+            border-radius: 34px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: 0.4s;
+        }
+
+            .switch-label::before {
+                position: absolute;
+                content: "";
+                height: 20px;
+                width: 20px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                border-radius: 50%;
+                transition: 0.4s;
+            }
+
+        .switch-input:checked + .switch-label {
+            background-color: #4CAF50;
+        }
+
+            .switch-input:checked + .switch-label::before {
+                transform: translateX(24px);
+            }
 
        
     </style>
@@ -140,6 +183,18 @@
                                         <td colspan="5">
                                             <asp:RadioButtonList ID="rblEmpType" runat="server" AutoPostBack="true" RepeatDirection="Horizontal">
                                             </asp:RadioButtonList>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Regular Employee</td>
+                                        <td>&nbsp;:&nbsp;</td>
+                                        <td colspan="5">
+                                           <asp:CheckBox 
+                                            ID="chkIsRegular" 
+                                            runat="server" 
+                                            Text="only Regular Employee" />
+
+
                                         </td>
                                     </tr>
                                 </caption>

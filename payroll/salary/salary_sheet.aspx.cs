@@ -65,6 +65,7 @@ namespace SigmaERP.payroll.salary
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 ViewState["__CShortName__"] = "MRC";
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                classes.commonTask.LoadShift(ddlShift, ViewState["__CompanyId__"].ToString());
                 if (permissions.Contains(474))
                 {
                     chkbanksheet.Visible = true;
@@ -196,6 +197,10 @@ namespace SigmaERP.payroll.salary
                     {
                         Condition += "and IsSeperationGeneration='1'";
                     }
+                 if(ddlShift.SelectedValue !=null && ddlShift.SelectedValue != "0")
+                {
+                    Condition += "and sftId ='" + ddlShift.SelectedValue + "'";
+                }
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)

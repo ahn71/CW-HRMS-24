@@ -17,7 +17,7 @@
                 justify-content: space-between;
             }
 
-            .me-2 {
+            .me-2 { 
                 margin-right: 0.5rem;
             }
 
