@@ -38,6 +38,7 @@ namespace SigmaERP.attendance
                 ddlCompanyName.Enabled = false;
                 ddlCompanyName.SelectedValue = ViewState["__CompanyId__"].ToString();
                 Session["__MinDigits__"] = "6";
+                chkIsRegular.Checked = true;
             }
         }
 
@@ -209,6 +210,11 @@ namespace SigmaERP.attendance
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                string isregular = "";
+                if (chkIsRegular.Checked == true)
+                {
+                    isregular = "and EmpStatus in ('1','8')";
+                }
 
                 CompanyList = (ddlCompanyName.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
                 CompanyList = "in ('" + CompanyList + "')";
@@ -228,17 +234,17 @@ namespace SigmaERP.attendance
                 }
                 if (rblReportType.SelectedValue == "0")
                 {
-                    dt = classes.BusinessLogic.get_MonthlyLoginLogOutTime(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName);
+                    dt = classes.BusinessLogic.get_MonthlyLoginLogOutTime(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName, isregular);
                     type = "Log InOut";
                 }
                 else if (rblReportType.SelectedValue == "1")
                 {
-                    dt = classes.BusinessLogic.get_Moanthly_Attendance_Sheet(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName);
+                    dt = classes.BusinessLogic.get_Moanthly_Attendance_Sheet(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName, isregular);
                     type = "Att Status";
                 }
                 else
                 {
-                    dt = classes.BusinessLogic.get_Moanthly_Attendance_Sheet_Summary(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName);
+                    dt = classes.BusinessLogic.get_Moanthly_Attendance_Sheet_Summary(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName, isregular);
                     type = "Att Summary";
                 }
 
@@ -421,6 +427,11 @@ namespace SigmaERP.attendance
                 if (ddlUnit.SelectedValue != "0")
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
+                }
+                string IsRegularEmployee = "";
+                if(chkIsRegular.Checked == true)
+                {
+                    IsRegularEmployee = "and EmpStatus in ('1','8')";
                 }
                 string[] Month = ddlMonthList.SelectedValue.Split('-');
                 string sql = "";
@@ -739,6 +750,11 @@ From v_tblAttendanceRecord as v left outer join h on v.ATTDate = h.HDate Where v
                 {
                     ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
                 }
+                string isregular = ""
+;                if (chkIsRegular.Checked == true)
+                {
+                    isregular = "and EmpStatus in ('1','8')";
+                }
 
                 string[] Month = ddlMonthList.SelectedValue.Split('-');
                 string sql = "";
@@ -761,7 +777,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                         format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,
                         StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,
                         GName,MonthId,BreakStartTime,BreakEndTime,TotalDays,PaybleDays From v_tblAttendanceRecord 
-                        Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' "+ unitCondition + " " + ShiftName + " order by  ATTDate";
+                        Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' "+ unitCondition + " " + ShiftName + " "+ isregular + " order by  ATTDate";
                 else
                     sql = @"DECLARE @maxOT VARCHAR(8) = '02:00:00'
 DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
@@ -778,7 +794,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                         StayTime as actualStayTime,InHour,InMin,InSec,EmpId,SubString(EmpCardNo,8,15)+' ( '+EmpProximityNo+' )' as EmpCardNo,EmpName,SftName,PSftName as MobileNo,
                         format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,
                         StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,
-                        GName,MonthId,BreakStartTime,BreakEndTime,TotalDays,PaybleDays From v_tblAttendanceRecord  Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + " "+ unitCondition + " " + ShiftName + " Order By convert(int,DptId), CustomOrdering,Empid, ATTDate";
+                        GName,MonthId,BreakStartTime,BreakEndTime,TotalDays,PaybleDays From v_tblAttendanceRecord  Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + " "+ unitCondition + " " + ShiftName + "  " + isregular + " Order By convert(int,DptId), CustomOrdering,Empid, ATTDate";
                 //    sqlDB.fillDataTable("Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, StayTime )-convert(varchar(8),OtherOverTime,114)),'hh:mm:ss') ) else   StayTime end as StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime as TotalOverTime,TotalDays,OtherOverTime,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, OutHour+':'+OutMin+':'+OutSec )-convert(varchar(8),OtherOverTime,114)) +convert(datetime,'00:00:'+OutSec ),'HH:mm:ss')) else   OutHour+':'+OutMin+':'+OutSec end as OutTime From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' Group By EmpId,EmpCardNo,EmpName,SftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime,TotalDays,OtherOverTime order by  ATTDate  ", dt);
                 //else sqlDB.fillDataTable("Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, StayTime )-convert(varchar(8),OtherOverTime,114)),'hh:mm:ss') ) else   StayTime end as StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime as TotalOverTime,TotalDays,OtherOverTime,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, OutHour+':'+OutMin+':'+OutSec )-convert(varchar(8),OtherOverTime,114))+convert(datetime,'00:00:'+OutSec ),'HH:mm:ss') ) else   OutHour+':'+OutMin+':'+OutSec end as OutTime From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + " Group By EmpId,EmpCardNo,EmpName,SftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime,TotalDays,GId,CustomOrdering ,OtherOverTime Order By convert(int,DptId), CustomOrdering,Empid, ATTDate   ", dt);
                 sqlDB.fillDataTable(sql, dt);
@@ -913,6 +929,11 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                     ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
                 }
 
+                string isregular = "";
+                if (chkIsRegular.Checked == true)
+                {
+                    isregular = "and EmpStatus in ('1','8')";
+                }
                 string cmd = "";
 
                 DataTable dt = new DataTable();
@@ -922,7 +943,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                 }
                 else
                 {
-                    cmd = "Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,PSftName as MobileNo,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + "  and (ATTStatus ='W' or ATTStatus='H') " + unitCondition + " "+ShiftName+ " Group By EmpId,EmpCardNo,EmpName,SftName,PSftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays,GId,CustomOrdering  Order By convert(int,DptId),CustomOrdering,Empid, ATTDate";
+                    cmd = "Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,PSftName as MobileNo,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + "  and (ATTStatus ='W' or ATTStatus='H') " + unitCondition + " "+ShiftName+ "" + isregular + " Group By EmpId,EmpCardNo,EmpName,SftName,PSftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays,GId,CustomOrdering  Order By convert(int,DptId),CustomOrdering,Empid, ATTDate";
                     sqlDB.fillDataTable(cmd, dt);
                 }
                 Session["__dtWHStatus__"] = dt;

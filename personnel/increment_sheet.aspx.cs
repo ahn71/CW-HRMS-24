@@ -17,6 +17,7 @@ namespace SigmaERP.personnel
         string CompanyId = "";
         DataTable dt;
         DataTable dtSetPrivilege;
+        string query = "";
         //permission=346
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -53,7 +54,7 @@ namespace SigmaERP.personnel
                 //ViewState["__ReadAction__"] = AccessPermission[0];
 
                 classes.commonTask.LoadMonthForIncreament(ddlMonthName, ViewState["__CompanyId__"].ToString());
-                classes.Employee.LoadEmpCardIncPro(ddlCardNo, "i", ViewState["__CompanyId__"].ToString());
+                classes.Employee.LoadEmpCardIncPro(ddlCardNo, "'1','2','4'", ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
 
             
@@ -163,16 +164,21 @@ namespace SigmaERP.personnel
                 //{
                 //    CompanyID = ViewState["__CompanyId__"].ToString();
                 //}
+
+
+
                 if (rbEmpList.SelectedValue == "00")
                 {
                     DataTable dtRunning = new DataTable();
                     if (ddlCardNo.SelectedValue == "0")
                     {
-                        sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,Format(Convert(datetime,'01-'+EffectiveMonth,105),'MMM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,OrderRefNo From v_Promotion_Increment  where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,OrderRefNo From v_Promotion_Increment  where UpdateType in('1','2','4') and CompanyId='" + CompanyId + "' order by SN";
+                        sqlDB.fillDataTable(query, dtRunning);
                     }
                     else
                     {
-                        sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,Format(Convert(datetime,'01-'+EffectiveMonth,105),'MMM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,OrderRefNo From v_Promotion_Increment  where TypeOfChange='i' and CompanyId='" + CompanyId + "' and EmpId='"+ddlCardNo.SelectedValue+"' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,OrderRefNo From v_Promotion_Increment  where UpdateType in('1','2','4') and CompanyId='" + CompanyId + "' and EmpId='" + ddlCardNo.SelectedValue + "' order by SN";
+                        sqlDB.fillDataTable(query, dtRunning);
                     }
                     Session["__IndivisualIncrementSheet__"] = dtRunning;
                     if (dtRunning.Rows.Count > 0)
@@ -187,13 +193,18 @@ namespace SigmaERP.personnel
                 else
                 { 
                     DataTable dtRunning = new DataTable();
+                    
                     if (rbEmpList.SelectedValue == "0")
                     {
-                        sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address From v_Promotion_Increment  where TypeOfChange='i' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount, FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address From v_Promotion_Increment  where UpdateType in('1','2','4') and UpdatedDate='" + classes.commonTask.ConvertTo_yyyyMMdd(ddlMonthName.SelectedValue.ToString()) + "' and CompanyId='" + CompanyId + "' order by SN";
+
+                        sqlDB.fillDataTable(query, dtRunning);
                     }
                     else
                     {
-                        sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address From v_Promotion_Increment  where TypeOfChange='i' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount, FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address From v_Promotion_Increment  where UpdateType in('1','2','4') and UpdatedDate='" + classes.commonTask.ConvertTo_yyyyMMdd(ddlMonthName.SelectedValue.ToString()) + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and CompanyId='" + CompanyId + "' order by SN";
+
+                        sqlDB.fillDataTable(query, dtRunning);
                     }
                     Session["__IncrementSheet__"] = dtRunning;
                     if (dtRunning.Rows.Count > 0)
@@ -239,11 +250,14 @@ namespace SigmaERP.personnel
                   DataTable dtRunning = new DataTable();
                   if (ddlCardNo.SelectedValue != "0")
                   {
-                      sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,Format(Convert(datetime,'01-'+EffectiveMonth,105),'MMM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent,OrderRefNo From v_Promotion_Increment  where TypeOfChange='i' and EmpId='"+ddlCardNo.SelectedValue+"' and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent,OrderRefNo From v_Promotion_Increment  where UpdateType in('1','2','4') and EmpId='" + ddlCardNo.SelectedValue + "' and CompanyId='" + CompanyId + "' order by SN";
+                      sqlDB.fillDataTable(query, dtRunning);
                   }
                   else
                   {
-                      sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,Format(Convert(datetime,'01-'+EffectiveMonth,105),'MMM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent,OrderRefNo From v_Promotion_Increment  where TypeOfChange='i' and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent,OrderRefNo From v_Promotion_Increment  where UpdateType in('1','2','4') and CompanyId='" + CompanyId + "' order by SN";
+
+                      sqlDB.fillDataTable(query, dtRunning);
                   }
                   Session["__IndIncrementSheetDetails__"] = dtRunning;
                   if (dtRunning.Rows.Count > 0)
@@ -260,11 +274,13 @@ namespace SigmaERP.personnel
                   DataTable dtRunning = new DataTable();
                   if (rbEmpList.SelectedValue == "0")
                   {
-                      sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent From v_Promotion_Increment  where TypeOfChange='i' and EffectiveMonth='" + ddlMonthName.SelectedValue + "'  and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent From v_Promotion_Increment  where UpdateType in('1','2','4') and UpdatedDate='" + classes.commonTask.ConvertTo_yyyyMMdd(ddlMonthName.SelectedValue.ToString()) + "'  and CompanyId='" + CompanyId + "' order by SN";
+                      sqlDB.fillDataTable(query, dtRunning);
                   }
                   else
                   {
-                      sqlDB.fillDataTable("Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent From v_Promotion_Increment  where TypeOfChange='i' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and CompanyId='" + CompanyId + "' order by SN", dtRunning);
+                        query = "Select EmpName,GrdName,DsgName,DptName,SftName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,Remarks,Address,PreBasicSalary,BasicSalary,PreOthersAllownce,OthersAllownce,PreMedicalAllownce,MedicalAllownce,PreFoodAllownce,FoodAllownce,PreHouseRent,HouseRent From v_Promotion_Increment  where UpdateType in('1','2','4') and UpdatedDate='" + classes.commonTask.ConvertTo_yyyyMMdd(ddlMonthName.SelectedValue.ToString()) + "'  and EmpTypeId=" + rbEmpList.SelectedValue + " and CompanyId='" + CompanyId + "' order by SN";
+                      sqlDB.fillDataTable(query, dtRunning);
                   }
                   Session["__IncrementSheetDetails__"] = dtRunning;
                   if (dtRunning.Rows.Count > 0)

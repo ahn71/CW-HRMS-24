@@ -182,9 +182,11 @@ namespace SigmaERP.personnel
                  CompanyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
                 string condition = AccessControl.getDataAccessCondition(CompanyId,"0");
                 DataTable dtRunning = new DataTable();
-                sqlDB.fillDataTable("Select EmpName,PreGrdName,PreDsgName,PreDptName,GrdName,DsgName,DptName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,SftName,Address From v_Promotion_Increment  where TypeOfChange='p' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and " + condition + " order by SN", dtRunning);
+                sqlDB.fillDataTable("Select EmpName,PreGrdName,PreDsgName,PreDptName,GrdName,DsgName,DptName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount, FORMAT(UpdatedDate,'dd-MM-yyyy') as EffectiveMonth, IncrementAmount,EmpPresentSalary,CompanyName,SftName,Address From v_Promotion_Increment  where UpdateType in('3','4') and UpdatedDate='" + classes.commonTask.ConvertTo_yyyyMMdd(ddlMonthName.SelectedValue.ToString()) + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and " + condition + " order by SN", dtRunning);
 
                 string yty = "Select EmpName,PreGrdName,PreDsgName,PreDptName,GrdName,DsgName,DptName,SubString(EmpCardNo,8,15) as EmpCardNo,FORMAT(EmpJoiningDate,'dd-MM-yyyy') as EmpJoiningDate,PreEmpSalary,PreIncrementAmount,EffectiveMonth,IncrementAmount,EmpPresentSalary,CompanyName,SftName,Address From v_Promotion_Increment  where TypeOfChange='p' and EffectiveMonth='" + ddlMonthName.SelectedValue + "' and EmpTypeId=" + rbEmpList.SelectedValue + " and " + condition + " order by SN";
+
+
                     Session["__PromotionSheet__"] = dtRunning;
                     if (dtRunning.Rows.Count > 0)
                     {

@@ -1210,7 +1210,7 @@ namespace SigmaERP.classes
         private Dictionary<string, DataRow> getAllAdvanceDeduction(DateTime FromDate, string EmpId)
         {
             query = "select EmpID,Amount from Payroll_LoanMonthlySetup where Month='" + FromDate.ToString("yyyy-MM") + "-01'";
-            if (EmpId != "")
+            if (EmpId != "" && EmpId != "0")
                 query += " and EmpId='" + EmpId + "'";
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(query);
@@ -1220,7 +1220,7 @@ namespace SigmaERP.classes
         private Dictionary<string, DataRow> getAllPunishment(string EmpId, DateTime FromDate)
         {
             string query= "select EmpId, PAmount from Payroll_Punishment where MonthName = '" + FromDate.ToString("MM-yyyy") + "'";
-            if (EmpId != "")
+            if (EmpId != "" && EmpId!="0")
                 query += " and EmpId='" + EmpId + "'";
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(query);
