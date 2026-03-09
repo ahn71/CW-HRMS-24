@@ -594,7 +594,7 @@ namespace SigmaERP.personnel
                    
                 }
             }
-            catch { }
+            catch(Exception ex) { }
         }
 
 

@@ -93,7 +93,7 @@ namespace SigmaERP.hrms.Leave
                 INNER JOIN Personnel_EmpCurrentStatus cs ON ei.EmpId = cs.EmpId AND cs.IsActive = 1 INNER JOIN HRD_Department dpt 
                     ON cs.DptId = dpt.DptId INNER JOIN HRD_Designation dsg   ON cs.DsgId = dsg.DsgId LEFT JOIN
                  (
-                   SELECT EmpId, SUM(TotalLeaveDays) AS TotalLeaveDays FROM Leave_LeaveApplications lv inner join tblLeaveConfig lc on lv.LeaveTypeId=lc.LeaveId  WHERE lc.ShortName = 'l/l'
+                   SELECT EmpId, SUM(TotalLeaveDays) AS TotalLeaveDays FROM Leave_LeaveApplications lv inner join tblLeaveConfig lc on lv.LeaveTypeId=lc.LeaveId  WHERE lc.ShortName = 'l/l' and lv.isDeleted=0
                     GROUP BY EmpId  ) LT ON cs.EmpId = LT.EmpId WHERE cs.EmpStatus IN (1,8) AND cs.CompanyId = '" + companyId+"'";
 
                 // Optional Filters
