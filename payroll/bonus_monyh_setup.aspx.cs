@@ -1,5 +1,6 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
+using Newtonsoft.Json;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
 using System;
@@ -23,6 +24,7 @@ namespace SigmaERP.payroll
             ViewState["__WriteAction__"] = "0";
             ViewState["__DeletAction__"] = "0";
             int[] pagePermission = { 398, 399, 400 };
+            
             if (!IsPostBack)
             {
 
@@ -150,43 +152,45 @@ namespace SigmaERP.payroll
                 dt.Columns.Add("EquivalentMonth", typeof(string));
                 dt.Columns.Add("Chosen",typeof(bool));
                 dt.Columns.Add("Percentage",typeof(string));
+                dt.Columns.Add("EquivalentDays", typeof(int));
                 if (chekHasRecord() == true) return;   // verify already setuped ?
                 else
                 {
                    // divPagelist.Visible = true;
                     string getMonth = "";
+                    int days = 0;
                     
                     for (byte b =12; b > 0; b--)
                     {
                        
 
-                        bool chosen = false; int percentage = 0;
+                        bool chosen = false; int percentage = 0; days = 0;
                         if (b == 12)
                         {
-                            getMonth = "Dec-" + DateTime.Now.Year; chosen = true; percentage = 100;
+                            getMonth = "Dec-" + DateTime.Now.Year; chosen = true; percentage = 100; days=30*12;
                         }
                         else if (b == 11) getMonth = "Nov-" + DateTime.Now.Year;
                         else if (b == 10) getMonth = "Oct-" + DateTime.Now.Year;
                         else if (b == 9)
                         {
-                            getMonth = "Sep-" + DateTime.Now.Year; chosen = true; percentage = 75;
+                            getMonth = "Sep-" + DateTime.Now.Year; chosen = true; percentage = 75; days = 30 * 9;
                         }
                         else if (b == 8) getMonth = "Aug-" + DateTime.Now.Year;
                         else if (b == 7) getMonth = "July-" + DateTime.Now.Year;
                         else if (b == 6)
                         {
-                            getMonth = "Jun-" + DateTime.Now.Year; chosen = true; percentage = 50;
+                            getMonth = "Jun-" + DateTime.Now.Year; chosen = true; percentage = 50; days = 30 * 6;
                         }
                         else if (b == 5) getMonth = "May-" + DateTime.Now.Year;
                         else if (b == 4) getMonth = "Apr-" + DateTime.Now.Year;
                         else if (b == 3)
                         {
-                            getMonth = "Mar-" + DateTime.Now.Year; chosen = true; percentage = 25;
+                            getMonth = "Mar-" + DateTime.Now.Year; chosen = true; percentage = 25; days = 30 * 3;
                         }
                         else if (b == 2) getMonth = "Feb-" + DateTime.Now.Year;
                         else if (b == 1) getMonth = "Jan-" + DateTime.Now.Year;
 
-                        dt.Rows.Add(b, b.ToString() + " Months", getMonth, chosen,percentage);
+                        dt.Rows.Add(b, b.ToString() + " Months", getMonth, chosen,percentage,days);
                     
                     }
                     gvBonusMonthList.DataSource = dt;
@@ -227,15 +231,27 @@ namespace SigmaERP.payroll
                 bool status = false;
                 if (dlSelectBonusYearAndType.SelectedValue.ToString() == "0") return;
                 SQLOperation.forDeleteRecordByIdentifier("Payroll_BonusMonthSetup", "BId", dlSelectBonusYearAndType.SelectedValue.ToString(), sqlDB.connection);
+
+                List<string> selectedStatus = new List<string>();
+
+                if (chkP.Checked) selectedStatus.Add(chkP.Text);
+                if (chkA.Checked) selectedStatus.Add(chkA.Text);
+                if (chkW.Checked) selectedStatus.Add(chkW.Text);
+                if (chkH.Checked) selectedStatus.Add(chkH.Text);
+                if (chkL.Checked) selectedStatus.Add(chkL.Text);
+
+                string AttjsonStatus = JsonConvert.SerializeObject(selectedStatus);
+
                 for (byte b = 0; b < gvBonusMonthList.Rows.Count; b++)
                 {
                     CheckBox chk = new CheckBox();
                     chk = (CheckBox)gvBonusMonthList.Rows[b].Cells[2].FindControl("chkChosen");
-                    TextBox txtPercentage = (TextBox)gvBonusMonthList.Rows[b].Cells[3].FindControl("txtPercentage");
+                    TextBox txtPercentage = (TextBox)gvBonusMonthList.Rows[b].Cells[4].FindControl("txtPercentage");
+                    TextBox txtEquivalentdays = (TextBox)gvBonusMonthList.Rows[b].Cells[2].FindControl("txtEquivalentdays");
 
                     bool chosen = (chk.Checked) ? true : false;
-                    string[] getColumns = {"BId","SlabType", "EquivalentMonth", "Chosen", "Percentage", "BonusType", "GenerateOn" };
-                    string[] getValues = { dlSelectBonusYearAndType.SelectedValue.ToString(),gvBonusMonthList.Rows[b].Cells[0].Text, gvBonusMonthList.Rows[b].Cells[1].Text, chosen.ToString(), txtPercentage.Text,dlSelectBonusYearAndType.SelectedItem.ToString(),rblGenerateType.SelectedItem.ToString() };
+                    string[] getColumns = {"BId","SlabType", "EquivalentMonth", "Chosen", "Percentage", "BonusType", "GenerateOn","EquivalentDays","BasedOnAttStatus"};
+                    string[] getValues = { dlSelectBonusYearAndType.SelectedValue.ToString(),gvBonusMonthList.Rows[b].Cells[0].Text, gvBonusMonthList.Rows[b].Cells[1].Text, chosen.ToString(), txtPercentage.Text,dlSelectBonusYearAndType.SelectedItem.ToString(),rblGenerateType.SelectedItem.ToString(), Convert.ToInt32(txtEquivalentdays.Text.Trim()).ToString(), AttjsonStatus};
                     if (SQLOperation.forSaveValue("Payroll_BonusMonthSetup", getColumns, getValues,sqlDB.connection) == true)
                     {
                         status = true;
@@ -273,6 +289,16 @@ namespace SigmaERP.payroll
         protected void tc1_ActiveTabChanged(object sender, EventArgs e)
         {
            if (gvSetupedList.Rows.Count==0) loadSetupedInfo();
+            if (tc1.ActiveTab == tab2)
+            {
+                btnSection.Visible = false;
+                footer.Visible = false;
+            }
+            else
+            {
+                btnSection.Visible = true;
+                footer.Visible = true;
+            }
         }
 
         private void loadSetupedInfo()
@@ -326,8 +352,13 @@ namespace SigmaERP.payroll
             }
         }
 
+        protected void chkAttendnaceStatus_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAttendnaceStatus.Checked)
+                attStatusList.Visible = true;
+            else
+                attStatusList.Visible = false;
 
-
-
+        }
     }
 }
