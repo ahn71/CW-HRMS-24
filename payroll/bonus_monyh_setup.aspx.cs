@@ -241,7 +241,8 @@ namespace SigmaERP.payroll
                 if (chkL.Checked) selectedStatus.Add(chkL.Text);
 
                 string AttjsonStatus = JsonConvert.SerializeObject(selectedStatus);
-
+                if (!chkAttendnaceStatus.Checked)
+                    AttjsonStatus = "";
                 for (byte b = 0; b < gvBonusMonthList.Rows.Count; b++)
                 {
                     CheckBox chk = new CheckBox();

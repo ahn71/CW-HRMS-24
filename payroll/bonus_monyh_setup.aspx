@@ -796,6 +796,9 @@
                         </table>
                         <div runat="server" id="attStatusList" visible="false" class="bms-att-status-row" style="padding: 10px 24px 4px;">
                             <span class="att-pill">
+                                <asp:CheckBox runat="server" ID="chekALL" Text="ALL" />
+                            </span>
+                            <span class="att-pill">
                                 <asp:CheckBox runat="server" ID="chkP" Text="P" />
                             </span>
                             <span class="att-pill">

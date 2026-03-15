@@ -175,6 +175,15 @@ namespace SigmaERP.payroll {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl attStatusList;
         
         /// <summary>
+        /// chekALL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chekALL;
+        
+        /// <summary>
         /// chkP control.
         /// </summary>
         /// <remarks>

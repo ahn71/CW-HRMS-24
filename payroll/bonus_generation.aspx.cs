@@ -14,6 +14,7 @@ using System.Web.SessionState;
 using System.Threading;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
+using Newtonsoft.Json;
 
 namespace SigmaERP.payroll
 {
@@ -145,7 +146,7 @@ namespace SigmaERP.payroll
                 DataTable dtGetCalculationDate = new DataTable();
 
                 string CompanyId = ddlCompanyList.SelectedValue;
-                sqlDB.fillDataTable("select SlabType,Chosen,Percentage,BonusType,GenerateOn from Payroll_BonusMonthSetup where BId ='" + getBonusInfo[0] + "'", dtBonusMonthInfo);  // get bonusn month info start 12 months then 11 months then 10 mpnths as sequqntioaly 
+                sqlDB.fillDataTable("select SlabType,Chosen,Percentage,BonusType,GenerateOn,EquivalentDays,BasedOnAttStatus from Payroll_BonusMonthSetup where BId ='" + getBonusInfo[0] + "' and Chosen=1", dtBonusMonthInfo);  // get bonusn month info start 12 months then 11 months then 10 mpnths as sequqntioaly 
                 string[] GetBId = ddlSelectBonusMonth.Text.Split('-');
                 sqlDB.fillDataTable("select convert(varchar(11),CalculationDate,111) as CalculationDate from v_Payroll_BonusSetup_DistinctRecord where BId ='" + GetBId[0] + "' ", dtGetCalculationDate);
 
@@ -214,100 +215,109 @@ namespace SigmaERP.payroll
                     }
 
                     sqlDB.fillDataTable("select DateDiff (day,'" + bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString() + "','" + dtGetCalculationDate.Rows[0]["CalculationDate"].ToString() + "') as TotalDays", dt=new DataTable());
-                    if (dt.Rows.Count > 0)
+                    string basedOnAttStatus = string.IsNullOrEmpty(dtBonusMonthInfo.Rows[0]["BasedOnAttStatus"]?.ToString())
+                          ? ""
+                          : dtBonusMonthInfo.Rows[0]["BasedOnAttStatus"].ToString();
+
+                    double attendanceDay = getAttendanceDay(bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString(), basedOnAttStatus, bg.dtRunningEmp.Rows[i]["EmpId"].ToString());
+
+                    double? getBonus = CalculateBonus(BasicOrPresintSalary, attendanceDay, dtBonusMonthInfo, out Percentage);
+
+                    if (getBonus != null)
                     {
-                        double getBounus = 0;
-                        
+                        //15-03-2026
+                        //double getBounus = 0;
+
                         // this commentd block is ignore for RSSHRM
-                        
-                            //if (bool.Parse(dtBonusMonthInfo.Rows[0]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 360) //for 12 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[0]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[0]["Percentage"].ToString();
-                            //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[1]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 330) //for 11 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[1]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[1]["Percentage"].ToString();
-                            //}
+                        //if (bool.Parse(dtBonusMonthInfo.Rows[0]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 360) //for 12 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[0]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[0]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[2]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 300) //for 10 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[2]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[2]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[1]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 330) //for 11 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[1]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[1]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[3]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 270) //for 09 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[3]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[3]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[2]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 300) //for 10 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[2]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[2]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[4]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 240) //for 08 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[4]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[4]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[3]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 270) //for 09 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[3]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[3]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[5]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 210) //for 07 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[5]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[5]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[4]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 240) //for 08 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[4]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[4]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[6]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 180) //for 06 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[6]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[6]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[5]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 210) //for 07 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[5]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[5]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[7]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 150) //for 05 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[7]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[7]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[6]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 180) //for 06 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[6]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[6]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[8]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 120) //for 04 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[8]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[8]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[7]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 150) //for 05 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[7]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[7]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[9]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 90) //for 03 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[9]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[9]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[8]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 120) //for 04 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[8]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[8]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[10]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 60) //for 02 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[10]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[10]["Percentage"].ToString();
-                            //}
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[9]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 90) //for 03 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[9]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[9]["Percentage"].ToString();
+                        //}
 
-                            //else if (bool.Parse(dtBonusMonthInfo.Rows[11]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 10) //for 01 Months
-                            //{
-                            //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[11]["Percentage"].ToString()) / 100, 0);
-                            //    Percentage = dtBonusMonthInfo.Rows[11]["Percentage"].ToString();
-                            //}
-                            //else
-                            //{
-                            //    getBounus = 0;      // if getBonus is 0 taka then not counted as get bounus
-                            //    Percentage = "0"; // if percentage is 0(%) then not counted as get bonus 
-                            //                      //if (bool.Parse(ViewState["__IsGerments__"].ToString())) 
-                            //                      //{
-                            //    getBounus = Math.Round(Math.Round(double.Parse(BasicOrPresintSalary)) / 182.5 * int.Parse(dt.Rows[0]["TotalDays"].ToString()));
-                            //    if (getBounus > 0)
-                            //        Percentage = dt.Rows[0]["TotalDays"].ToString();
-                            //    //Percentage = ( getBounus / Math.Round(double.Parse(BasicOrPresintSalary))*100).ToString();
-                            //    //}
-                            //}
-                        
-                       
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[10]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 60) //for 02 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[10]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[10]["Percentage"].ToString();
+                        //}
+
+                        //else if (bool.Parse(dtBonusMonthInfo.Rows[11]["Chosen"].ToString()) == true && int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 10) //for 01 Months
+                        //{
+                        //    getBounus = Math.Round(double.Parse(BasicOrPresintSalary) * double.Parse(dtBonusMonthInfo.Rows[11]["Percentage"].ToString()) / 100, 0);
+                        //    Percentage = dtBonusMonthInfo.Rows[11]["Percentage"].ToString();
+                        //}
+                        //else
+                        //{
+                        //    getBounus = 0;      // if getBonus is 0 taka then not counted as get bounus
+                        //    Percentage = "0"; // if percentage is 0(%) then not counted as get bonus 
+                        //                      //if (bool.Parse(ViewState["__IsGerments__"].ToString())) 
+                        //                      //{
+                        //    getBounus = Math.Round(Math.Round(double.Parse(BasicOrPresintSalary)) / 182.5 * int.Parse(dt.Rows[0]["TotalDays"].ToString()));
+                        //    if (getBounus > 0)
+                        //        Percentage = dt.Rows[0]["TotalDays"].ToString();
+                        //    //Percentage = ( getBounus / Math.Round(double.Parse(BasicOrPresintSalary))*100).ToString();
+                        //    //}
+                        //}
+
+
                         // this below part is use to RSS                        
-                            getBounus = 0;      // if getBonus is 0 taka then not counted as get bounus
-                            Percentage = "0"; // if percentage is 0(%) then not counted as get bonus 
+                        //getBounus = 0;      // if getBonus is 0 taka then not counted as get bounus  //15-03-2026
+                        //Percentage = "0"; // if percentage is 0(%) then not counted as get bonus  ////15-03-2026
 
                         //if (bg.dtRunningEmp.Rows[i]["EmpTypeId"].ToString() == "1")
                         //{
@@ -317,8 +327,10 @@ namespace SigmaERP.payroll
                         //{
                         //    BasicOrPresintSalary = (double.Parse(bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString()) *.6).ToString();
                         //}
-                        
-                            if (int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 182)
+
+
+                        //15-03-2026
+                        /*if (int.Parse(dt.Rows[0]["TotalDays"].ToString()) >= 182)
                             {
                                 getBounus = Math.Round(double.Parse(BasicOrPresintSalary));
                                 Percentage = "100";
@@ -337,9 +349,9 @@ namespace SigmaERP.payroll
                         {
                             getBounus= Math.Round(getBounus * (double.Parse(txtPerOfBonus.Text.Trim())/100));
                         }
+                        */
 
-                        
-                        saveBonusInfo(bg.dtRunningEmp.Rows[i]["SN"].ToString(), bg.dtRunningEmp.Rows[i]["EmpCardNo"].ToString(), bg.dtRunningEmp.Rows[i]["BasicSalary"].ToString(), getBounus, Percentage, bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString(), dtBonusMonthInfo.Rows[0]["GenerateOn"].ToString(), dt.Rows[0]["TotalDays"].ToString(), getBonusInfo[0], ddlCompanyList.SelectedValue, bg);
+                        saveBonusInfo(bg.dtRunningEmp.Rows[i]["SN"].ToString(), bg.dtRunningEmp.Rows[i]["EmpCardNo"].ToString(), bg.dtRunningEmp.Rows[i]["BasicSalary"].ToString(), getBonus, Percentage, bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString(), dtBonusMonthInfo.Rows[0]["GenerateOn"].ToString(), dt.Rows[0]["TotalDays"].ToString(), getBonusInfo[0], ddlCompanyList.SelectedValue, bg);
                         //lbProcessingStatus.Items.Add("Processing completed of  " + dtRunningEmp.Rows[i]["EmpType"].ToString() + "  " +dtRunningEmp.Rows[i]["EmpName"].ToString()+"  Card No. " + dtRunningEmp.Rows[i]["EmpCardNo"].ToString() + "");
                         Session["OPERATION_PROGRESS"] = getValue;
                         Thread.Sleep(1000);
@@ -362,7 +374,7 @@ namespace SigmaERP.payroll
         }
 
         bool isGenerated;
-        private static void saveBonusInfo(string setSN, string setEmpCardNo, string setBasicSalary, double setBonus, string Percentage, string PresentSalary, string generateOn, string TotalDays,string BId,string smonth,bonus_generation bg)
+        private static void saveBonusInfo(string setSN, string setEmpCardNo, string setBasicSalary, double? setBonus, string Percentage, string PresentSalary, string generateOn, string TotalDays,string BId,string smonth,bonus_generation bg)
         { 
             try
             {
@@ -445,7 +457,7 @@ namespace SigmaERP.payroll
                     DataTable dtGetCalculationDate = new DataTable();
 
                     string CompanyId = scompanyid;
-                    sqlDB.fillDataTable("select SlabType,Chosen,Percentage,BonusType,GenerateOn from Payroll_BonusMonthSetup where BId ='" + getBonusInfo[0] + "'", dtBonusMonthInfo);  // get bonusn month info start 12 months then 11 months then 10 mpnths as sequqntioaly 
+                    sqlDB.fillDataTable("select SlabType,Chosen,Percentage,BonusType,GenerateOn,EquivalentDays,BasedOnAttStatus from Payroll_BonusMonthSetup where BId ='" + getBonusInfo[0] + "'", dtBonusMonthInfo);  // get bonusn month info start 12 months then 11 months then 10 mpnths as sequqntioaly 
                     string [] GetBId = smonth.Split('-');
                     sqlDB.fillDataTable("select convert(varchar(11),CalculationDate,111) as CalculationDate from v_Payroll_BonusSetup_DistinctRecord where BId ='" +GetBId[0]+ "' ", dtGetCalculationDate);
 
@@ -496,6 +508,9 @@ namespace SigmaERP.payroll
                         }
 
                         sqlDB.fillDataTable("select DateDiff (day,'" + bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString() + "','" + dtGetCalculationDate.Rows[0]["CalculationDate"].ToString() + "') as TotalDays", dt);
+                       
+                        
+                     
                         if (dt.Rows.Count > 0)
                         {
                             double getBounus = 0;
@@ -678,5 +693,58 @@ namespace SigmaERP.payroll
             }
     
         }
+
+
+        public double? CalculateBonus(string basicSalary, double attendanceDays, DataTable dtBonusMonthInfo, out string percentage)
+        {
+            try
+            {
+                double getBonus = 0;
+                percentage = "0";
+
+
+                for (int i = 0; i < dtBonusMonthInfo.Rows.Count; i++)
+                {
+                    bool chosen = bool.Parse(dtBonusMonthInfo.Rows[i]["Chosen"].ToString());
+
+                    if (chosen && attendanceDays >= Convert.ToDouble(dtBonusMonthInfo.Rows[i]["EquivalentDays"]))
+                    {
+                        double perc = double.Parse(dtBonusMonthInfo.Rows[i]["Percentage"].ToString());
+                        getBonus = Math.Round(Convert.ToDouble(basicSalary) * perc / 100, 0);
+                        percentage = perc.ToString();
+                        break;
+                    }
+                }
+
+                return getBonus;
+            }
+            catch (Exception ex)
+            {
+                percentage = null;
+                return null;
+               
+            }
+           
+
+        }
+
+        private static double getAttendanceDay(string empJoiningDate,string basedOnAttStatus,string empId)
+        {
+            string attStatus = "";
+            if(!String.IsNullOrEmpty(attStatus))
+            {
+                List<string> statusList = JsonConvert.DeserializeObject<List<string>>(basedOnAttStatus);
+
+                 attStatus = $"and at.ATTStatus in({ string.Join(",", statusList.Select(s => $"'{s}'"))})" ;
+                 
+            }
+           
+            string joingingDate = commonTask.ConvertTo_yyyyMMdd(empJoiningDate);
+            string query = $"select count(at.ATTStatus) as AttendanceDay from Personnel_EmployeeInfo ei inner join  Personnel_EmpCurrentStatus cs on ei .EmpId=cs.EmpId and cs.IsActive=1 inner join tblAttendanceRecord at on cs.EmpId=at.EmpId where at.ATTDate>='{joingingDate}'  and at.EmpId='{empId}'";
+            DataTable dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+
+            return dt.Rows.Count > 0 && dt.Rows[0]["AttendanceDay"] != DBNull.Value ? Convert.ToDouble(dt.Rows[0]["AttendanceDay"]): 0;
+        }
     }
-}
+} 
