@@ -15,6 +15,7 @@ using System.Threading;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
 using Newtonsoft.Json;
+using System.Configuration;
 
 namespace SigmaERP.payroll
 {
@@ -135,7 +136,7 @@ namespace SigmaERP.payroll
             try
             {
                 bonus_generation bg = new bonus_generation();
-                string[] getBonusInfo =ddlSelectBonusMonth.Text.Split('-');
+                string[] getBonusInfo = ddlSelectBonusMonth.Text.Split('-');
                 bg.ViewState["__UserId__"] = Session["__GetUserID__"].ToString();
                 // here getBonusInfo[0]=BId
                 // and  getBonusInfo[1]=RId
@@ -160,13 +161,30 @@ namespace SigmaERP.payroll
                 {
                     ExceptedEmpCardNo = " and EmpID not in(select EmpId from Personnel_EmployeeInfo where SUBSTRING(EmpCardNo,8,6) in(" + txtExceptedEmpCardNo.Text.Trim() + ") and CompanyId='" + CompanyId + "')";
                 }
+                string basedOnAttStatus = string.IsNullOrEmpty(dtBonusMonthInfo.Rows[0]["BasedOnAttStatus"]?.ToString())
+                          ? ""
+                          : dtBonusMonthInfo.Rows[0]["BasedOnAttStatus"].ToString();
+                string attStatus = "";
+                if (!String.IsNullOrEmpty(basedOnAttStatus))
+                {
+                    List<string> statusList = JsonConvert.DeserializeObject<List<string>>(dtBonusMonthInfo.Rows[0]["dtBonusMonthInfo"].ToString());
+
+                    attStatus = $"and at.ATTStatus in({ string.Join(",", statusList.Select(s => $"'{s}'"))})";
+
+                }
                 string sqlquery = "";
-                 if (getBonusInfo[1] != "0" && getBonusInfo[1] == "1")
-                     sqlquery= "select EmpId,EmpCardNo,EmpName,SN,EmpType,EmpTypeId,EmpStatus,ActiveSalary,Convert(varchar(11)," +
-                        "EmpJoiningDate,111) as EmpJoiningDate,BasicSalary,EmpPresentSalary,IsActive,CompanyId,RId  from v_Personnel_EmpCurrentStatus" +
-                        " where  EmpStatus in('1','8')  AND ActiveSalary='true' AND IsActive='1' AND CompanyId='" + CompanyId + "' "+ ExceptedEmpCardNo;
+                if (getBonusInfo[1] != "0" && getBonusInfo[1] == "1") { 
+
+                    //sqlquery = "select EmpId,EmpCardNo,EmpName,SN,EmpType,EmpTypeId,EmpStatus,ActiveSalary,Convert(varchar(11)," +
+                    //   "EmpJoiningDate,111) as EmpJoiningDate,BasicSalary,EmpPresentSalary,IsActive,CompanyId,RId  from v_Personnel_EmpCurrentStatus" +
+                    //   " where  EmpStatus in('1','8')  AND ActiveSalary='true' AND IsActive='1' AND CompanyId='" + CompanyId + "' " + ExceptedEmpCardNo;
+
+                sqlquery = @"select  count(at.ATTStatus) as AttendanceDay,cs.EmpId,cs.EmpCardNo,ei.EmpName,cs.SN,cs.EmpTypeId,cs.EmpStatus,ActiveSalary,Convert(varchar(11),EmpJoiningDate,111) as EmpJoiningDate,BasicSalary,EmpPresentSalary,IsActive,cs.CompanyId,ep.RId,cs.DptId,cs.DsgId,cs.SftId   from Personnel_EmployeeInfo ei inner join Personnel_EmpCurrentStatus cs on ei.EmpId=cs.EmpId and IsActive=1 inner join Personnel_EmpPersonnal ep on cs.EmpId=ep.EmpId inner join tblAttendanceRecord at on cs.EmpId=at.EmpId 
+                 where cs.EmpStatus in('1', '8')  AND cs.ActiveSalary = 'true' " + attStatus + " AND cs.CompanyId='" + CompanyId + "' "+ ExceptedEmpCardNo + "  GROUP BY cs.EmpId, cs.EmpCardNo, ei.EmpName, cs.SN, cs.EmpTypeId, cs.EmpStatus,cs.ActiveSalary, ei.EmpJoiningDate, cs.BasicSalary, cs.EmpPresentSalary, cs.IsActive, cs.CompanyId, ep.RId, cs.DptId, cs.DsgId, cs.SftId";
+            }
+
                 else
-                     sqlquery= "select  EmpId,EmpCardNo,EmpName,  SN,EmpType,EmpTypeId,EmpStatus,ActiveSalary,Convert(varchar(11)," +
+                     sqlquery = "select  EmpId,EmpCardNo,EmpName,  SN,EmpType,EmpTypeId,EmpStatus,ActiveSalary,Convert(varchar(11)," +
                     "EmpJoiningDate,111) as EmpJoiningDate,BasicSalary,EmpPresentSalary,IsActive,CompanyId,RId  from v_Personnel_EmpCurrentStatus" +
                     " where  EmpStatus in('1','8')  AND ActiveSalary='true' AND IsActive='1' AND RId='" + getBonusInfo[1] + "' CompanyId='" + CompanyId + "'" + ExceptedEmpCardNo;
 
@@ -186,6 +204,7 @@ namespace SigmaERP.payroll
                 ClearYearlyBonusSheetByBonusType(getBonusInfo[0]);
                 DataTable dt = new DataTable();
                 DataTable dtWorkerAttInfo = new DataTable();
+                DataTable dtBonus = CreateBonusDataTable();
                 for (int i = 0; i < bg.dtRunningEmp.Rows.Count; i++)
                 {
 
@@ -196,7 +215,7 @@ namespace SigmaERP.payroll
 
                     //probar.InnerHtml = getValue.ToString() + "%";   
 
-                    System.Threading.Thread.Sleep(500);
+                    //System.Threading.Thread.Sleep(500);
 
                     string Percentage = "";
 
@@ -214,17 +233,22 @@ namespace SigmaERP.payroll
 
                     }
 
-                    sqlDB.fillDataTable("select DateDiff (day,'" + bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString() + "','" + dtGetCalculationDate.Rows[0]["CalculationDate"].ToString() + "') as TotalDays", dt=new DataTable());
-                    string basedOnAttStatus = string.IsNullOrEmpty(dtBonusMonthInfo.Rows[0]["BasedOnAttStatus"]?.ToString())
-                          ? ""
-                          : dtBonusMonthInfo.Rows[0]["BasedOnAttStatus"].ToString();
+                    //sqlDB.fillDataTable("select DateDiff (day,'" + bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString() + "','" + dtGetCalculationDate.Rows[0]["CalculationDate"].ToString() + "') as TotalDays", dt=new DataTable());
+                    
 
-                    double attendanceDay = getAttendanceDay(bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString(), basedOnAttStatus, bg.dtRunningEmp.Rows[i]["EmpId"].ToString());
+                    //double attendanceDay = getAttendanceDay(bg.dtRunningEmp.Rows[i]["EmpJoiningDate"].ToString(), basedOnAttStatus, bg.dtRunningEmp.Rows[i]["EmpId"].ToString());
 
-                    double? getBonus = CalculateBonus(BasicOrPresintSalary, attendanceDay, dtBonusMonthInfo, out Percentage);
+                    double? getBonus = CalculateBonus(BasicOrPresintSalary,Convert.ToDouble(bg.dtRunningEmp.Rows[i]["AttendanceDay"].ToString()), dtBonusMonthInfo, out Percentage);
+
+                   
 
                     if (getBonus != null)
                     {
+
+
+                       
+
+
                         //15-03-2026
                         //double getBounus = 0;
 
@@ -351,10 +375,34 @@ namespace SigmaERP.payroll
                         }
                         */
 
-                        saveBonusInfo(bg.dtRunningEmp.Rows[i]["SN"].ToString(), bg.dtRunningEmp.Rows[i]["EmpCardNo"].ToString(), bg.dtRunningEmp.Rows[i]["BasicSalary"].ToString(), getBonus, Percentage, bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString(), dtBonusMonthInfo.Rows[0]["GenerateOn"].ToString(), dt.Rows[0]["TotalDays"].ToString(), getBonusInfo[0], ddlCompanyList.SelectedValue, bg);
+
+                        if (getBonus != null)
+                        {
+
+                            AddBonusRow(dtBonus, ddlCompanyList.SelectedValue, bg.dtRunningEmp.Rows[i]["SftId"].ToString(), getBonusInfo[0], bg.dtRunningEmp.Rows[i]["EmpId"].ToString(), bg.dtRunningEmp.Rows[i]["EmpCardNo"].ToString(), bg.dtRunningEmp.Rows[i]["EmpTypeId"].ToString(), bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString(), bg.dtRunningEmp.Rows[i]["BasicSalary"].ToString(), Percentage, getBonus.Value, bg.dtRunningEmp.Rows[i]["DptId"].ToString(), bg.dtRunningEmp.Rows[i]["DsgId"].ToString(), DateTime.Now.ToString("yyyy-MM-dd"), dtBonusMonthInfo.Rows[0]["BonusType"].ToString(), Session["__GetUserID__"].ToString(), dtBonusMonthInfo.Rows[0]["GenerateOn"].ToString(), bg.dtRunningEmp.Rows[i]["AttendanceDay"].ToString());
+
+
+
+                            //DataRow row = dtBonus.NewRow();
+
+                            //row["SN"] = bg.dtRunningEmp.Rows[i]["SN"].ToString();
+                            //row["EmpCardNo"] = bg.dtRunningEmp.Rows[i]["EmpCardNo"].ToString();
+                            //row["BasicSalary"] = bg.dtRunningEmp.Rows[i]["BasicSalary"].ToString();
+                            //row["BonusAmount"] = getBonus;
+                            //row["Percentage"] = Percentage;
+                            //row["EmpPresentSalary"] = bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString();
+                            //row["GenerateOn"] = dtBonusMonthInfo.Rows[0]["GenerateOn"].ToString();
+                            //row["TotalDays"] = dt.Rows[0]["TotalDays"].ToString();
+                            //row["BId"] = getBonusInfo[0];
+                            //row["CompanyId"] = ddlCompanyList.SelectedValue;
+
+                            //dtBonus.Rows.Add(row);
+                        }
+
+                        //saveBonusInfo(bg.dtRunningEmp.Rows[i]["SN"].ToString(), bg.dtRunningEmp.Rows[i]["EmpCardNo"].ToString(), bg.dtRunningEmp.Rows[i]["BasicSalary"].ToString(), getBonus, Percentage, bg.dtRunningEmp.Rows[i]["EmpPresentSalary"].ToString(), dtBonusMonthInfo.Rows[0]["GenerateOn"].ToString(), dt.Rows[0]["TotalDays"].ToString(), getBonusInfo[0], ddlCompanyList.SelectedValue, bg);
                         //lbProcessingStatus.Items.Add("Processing completed of  " + dtRunningEmp.Rows[i]["EmpType"].ToString() + "  " +dtRunningEmp.Rows[i]["EmpName"].ToString()+"  Card No. " + dtRunningEmp.Rows[i]["EmpCardNo"].ToString() + "");
                         Session["OPERATION_PROGRESS"] = getValue;
-                        Thread.Sleep(1000);
+                        //Thread.Sleep(1000);
 
 
 
@@ -362,6 +410,8 @@ namespace SigmaERP.payroll
                 }
                 //  System.Threading.Thread.Sleep(50);
                 //  ProgressBar1.Value = 0;
+
+                BulkInsertBonus(dtBonus);
                 if (bg.isGenerated)
                 {
 
@@ -369,7 +419,7 @@ namespace SigmaERP.payroll
                 }
 
             }
-            catch { }
+            catch(Exception ex) { }
         
         }
 
@@ -745,6 +795,102 @@ namespace SigmaERP.payroll
             dt = CRUD.ExecuteReturnDataTable(query);
 
             return dt.Rows.Count > 0 && dt.Rows[0]["AttendanceDay"] != DBNull.Value ? Convert.ToDouble(dt.Rows[0]["AttendanceDay"]): 0;
+        }
+
+
+        private DataTable CreateBonusDataTable()
+        {
+            DataTable dtBonus = new DataTable();
+
+            dtBonus.Columns.Add("CompanyId");
+            dtBonus.Columns.Add("SftId");
+            dtBonus.Columns.Add("BID");
+            dtBonus.Columns.Add("EmpId");
+            dtBonus.Columns.Add("EmpCardNo");
+            dtBonus.Columns.Add("EmpTypeId");
+            dtBonus.Columns.Add("PresentSalary");
+            dtBonus.Columns.Add("BasicSalary");
+            dtBonus.Columns.Add("Percentage");
+            dtBonus.Columns.Add("BonusAmount");
+            dtBonus.Columns.Add("DptId");
+            dtBonus.Columns.Add("DsgId");
+            dtBonus.Columns.Add("GenerateDate");
+            dtBonus.Columns.Add("BonusType");
+            dtBonus.Columns.Add("UserId");
+            dtBonus.Columns.Add("GenerateOn");
+            dtBonus.Columns.Add("TotalDays");
+
+            return dtBonus;
+        }
+
+        private void AddBonusRow(DataTable dtBonus,string companyId,string sftId,string bId,string empId,string empCardNo,string empTypeId,
+    string presentSalary,string basicSalary,string percentage,double bonusAmount,string dptId,string dsgId,string generateDate,
+    string bonusType,string userId,string generateOn,string totalDays)
+        {
+            DataRow row = dtBonus.NewRow();
+
+            row["CompanyId"] = companyId;
+            row["SftId"] = sftId;
+            row["BID"] = bId;
+            row["EmpId"] = empId;
+            row["EmpCardNo"] = empCardNo;
+            row["EmpTypeId"] = empTypeId;
+            row["PresentSalary"] = presentSalary;
+            row["BasicSalary"] = basicSalary;
+            row["Percentage"] = percentage;
+            row["BonusAmount"] = bonusAmount;
+            row["DptId"] = dptId;
+            row["DsgId"] = dsgId;
+            row["GenerateDate"] = generateDate;
+            row["BonusType"] = bonusType;
+            row["UserId"] = userId;
+            row["GenerateOn"] = generateOn;
+            row["TotalDays"] = totalDays;
+
+            dtBonus.Rows.Add(row);
+        }
+
+
+
+        private void BulkInsertBonus(DataTable dtBonus)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["local2"].ConnectionString;
+
+            using (SqlConnection con = new SqlConnection(connStr))
+            {
+                con.Open();
+
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
+                {
+                    bulkCopy.DestinationTableName = "Payroll_YearlyBonusSheet";
+
+                    // Performance optimization
+                    bulkCopy.BatchSize = 5000;
+                    bulkCopy.BulkCopyTimeout = 0;
+                    //CompanyId","SftId","BID", "EmpId", "EmpCardNo", "EmpTypeId", "PresentSalary", "BasicSalary", "Percentage", "BonusAmount","DptId", "DsgId", "GenerateDate", "BonusType", "UserId", "GenerateOn", "TotalDays
+                    // Column mapping (DataTable -> SQL Table)
+                    bulkCopy.ColumnMappings.Add("CompanyId", "CompanyId");
+                    bulkCopy.ColumnMappings.Add("SftId", "SftId");
+                    bulkCopy.ColumnMappings.Add("BId", "BId");
+                    bulkCopy.ColumnMappings.Add("EmpId", "EmpId");
+                    bulkCopy.ColumnMappings.Add("EmpCardNo", "EmpCardNo");
+                    bulkCopy.ColumnMappings.Add("EmpTypeId", "EmpTypeId");
+                    bulkCopy.ColumnMappings.Add("PresentSalary", "PresentSalary");
+                    bulkCopy.ColumnMappings.Add("BasicSalary", "BasicSalary");
+                    bulkCopy.ColumnMappings.Add("Percentage", "Percentage");
+                    bulkCopy.ColumnMappings.Add("BonusAmount", "BonusAmount");
+                    bulkCopy.ColumnMappings.Add("DptId", "DptId");
+                    bulkCopy.ColumnMappings.Add("DsgId", "DsgId");
+                    bulkCopy.ColumnMappings.Add("GenerateDate", "GenerateDate");
+                    bulkCopy.ColumnMappings.Add("BonusType", "BonusType");
+                    bulkCopy.ColumnMappings.Add("UserId", "UserId");
+                    bulkCopy.ColumnMappings.Add("GenerateOn", "GenerateOn");
+                    bulkCopy.ColumnMappings.Add("TotalDays", "TotalDays");
+
+                    // Insert Data
+                    bulkCopy.WriteToServer(dtBonus);
+                }
+            }
         }
     }
 } 
