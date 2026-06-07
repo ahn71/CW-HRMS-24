@@ -470,6 +470,19 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
             catch { }
         }
 
+
+        public static void loadHolidayList(DropDownList dl ,string CompanyId)
+        {
+            string query = @"select [HCode], CONVERT(varchar(10), [HDate], 105) as [HDate],CONVERT(varchar(10), HDate, 105) + ' (' + Description + ')' AS HolidayInfo, [Description] from tblHolydayWork where CompanyId='" + CompanyId + "' order by year(HDate) desc, MONTH(HDate) desc, HDate desc";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            //da.Fill(dt = new DataTable());
+            dl.DataValueField = "HCode";
+            dl.DataTextField = "HolidayInfo";
+            dl.DataSource = dt;
+            dl.DataBind();
+            dl.Items.Insert(0, new ListItem("Select Holiday List", "0"));  
+        }
         public static void loadDivision(DropDownList dl)
         {
             try
@@ -1826,7 +1839,7 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 string condition = AccessControl.loadDepartmetCondition(CompanyId);
                 dt = new DataTable();
 
-
+                string hh = "SELECT  DptId, DptName FROM HRD_Department where " + condition + " And DptStatus=1";
                 sqlDB.fillDataTable("SELECT  DptId, DptName FROM HRD_Department where " + condition + " And DptStatus=1 ", dt = new DataTable());
                 lst.DataValueField = "DptId";
                 lst.DataTextField = "DptName";

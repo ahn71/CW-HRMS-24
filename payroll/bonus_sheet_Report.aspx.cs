@@ -95,6 +95,7 @@ namespace SigmaERP.payroll
                 //    }
 
                 //}
+                
 
                 string CompanyId = (ddlCompanyName.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue.ToString();
 

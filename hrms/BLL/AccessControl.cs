@@ -185,7 +185,7 @@ namespace SigmaERP.hrms.BLL
         public static string  loadDepartmetCondition(string CompanyId)
         {
             string conditon = " CompanyId = '" + CompanyId + "'";
-            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
+            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3" || HttpContext.Current.Session["__dataAceesLevel__"].ToString() == null)
             {
                 conditon += "";  //for all department 
             }

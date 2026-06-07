@@ -2107,6 +2107,7 @@
     <Content Include="payroll\employee_pf.aspx" />
     <Content Include="payroll\festival_bonus.aspx" />
     <Content Include="payroll\final_bill_payment_sheet.aspx" />
+    <Content Include="payroll\HolidayAllowence.aspx" />
     <Content Include="payroll\holiday_allowance.aspx" />
     <Content Include="payroll\holiday_generation.aspx" />
     <Content Include="payroll\loan.aspx" />
@@ -5149,6 +5150,13 @@
     </Compile>
     <Compile Include="payroll\final_bill_payment_sheet.aspx.designer.cs">
       <DependentUpon>final_bill_payment_sheet.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\HolidayAllowence.aspx.cs">
+      <DependentUpon>HolidayAllowence.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\HolidayAllowence.aspx.designer.cs">
+      <DependentUpon>HolidayAllowence.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\holiday_allowance.aspx.cs">
       <DependentUpon>holiday_allowance.aspx</DependentUpon>
