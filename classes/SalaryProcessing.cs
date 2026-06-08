@@ -94,6 +94,7 @@ namespace SigmaERP.classes
                    var allAdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId);
 
                     var allPunishmentDeductions = getAllPunishment(EmpId, FromDate);
+                    DataTable dtHoliday = getHollidayList(FromDate, CompanyId); 
                     //get stamp Amount
 
                     //int count = 0;
@@ -219,11 +220,16 @@ namespace SigmaERP.classes
                         //get Others Pay
                         salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
 
-                    //get Others Deduction
-                    //salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
-                    
-                    //get PF Deduction 
-                    if (hasPF)
+                         //holiday allowence start
+                         salaryRecord = checkHolidayAllowance(salaryRecord, );
+
+                        //holiday allowence end 
+
+                        //get Others Deduction
+                        //salaryRecord.OthersPay = getOthersDeduction(salaryRecord.EmpId, salaryRecord.ToDate.ToString("MM-yyyy"));
+
+                        //get PF Deduction 
+                        if (hasPF)
                         salaryRecord.ProvidentFund = getPF(employee,ToDate);
                         //get Advance Deduction
 
@@ -1440,6 +1446,51 @@ namespace SigmaERP.classes
                 return dt;
             }
 
+        }
+
+        private DataTable  getHollidayList(DateTime fromDate,string companyId)
+        {
+            string query = "select hw.hdate,has.salaryType,has.Multiplier from tblHolydayWork  hw inner join HolidayAllowanceSettings has on hw.HCode=has.HolidayId where has.companyId='0001' and has.isactive=1 ";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            if (dt.Rows.Count > 0)
+            {
+                return dt;
+            }
+            return null;
+        }
+
+        private (int HolidayCount, decimal Amount) CalculateHolidayAllowance(
+    string empId,
+    DataTable dtHoliday,
+    decimal perDaySalary)
+        {
+            int holidayCount = 0;
+            decimal amount = 0;
+
+            foreach (DataRow holidayRow in dtHoliday.Rows)
+            {
+                DateTime holidayDate = Convert.ToDateTime(holidayRow["HDate"]);
+                decimal multiplier = Convert.ToDecimal(holidayRow["Multiplier"]);
+
+                string query = $@"
+            SELECT COUNT(*)
+            FROM tblAttendanceRecord
+            WHERE EmpId = '{empId}'
+              AND HolidayCount = 1
+              AND CAST(AttDate AS DATE) = '{holidayDate:yyyy-MM-dd}'";
+
+                int count = Convert.ToInt32(CRUD.ExecuteScalar(query));
+
+                if (count > 0)
+                {
+                    holidayCount++;
+
+                    amount += perDaySalary * multiplier;
+                }
+            }
+
+            return (holidayCount, amount);
         }
 
     }

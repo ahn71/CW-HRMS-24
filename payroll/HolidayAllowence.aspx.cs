@@ -36,7 +36,7 @@ namespace SigmaERP.payroll
                 string DptId = getCookies["__DptId__"].ToString();
                 //string[] AccessPermission = new string[0];
                 classes.commonTask.LoadBranch(ddlCompanyList, ViewState["__CompanyId__"].ToString());
-               
+
                 // AccessPermission = checkUserPrivilege.checkUserPrivilegeForList(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "advance.aspx", ddlCompanyList, gvAdvanceInfo, btnSearch);
 
                 //ViewState["__ReadAction__"] = AccessPermission[0];
@@ -52,13 +52,17 @@ namespace SigmaERP.payroll
 
         protected void btnsave_Click(object sender, EventArgs e)
         {
-            saveHolidayAllowence();
+            string salaryType = rdoBasic.Checked ? "Basic" : "Gross";
+            if (btnsave.Text == "Update")
+                UpdateHolidayAllowance(salaryType);
+
+            saveHolidayAllowence(salaryType);
         }
 
 
-        private void saveHolidayAllowence()
+        private void saveHolidayAllowence(string salaryType)
         {
-            string salaryType = rdoBasic.Checked ? "Basic" : "Gross";
+           
             if (!IsValidInput(salaryType))
                 return;
 
@@ -70,7 +74,7 @@ namespace SigmaERP.payroll
 
             InsertHolidayAllowance(salaryType);
 
-            lblMessage.Text = "Saved successfully.";
+            AlertSuccess("Holiday Allowance সফলভাবে সংরক্ষণ হয়েছে।");
         }
 
         private bool IsValidInput(string salaryType)
@@ -104,14 +108,14 @@ namespace SigmaERP.payroll
                      AND HolidayId = " + ddlholidaylist.SelectedValue + @"
                      AND SalaryType = '" + salaryType + "'";
 
-            int count =CRUD.ExecuteReturnID(query);
+            int count = CRUD.ExecuteReturnID(query);
 
             return count > 0;
         }
 
         private void InsertHolidayAllowance(string salaryType)
         {
-            
+
             string query = @"INSERT INTO HolidayAllowanceSettings
                     (
                         SalaryType,
@@ -134,7 +138,7 @@ namespace SigmaERP.payroll
                     )";
 
             bool isave = CRUD.Execute(query);
-           
+
         }
 
         private void BindHolidayAllowance()
@@ -144,7 +148,7 @@ namespace SigmaERP.payroll
             hs.AllowanceID,
             hs.CompanyId,
             CONVERT(VARCHAR(10), hw.HDate, 105) + ' (' + hw.Description + ')' AS Holiday,
-            hs.SalaryType,
+            hs.SalaryType,hs.IsActive,
             hs.Multiplier
         FROM HolidayAllowanceSettings hs
         INNER JOIN tblHolydayWork hw
@@ -158,6 +162,126 @@ namespace SigmaERP.payroll
             gvHolidayAllowance.DataBind();
         }
 
- 
-    }
+        protected void chkIsActive_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            GridViewRow row = (GridViewRow)chk.NamingContainer;
+
+            int allowanceId = Convert.ToInt32(
+                gvHolidayAllowance.DataKeys[row.RowIndex].Value
+            );
+
+            string query = @"UPDATE HolidayAllowanceSettings
+                     SET IsActive = " + (chk.Checked ? 1 : 0) + @",
+                         UpdatedBy = " + ViewState["__userId__"].ToString()+ @",
+                         UpdatedAt = GETDATE()
+                     WHERE AllowanceID = " + allowanceId;
+
+            bool isave = CRUD.Execute(query);
+
+            BindHolidayAllowance();
+        }
+
+
+
+        private void ShowAlert(string type, string title, string message)
+        {
+            string script = $"showAlert('{type}', '{title}', '{message}');";
+            ScriptManager.RegisterStartupScript(this, GetType(), "swal", script, true);
+        }
+
+        // ── Shortcut Methods ──────────────────────────
+        private void AlertSuccess(string message) =>
+            ShowAlert("success", "সফল হয়েছে!", message);
+
+        private void AlertError(string message) =>
+            ShowAlert("error", "সমস্যা হয়েছে!", message);
+
+        private void AlertWarning(string message) =>
+            ShowAlert("warning", "সতর্কতা", message);
+
+        private void AlertInfo(string message) =>
+            ShowAlert("info", "তথ্য", message);
+
+        protected void gvHolidayAllowance_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                // DataItem থেকে IsActive নাও
+                bool isActive = Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "IsActive"));
+
+                // Row এ class set করো
+                e.Row.CssClass = isActive ? "row-active" : "row-inactive";
+            }
+        }
+
+        protected void gvHolidayAllowance_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+             int id = Convert.ToInt32(e.CommandArgument);
+
+                if (e.CommandName == "EditRow")
+                {
+                    LoadDataForEdit(id);
+                }
+        }
+
+
+        private void LoadDataForEdit(int id)
+        {
+            string query = @"SELECT *
+                     FROM HolidayAllowanceSettings
+                     WHERE AllowanceID = " + id;
+
+            DataTable dt = CRUD.ExecuteReturnDataTable(query);
+
+            if (dt.Rows.Count > 0)
+            {
+                ddlholidaylist.SelectedValue = dt.Rows[0]["HolidayId"].ToString();
+                if (dt.Rows[0]["SalaryType"].ToString() == "Basic")
+                    rdoBasic.Checked = true;
+                else
+                    rdoGross.Checked = true;
+                txtMultiplier.Text = dt.Rows[0]["Multiplier"].ToString();
+                ViewState["EditID"] = id;
+
+                btnsave.Text = "Update";
+            }
+        }
+
+        private void UpdateHolidayAllowance(string salaryType)
+        {
+            if (ViewState["EditID"] == null)
+                return;
+
+            int id = Convert.ToInt32(ViewState["EditID"]);
+
+            string query = @"UPDATE HolidayAllowanceSettings
+                     SET SalaryType = '" + salaryType + @"',
+                         HolidayId = " + ddlholidaylist.SelectedValue + @",
+                         Multiplier = " + txtMultiplier.Text + @",
+                         IsActive = ' 1'  ,
+                         UpdatedBy = " + Session["UserId"] + @",
+                         UpdatedAt = GETDATE()
+                     WHERE AllowanceID = " + id;
+
+            bool isave = CRUD.Execute(query);
+
+            ClearForm();
+            BindHolidayAllowance();
+
+            lblMessage.Text = "Updated successfully.";
+        }
+
+        private void ClearForm()
+        {
+            ddlholidaylist.SelectedIndex = 0;
+            txtMultiplier.Text = "";
+            ViewState["EditID"] = null;
+            btnsave.Text = "Save";
+        }
+    } 
+       
 }
+
+
+

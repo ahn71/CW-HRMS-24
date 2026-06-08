@@ -481,7 +481,7 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
             dl.DataTextField = "HolidayInfo";
             dl.DataSource = dt;
             dl.DataBind();
-            dl.Items.Insert(0, new ListItem("Select Holiday List", "0"));  
+            dl.Items.Insert(0, new ListItem("Select Holiday List", null));  
         }
         public static void loadDivision(DropDownList dl)
         {

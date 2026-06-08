@@ -176,6 +176,56 @@
                 justify-content: flex-end
             }
 
+            .switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+
+                /* hide default checkbox */
+                .switch input {
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+            /* slider */
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+                border-radius: 34px;
+            }
+
+                .slider:before {
+                    position: absolute;
+                    content: "";
+                    height: 18px;
+                    width: 18px;
+                    left: 3px;
+                    bottom: 3px;
+                    background-color: white;
+                    transition: .4s;
+                    border-radius: 50%;
+                }
+
+            /* checked state */
+            .switch input:checked + .slider {
+                background-color: #28a745;
+            }
+
+                .switch input:checked + .slider:before {
+                    transform: translateX(26px);
+                }
+
+      
+
             .btn {
                 height: 38px;
                 padding: 0 16px;
@@ -395,9 +445,11 @@
                 }
             }
         </style>
+
     </head>
     <body>
-
+                <asp:UpdatePanel runat="server" ID="up2">
+                        <ContentTemplate>
         <div class="topbar">
             <div class="topbar-icon"><i class="ti ti-beach" aria-hidden="true"></i></div>
             <div>
@@ -472,11 +524,11 @@
                 </div>
 
                 <div class="tbl-wrap">
-                    
-                <asp:GridView ID="gvHolidayAllowance" runat="server"
-    AutoGenerateColumns="False"
+            
+                             <asp:GridView ID="gvHolidayAllowance" runat="server"
+    AutoGenerateColumns="False" DataKeyNames="AllowanceID" OnRowCommand="gvHolidayAllowance_RowCommand"
     CssClass="table table-bordered table-striped"
-    EmptyDataText="No data found">
+    EmptyDataText="No data found"> 
     <Columns>
 
         <asp:TemplateField HeaderText="#">
@@ -492,6 +544,22 @@
         <asp:BoundField DataField="SalaryType" HeaderText="Salary Type" />
 
         <asp:BoundField DataField="Multiplier" HeaderText="Multiplier" />
+<asp:TemplateField HeaderText="Active">
+    <ItemTemplate>
+
+        <label class="switch">
+
+            <asp:CheckBox ID="chkIsActive"
+                runat="server"
+                AutoPostBack="true"
+                OnCheckedChanged="chkIsActive_CheckedChanged"
+                Checked='<%# Convert.ToBoolean(Eval("IsActive")) %>' />
+
+            <span class="slider"></span>
+
+        </label>
+    </ItemTemplate>
+</asp:TemplateField>
 
         <asp:TemplateField HeaderText="Action">
             <ItemTemplate>
@@ -518,6 +586,11 @@
 
     </Columns>
 </asp:GridView>
+                        </ContentTemplate>
+
+                    </asp:UpdatePanel>
+                    
+               
                 </div>
             </div>
 
