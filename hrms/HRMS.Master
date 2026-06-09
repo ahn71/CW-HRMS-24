@@ -1586,6 +1586,22 @@
                                             </div>
                                         </li>
                                         <%} %>--%>
+
+                                         <% if (IsRouteExists("settings/holiday-allowance-setting"))
+                                            { %>
+                                          <li class="d-flex">
+                                            <div class="me-3"><i class=" IconStyle uil uil-align-left"></i></div>
+                                            <div class="flex-grow-1">
+                                                <h6>
+                                                    <a href="settings/holiday-allowance-setting" runat="server" class="stretched-link">Holiday Allowance Setting</a>
+                                                </h6>
+                                                <p>Setup Line/Group</p>
+                                            </div>
+                                        </li>
+                                        <%} %>
+
+
+
                                         <% if (IsRouteExists("settings/others"))
                                             { %>
                                         <li class="d-flex">

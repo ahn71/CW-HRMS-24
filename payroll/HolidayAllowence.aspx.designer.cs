@@ -58,6 +58,15 @@ namespace SigmaERP.payroll {
         protected global::System.Web.UI.WebControls.DropDownList ddlholidaylist;
         
         /// <summary>
+        /// ddHolidayType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddHolidayType;
+        
+        /// <summary>
         /// rdoBasic control.
         /// </summary>
         /// <remarks>
@@ -74,15 +83,6 @@ namespace SigmaERP.payroll {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButton rdoGross;
-        
-        /// <summary>
-        /// txtMultiplier control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMultiplier;
         
         /// <summary>
         /// btnsave control.

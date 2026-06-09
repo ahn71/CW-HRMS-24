@@ -1,13 +1,13 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/payroll_nested.master" AutoEventWireup="true" CodeBehind="HolidayAllowence.aspx.cs" Inherits="SigmaERP.payroll.HolidayAllowence" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="HolidayAllowence.aspx.cs" Inherits="SigmaERP.payroll.HolidayAllowence" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:ScriptManager runat="server" ID="scr1"></asp:ScriptManager>
-    <asp:TextBox runat="server"  ID="lblMessage"></asp:TextBox>
+    <asp:TextBox runat="server" ID="lblMessage" style="display:none;"></asp:TextBox>
 
     <!DOCTYPE html>
-    <html lang="bn">
+    <html>
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -173,7 +173,8 @@
             .btn-group {
                 display: flex;
                 gap: 8px;
-                justify-content: flex-end
+                justify-content: flex-end;
+                width: 100%
             }
 
             .switch {
@@ -224,7 +225,7 @@
                     transform: translateX(26px);
                 }
 
-      
+
 
             .btn {
                 height: 38px;
@@ -275,9 +276,10 @@
                 .btn-ghost-danger:hover {
                     background: #FCEBEB
                 }
-                #btnsave {
-    font-family: "tabler-icons", 'Segoe UI', sans-serif;
-}
+
+            #btnsave {
+                font-family: "tabler-icons", 'Segoe UI', sans-serif;
+            }
 
             /* table card */
             .table-card {
@@ -448,154 +450,161 @@
 
     </head>
     <body>
-                <asp:UpdatePanel runat="server" ID="up2">
-                        <ContentTemplate>
-        <div class="topbar">
-            <div class="topbar-icon"><i class="ti ti-beach" aria-hidden="true"></i></div>
-            <div>
-                <span class="topbar-title">Holiday Allowance</span>
-                <span class="topbar-crumb">/ Payroll / Holiday Management</span>
-            </div>
-        </div>
-
-        <div class="main">
-
-            <!-- Form Row Card -->
-            <div class="form-card">
-                <div class="form-row">
-
-                    <div class="field">
-                        <label for="sel-company">Company</label>
-                        <asp:DropDownList runat="server" ID="ddlCompanyList"></asp:DropDownList>
+        <asp:UpdatePanel runat="server" ID="up2">
+            <ContentTemplate>
+                <div class="topbar">
+                    <div class="topbar-icon"><i class="ti ti-beach" aria-hidden="true"></i></div>
+                    <div>
+                        <span class="topbar-title">Holiday Allowance</span>
+                        <span class="topbar-crumb">/ Payroll / Holiday Management</span>
                     </div>
+                </div>
 
-                    <div class="field">
-                        <label for="sel-holiday">Holiday List</label>
-                        <asp:DropDownList runat="server" ID="ddlholidaylist"></asp:DropDownList>
-                    </div>
+                <div class="main">
 
-                    <div class="field">
-                        <label>Salary Type</label>
-                        <div class="sal-inline">
-                            <label class="radio-pill active" id="pill-basic">
-                                <asp:RadioButton ID="rdoBasic" runat="server"
-                                    GroupName="saltype"
-                                    Text="Basic"
-                                    Checked="true" />
-                            </label>
-                            <label class="radio-pill" id="pill-gross">
-                                <asp:RadioButton ID="rdoGross" runat="server"
-                                    GroupName="saltype"
-                                    Text="Gross" />
-                            </label>
+                    <!-- Form Row Card -->
+                    <div class="form-card">
+                        <div class="form-row">
+
+                            <div class="field">
+                                <label for="sel-company">Company</label>
+                                <asp:DropDownList runat="server" ID="ddlCompanyList"></asp:DropDownList>
+                            </div>
+
+                            <div class="field">
+                                <label for="sel-holiday">Holiday List</label>
+                                <asp:DropDownList runat="server" ID="ddlholidaylist"></asp:DropDownList>
+                            </div>
+                            <div class="field">
+                                <label for="sel-holiday">Holiday Type</label>
+                                <asp:DropDownList runat="server" ID="ddHolidayType">
+                                    <asp:ListItem Value="General">General</asp:ListItem>
+                                    <asp:ListItem Value="Eid">Eid</asp:ListItem>
+                                </asp:DropDownList>
+                            </div>
+
+                            <div class="field">
+                                <label>Salary Type</label>
+                                <div class="sal-inline">
+                                    <label class="radio-pill" id="pill-basic" onclick="setPill('basic')">
+                                        <asp:RadioButton ID="rdoBasic" runat="server"
+                                            GroupName="saltype"
+                                            Text="Basic"
+                                            Checked="true" />
+                                    </label>
+                                    <label class="radio-pill" id="pill-gross" onclick="setPill('gross')">
+                                        <asp:RadioButton ID="rdoGross" runat="server"
+                                            GroupName="saltype"
+                                            Text="Gross" />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <%--        <div class="field">
+                        <label for="inp-multi">Multiplier (কতগুণ)</label>
+                        <asp:TextBox runat="server" type="number" ID="txtMultiplier" placeholder="e.g. 1, 1.5, 2" min="0.25" step="0.25"></asp:TextBox>
+                    </div>--%>
+
+                            <!-- Buttons aligned right -->
+                            <div class="btn-group">
+                                <button class="btn" onclick="resetForm()">
+                                    <i class="ti ti-refresh" style="font-size: 14px" aria-hidden="true"></i>Reset
+                                </button>
+                                <asp:Button runat="server"
+                                    ID="btnsave"
+                                    CssClass="btn btn-primary"
+                                    OnClick="btnsave_Click"
+                                    Text="&#xe607; Add" />
+
+
+                            </div>
+
                         </div>
                     </div>
 
-                    <div class="field">
-                        <label for="inp-multi">Multiplier (কতগুণ)</label>
-                        <asp:TextBox runat="server" type="number" ID="txtMultiplier" placeholder="e.g. 1, 1.5, 2" min="0.25" step="0.25"></asp:TextBox>
-                    </div>
+                    <!-- Table Card -->
+                    <div class="table-card">
+                        <div class="table-toolbar">
+                            <div class="tbl-title">
+                                <i class="ti ti-table" style="font-size: 16px; color: #1D9E75" aria-hidden="true"></i>
+                                Holiday Allowance List
+                            </div>
 
-                    <!-- Buttons aligned right -->
-                    <div class="btn-group">
-                        <button class="btn" onclick="resetForm()">
-                            <i class="ti ti-refresh" style="font-size: 14px" aria-hidden="true"></i>Reset
-                        </button>
-                        <asp:Button runat="server"
-                            ID="btnsave"
-                            CssClass="btn btn-primary"
-                            OnClick="btnsave_Click"
-                            Text="&#xe607; Add" />
-                       
+                        </div>
 
-                    </div>
+                        <div class="tbl-wrap">
 
-                </div>
-            </div>
+                            <asp:GridView ID="gvHolidayAllowance" runat="server"
+                                AutoGenerateColumns="False" DataKeyNames="AllowanceID" OnRowCommand="gvHolidayAllowance_RowCommand"
+                                CssClass="table table-bordered table-striped"
+                                EmptyDataText="No data found">
+                                <Columns>
 
-            <!-- Table Card -->
-            <div class="table-card">
-                <div class="table-toolbar">
-                    <div class="tbl-title">
-                        <i class="ti ti-table" style="font-size: 16px; color: #1D9E75" aria-hidden="true"></i>
-                        Holiday Allowance List
-                    </div>
-                    
-                </div>
+                                    <asp:TemplateField HeaderText="#">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
-                <div class="tbl-wrap">
-            
-                             <asp:GridView ID="gvHolidayAllowance" runat="server"
-    AutoGenerateColumns="False" DataKeyNames="AllowanceID" OnRowCommand="gvHolidayAllowance_RowCommand"
-    CssClass="table table-bordered table-striped"
-    EmptyDataText="No data found"> 
-    <Columns>
+                                   
 
-        <asp:TemplateField HeaderText="#">
-            <ItemTemplate>
-                <%# Container.DataItemIndex + 1 %>
-            </ItemTemplate>
-        </asp:TemplateField>
+                                    <asp:BoundField DataField="Holiday" HeaderText="Holiday" />
 
-        <asp:BoundField DataField="CompanyId" HeaderText="Company" />
+                                    
 
-        <asp:BoundField DataField="Holiday" HeaderText="Holiday" />
+                                    <asp:BoundField DataField="HolidayType" HeaderText="HolidayType" />
+                                    <asp:TemplateField HeaderText="Active">
+                                        <ItemTemplate>
 
-        <asp:BoundField DataField="SalaryType" HeaderText="Salary Type" />
+                                            <label class="switch">
 
-        <asp:BoundField DataField="Multiplier" HeaderText="Multiplier" />
-<asp:TemplateField HeaderText="Active">
-    <ItemTemplate>
+                                                <asp:CheckBox ID="chkIsActive"
+                                                    runat="server"
+                                                    AutoPostBack="true"
+                                                    OnCheckedChanged="chkIsActive_CheckedChanged"
+                                                    Checked='<%# Convert.ToBoolean(Eval("IsActive")) %>' />
 
-        <label class="switch">
+                                                <span class="slider"></span>
 
-            <asp:CheckBox ID="chkIsActive"
-                runat="server"
-                AutoPostBack="true"
-                OnCheckedChanged="chkIsActive_CheckedChanged"
-                Checked='<%# Convert.ToBoolean(Eval("IsActive")) %>' />
+                                            </label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
-            <span class="slider"></span>
+                                    <asp:TemplateField HeaderText="Action">
+                                        <ItemTemplate>
 
-        </label>
-    </ItemTemplate>
-</asp:TemplateField>
-
-        <asp:TemplateField HeaderText="Action">
-            <ItemTemplate>
-
-                <asp:LinkButton ID="lnkEdit"
-                    runat="server"
-                    CssClass="btn btn-primary btn-sm"
-                    CommandName="EditRow"
-                    CommandArgument='<%# Eval("AllowanceID") %>'>
+                                            <asp:LinkButton ID="lnkEdit"
+                                                runat="server"
+                                                CssClass="btn btn-primary btn-sm"
+                                                CommandName="EditRow"
+                                                CommandArgument='<%# Eval("AllowanceID") %>'>
             <i class="fa fa-edit"></i>
-                </asp:LinkButton>
+                                            </asp:LinkButton>
 
-                <asp:LinkButton ID="lnkDelete"
-                    runat="server"
-                    CssClass="btn btn-danger btn-sm"
-                    CommandName="DeleteRow"
-                    CommandArgument='<%# Eval("AllowanceID") %>'
-                    OnClientClick="return confirm('Are you sure to delete?');">
+                                            <asp:LinkButton ID="lnkDelete"
+                                                runat="server"
+                                                CssClass="btn btn-danger btn-sm"
+                                                CommandName="DeleteRow"
+                                                CommandArgument='<%# Eval("AllowanceID") %>'
+                                                OnClientClick="return confirm('Are you sure to delete?');">
             <i class="fa fa-trash"></i>
-                </asp:LinkButton>
+                                            </asp:LinkButton>
 
-            </ItemTemplate>
-        </asp:TemplateField>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
 
-    </Columns>
-</asp:GridView>
-                        </ContentTemplate>
+                                </Columns>
+                            </asp:GridView>
 
-                    </asp:UpdatePanel>
-                    
-               
+
+
+                        </div>
+                    </div>
+
                 </div>
-            </div>
+            </ContentTemplate>
 
-        </div>
-
+        </asp:UpdatePanel>
         <script>
             let rows = [];
 
@@ -611,7 +620,7 @@
                 const holiday = document.getElementById('sel-holiday').value;
                 const multi = document.getElementById('inp-multi').value;
                 const rdoBasic = document.getElementById('<%= rdoBasic.ClientID %>');
-                const saltype  = rdoBasic.checked ? 'Basic' : 'Gross';
+                const saltype = rdoBasic.checked ? 'Basic' : 'Gross';
                 if (!company || !holiday || !multi) { alert('সব ফিল্ড পূরণ করুন।'); return; }
                 rows.push({ company, holiday, saltype, multi: parseFloat(multi) });
                 render(); resetForm();
@@ -646,10 +655,67 @@
                 document.getElementById('pill-gross').classList.remove('active');
                 document.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('active'));
                 document.getElementById('pill-basic').classList.add('active');
-              
+
             }
 
             function clearAll() { if (!rows.length) return; rows = []; render(); }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                syncRadioPills();
+            });
+
+            function setPill(type) {
+    document.getElementById('pill-basic').classList.remove('active');
+    document.getElementById('pill-gross').classList.remove('active');
+    document.getElementById('pill-' + type).classList.add('active');
+}
+
+// Page load বা PostBack এ server value অনুযায়ী sync
+function syncRadioPills() {
+    var rdoBasic = document.getElementById('<%= rdoBasic.ClientID %>');
+    if (rdoBasic && rdoBasic.checked) {
+        setPill('basic');
+    } else {
+        setPill('gross');
+    }
+}
+
+// দুটো ক্ষেত্রেই কাজ করবে — normal load ও UpdatePanel
+window.onload = syncRadioPills;
+
+if (typeof Sys !== 'undefined') {
+    Sys.WebForms.PageRequestManager.getInstance()
+        .add_endRequest(syncRadioPills);
+            }
+
+            function syncRadioPills() {
+                var rdoBasic = document.getElementById('<%= rdoBasic.ClientID %>');
+    var rdoGross = document.getElementById('<%= rdoGross.ClientID %>');
+                var pillBasic = document.getElementById('pill-basic');
+                var pillGross = document.getElementById('pill-gross');
+
+                if (!rdoBasic || !rdoGross) return;
+
+                // Server থেকে আসা checked value অনুযায়ী pill active করো
+                if (rdoBasic.checked) {
+                    pillBasic.classList.add('active');
+                    pillGross.classList.remove('active');
+                } else {
+                    pillGross.classList.add('active');
+                    pillBasic.classList.remove('active');
+                }
+
+                // Click event
+                pillBasic.addEventListener('click', function () {
+                    pillBasic.classList.add('active');
+                    pillGross.classList.remove('active');
+                });
+
+                pillGross.addEventListener('click', function () {
+                    pillGross.classList.add('active');
+                    pillBasic.classList.remove('active');
+                });
+            }
         </script>
     </body>
     </html>

@@ -91,7 +91,7 @@ namespace SigmaERP.payroll
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txtMultiplier.Text))
+            if (ddHolidayType.SelectedValue==null)
             {
                 lblMessage.Text = "Please enter Multiplier.";
                 return false;
@@ -124,18 +124,17 @@ namespace SigmaERP.payroll
                         CreatedBy,
                         CreatedAt,
                         CompanyId,
-                        HolidayId
+                        HolidayId,HolidayType
                     )
                     VALUES
                     (
                         '" + salaryType + @"',
-                        " + txtMultiplier.Text + @",
+                       '0',
                         1,
                         " + ViewState["__userId__"].ToString() + @",
                         GETDATE(),
                         '" + ViewState["__CompanyId__"].ToString() + @"',
-                        " + ddlholidaylist.SelectedValue + @"
-                    )";
+                        " + ddlholidaylist.SelectedValue + ",'"+ddHolidayType.SelectedValue.ToString()+"')";
 
             bool isave = CRUD.Execute(query);
 
@@ -145,7 +144,7 @@ namespace SigmaERP.payroll
         {
             string query = @"
         SELECT
-            hs.AllowanceID,
+            hs.AllowanceID,hs.HolidayType,
             hs.CompanyId,
             CONVERT(VARCHAR(10), hw.HDate, 105) + ' (' + hw.Description + ')' AS Holiday,
             hs.SalaryType,hs.IsActive,
@@ -238,10 +237,18 @@ namespace SigmaERP.payroll
             {
                 ddlholidaylist.SelectedValue = dt.Rows[0]["HolidayId"].ToString();
                 if (dt.Rows[0]["SalaryType"].ToString() == "Basic")
+                {
                     rdoBasic.Checked = true;
+                    rdoGross.Checked = false;
+                }
                 else
+                {
+                    rdoBasic.Checked = false;
                     rdoGross.Checked = true;
-                txtMultiplier.Text = dt.Rows[0]["Multiplier"].ToString();
+                }
+               
+               // txtMultiplier.Text = dt.Rows[0]["Multiplier"].ToString();
+                ddHolidayType.SelectedValue = dt.Rows[0]["HolidayType"].ToString();
                 ViewState["EditID"] = id;
 
                 btnsave.Text = "Update";
@@ -258,15 +265,16 @@ namespace SigmaERP.payroll
             string query = @"UPDATE HolidayAllowanceSettings
                      SET SalaryType = '" + salaryType + @"',
                          HolidayId = " + ddlholidaylist.SelectedValue + @",
-                         Multiplier = " + txtMultiplier.Text + @",
-                         IsActive = ' 1'  ,
-                         UpdatedBy = " + Session["UserId"] + @",
+                         Multiplier = '0',
+                         IsActive = '1'  ,
+                         UpdatedBy = " + ViewState["__userId__"].ToString() + @",
                          UpdatedAt = GETDATE()
                      WHERE AllowanceID = " + id;
 
             bool isave = CRUD.Execute(query);
 
             ClearForm();
+            btnsave.Text = "Add";
             BindHolidayAllowance();
 
             lblMessage.Text = "Updated successfully.";
@@ -275,7 +283,6 @@ namespace SigmaERP.payroll
         private void ClearForm()
         {
             ddlholidaylist.SelectedIndex = 0;
-            txtMultiplier.Text = "";
             ViewState["EditID"] = null;
             btnsave.Text = "Save";
         }
