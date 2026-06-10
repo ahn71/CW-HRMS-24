@@ -279,3 +279,6 @@ Parameter name: name
 [2026-03-03 10:50:55] Object reference not set to an instance of an object.
 [2026-03-03 10:58:13] Object reference not set to an instance of an object.
 [2026-03-12 10:45:35] Object reference not set to an instance of an object.
+[2026-06-10 14:52:43] Object reference not set to an instance of an object.
+[2026-06-10 15:13:39] Object reference not set to an instance of an object.
+[2026-06-10 15:16:24] Object reference not set to an instance of an object.

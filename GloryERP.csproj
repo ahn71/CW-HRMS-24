@@ -2131,6 +2131,7 @@
     <Content Include="payroll\pay_base_shift.aspx" />
     <Content Include="payroll\pay_slip.aspx" />
     <Content Include="payroll\pay_slip2.aspx" />
+    <Content Include="payroll\salary\HolidayAllowanceSheet.aspx" />
     <Content Include="payroll\salary\IncrementEntitleReport.aspx" />
     <Content Include="payroll\salary\IncrementEntitle_Sheet.aspx" />
     <Content Include="payroll\salary\ot_payment.aspx" />
@@ -5318,6 +5319,13 @@
     </Compile>
     <Compile Include="payroll\pay_slip2.aspx.designer.cs">
       <DependentUpon>pay_slip2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="payroll\salary\HolidayAllowanceSheet.aspx.cs">
+      <DependentUpon>HolidayAllowanceSheet.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="payroll\salary\HolidayAllowanceSheet.aspx.designer.cs">
+      <DependentUpon>HolidayAllowanceSheet.aspx</DependentUpon>
     </Compile>
     <Compile Include="payroll\salary\IncrementEntitleReport.aspx.cs">
       <DependentUpon>IncrementEntitleReport.aspx</DependentUpon>

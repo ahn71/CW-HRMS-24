@@ -92,6 +92,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("BonusMissSheet")) loadBonusMissSheet(query[1] + "-" + query[2] + "-" + query[3]);
                 else if (query[0].Equals("SalarySheet")) loadSalarySheet(query[1], query[2], query[3], query[4], query[5]);
                 else if (query[0].Equals("SalarySheetNew")) loadSalarySheetActualAndCompliance(query[1], query[2], query[3], query[4], query[5]);
+                else if (query[0].Equals("HolidayAllowance")) loadHolidayAllowanceSheet(query[1], query[2], query[3],"0","0");
 
                 else if (query[0].Equals("SalarySheetBankFordLetter")) loadSalaryBankSheetFordLetter();
                 else if (query[0].Equals("SalarySheetCashForwardLetter")) loadSalarySheetCashForwardLetter();                
@@ -4106,7 +4107,7 @@ namespace SigmaERP.All_Report
                 rpd.SetDataSource(dt);
                 string imageFolder = ConfigurationManager.AppSettings["employeeImageFolder"];
                 rpd.SetParameterValue(0, imageFolder);
-                rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " + Session["__ReportTitle__"].ToString());
+                rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " +  Session["__ReportTitle__"].ToString());
                 if (dynamicSignature)
                 {
                     try
@@ -4135,6 +4136,119 @@ namespace SigmaERP.All_Report
             CrystalReportViewer1.ReportSource = rpd;
             CrystalReportViewer1.HasToggleGroupTreeButton = false;
         }
+
+
+
+
+
+        private void loadHolidayAllowanceSheet(string SelectMonth, string IsActual, string EmpTypeId, string PaymentType, string IsSeparation) // 
+        {
+            bool dynamicSignature = false;
+            dt = new DataTable();
+            dt = (DataTable)Session["__SalarySheet__"];
+            rpd = new ReportDocument();
+
+
+            string rootUrl = Session["__RootUrl__"]?.ToString();
+            string companyId = Session["__GetCompanyId__"].ToString();
+            string EmpImageurl = rootUrl + "/" + companyId + "/" + "EmployeeImage" + "/";
+
+            if (true)
+            {
+                if (IsSeparation == "0")
+                {
+                    if (IsActual == "False") // This is for Compliance Salary Sheet
+                    {
+
+
+                        if (EmpTypeId == "1")
+                        {
+                            dynamicSignature = true;
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker.rpt"));
+                        }
+
+                        else
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff.rpt"));
+                    }
+                    else// This is for Actual Salary Sheet
+                    {
+                        //string imagePath = commonTask.GetFullImagePath();
+
+
+
+
+                        //if (EmpTypeId == "1")
+                        //{
+                        //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance.rpt"));
+                        //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Mollah.rpt"));
+                        //rpd.SetParameterValue(0, Server.MapPath("//EmployeeImages//Images//"));
+
+
+                        rpd.Load(Server.MapPath("//All Report//Payroll//HolidayAllowancceSheetWithEmpImage.rpt"));
+
+                        //}
+                        //else
+                        //    //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_New.rpt"));
+
+                        //    rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_New_Mollah.rpt"));
+
+                    }
+                }
+                else
+                {
+                    if (IsActual == "False") // This is for Compliance Salary Sheet
+                    {
+                        if (EmpTypeId == "1")
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker.rpt"));
+                        else
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff.rpt"));
+                    }
+                    else// This is for Actual Salary Sheet
+                    {
+                        if (EmpTypeId == "1")
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_Sep.rpt"));
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_WithEmpImage.rpt"));
+                        else
+                            //rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Staff_Actual_Sep.rpt"));
+
+                            rpd.Load(Server.MapPath("//All Report//Payroll//MonthlySalarySheetRSS_Worker_ActualAndCompliance_WithEmpImage.rpt"));
+
+                    }
+                }
+
+                rpd.SetDataSource(dt);
+                string imageFolder = ConfigurationManager.AppSettings["employeeImageFolder"];
+                rpd.SetParameterValue(0, imageFolder);
+                rpd.SetParameterValue(1, SelectMonth.Replace('/', '-') + " " + "HolidayAllowance");
+                if (dynamicSignature)
+                {
+                    try
+                    {
+                        dt = new DataTable();
+                        dt = (DataTable)Session["__Salary_Sheet_Worker_Compliance__"];
+                        for (byte i = 0; i < dt.Rows.Count; i++)
+                        {
+                            rpd.SetParameterValue(i + 1, dt.Rows[i]["Signature"].ToString());
+                        }
+                    }
+                    catch (Exception ex) { }
+                }
+                // rpd.SetParameterValue(1,Session["__ReportTitle__"].ToString());
+            }
+            else
+            {
+                rpd.Load(Server.MapPath("//All Report//Payroll//monthly_salary_sheet_new_Bangla.rpt"));
+                rpd.SetDataSource(dt);
+                //rpd.SetParameterValue(0, SelectMonth);
+                //rpd.SetParameterValue(1, Year);
+                // rpd.SetParameterValue(1, Session["__ReportTitle__"].ToString());
+            }
+            //}
+
+            CrystalReportViewer1.ReportSource = rpd;
+            CrystalReportViewer1.HasToggleGroupTreeButton = false;
+        }
+
         private void loadSalarySheetActualAndCompliance_(string SelectMonth, string IsActual, string EmpTypeId, string PaymentType, string IsSeparation) // 
         {
             bool dynamicSignature = false;
