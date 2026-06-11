@@ -53,6 +53,7 @@
                                         <asp:ListItem Selected="False" Text="Summary" Value="summary"></asp:ListItem>
                                         <asp:ListItem Selected="False" Text="Pay Slip" Value="slip"></asp:ListItem>
                                         <asp:ListItem Selected="False" Text="Final Settlement" Value="finalSettlement"></asp:ListItem>
+                                        <asp:ListItem Selected="False" Text="Holiday Allowance sheet" Value="holidayallowance"></asp:ListItem>
                                     </asp:RadioButtonList>
                                         <asp:CheckBox ID="chkForAllCompany" runat="server" Text="For All Companies" AutoPostBack="True" Visible="False" />
                                     </td>                         

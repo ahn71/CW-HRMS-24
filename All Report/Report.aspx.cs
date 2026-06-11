@@ -92,7 +92,7 @@ namespace SigmaERP.All_Report
                 else if (query[0].Equals("BonusMissSheet")) loadBonusMissSheet(query[1] + "-" + query[2] + "-" + query[3]);
                 else if (query[0].Equals("SalarySheet")) loadSalarySheet(query[1], query[2], query[3], query[4], query[5]);
                 else if (query[0].Equals("SalarySheetNew")) loadSalarySheetActualAndCompliance(query[1], query[2], query[3], query[4], query[5]);
-                else if (query[0].Equals("HolidayAllowance")) loadHolidayAllowanceSheet(query[1], query[2], query[3],"0","0");
+                else if (query[0].Equals("HolidayAllowance")) loadHolidayAllowanceSheet(query[1], query[2], query[3], query[4], query[5]);
 
                 else if (query[0].Equals("SalarySheetBankFordLetter")) loadSalaryBankSheetFordLetter();
                 else if (query[0].Equals("SalarySheetCashForwardLetter")) loadSalarySheetCashForwardLetter();                
