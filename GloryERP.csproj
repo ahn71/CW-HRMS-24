@@ -1757,6 +1757,7 @@
     <Content Include="hrms\payroll\common-increment.aspx" />
     <Content Include="hrms\payroll\promotion-entry.aspx" />
     <Content Include="hrms\payroll\salary-entry.aspx" />
+    <Content Include="hrms\personnel\employee-activity-tracking.aspx" />
     <Content Include="hrms\personnel\employee-list.aspx" />
     <Content Include="hrms\settings\bankEntryPanelSetup.aspx" />
     <Content Include="hrms\settings\businessTypeSetup.aspx" />
@@ -3846,6 +3847,13 @@
     </Compile>
     <Compile Include="hrms\payroll\salary-entry.aspx.designer.cs">
       <DependentUpon>salary-entry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\personnel\employee-activity-tracking.aspx.cs">
+      <DependentUpon>employee-activity-tracking.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\personnel\employee-activity-tracking.aspx.designer.cs">
+      <DependentUpon>employee-activity-tracking.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\personnel\employee-list.aspx.cs">
       <DependentUpon>employee-list.aspx</DependentUpon>
