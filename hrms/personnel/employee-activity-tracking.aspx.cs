@@ -88,7 +88,7 @@ LEFT JOIN v_Personnel_EmpCurrentStatus emp
     ON emp.EmpId = act.EmpID
     AND emp.CompanyId = act.companyId
     AND emp.IsActive = 1
-WHERE act.companyId = @CompanyId
+WHERE act.companyId = '101'
     AND act.acitivityTime >= @FromDateTime
     AND act.acitivityTime <= @ToDateTime
     AND (

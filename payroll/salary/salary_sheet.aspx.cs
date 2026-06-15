@@ -278,6 +278,10 @@ namespace SigmaERP.payroll.salary
                 }
                 else if (rblReportType.SelectedValue == "sheet" || rblReportType.SelectedValue == "slip" || rblReportType.SelectedValue == "holidayallowance")
                 {
+                    string holidayAllowance = "";
+                    if (rblReportType.SelectedValue == "holidayallowance")
+                        holidayAllowance = "and HoliDayBillAmount !='0'";
+
                     if (rblGenerateType.SelectedItem.Text.Equals("All"))
                     {
                         if (rblSheet.SelectedValue == "0")
@@ -287,7 +291,7 @@ namespace SigmaERP.payroll.salary
                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                 " FROM   " + tableName + " " +
                                 " where " +
-                                " IsActive='1' " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " +
+                                " IsActive='1' " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " + holidayAllowance + " " +
                                 " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "";
                         }
@@ -298,7 +302,7 @@ namespace SigmaERP.payroll.salary
                                  " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, FestivalHoliday, PayableDays, Payable, NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                  " FROM   " + tableName + " " +
                                  " where " +
-                                 " IsActive='1' " + yearMonth + " " + Condition + " " +
+                                 " IsActive='1' " + yearMonth + " " + Condition + "  "+ holidayAllowance + "" +
                                  " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
@@ -321,7 +325,7 @@ namespace SigmaERP.payroll.salary
                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                " FROM   " + tableName + " " +
                                " where " +
-                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+"') AND IsSeperationGeneration='0' " +
+                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+ "') AND IsSeperationGeneration='0' " + holidayAllowance + "" +
                                " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "";
                         }
@@ -332,7 +336,7 @@ namespace SigmaERP.payroll.salary
                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka,  PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                 " FROM   " + tableName + " " +
                                 " where " +
-                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " +
+                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " + holidayAllowance + " " + 
                                 " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
@@ -357,6 +361,7 @@ namespace SigmaERP.payroll.salary
 
                     else if (rblReportType.SelectedValue == "holidayallowance")
                     {
+
                         Session["__SalarySheet__"] = dt;
                         //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=HolidayAllowance-" + ddlYearMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + ddlemolpyeType.SelectedValue + "');", true);
 
