@@ -543,7 +543,7 @@
                     <div class="user-details-container d-flex align-items-center">
                         <img src="${empPicture}" alt="User Image" class="user-image" style="width: 40px; height: 40px; margin-right: 10px;">
                         <div>
-                            <a href="javascript:void(0)" class="user-name" data-id="${row.Id}">${row.empName}</a>
+                            <a href="javascript:void(0)" class="user-name" data-id="${row.sl}">${row.empName}</a>
                             <div class="user-role">${row.dsgName}</div>
                         </div>
                     </div>
@@ -551,8 +551,8 @@
                  row.action = `
             <div class="actions">
                 <ul class="orderDatatable_actions mb-0 d-flex flex-wrap">
-                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.id}"><i class="uil uil-eye"></i></a></li>
-                    <li><a href="javascript:void(0)" data-id="${row.id}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li> 
+                    <li><a href="javascript:void(0)" class="view-btn view" data-id="${row.sl}"><i class="uil uil-eye"></i></a></li>
+                    <li><a href="javascript:void(0)" data-id="${row.sl}" class="delete-btn remove"><i class="uil uil-trash-alt"></i></a></li> 
                 </ul>
             </div>
         `;
@@ -598,8 +598,14 @@
              }
 
 
-             $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+              $('.adv-table').off('click', '.delete-btn').on('click', '.delete-btn', function () {
+                     console.log(this);
+                    console.log($(this).data());
+                    console.log($(this).attr('data-sl'));
+
+                    
                  const id = $(this).data('id');
+                 console.log("Data",data)
                  Delete(id);
                  console.log('Delete button clicked for ID:', id);
              });

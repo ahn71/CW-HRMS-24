@@ -39,6 +39,53 @@
          .user-role{
              font-size:10px !important;
          }
+         .roster-import-panel {
+             align-items: flex-end;
+             display: flex;
+             gap: 8px;
+             justify-content: flex-end;
+         }
+         .roster-import-file {
+             max-width: 230px;
+         }
+         .roster-modal-table th {
+             background: #f8fafc;
+             color: #334155;
+             font-size: 12px;
+             font-weight: 600;
+             text-transform: uppercase;
+             white-space: nowrap;
+         }
+         .roster-modal-table td {
+             color: #111827;
+             font-size: 13px;
+             vertical-align: middle;
+         }
+         .roster-modal-table .form-control {
+             min-width: 145px;
+         }
+         .roster-import-summary {
+             color: #64748b;
+             font-size: 12px;
+         }
+         .roster-selected-file {
+             color: #475569;
+             font-size: 12px;
+             margin-top: 4px;
+             max-width: 100%;
+             overflow: hidden;
+             text-overflow: ellipsis;
+             white-space: nowrap;
+         }
+         @media (max-width: 991px) {
+             .roster-import-panel {
+                 align-items: stretch;
+                 flex-direction: column;
+             }
+             .roster-import-file {
+                 max-width: 100%;
+             }
+         }
         </style>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -189,6 +236,19 @@
                                                             </div>
 
                                                           </div>
+                                                            <div class="col-lg-4 ml-auto">
+                                                                <label for="rosterExcelFile" class="form-label mb-1 p-0">Excel Import</label>
+                                                                <div class="roster-import-panel">
+                                                                    <input type="file" id="rosterExcelFile" class="form-control roster-import-file" accept=".xlsx,.xls,.csv">
+                                                                    <button type="button" id="btnRosterImport" class="btn btn-primary btn-sm" onclick="ImportRosterExcel()">
+                                                                        Import
+                                                                    </button>
+                                                                    <button type="button" id="btnRosterDemo" class="btn btn-outline-primary btn-sm" onclick="DownloadRosterDemo()">
+                                                                        Demo
+                                                                    </button>
+                                                                </div>
+                                                                <div id="rosterSelectedFileName" class="roster-selected-file">No file selected</div>
+                                                            </div>
     
 
                                                         </div>
@@ -240,6 +300,45 @@
         </div>
          </div>
 
+        <div class="modal fade" id="rosterImportModal" tabindex="-1" role="dialog" aria-labelledby="rosterImportModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div>
+                            <h5 class="modal-title" id="rosterImportModalLabel">Imported Roster Preview</h5>
+                            <div id="rosterImportSummary" class="roster-import-summary"></div>
+                        </div>
+                        <button type="button" class="close" aria-label="Close" onclick="CloseRosterImportModal()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover roster-modal-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>SL</th>
+                                        <th>Employee ID</th>
+                                        <th>Name</th>
+                                        <th>Department</th>
+                                        <th>Designation</th>
+                                        <th>Shift</th>
+                                        <th>Roster Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rosterImportTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light btn-sm" onclick="CloseRosterImportModal()">Close</button>
+                        <button type="button" id="btnSubmitImportedRoster" class="btn btn-success btn-sm" onclick="SubmitImportedRoster()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             var rootUrl = '<%= Session["__RootUrl__"]%>';
             var CompanyID = '<%= Session["__GetCompanyId__"]%>';
@@ -251,9 +350,17 @@
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
             var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
+            var getEmployeesByCardNumbersUrl = `${rootUrl}/api/Employee/by-card-numbers?companyId=${CompanyID}`;
 
 
             var token = '<%= Session["__UserToken__"] %>';
+            var rosterShiftList = [];
+            var importedRosterRows = [];
+
+            $(document).on('change', '#rosterExcelFile', function () {
+                const fileName = this.files && this.files.length > 0 ? this.files[0].name : 'No file selected';
+                $('#rosterSelectedFileName').text(fileName);
+            });
 
 
             $(document).ready(function () {
@@ -908,6 +1015,7 @@
 
 
             function PopulateNewDropdown(data) {
+                rosterShiftList = data || [];
                 const dropdown = document.getElementById('ddlNewShift');
                 dropdown.innerHTML = '<option value="null">---Select---</option>';
 
@@ -918,6 +1026,408 @@
                     dropdown.appendChild(option);
                 });
 
+            }
+
+            function DownloadRosterDemo() {
+                const demoData = [
+                    { EmployeeId: '993050', Name: 'Demo Employee 1', Shift: '1', RosterDate: formatDate(new Date()) },
+                    { EmployeeId: '993795', Name: 'Demo Employee 2', Shift: '1', RosterDate: formatDate(new Date()) },
+                    { EmployeeId: '993918', Name: 'Demo Employee 3', Shift: '1', RosterDate: formatDate(new Date()) }
+                ];
+
+                if (typeof XLSX === 'undefined') {
+                    const csv = 'EmployeeId,Name,Shift,RosterDate\r\n' +
+                        demoData.map(row => `${row.EmployeeId},${row.Name},${row.Shift},${row.RosterDate}`).join('\r\n');
+                    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                    downloadBlob(blob, 'Roster_Import_Demo.csv');
+                    return;
+                }
+
+                const worksheet = XLSX.utils.json_to_sheet(demoData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Roster Import');
+                XLSX.writeFile(workbook, 'Roster_Import_Demo.xlsx');
+            }
+
+            function downloadBlob(blob, fileName) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }
+
+            function ImportRosterExcel() {
+                const fileInput = document.getElementById('rosterExcelFile');
+                const file = fileInput.files && fileInput.files[0];
+
+                if (!file) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'File Required',
+                        text: 'Please select an Excel file first.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                if (typeof XLSX === 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Excel Library Missing',
+                        text: 'XLSX library is not loaded. Please reload the page and try again.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    try {
+                        const workbook = XLSX.read(new Uint8Array(event.target.result), {
+                            type: 'array',
+                            cellDates: true
+                        });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
+                        const parsedRows = normalizeRosterImportRows(rows);
+
+                        if (parsedRows.length === 0) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'No Valid Data',
+                                text: 'Excel file must contain EmployeeId, Name, Shift and RosterDate columns.',
+                                confirmButtonText: 'OK'
+                            });
+                            return;
+                        }
+
+                        LoadImportedEmployees(parsedRows);
+                    } catch (error) {
+                        console.error('Excel read error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid File',
+                            text: 'Could not read the selected file.',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            function normalizeRosterImportRows(rows) {
+                return rows.map(function (row) {
+                    const rosterDateValue = getCellValue(row, 'RosterDate') || getCellValue(row, 'RosterDate(yyy-MM-dd)');
+                    return {
+                        employeeId: getCellValue(row, 'EmployeeId'),
+                        excelName: getCellValue(row, 'Name'),
+                        shift: getCellValue(row, 'Shift'),
+                        rosterDate: normalizeExcelDate(rosterDateValue)
+                    };
+                }).filter(function (row) {
+                    return row.employeeId && row.shift && row.rosterDate;
+                });
+            }
+
+            function getCellValue(row, columnName) {
+                const key = Object.keys(row).find(function (item) {
+                    return item.replace(/\s/g, '').toLowerCase() === columnName.toLowerCase();
+                });
+                if (!key) {
+                    return '';
+                }
+
+                const value = row[key];
+                if (Object.prototype.toString.call(value) === '[object Date]') {
+                    return value;
+                }
+
+                return String(value).trim();
+            }
+
+            function normalizeExcelDate(value) {
+                if (!value) {
+                    return '';
+                }
+
+                if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value)) {
+                    return formatDate(value);
+                }
+
+                if (!isNaN(value) && Number(value) > 25569) {
+                    const parsedDate = new Date((Number(value) - 25569) * 86400 * 1000);
+                    return formatDate(parsedDate);
+                }
+
+                const text = String(value).trim();
+                const parts = text.split(/[\/\-\.]/);
+                if (parts.length === 3) {
+                    const isYearFirst = parts[0].length === 4;
+                    const yearPart = isYearFirst ? parts[0] : parts[2];
+                    const monthPart = isYearFirst ? parts[1] : parts[1];
+                    const dayPart = isYearFirst ? parts[2] : parts[0];
+                    const day = dayPart.padStart(2, '0');
+                    const month = monthPart.padStart(2, '0');
+                    const year = yearPart.length === 2 ? `20${yearPart}` : yearPart;
+                    return `${year}-${month}-${day}`;
+                }
+
+                const directDate = new Date(text);
+                if (!isNaN(directDate)) {
+                    return formatDate(directDate);
+                }
+
+                return '';
+            }
+
+            function LoadImportedEmployees(parsedRows) {
+                const cardNumbers = [...new Set(parsedRows.map(function (row) {
+                    return row.employeeId;
+                }))];
+
+                $('.loaderDaily').show();
+                $('.loaderparent').css('opacity', '0.5');
+
+                $.ajax({
+                    url: getEmployeesByCardNumbersUrl,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    data: JSON.stringify({ cardNumbers: cardNumbers }),
+                    
+                    success: function (response) {
+                        const employees = normalizeApiData(response);
+                        console.log("Imported employees",employees)
+                        importedRosterRows = buildImportedRosterRows(parsedRows, employees);
+                        console.log("Imported data",importedRosterRows)
+                        BindRosterImportTable(importedRosterRows);
+                        $('#rosterImportSummary').text(`${importedRosterRows.length} row(s) ready. You can edit Shift and Roster Date before submit.`);
+                        OpenRosterImportModal();
+                    },
+                    error: function (xhr) {
+                        const message = (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.Message)) || xhr.responseText || 'Employee data could not be loaded.';
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Import Failed',
+                            text: message,
+                            confirmButtonText: 'OK'
+                        });
+                    },
+                    complete: function () {
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+                    }
+                });
+            }
+
+            function normalizeApiData(response) {
+                if (Array.isArray(response)) {
+                    return response;
+                }
+                if (response && Array.isArray(response.data)) {
+                    return response.data;
+                }
+                if (response && response.data && Array.isArray(response.data.items)) {
+                    return response.data.items;
+                }
+                return [];
+            }
+
+            function buildImportedRosterRows(parsedRows, employees) {
+                return parsedRows.map(function (row, index) {
+                    const employee = employees.find(function (item) {
+                        return getEmployeeCardNumber(item) === row.employeeId;
+                    }) || {};
+
+                    return {
+                        serial: index + 1,
+                        empId: employee.empId || employee.id || employee.employeeId || '',
+                        empCardNo: getEmployeeCardNumber(employee) || row.employeeId,
+                        empName: employee.empName || employee.name || row.excelName,
+                        dptName: employee.dptName || employee.departmentName || '',
+                        dsgName: employee.dsgName || employee.designationName || '',
+                        shiftId: resolveShiftId(row.shift),
+                        shiftText: row.shift,
+                        rosterDate: row.rosterDate
+                    };
+                }).filter(function (row) {
+                    return row.empId;
+                });
+            }
+
+            function getEmployeeCardNumber(employee) {
+                return String(
+                    employee.empCard ||
+                    employee.empCardNo ||
+                    employee.cardNo ||
+                    employee.cardNumber ||
+                    employee.employeeCard ||
+                    employee.employeeId ||
+                    ''
+                ).trim();
+            }
+
+            function resolveShiftId(value) {
+                const shiftText = String(value || '').trim();
+                if (!shiftText) {
+                    return '';
+                }
+
+                const matchedShift = rosterShiftList.find(function (shift) {
+                    return String(shift.id) === shiftText || String(shift.name).trim().toLowerCase() === shiftText.toLowerCase();
+                });
+
+                return matchedShift ? matchedShift.id : shiftText;
+            }
+
+            function BindRosterImportTable(rows) {
+                const $tbody = $('#rosterImportTableBody');
+                $tbody.empty();
+
+                rows.forEach(function (row, index) {
+                    $tbody.append(`
+                        <tr data-index="${index}">
+                            <td>${index + 1}</td>
+                            <td>${escapeHtml(row.empCardNo)}</td>
+                            <td>${escapeHtml(row.empName)}</td>
+                            <td>${escapeHtml(row.dptName)}</td>
+                            <td>${escapeHtml(row.dsgName)}</td>
+                            <td>
+                                <select class="form-control import-shift" data-index="${index}">
+                                    ${getShiftOptions(row.shiftId, row.shiftText)}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="date" class="form-control import-roster-date" data-index="${index}" value="${row.rosterDate}">
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                if (rows.length === 0) {
+                    $tbody.append('<tr><td colspan="7" class="text-center text-muted">No matching employee found from imported EmployeeId values.</td></tr>');
+                }
+            }
+
+            function getShiftOptions(selectedId, selectedText) {
+                const options = ['<option value="">---Select---</option>'];
+                let hasSelectedOption = false;
+
+                rosterShiftList.forEach(function (shift) {
+                    const isSelected = String(shift.id) === String(selectedId) ||
+                        String(shift.name).trim().toLowerCase() === String(selectedText || selectedId).trim().toLowerCase();
+                    const selected = isSelected ? 'selected' : '';
+                    if (isSelected) {
+                        hasSelectedOption = true;
+                    }
+                    options.push(`<option value="${shift.id}" ${selected}>${escapeHtml(shift.name)}</option>`);
+                });
+
+                if (!hasSelectedOption && selectedText) {
+                    options.push(`<option value="${escapeHtml(selectedId)}" selected>${escapeHtml(selectedText)}</option>`);
+                }
+
+                return options.join('');
+            }
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            $(document).on('change', '.import-shift', function () {
+                const index = Number($(this).data('index'));
+                importedRosterRows[index].shiftId = $(this).val();
+            });
+
+            $(document).on('change', '.import-roster-date', function () {
+                const index = Number($(this).data('index'));
+                importedRosterRows[index].rosterDate = $(this).val();
+            });
+
+            function OpenRosterImportModal() {
+                $('#rosterImportModal').modal('show');
+            }
+
+            function CloseRosterImportModal() {
+                $('#rosterImportModal').modal('hide');
+            }
+
+            function SubmitImportedRoster() {
+                const validRows = importedRosterRows.filter(function (row) {
+                    return row.empId && row.shiftId && row.rosterDate;
+                });
+
+                if (validRows.length === 0 || validRows.length !== importedRosterRows.length) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Incomplete Data',
+                        text: 'Every imported row must have Employee, Shift and Roster Date.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                const rosterGroups = {};
+                validRows.forEach(function (row) {
+                    const key = `${row.shiftId}_${row.rosterDate}`;
+                    if (!rosterGroups[key]) {
+                        rosterGroups[key] = {
+                            fromDate: row.rosterDate,
+                            toDate: row.rosterDate,
+                            shiftId: row.shiftId,
+                            empIds: []
+                        };
+                    }
+                    rosterGroups[key].empIds.push(row.empId);
+                });
+
+                $('#btnSubmitImportedRoster').prop('disabled', true).text('Submitting...');
+                $('.loaderDaily').show();
+                $('.loaderparent').css('opacity', '0.5');
+
+                const requests = Object.keys(rosterGroups).map(function (key) {
+                    const group = rosterGroups[key];
+                    const formData = new FormData();
+                    formData.append('fromDate', group.fromDate);
+                    formData.append('toDate', group.toDate);
+                    formData.append('shiftId', group.shiftId);
+                    formData.append('companyId', CompanyID);
+                    formData.append('empIds', JSON.stringify(group.empIds));
+                    return ApiCallPostForm(PostRosterURL, token, formData);
+                });
+
+                Promise.all(requests)
+                    .then(function () {
+                        CloseRosterImportModal();
+                        $('#rosterExcelFile').val('');
+                        $('#rosterSelectedFileName').text('No file selected');
+                        importedRosterRows = [];
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Imported roster has been submitted successfully.',
+                            confirmButtonText: 'OK'
+                        });
+                    })
+                    .catch(function (error) {
+                        console.error('Imported roster submit error:', error);
+                    })
+                    .finally(function () {
+                        $('#btnSubmitImportedRoster').prop('disabled', false).text('Submit');
+                        $('.loaderDaily').hide();
+                        $('.loaderparent').css('opacity', '1');
+                    });
             }
 
            function RosterSubmit() {
