@@ -313,6 +313,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div id="rosterSubmitResult" class="roster-import-summary mb-2"></div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover roster-modal-table mb-0">
                                 <thead>
@@ -349,6 +350,7 @@
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
+            var SingleRosterCreateURL = 'https://localhost:44322/api/Roster/roster/singleRosterCreate';
             var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
             var getEmployeesByCardNumbersUrl = `${rootUrl}/api/Employee/by-card-numbers?companyId=${CompanyID}`;
 
@@ -356,11 +358,18 @@
             var token = '<%= Session["__UserToken__"] %>';
             var rosterShiftList = [];
             var importedRosterRows = [];
+            var rosterFailedRows = [];
 
             $(document).on('change', '#rosterExcelFile', function () {
-                const fileName = this.files && this.files.length > 0 ? this.files[0].name : 'No file selected';
-                $('#rosterSelectedFileName').text(fileName);
+                   const hasFile = this.files && this.files.length > 0;
+                  const fileName = hasFile ? this.files[0].name : 'No file selected';
+
+                 $('#rosterSelectedFileName').text(fileName);
+                if (hasFile) {
+                    $('#btnSearch').prop('disabled', true);
+                }
             });
+
 
 
             $(document).ready(function () {
@@ -1105,6 +1114,7 @@
                         }
 
                         LoadImportedEmployees(parsedRows);
+
                     } catch (error) {
                         console.error('Excel read error:', error);
                         Swal.fire({
@@ -1190,7 +1200,7 @@
 
                 $('.loaderDaily').show();
                 $('.loaderparent').css('opacity', '0.5');
-
+                $('#btnSearch').prop('disabled', false);
                 $.ajax({
                     url: getEmployeesByCardNumbersUrl,
                     type: 'POST',
@@ -1206,9 +1216,12 @@
                         console.log("Imported employees",employees)
                         importedRosterRows = buildImportedRosterRows(parsedRows, employees);
                         console.log("Imported data",importedRosterRows)
+                        rosterFailedRows = [];
                         BindRosterImportTable(importedRosterRows);
                         $('#rosterImportSummary').text(`${importedRosterRows.length} row(s) ready. You can edit Shift and Roster Date before submit.`);
-                        OpenRosterImportModal();
+                        $('#rosterSubmitResult').empty();
+                         OpenRosterImportModal();
+                         
                     },
                     error: function (xhr) {
                         const message = (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.Message)) || xhr.responseText || 'Employee data could not be loaded.';
@@ -1249,9 +1262,15 @@
                         serial: index + 1,
                         empId: employee.empId || employee.id || employee.employeeId || '',
                         empCardNo: getEmployeeCardNumber(employee) || row.employeeId,
+                        empCard: employee.empCard || employee.empCardNo || '',
                         empName: employee.empName || employee.name || row.excelName,
                         dptName: employee.dptName || employee.departmentName || '',
                         dsgName: employee.dsgName || employee.designationName || '',
+                        sftName: employee.sftName || employee.shift || '',
+                        dptId: employee.dptId || '',
+                        dsgId: employee.dsgId || '',
+                        gId: employee.gId || '',
+                        perSftid: employee.perSftid || employee.perSftId || '',
                         shiftId: resolveShiftId(row.shift),
                         shiftText: row.shift,
                         rosterDate: row.rosterDate
@@ -1291,20 +1310,30 @@
                 $tbody.empty();
 
                 rows.forEach(function (row, index) {
+                    const empCard = row.empCard || row.empCardNo || '';
+                    const shiftId = row.shiftId || '';
+                    const shiftText = row.shiftText || row.sftName || '';
+                    const rosterDate = row.rosterDate || '';
+
                     $tbody.append(`
-                        <tr data-index="${index}">
+                        <tr data-index="${index}"
+                            data-emp-id="${escapeHtml(row.empId || '')}"
+                            data-dpt-id="${escapeHtml(row.dptId || '')}"
+                            data-dsg-id="${escapeHtml(row.dsgId || '')}"
+                            data-g-id="${escapeHtml(row.gId || '')}"
+                            data-per-sft-id="${escapeHtml(row.perSftid || row.perSftId || '')}">
                             <td>${index + 1}</td>
-                            <td>${escapeHtml(row.empCardNo)}</td>
+                            <td>${escapeHtml(empCard)}</td>
                             <td>${escapeHtml(row.empName)}</td>
                             <td>${escapeHtml(row.dptName)}</td>
                             <td>${escapeHtml(row.dsgName)}</td>
                             <td>
                                 <select class="form-control import-shift" data-index="${index}">
-                                    ${getShiftOptions(row.shiftId, row.shiftText)}
+                                    ${getShiftOptions(shiftId, shiftText)}
                                 </select>
                             </td>
                             <td>
-                                <input type="date" class="form-control import-roster-date" data-index="${index}" value="${row.rosterDate}">
+                                <input type="date" class="form-control import-roster-date" data-index="${index}" value="${rosterDate}">
                             </td>
                         </tr>
                     `);
@@ -1361,64 +1390,192 @@
 
             function CloseRosterImportModal() {
                 $('#rosterImportModal').modal('hide');
+                 $('#rosterExcelFile').val('');
+
+                // 2. File name reset
+                $('#rosterSelectedFileName').text('No file selected');
+
+                // 3. Imported data clear
+                importedRosterRows = [];
+                rosterFailedRows = [];
             }
 
-            function SubmitImportedRoster() {
-                const validRows = importedRosterRows.filter(function (row) {
-                    return row.empId && row.shiftId && row.rosterDate;
+            function postSingleRosterCreate(payload) {
+                return new Promise(function (resolve, reject) {
+                    $.ajax({
+                        url: SingleRosterCreateURL,
+                        type: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        },
+                        data: JSON.stringify(payload),
+                        success: function (response) {
+                            resolve(response);
+                        },
+                        error: function (xhr, status, error) {
+                            if (xhr.responseJSON) {
+                                resolve(xhr.responseJSON);
+                                return;
+                            }
+                            if (xhr.responseText) {
+                                try {
+                                    resolve(JSON.parse(xhr.responseText));
+                                    return;
+                                } catch (parseError) {
+                                    console.error('Roster response parse error:', parseError);
+                                }
+                            }
+                            reject(error);
+                        }
+                    });
                 });
+            }
 
-                if (validRows.length === 0 || validRows.length !== importedRosterRows.length) {
+            function getRosterSubmitData(response) {
+                return response && response.data ? response.data : {};
+            }
+
+            function getApiResponseMessage(response, fallbackMessage) {
+                return response && (response.msg || response.message || response.Message) ? (response.msg || response.message || response.Message) : fallbackMessage;
+            }
+
+        function renderRosterSubmitResult(response) {
+            const data = getRosterSubmitData(response);
+
+            const totalRows = Number(data.totalRows || importedRosterRows.length || 0);
+            const successCount = Number(data.successCount || 0);
+            const failedCount = Number(data.failedCount || 0);
+            const message = getApiResponseMessage(response, '');
+
+            const downloadLink = failedCount > 0
+                ? ' <a href="javascript:void(0)" onclick="DownloadRosterFailedRows()">Download failed rows</a>'
+                : '';
+
+            // 🔥 TOP MESSAGE (SUCCESS FIRST)
+            const topMessage = message
+                ? `<div style="color:green;font-weight:600;margin-bottom:5px;">
+                        ${escapeHtml(message)}
+                   </div>`
+                : '';
+
+            // 🔥 COUNT INFO
+            const summary = `
+                Total: <strong>${totalRows}</strong> |
+                Success: <strong>${successCount}</strong> |
+                Failed: <strong>${failedCount}</strong>
+                ${downloadLink}
+            `;
+
+            // FINAL OUTPUT
+            $('#rosterSubmitResult').html(topMessage + summary);
+        }
+
+            function mapRosterFailedRows(errors) {
+                return (errors || []).map(function (error) {
+                    const sourceRow = importedRosterRows[Number(error.rowIndex)] || {};
+                    return {
+                        RowIndex: error.rowIndex,
+                        EmployeeId: error.empId || sourceRow.empId || '',
+                        EmployeeCardNo: sourceRow.empCardNo || '',
+                        Name: sourceRow.empName || '',
+                        ShiftId: error.sftId || sourceRow.shiftId || '',
+                        RosterDate: error.rosterDate || sourceRow.rosterDate || '',
+                        ErrorMessage: error.errorMessage || ''
+                    };
+                });
+            }
+
+            function DownloadRosterFailedRows() {
+                if (!rosterFailedRows.length) {
                     Swal.fire({
-                        icon: 'warning',
-                        title: 'Incomplete Data',
-                        text: 'Every imported row must have Employee, Shift and Roster Date.',
+                        icon: 'info',
+                        title: 'No Failed Rows',
+                        text: 'There are no failed rows to download.',
                         confirmButtonText: 'OK'
                     });
                     return;
                 }
 
-                const rosterGroups = {};
-                validRows.forEach(function (row) {
-                    const key = `${row.shiftId}_${row.rosterDate}`;
-                    if (!rosterGroups[key]) {
-                        rosterGroups[key] = {
-                            fromDate: row.rosterDate,
-                            toDate: row.rosterDate,
-                            shiftId: row.shiftId,
-                            empIds: []
-                        };
-                    }
-                    rosterGroups[key].empIds.push(row.empId);
+                if (typeof XLSX === 'undefined') {
+                    const headers = Object.keys(rosterFailedRows[0]);
+                    const csvRows = rosterFailedRows.map(function (row) {
+                        return headers.map(function (header) {
+                            return `"${String(row[header] || '').replace(/"/g, '""')}"`;
+                        }).join(',');
+                    });
+                    const blob = new Blob([headers.join(',') + '\r\n' + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+                    downloadBlob(blob, 'Roster_Failed_Rows.csv');
+                    return;
+                }
+
+                const worksheet = XLSX.utils.json_to_sheet(rosterFailedRows);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Failed Rows');
+                XLSX.writeFile(workbook, 'Roster_Failed_Rows.xlsx');
+            }
+
+            function toRosterApiDate(dateText) {
+                if (!dateText) {
+                    return null;
+                }
+
+                return `${dateText}T00:00:00.000Z`;
+            }
+
+            function SubmitImportedRoster() {
+                if (importedRosterRows.length === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Data',
+                        text: 'There is no imported roster data to submit.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                rosterFailedRows = [];
+                $('#rosterSubmitResult').empty();
+
+                const payload = importedRosterRows.map(function (row) {
+                    return {
+                        empId: String(row.empId || ''),
+                        sftId: Number(row.shiftId) || 0,
+                        rosterDate: toRosterApiDate(row.rosterDate),
+                        companyId: String(CompanyID || ''),
+                        dptId: String(row.dptId || ''),
+                        perSftId: String(row.perSftid || row.perSftId || ''),
+                        gId: String(row.gId || ''),
+                        dsgId: String(row.dsgId || '')
+                    };
                 });
 
                 $('#btnSubmitImportedRoster').prop('disabled', true).text('Submitting...');
                 $('.loaderDaily').show();
                 $('.loaderparent').css('opacity', '0.5');
 
-                const requests = Object.keys(rosterGroups).map(function (key) {
-                    const group = rosterGroups[key];
-                    const formData = new FormData();
-                    formData.append('fromDate', group.fromDate);
-                    formData.append('toDate', group.toDate);
-                    formData.append('shiftId', group.shiftId);
-                    formData.append('companyId', CompanyID);
-                    formData.append('empIds', JSON.stringify(group.empIds));
-                    return ApiCallPostForm(PostRosterURL, token, formData);
-                });
+                postSingleRosterCreate(payload)
+                    .then(function (response) {
+                        const data = getRosterSubmitData(response);
+                        const failedCount = Number(data.failedCount || 0);
+                        const responseMessage = getApiResponseMessage(response, 'Roster submit completed.');
+                        rosterFailedRows = mapRosterFailedRows(data.errors);
+                        renderRosterSubmitResult(response);
 
-                Promise.all(requests)
-                    .then(function () {
-                        CloseRosterImportModal();
-                        $('#rosterExcelFile').val('');
-                        $('#rosterSelectedFileName').text('No file selected');
-                        importedRosterRows = [];
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Imported roster has been submitted successfully.',
+                            icon: failedCount > 0 ? 'warning' : 'success',
+                            title: failedCount > 0 ? 'Roster Submit Response' : 'Success',
+                            text: responseMessage,
                             confirmButtonText: 'OK'
                         });
+
+                        if (failedCount === 0) {
+                            CloseRosterImportModal();
+                            $('#rosterExcelFile').val('');
+                            $('#rosterSelectedFileName').text('No file selected');
+                            importedRosterRows = [];
+                        }
                     })
                     .catch(function (error) {
                         console.error('Imported roster submit error:', error);
@@ -1496,25 +1653,31 @@
                 formData
             )
                 .then(response => {
+                    const responseMessage = getApiResponseMessage(response, `The roster has been successfully created from ${startDate} to ${endDate}.`);
+                    $('.loaderDaily').hide();
+                    $('.loaderparent').css('opacity', '1');
+
                     if (response.statusCode === 200) {
                         console.log('Roster Create Success');
                         selectedEmployeeIds.clear();
                         $('#selectAllEmployee').prop('checked', false);
                         $('.EmployeerowCheckbox').prop('checked', false);
-                        $('.loaderDaily').hide();
-                        $('.loaderparent').css('opacity', '1');
                         Swal.fire({
                             icon: 'success',
                             title: 'Success',
-                            text: `The roster has been successfully created from ${startDate} to ${endDate}.`,
+                            text: responseMessage,
                             confirmButtonText: 'OK'
                         });
 
                     } else {
-                        console.error('API Error:', response.message);
+                        console.error('API Error:', responseMessage);
                         $('.footable-loader').hide();
-                        $('.loaderDaily').hide();
-                        $('.loaderparent').css('opacity', '1');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: responseMessage,
+                            confirmButtonText: 'OK'
+                        });
                         //$('#progress-section').hide();
 
                     }
