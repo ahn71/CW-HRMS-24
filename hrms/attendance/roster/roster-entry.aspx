@@ -64,6 +64,29 @@
          .roster-modal-table .form-control {
              min-width: 145px;
          }
+         .roster-modal-table tr.roster-duplicate-row td {
+             background: #fee2e2 !important;
+             color: #991b1b;
+         }
+         .roster-modal-table tr.roster-duplicate-row .form-control {
+             border-color: #dc2626;
+         }
+         .roster-duplicate-marker {
+             background: transparent;
+             border: 0;
+             color: #dc2626;
+             cursor: pointer;
+             display: inline-flex;
+             font-size: 18px;
+             font-weight: 700;
+             justify-content: center;
+             line-height: 1;
+             padding: 0;
+             width: 22px;
+         }
+         .roster-duplicate-marker:hover {
+             color: #991b1b;
+         }
          .roster-import-summary {
              color: #64748b;
              font-size: 12px;
@@ -314,6 +337,15 @@
                     </div>
                     <div class="modal-body">
                         <div id="rosterSubmitResult" class="roster-import-summary mb-2"></div>
+
+                        <div class="form-check mr-auto">
+                            <input type="checkbox" class="form-check-input" id="chkOverwriteRoster">
+                            <label class="form-check-label" for="chkOverwriteRoster">
+                                Overwrite Existing Roster
+       
+                            </label>
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover roster-modal-table mb-0">
                                 <thead>
@@ -325,6 +357,7 @@
                                         <th>Designation</th>
                                         <th>Shift</th>
                                         <th>Roster Date</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="rosterImportTableBody">
@@ -332,6 +365,9 @@
                             </table>
                         </div>
                     </div>
+
+
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-light btn-sm" onclick="CloseRosterImportModal()">Close</button>
                         <button type="button" id="btnSubmitImportedRoster" class="btn btn-success btn-sm" onclick="SubmitImportedRoster()">Submit</button>
@@ -350,7 +386,7 @@
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
-            var SingleRosterCreateURL = 'https://localhost:44322/api/Roster/roster/singleRosterCreate';
+            var SingleRosterCreateURL = 'https://localhost:44322/api/';
             var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
             var getEmployeesByCardNumbersUrl = `${rootUrl}/api/Employee/by-card-numbers?companyId=${CompanyID}`;
 
@@ -1335,13 +1371,89 @@
                             <td>
                                 <input type="date" class="form-control import-roster-date" data-index="${index}" value="${rosterDate}">
                             </td>
+                            <td class="text-center roster-duplicate-status"></td>
                         </tr>
                     `);
                 });
 
                 if (rows.length === 0) {
-                    $tbody.append('<tr><td colspan="7" class="text-center text-muted">No matching employee found from imported EmployeeId values.</td></tr>');
+                    $tbody.append('<tr><td colspan="8" class="text-center text-muted">No matching employee found from imported EmployeeId values.</td></tr>');
                 }
+
+                ValidateRosterImportDuplicates(false);
+            }
+
+            function getRosterDuplicateKey(row) {
+                const employee = String(row.empId || row.empCardNo || row.empCard || '').trim().toLowerCase();
+                const shift = String(row.shiftId || '').trim().toLowerCase();
+                const rosterDate = String(row.rosterDate || '').trim();
+
+                if (!employee || !shift || !rosterDate) {
+                    return '';
+                }
+
+                return `${employee}|${shift}|${rosterDate}`;
+            }
+
+            function getRosterImportDuplicateIndexes() {
+                const rowGroups = {};
+                const duplicateIndexes = {};
+
+                importedRosterRows.forEach(function (row, index) {
+                    const key = getRosterDuplicateKey(row);
+                    if (!key) {
+                        return;
+                    }
+                    if (!rowGroups[key]) {
+                        rowGroups[key] = [];
+                    }
+                    rowGroups[key].push(index);
+                });
+
+                Object.keys(rowGroups).forEach(function (key) {
+                    if (rowGroups[key].length > 1) {
+                        rowGroups[key].forEach(function (index) {
+                            duplicateIndexes[index] = true;
+                        });
+                    }
+                });
+
+                return duplicateIndexes;
+            }
+
+            function ValidateRosterImportDuplicates(showMessage) {
+                const duplicateIndexes = getRosterImportDuplicateIndexes();
+                const duplicateCount = Object.keys(duplicateIndexes).length;
+
+                $('#rosterImportTableBody tr').each(function () {
+                    const index = Number($(this).data('index'));
+                    const isDuplicate = duplicateIndexes[index] === true;
+
+                    $(this).toggleClass('roster-duplicate-row', isDuplicate);
+                    $(this).find('.roster-duplicate-status').html(isDuplicate ? `<button type="button" class="roster-duplicate-marker" data-index="${index}" title="Delete duplicate row">✖</button>` : '');
+                });
+
+                if (duplicateCount > 0) {
+                    const message = 'Duplicate Employee, Shift and Roster Date entry found. Please correct duplicate rows before submitting.';
+                    $('#rosterSubmitResult').html(`<span class="text-danger font-weight-bold">${escapeHtml(message)}</span>`);
+
+                    if (showMessage) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Duplicate Roster Entry',
+                            text: message,
+                            confirmButtonText: 'OK'
+                        });
+                    }
+
+                    return false;
+                }
+
+                if (!showMessage) {
+                    $('#rosterSubmitResult').empty();
+                }
+
+                return true;
             }
 
             function getShiftOptions(selectedId, selectedText) {
@@ -1377,11 +1489,24 @@
             $(document).on('change', '.import-shift', function () {
                 const index = Number($(this).data('index'));
                 importedRosterRows[index].shiftId = $(this).val();
+                ValidateRosterImportDuplicates(false);
             });
 
             $(document).on('change', '.import-roster-date', function () {
                 const index = Number($(this).data('index'));
                 importedRosterRows[index].rosterDate = $(this).val();
+                ValidateRosterImportDuplicates(false);
+            });
+
+            $(document).on('click', '.roster-duplicate-marker', function () {
+                const index = Number($(this).data('index'));
+                if (Number.isNaN(index) || !importedRosterRows[index]) {
+                    return;
+                }
+
+                importedRosterRows.splice(index, 1);
+                BindRosterImportTable(importedRosterRows);
+                $('#rosterImportSummary').text(`${importedRosterRows.length} row(s) ready. You can edit Shift and Roster Date before submit.`);
             });
 
             function OpenRosterImportModal() {
@@ -1401,9 +1526,12 @@
             }
 
             function postSingleRosterCreate(payload) {
+                const isNewAdd = $("#chkOverwriteRoster").is(":checked");
+
+                const apiUrl = `${SingleRosterCreateURL}Roster/roster/singleRosterCreate?isNewAdd=${isNewAdd}`;
                 return new Promise(function (resolve, reject) {
                     $.ajax({
-                        url: SingleRosterCreateURL,
+                        url: apiUrl,
                         type: 'POST',
                         contentType: 'application/json',
                         dataType: 'json',
@@ -1532,6 +1660,10 @@
                         text: 'There is no imported roster data to submit.',
                         confirmButtonText: 'OK'
                     });
+                    return;
+                }
+
+                if (!ValidateRosterImportDuplicates(true)) {
                     return;
                 }
 

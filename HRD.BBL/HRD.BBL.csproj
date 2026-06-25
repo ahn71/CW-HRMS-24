@@ -34,10 +34,11 @@
   <ItemGroup>
     <Reference Include="AdviitRuntimeScripting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\GloryERP\bin\AdviitRuntimeScripting.dll</HintPath>
+      <HintPath>bin\Debug\AdviitRuntimeScripting.dll</HintPath>
     </Reference>
-    <Reference Include="SigmaERP">
-      <HintPath>D:\Running Project\Common\MSL\HRM_NEW\GloryERP\bin\SigmaERP.dll</HintPath>
+    <Reference Include="SigmaERP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\SigmaERP.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
