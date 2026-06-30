@@ -831,7 +831,7 @@ namespace SigmaERP.personnel
                 else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableSave();", true);
 
                 return true;
-
+             
             }
             catch (Exception ex)
             {
@@ -1143,7 +1143,7 @@ namespace SigmaERP.personnel
               
                 
                 cmd.Parameters.AddWithValue("@SftId", ddlShift.SelectedValue);
-                cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
+                //cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
                 
                
                 cmd.Parameters.AddWithValue("@EmpJoiningDate", convertDateTime.getCertainCulture(txtJoiningDate.Text.Trim()));
@@ -1230,6 +1230,7 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
                 cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
+                cmd.Parameters.AddWithValue("@UnitId", ddlUnit.SelectedValue);
                 int userId = Convert.ToInt32(Session["__GetUserId__"]);
 
                 cmd.Parameters.AddWithValue("@CreatedBy", userId);

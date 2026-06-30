@@ -386,7 +386,7 @@
             var getUnitUrl = `${rootUrl}/api/Unit/basicInfo?CompanyId=${CompanyID}`;
             var getShiftsUrl = `${rootUrl}/api/Shift/basicInfo?CompanyId=${CompanyID}`;
             var PostRosterURL = `${rootUrl}/api/Roster/roster/create`;
-            var SingleRosterCreateURL = 'https://localhost:44322/api/';
+            var SingleRosterCreateURL = `${rootUrl}/api/`;
             var getEmpTypeUrl = `${rootUrl}/api/EmployeeType/basicInfo`;
             var getEmployeesByCardNumbersUrl = `${rootUrl}/api/Employee/by-card-numbers?companyId=${CompanyID}`;
 
