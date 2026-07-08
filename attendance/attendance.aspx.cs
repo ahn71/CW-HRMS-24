@@ -377,14 +377,16 @@ namespace SigmaERP.attendance
 
                     string inHour = txtInHur.Text;
                     string inMin = txtInMin.Text;
+                    string InSec = txtInSec.Text;
                     string inAmPm = ddlInTimeAMPM.SelectedValue;
 
                     string outHour = txtOutHur.Text;
                     string outMin = txtOutMin.Text;
+                    string outSec = txtOutSec.Text;
                     string outAmPm = ddlOutTimeAMPM.SelectedValue;
 
-                    string inPunchVal = ConvertTo24Hour(inHour, inMin, inAmPm);
-                    string outPunchVal = ConvertTo24Hour(outHour, outMin, outAmPm);
+                    string inPunchVal = ConvertTo24Hour(inHour, inMin, InSec, inAmPm);
+                    string outPunchVal = ConvertTo24Hour(outHour, outMin, outSec,outAmPm);
                     string attStatus = ddlAttendanceTemplate.SelectedValue.ToString();
 
                     string[] Leave_Infos = classes.mZK_Shrink_Data_SqlServer.Check_Any_Leave_Are_Exist(AttDate.ToString("yyyy-MM-dd"), Get_Needed_EmployeeInfo[0]);
@@ -733,12 +735,19 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
-        private string ConvertTo24Hour(string hourStr, string minuteStr, string amPm)
+        private string ConvertTo24Hour(string hourStr, string minuteStr, string inSec, string amPm)
         {
-            if ((hourStr == "00" && minuteStr == "00") ||( hourStr=="" && minuteStr==""))
-                return "00:00";
+            if ((hourStr == "00" && minuteStr == "00" && inSec == "00") ||
+                (string.IsNullOrWhiteSpace(hourStr) &&
+                 string.IsNullOrWhiteSpace(minuteStr) &&
+                 string.IsNullOrWhiteSpace(inSec)))
+            {
+                return "00:00:00";
+            }
+
             int hour = int.Parse(hourStr.Trim());
             int minute = int.Parse(minuteStr.Trim());
+            int second = int.Parse(string.IsNullOrWhiteSpace(inSec) ? "00" : inSec.Trim());
 
             if (amPm.ToUpper() == "PM" && hour != 12)
             {
@@ -749,7 +758,7 @@ namespace SigmaERP.attendance
                 hour = 0;
             }
 
-            return $"{hour.ToString("D2")}:{minute.ToString("D2")}";
+            return $"{hour:D2}:{minute:D2}:{second:D2}";
         }
         public string RootUrl = ConfigurationManager.AppSettings["rootURLForAPI"];
         private readonly string endpoint = "/api/Attendance/attendance/manual-process";

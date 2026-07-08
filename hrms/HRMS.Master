@@ -291,6 +291,15 @@
                                             <% } %>
 
                                          
+
+                                           <% if (IsRouteExists("attendance/ot-configuration"))
+                                                { %>
+                                            <li>
+                                                <a href="/hrms/attendance/ot-configuration" class="">
+                                                    <span class="menu-text">Overtime Configuration</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
                                           
 
                                             <% if (IsRouteExists("attendance/specialcase"))

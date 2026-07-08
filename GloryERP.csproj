@@ -1756,7 +1756,7 @@
     <Content Include="hrms\man.jpg" />
     <Content Include="hrms\packages\modules.aspx" />
     <Content Include="hrms\payroll\common-increment.aspx" />
-    <Content Include="hrms\payroll\OvetTime_Configuration.aspx" />
+    <Content Include="hrms\attendance\OvetTime_Configuration.aspx" />
     <Content Include="hrms\payroll\promotion-entry.aspx" />
     <Content Include="hrms\payroll\salary-entry.aspx" />
     <Content Include="hrms\personnel\employee-activity-tracking.aspx" />
@@ -3843,11 +3843,11 @@
     <Compile Include="hrms\payroll\common-increment.aspx.designer.cs">
       <DependentUpon>common-increment.aspx</DependentUpon>
     </Compile>
-    <Compile Include="hrms\payroll\OvetTime_Configuration.aspx.cs">
+    <Compile Include="hrms\attendance\OvetTime_Configuration.aspx.cs">
       <DependentUpon>OvetTime_Configuration.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="hrms\payroll\OvetTime_Configuration.aspx.designer.cs">
+    <Compile Include="hrms\attendance\OvetTime_Configuration.aspx.designer.cs">
       <DependentUpon>OvetTime_Configuration.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\payroll\promotion-entry.aspx.cs">

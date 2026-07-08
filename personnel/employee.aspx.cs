@@ -1808,7 +1808,7 @@ namespace SigmaERP.personnel
                 ViewState["__SfiftId__"] = ddlShift.SelectedValue;
                 
                 txtJoiningDate.Text = Convert.ToDateTime(dtall.Rows[0]["EmpJoiningDate"].ToString()).ToString("d-M-yyyy");
-                txtExpireDate.Text = Convert.ToDateTime(dtall.Rows[0]["ExpireDate"].ToString()).ToString("d-M-yyyy");
+                //txtExpireDate.Text = Convert.ToDateTime(dtall.Rows[0]["ExpireDate"].ToString()).ToString("d-M-yyyy");
                
                 ddlType.Text = dtall.Rows[0]["Type"].ToString();
 
