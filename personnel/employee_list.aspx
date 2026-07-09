@@ -364,7 +364,7 @@
                                 <asp:UpdatePanel ID="upEmployeeImportPreview" runat="server" UpdateMode="Conditional">
                                     <Triggers>
                                         <asp:AsyncPostBackTrigger ControlID="gvEmployeeImportPreview" />
-                                        <asp:AsyncPostBackTrigger ControlID="btnSubmitEmployeeImport" />
+                                        <asp:PostBackTrigger ControlID="btnSubmitEmployeeImport" />
                                     </Triggers>
                                     <ContentTemplate>
                                         <asp:Label ID="lblImportSummary" runat="server" Font-Bold="true"></asp:Label>
@@ -380,7 +380,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="ExcelRowNo" HeaderText="Row" />
-                                                    <asp:TemplateField HeaderText="CompanyName">
+                                                    <asp:TemplateField HeaderText="CompanyName" Visible="false">
                                                         <ItemTemplate>
                                                             <asp:DropDownList ID="ddlImportCompany" runat="server" CssClass="employee-import-select cell-wide"></asp:DropDownList>
                                                         </ItemTemplate>
@@ -413,7 +413,7 @@
                                                             <asp:DropDownList ID="ddlImportShift" runat="server" CssClass="employee-import-select cell-medium"></asp:DropDownList>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:BoundField DataField="EmpCardNo" HeaderText="EmpCardNo" />
+                                                    <asp:BoundField DataField="EmpCardNo" HeaderText="EmpCardNo" Visible="false" />
                                                     <asp:BoundField DataField="RegID" HeaderText="Reg.ID" />
                                                      <asp:TemplateField HeaderText="EmpStatus">
                                                         <ItemTemplate>
@@ -421,6 +421,14 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="Type" HeaderText="Type" />
+
+
+                                                    <asp:TemplateField HeaderText="UnitName">
+                                                        <ItemTemplate>
+                                                            <asp:DropDownList ID="ddlImportUnit" runat="server" CssClass="employee-import-select cell-medium"></asp:DropDownList>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+
                                                     <asp:BoundField DataField="UnitName" HeaderText="UnitName" />
                                                     <asp:BoundField DataField="DutyType" HeaderText="DutyType" />
                                                     <asp:BoundField DataField="WeekendType" HeaderText="WeekendType" />

@@ -3746,6 +3746,7 @@
     <Compile Include="hrms\dashbordUser.aspx.designer.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\DTO\EmployeeImportErrorItem.cs" />
     <Compile Include="hrms\DTO\ShiftDTO.cs" />
     <Compile Include="hrms\Leave\LieuLeaveReport.aspx.cs">
       <DependentUpon>LieuLeaveReport.aspx</DependentUpon>

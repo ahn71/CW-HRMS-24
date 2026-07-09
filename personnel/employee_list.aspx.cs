@@ -1,8 +1,10 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using SigmaERP.classes;
 using SigmaERP.hrms.BLL;
+using SigmaERP.hrms.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -165,8 +167,9 @@ namespace SigmaERP.personnel
                 pTotalEmployee.InnerText = "Total Running -> " + dt.Rows.Count.ToString();
 
             }
-            catch
-            { }
+            catch (Exception ex)
+            {
+            }
         }
         /*Nayem.......
        .............For Searching............*/
@@ -698,6 +701,9 @@ namespace SigmaERP.personnel
             MarkImportErrorCellIfBlank(e.Row, ddlUnitRow,19);
         }
 
+        private List<EmployeeImportErrorItem> importErrors = new List<EmployeeImportErrorItem>();
+       
+
         protected void btnSubmitEmployeeImport_Click(object sender, EventArgs e)
         {
             try
@@ -720,9 +726,23 @@ namespace SigmaERP.personnel
                 }
 
                 int success = 0;
-                foreach (EmployeeImportItem item in importItems)
+                int count = Math.Min(importItems.Count, previewData.Rows.Count);
+                for (int i = 0; i < count; i++)
                 {
-                    if (ImportPreviewEmployee(item)) success++;
+                    try
+                    {
+                        if (ImportPreviewEmployee(importItems[i], previewData.Rows[i]))
+                            success++;
+                    }
+                    catch (Exception ex)
+                    {
+                        importErrors.Add(BuildErrorItemFromExcelRow(previewData.Rows[i], ex.Message));
+                    }
+                }
+
+                if (importErrors.Count > 0)
+                {
+                    ExportErrorsToExcel(importErrors);
                 }
 
                 ViewState[ImportPreviewViewStateKey] = null;
@@ -962,6 +982,7 @@ namespace SigmaERP.personnel
             int count = 0;
             foreach (DataRow row in previewData.Rows)
             {
+                string lengthd = row["ErrorFields"].ToString();
                 if (row["ErrorFields"].ToString().Length > 0) count++;
             }
             return count;
@@ -996,7 +1017,7 @@ namespace SigmaERP.personnel
                 List<string> errors = new List<string>();
                 if (validate)
                 {
-                    ValidateSelectedDropdown(errorFields, errors, "CompanyName", ddlCompany);
+                    //ValidateSelectedDropdown(errorFields, errors, "CompanyName", ddlCompany);
                     ValidateSelectedDropdown(errorFields, errors, "EmpType", ddlEmpType);
                     ValidateSelectedDropdown(errorFields, errors, "Department", ddlDepartment);
                     ValidateSelectedDropdown(errorFields, errors, "Designation", ddlDesignation);
@@ -1059,76 +1080,93 @@ namespace SigmaERP.personnel
             ddl.Attributes["onchange"] = "clearEmployeeImportCellError(this)";
         }
 
-        private bool ImportPreviewEmployee(EmployeeImportItem item)
+        private bool ImportPreviewEmployee(EmployeeImportItem item,DataRow excelRow)
         {
-            DataRow row = item.Row;
-            System.Data.SqlTypes.SqlDateTime nullDate = System.Data.SqlTypes.SqlDateTime.Null;
-            string empId = LoadEmployeeImportEmpId();
-            string joiningDate = GetImportDate(row["JoiningDate"].ToString());
-            string empCardNo = GenerateEmployeeImportCardNo(item.CompanyId);
-            row["EmpCardNo"] = empCardNo;
-            row["RegID"] = row["RegID"].ToString().Length > 0 ? row["RegID"].ToString() : row["EmpCardNo"].ToString();
-            string weekednType = row["WeekendType"].ToString();
-            string dutyType = row["DutyType"].ToString();
-
-            using (SqlCommand cmd = new SqlCommand("saveEmployeeInfo", sqlDB.connection))
+            try
             {
-                
+                DataRow row = item.Row;
+                System.Data.SqlTypes.SqlDateTime nullDate = System.Data.SqlTypes.SqlDateTime.Null;
+                string empId = LoadEmployeeImportEmpId();
+                string joiningDate = GetImportDate(row["JoiningDate"].ToString());
+                string empCardNo = GenerateEmployeeImportCardNo(ViewState["__CompanyId__"].ToString());
+                row["EmpCardNo"] = empCardNo;
+                bool isRegExist = IsEmpProximityNoExists(row["RegID"].ToString(), ViewState["__CompanyId__"].ToString());
+                if (!isRegExist)
+                    row["RegID"] = row["RegID"].ToString().Length > 0 ? row["RegID"].ToString() : row["EmpCardNo"].ToString();
+                else
+                {
+                    throw new Exception("RegID (EmpProximityNo) already exists: " + row["RegID"].ToString());
+                }
+                string weekednType = row["WeekendType"].ToString();
+                string dutyType = row["DutyType"].ToString();
 
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@EmpId", empId);
-                cmd.Parameters.AddWithValue("@CompanyId", item.CompanyId);
-                cmd.Parameters.AddWithValue("@EmpTypeId", Convert.ToInt32(item.EmpTypeId));
-                cmd.Parameters.AddWithValue("@EmpName", row["FullName"].ToString());
-                cmd.Parameters.AddWithValue("@NickName", row["FullName"].ToString());
-                cmd.Parameters.AddWithValue("@EmpNameBn", row["NameBangla"].ToString());
-                cmd.Parameters.AddWithValue("@EmpCardNo", empCardNo);
-                cmd.Parameters.AddWithValue("@EmpProximityNo", row["RegID"].ToString());
-                cmd.Parameters.AddWithValue("@PunchType", 0);
-                cmd.Parameters.AddWithValue("@RealProximityNo", row["RegID"].ToString());
-                cmd.Parameters.AddWithValue("@EmpStatus", row["EmpStatusId"].ToString());
-                cmd.Parameters.AddWithValue("@SftId", item.SftId);
-                cmd.Parameters.AddWithValue("@EmpJoiningDate", joiningDate);
-                cmd.Parameters.AddWithValue("@ShiftTransferDate", joiningDate);
-                cmd.Parameters.AddWithValue("@EarnedLeave", 0);
-                cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", nullDate);
-                cmd.Parameters.AddWithValue("@EmpPicture", "");
-                cmd.Parameters.AddWithValue("@SignatureImage", "");
-                cmd.Parameters.AddWithValue("@Type", row["Type"].ToString());
-                cmd.Parameters.AddWithValue("@ExpireDate", nullDate);
-                cmd.Parameters.AddWithValue("@PreCompanyId", item.CompanyId);
-                cmd.Parameters.AddWithValue("@PreEmpTypeId", Convert.ToInt32(item.EmpTypeId));
-                cmd.Parameters.AddWithValue("@PreDptId", item.DptId);
-                cmd.Parameters.AddWithValue("@DptId", item.DptId);
-                cmd.Parameters.AddWithValue("@PreDsgId", item.DsgId);
-                cmd.Parameters.AddWithValue("@DsgId", item.DsgId);
-                cmd.Parameters.AddWithValue("@PreGId", item.GId);
-                cmd.Parameters.AddWithValue("@GId", item.GId);
-                cmd.Parameters.AddWithValue("@PreEmpStatus", row["EmpStatusId"].ToString());
-                cmd.Parameters.AddWithValue("@DateofUpdate", DateTime.Now.ToString("yyyy-MM-dd"));
-                cmd.Parameters.AddWithValue("@TypeOfChange", "s");
-                cmd.Parameters.AddWithValue("@EffectiveMonth", "");
-                cmd.Parameters.AddWithValue("@OrderRefNo", "");
-                cmd.Parameters.AddWithValue("@OrderRefDate", nullDate);
-                cmd.Parameters.AddWithValue("@Remarks", "");
-                cmd.Parameters.AddWithValue("@ActiveSalary", 1);
-                cmd.Parameters.AddWithValue("@EarnLeaveDate", joiningDate);
-                cmd.Parameters.AddWithValue("@IsActive", 1);
-                cmd.Parameters.AddWithValue("@CustomOrdering", 0);
-                cmd.Parameters.AddWithValue("@TIN", "");
-                cmd.Parameters.AddWithValue("@PreSalaryType", row["SalaryTypeId"].ToString());
-                cmd.Parameters.AddWithValue("@SalaryType", row["SalaryTypeId"].ToString());
-                cmd.Parameters.AddWithValue("@PreEmpDutyType", row["DutyType"].ToString());
-                cmd.Parameters.AddWithValue("@EmpDutyType", row["DutyType"].ToString());
-                cmd.Parameters.AddWithValue("@AuthorizedPerson", true);
-                cmd.Parameters.AddWithValue("@WeekendType", row["WeekendType"].ToString());
-                cmd.Parameters.AddWithValue("@Weekend", "");
-                cmd.Parameters.AddWithValue("@UnitId", item.UnitId.Length > 0 ? item.UnitId : "0");
-                cmd.Parameters.AddWithValue("@CreatedBy", item.UnitId.Length > 0 ? item.UnitId : "0");
 
-                object result = cmd.ExecuteScalar();
-                return result != null && Convert.ToInt32(result) > 0;
+                using (SqlCommand cmd = new SqlCommand("saveEmployeeInfo", sqlDB.connection))
+                {
+
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@EmpId", empId);
+                    cmd.Parameters.AddWithValue("@CompanyId", ViewState["__CompanyId__"].ToString());
+                    cmd.Parameters.AddWithValue("@EmpTypeId", Convert.ToInt32(item.EmpTypeId));
+                    cmd.Parameters.AddWithValue("@EmpName", row["FullName"].ToString());
+                    cmd.Parameters.AddWithValue("@NickName", row["FullName"].ToString());
+                    cmd.Parameters.AddWithValue("@EmpNameBn", row["NameBangla"].ToString());
+                    cmd.Parameters.AddWithValue("@EmpCardNo", empCardNo);
+                    cmd.Parameters.AddWithValue("@EmpProximityNo", row["RegID"].ToString());
+                    cmd.Parameters.AddWithValue("@PunchType", 0);
+                    cmd.Parameters.AddWithValue("@RealProximityNo", row["RegID"].ToString());
+                    cmd.Parameters.AddWithValue("@EmpStatus", row["EmpStatusId"].ToString());
+                    cmd.Parameters.AddWithValue("@SftId", item.SftId);
+                    cmd.Parameters.AddWithValue("@EmpJoiningDate", joiningDate);
+                    cmd.Parameters.AddWithValue("@ShiftTransferDate", joiningDate);
+                    cmd.Parameters.AddWithValue("@EarnedLeave", 0);
+                    cmd.Parameters.AddWithValue("@EarnedLeaveEffectedFrom", nullDate);
+                    cmd.Parameters.AddWithValue("@EmpPicture", "");
+                    cmd.Parameters.AddWithValue("@SignatureImage", "");
+                    cmd.Parameters.AddWithValue("@Type", row["Type"].ToString());
+                    cmd.Parameters.AddWithValue("@ExpireDate", nullDate);
+                    cmd.Parameters.AddWithValue("@PreCompanyId", item.CompanyId);
+                    cmd.Parameters.AddWithValue("@PreEmpTypeId", Convert.ToInt32(item.EmpTypeId));
+                    cmd.Parameters.AddWithValue("@PreDptId", item.DptId);
+                    cmd.Parameters.AddWithValue("@DptId", item.DptId);
+                    cmd.Parameters.AddWithValue("@PreDsgId", item.DsgId);
+                    cmd.Parameters.AddWithValue("@DsgId", item.DsgId);
+                    cmd.Parameters.AddWithValue("@PreGId", item.GId);
+                    cmd.Parameters.AddWithValue("@GId", item.GId);
+                    cmd.Parameters.AddWithValue("@PreEmpStatus", row["EmpStatusId"].ToString());
+                    cmd.Parameters.AddWithValue("@DateofUpdate", DateTime.Now.ToString("yyyy-MM-dd"));
+                    cmd.Parameters.AddWithValue("@TypeOfChange", "s");
+                    cmd.Parameters.AddWithValue("@EffectiveMonth", "");
+                    cmd.Parameters.AddWithValue("@OrderRefNo", "");
+                    cmd.Parameters.AddWithValue("@OrderRefDate", nullDate);
+                    cmd.Parameters.AddWithValue("@Remarks", "");
+                    cmd.Parameters.AddWithValue("@ActiveSalary", 1);
+                    cmd.Parameters.AddWithValue("@EarnLeaveDate", joiningDate);
+                    cmd.Parameters.AddWithValue("@IsActive", 1);
+                    cmd.Parameters.AddWithValue("@CustomOrdering", 0);
+                    cmd.Parameters.AddWithValue("@TIN", "");
+                    cmd.Parameters.AddWithValue("@PreSalaryType", row["SalaryTypeId"].ToString());
+                    cmd.Parameters.AddWithValue("@SalaryType", row["SalaryTypeId"].ToString());
+                    cmd.Parameters.AddWithValue("@PreEmpDutyType", row["DutyType"].ToString());
+                    cmd.Parameters.AddWithValue("@EmpDutyType", row["DutyType"].ToString());
+                    cmd.Parameters.AddWithValue("@AuthorizedPerson", true);
+                    cmd.Parameters.AddWithValue("@WeekendType", row["WeekendType"].ToString());
+                    cmd.Parameters.AddWithValue("@Weekend", "");
+                    cmd.Parameters.AddWithValue("@UnitId", item.UnitId.Length > 0 ? item.UnitId : "0");
+                    cmd.Parameters.AddWithValue("@CreatedBy", item.UnitId.Length > 0 ? item.UnitId : "0");
+
+                    object result = cmd.ExecuteScalar();
+                    return result != null && Convert.ToInt32(result) > 0;
+                }
             }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+            
         }
 
         private string GenerateEmployeeImportCardNo(string companyId)
@@ -1163,6 +1201,24 @@ namespace SigmaERP.personnel
 
             if (cardNoDigits > 0) newCardNo = newCardNo.PadLeft(cardNoDigits, '0');
             return shortName + DateTime.Now.Year + flatCode + newCardNo;
+        }
+
+
+        private bool IsEmpProximityNoExists(string regId, string companyId)
+        {
+            if (string.IsNullOrWhiteSpace(regId))
+                return false;
+
+            using (SqlCommand cmd = new SqlCommand(
+                "SELECT COUNT(1) FROM Personnel_EmployeeInfo WHERE EmpProximityNo = @EmpProximityNo AND CompanyId = @CompanyId",
+                sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpProximityNo", regId);
+                cmd.Parameters.AddWithValue("@CompanyId", companyId);
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
+            }
         }
 
         private string LoadEmployeeImportEmpId()
@@ -1267,6 +1323,93 @@ namespace SigmaERP.personnel
             }
             return DateTime.Now.ToString("yyyy-MM-dd");
         }
+
+
+
+        private void ExportErrorsToExcel(List<EmployeeImportErrorItem> errors)
+        {
+            using (ExcelPackage package = new ExcelPackage())
+            {
+                ExcelWorksheet ws = package.Workbook.Worksheets.Add("Import Errors");
+
+                string[] headers = {
+            "EmpType", "SalaryType", "FullName", "NameBangla", "Department",
+            "Designation", "Group", "Shift", "EmpCardNo", "Reg.ID", "EmpStatus",
+            "Type", "DutyType", "WeekendType", "JoiningDate", "CompanyName", "UnitName", "ErrorReason"
+        };
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    ws.Cells[1, i + 1].Value = headers[i];
+                    ws.Cells[1, i + 1].Style.Font.Bold = true;
+                    ws.Cells[1, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    ws.Cells[1, i + 1].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                }
+
+                int r = 2;
+                foreach (var e in errors)
+                {
+                    ws.Cells[r, 1].Value = e.EmpType;
+                    ws.Cells[r, 2].Value = e.SalaryType;
+                    ws.Cells[r, 3].Value = e.FullName;
+                    ws.Cells[r, 4].Value = e.NameBangla;
+                    ws.Cells[r, 5].Value = e.Department;
+                    ws.Cells[r, 6].Value = e.Designation;
+                    ws.Cells[r, 7].Value = e.Group;
+                    ws.Cells[r, 8].Value = e.Shift;
+                    ws.Cells[r, 9].Value = e.EmpCardNo;
+                    ws.Cells[r, 10].Value = e.RegID;
+                    ws.Cells[r, 11].Value = e.EmpStatus;
+                    ws.Cells[r, 12].Value = e.Type;
+                    ws.Cells[r, 13].Value = e.DutyType;
+                    ws.Cells[r, 14].Value = e.WeekendType;
+                    ws.Cells[r, 15].Value = e.JoiningDate;
+                    ws.Cells[r, 16].Value = e.CompanyName;
+                    ws.Cells[r, 17].Value = e.UnitName;
+                    ws.Cells[r, 18].Value = e.ErrorReason;
+                    r++;
+                }
+
+                ws.Cells[ws.Dimension.Address].AutoFitColumns();
+
+                string fileName = "ImportErrors_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx";
+
+                Response.Clear();
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;filename=" + fileName);
+                Response.BinaryWrite(package.GetAsByteArray());
+                Response.Flush();
+                HttpContext.Current.ApplicationInstance.CompleteRequest();
+            }
+        }
+
+
+        private EmployeeImportErrorItem BuildErrorItemFromExcelRow(DataRow excelRow, string reason)
+        {
+            return new EmployeeImportErrorItem
+            {
+                EmpType = excelRow["EmpType"].ToString(),
+                SalaryType = excelRow["SalaryType"].ToString(),
+                FullName = excelRow["FullName"].ToString(),
+                NameBangla = excelRow["NameBangla"].ToString(),
+                Department = excelRow["Department"].ToString(),
+                Designation = excelRow["Designation"].ToString(),
+                Group = excelRow["Group"].ToString(),
+                Shift = excelRow["Shift"].ToString(),
+                EmpCardNo = excelRow["EmpCardNo"].ToString(),
+                RegID = excelRow["RegID"].ToString(),
+                EmpStatus = excelRow["EmpStatus"].ToString(),
+                Type = excelRow["Type"].ToString(),
+                DutyType = excelRow["DutyType"].ToString(),
+                WeekendType = excelRow["WeekendType"].ToString(),
+                JoiningDate = excelRow["JoiningDate"].ToString(),
+                CompanyName = excelRow["CompanyName"].ToString(),
+                UnitName = excelRow["UnitName"].ToString(),
+                ErrorReason = reason
+            };
+        }
+
+
 
         //private void loadDepartMents()
         //{
