@@ -1757,6 +1757,7 @@
     <Content Include="hrms\packages\modules.aspx" />
     <Content Include="hrms\payroll\common-increment.aspx" />
     <Content Include="hrms\attendance\OvetTime_Configuration.aspx" />
+    <Content Include="hrms\payroll\KPIConfiguration.aspx" />
     <Content Include="hrms\payroll\promotion-entry.aspx" />
     <Content Include="hrms\payroll\salary-entry.aspx" />
     <Content Include="hrms\personnel\employee-activity-tracking.aspx" />
@@ -3850,6 +3851,13 @@
     </Compile>
     <Compile Include="hrms\attendance\OvetTime_Configuration.aspx.designer.cs">
       <DependentUpon>OvetTime_Configuration.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\payroll\KPIConfiguration.aspx.cs">
+      <DependentUpon>KPIConfiguration.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\payroll\KPIConfiguration.aspx.designer.cs">
+      <DependentUpon>KPIConfiguration.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\payroll\promotion-entry.aspx.cs">
       <DependentUpon>promotion-entry.aspx</DependentUpon>
