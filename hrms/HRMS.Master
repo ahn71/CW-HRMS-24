@@ -251,6 +251,17 @@
                                                 </a>
                                             </li>
                                             <% } %>
+
+
+                                            
+                                               <% if (IsRouteExists("attendance/unauthorized-punch-sync"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="attendance/unauthorized-punch-sync" runat="server" class="">
+                                                    <span class="menu-text">SYNC UnAuthorized Punch</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
                                             
                                             <% if (IsRouteExists("attendance/manually-count"))
                                                 { %>
@@ -925,6 +936,16 @@
                                                     <a class="" href="salary/salary-entry" runat="server">Salary Entry Panel</a>
                                                 </li>
                                                 <% } %>
+
+
+                                                <% if (IsRouteExists("salary/kpi-configuration"))
+                                                    { %>
+                                                <li>
+                                                    <a class="" href="salary/kpi-configuration" runat="server">KPI Configuration Panel</a>
+                                                </li>
+                                                <% } %>
+
+
 
                                                 <% if (IsRouteExists("salary/salary-allowance"))
                                                     { %>

@@ -264,6 +264,7 @@
                         <th>Registration ID</th>
                         <th>Punch Time</th>
                         <th>Created At</th>
+                        <th>Source</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -348,6 +349,7 @@ window.onload = function () {
                 '<td><span class="reg-id">' + r.registrationId + '</span></td>' +
                 '<td><span class="mono">' + r.punchTime + '</span></td>' +
                 '<td><span class="muted">' + r.createdAt + '</span></td>' +
+                '<td><span class="muted">' + r.source + '</span></td>' +
                 '</tr>';
         }
         body.innerHTML = html;
