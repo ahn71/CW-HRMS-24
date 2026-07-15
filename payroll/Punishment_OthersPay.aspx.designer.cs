@@ -103,13 +103,22 @@ namespace SigmaERP.payroll {
         protected global::System.Web.UI.WebControls.DropDownList ddlEmpCardNo;
         
         /// <summary>
-        /// txtpunishment control.
+        /// rdType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtpunishment;
+        protected global::System.Web.UI.WebControls.RadioButtonList rdType;
+        
+        /// <summary>
+        /// ddlPurpuse control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPurpuse;
         
         /// <summary>
         /// txtPAmount control.
@@ -155,6 +164,24 @@ namespace SigmaERP.payroll {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnClose;
+        
+        /// <summary>
+        /// hdnAdjImportJson control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnAdjImportJson;
+        
+        /// <summary>
+        /// btnAdjImportSubmit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAdjImportSubmit;
         
         /// <summary>
         /// gvpunishment control.

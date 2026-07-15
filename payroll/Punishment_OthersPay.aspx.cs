@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.Script.Serialization;
 
 namespace SigmaERP.payroll
 {
@@ -75,7 +76,7 @@ namespace SigmaERP.payroll
         private void loadPunishment()
         {
             DataTable dtPunishment = new DataTable();
-            sqlDB.fillDataTable("Select * from v_Payroll_Punishment where CompanyId='"+ddlCompanyList.SelectedValue+"'", dtPunishment);
+            sqlDB.fillDataTable("Select * from v_Payroll_Punishment where CompanyId='"+ddlCompanyList.SelectedValue+ "' order by PSN desc", dtPunishment);
             gvpunishment.DataSource = dtPunishment;
             gvpunishment.DataBind();
         }
@@ -119,8 +120,8 @@ namespace SigmaERP.payroll
         {
             try
             {                
-                string[] getColumns = { "CompanyId", "EmpId", "PName", "PAmount", "MonthName"};
-                string[] getValues = { ddlCompanyList.SelectedValue,ddlEmpCardNo.SelectedValue, txtpunishment.Text, txtPAmount.Text,txtmonthname.Text};
+                string[] getColumns = { "CompanyId", "EmpId", "PName", "PAmount", "MonthName","AdjustmentType"};
+                string[] getValues = { ddlCompanyList.SelectedValue,ddlEmpCardNo.SelectedValue, ddlPurpuse.SelectedValue, txtPAmount.Text,txtmonthname.Text,rdType.SelectedValue.ToString()};
 
                 if (SQLOperation.forSaveValue("Payroll_Punishment", getColumns, getValues, sqlDB.connection) == true)
                 {
@@ -160,8 +161,8 @@ namespace SigmaERP.payroll
         {
             try
             {
-                string[] getColumns = { "CompanyId", "EmpId", "PName", "PAmount", "MonthName" };
-                string[] getValues = { ddlCompanyList.SelectedValue, ddlEmpCardNo.SelectedValue, txtpunishment.Text, txtPAmount.Text, txtmonthname.Text };
+                string[] getColumns = { "CompanyId", "EmpId", "PName", "PAmount", "MonthName","AdjustmentType" };
+                string[] getValues = { ddlCompanyList.SelectedValue, ddlEmpCardNo.SelectedValue, ddlPurpuse.SelectedValue, txtPAmount.Text, txtmonthname.Text,rdType.SelectedValue.ToString() };
 
                 if (SQLOperation.forUpdateValue("Payroll_Punishment", getColumns, getValues, "PSN", ViewState["__getSL__"].ToString(), sqlDB.connection) == true)
                 {
@@ -198,10 +199,32 @@ namespace SigmaERP.payroll
 
         }
 
+        // built-in, no extra package needed
 
-       
+        protected void btnAdjImportSubmit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var items = GetAdjustmentItems();
 
-        protected void ddlEmpCardNo_SelectedIndexChanged(object sender, EventArgs e)
+                if (items == null || items.Count == 0)
+                    return;
+
+                BulkInsertAdjustment(items, ddlCompanyList.SelectedValue);
+                gvpunishment.DataBind();
+                loadPunishment();
+                ScriptManager.RegisterStartupScript(this, GetType(),"adjImportDone", "hideAdjExcelPreviewModalFromServer(); SaveSuccess();",true);
+            }
+            catch (Exception)
+            {
+                ScriptManager.RegisterStartupScript( this,GetType(),  "adjImportError","hideAdjExcelPreviewModalFromServer(); UnableSave();",
+                    true);
+            } 
+        }
+ 
+
+
+    protected void ddlEmpCardNo_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (ddlEmpCardNo.SelectedIndex != 0)
                // IndividualSalary();
@@ -211,7 +234,7 @@ namespace SigmaERP.payroll
       
         private void allClearPunishment()
         {
-            txtpunishment.Text = "";
+            ddlPurpuse.SelectedValue = "";
             txtPAmount.Text = "0";
             txtmonthname.Text = "";
             btnSave.Text = "Submit";
@@ -320,9 +343,10 @@ namespace SigmaERP.payroll
                 ViewState["__getSL__"] = getSL;
                ddlCompanyList.SelectedValue = getCompanyId;
                ddlEmpCardNo.SelectedValue = EmpId;
-               txtpunishment.Text = gvpunishment.Rows[rIndex].Cells[3].Text;
-               txtPAmount.Text = gvpunishment.Rows[rIndex].Cells[4].Text;
-               txtmonthname.Text = gvpunishment.Rows[rIndex].Cells[5].Text;
+               ddlPurpuse.SelectedValue = gvpunishment.Rows[rIndex].Cells[3].Text;
+               txtPAmount.Text = gvpunishment.Rows[rIndex].Cells[5].Text;
+               txtmonthname.Text = gvpunishment.Rows[rIndex].Cells[6].Text;
+               rdType.SelectedValue = gvpunishment.Rows[rIndex].Cells[4].Text;
               
 
 
@@ -511,5 +535,78 @@ namespace SigmaERP.payroll
             }
             catch { }
         }
+
+
+
+        private List<BulkAdjustmentItem> GetAdjustmentItems()
+        {
+            var json = hdnAdjImportJson.Value;
+
+            if (string.IsNullOrWhiteSpace(json))
+                return new List<BulkAdjustmentItem>();
+
+            var serializer = new JavaScriptSerializer();
+
+            return serializer.Deserialize<List<BulkAdjustmentItem>>(json);
+        }
+
+        private void BulkInsertAdjustment(List<BulkAdjustmentItem> items, string companyId)
+        {
+            DataTable dt = CreateAdjustmentDataTable(items, companyId);
+
+            sqlDB.connectionString = Glory.getConnectionString();
+            sqlDB.connectDB();
+
+            using (SqlBulkCopy bulk = new SqlBulkCopy(sqlDB.connection))
+            {
+                bulk.DestinationTableName = "Payroll_Punishment";
+
+                bulk.ColumnMappings.Add("CompanyId", "CompanyId");
+                bulk.ColumnMappings.Add("EmpId", "EmpId");
+                bulk.ColumnMappings.Add("PName", "PName");
+                bulk.ColumnMappings.Add("PAmount", "PAmount");
+                bulk.ColumnMappings.Add("MonthName", "MonthName");
+                bulk.ColumnMappings.Add("AdjustmentType", "AdjustmentType");
+
+                bulk.WriteToServer(dt);
+            }
+
+            sqlDB.closeDB();
+        }
+
+        private DataTable CreateAdjustmentDataTable(List<BulkAdjustmentItem> items, string companyId)
+        {
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("CompanyId", typeof(string));
+            dt.Columns.Add("EmpId", typeof(string));
+            dt.Columns.Add("PName", typeof(string));
+            dt.Columns.Add("PAmount", typeof(decimal));
+            dt.Columns.Add("MonthName", typeof(string));
+            dt.Columns.Add("AdjustmentType", typeof(string));
+
+            foreach (var item in items)
+            {
+                dt.Rows.Add(
+                    companyId,
+                    item.EmpId,
+                    item.PName,
+                    item.PAmount,
+                    item.MonthName,
+                    item.AdjustmentType);
+            }
+
+            return dt;
+        }
+
+        protected class BulkAdjustmentItem
+        {
+            public string EmpId { get; set; }
+            public string PName { get; set; }
+            public decimal PAmount { get; set; }
+            public string MonthName { get; set; }
+            public string AdjustmentType { get; set; }
+        }
+
     }
 }
