@@ -107,6 +107,17 @@
                   
                            
                        </tr>
+
+                         <tr>
+                          <td>Select Unit &nbsp;</td>
+                      
+                           <td>
+                                <asp:DropDownList ID="ddlUnit" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True">
+                               </asp:DropDownList>
+                           </td>
+                  
+                           
+                       </tr>
                          <tr runat="server" id="chkbanksheet" visible="false">
 
                          </tr>

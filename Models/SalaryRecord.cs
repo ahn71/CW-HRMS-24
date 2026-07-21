@@ -85,6 +85,7 @@ namespace SigmaERP.Models
         public DateTime ToDate { get; set; }
         public DateTime GenerateDate { get; set; }      
         public string EmpSeparationId { get; set; }      
+        public string Additional { get; set; }      
 
        
 

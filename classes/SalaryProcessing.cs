@@ -13,6 +13,7 @@ namespace SigmaERP.classes
     {
         string query = "";
         DataTable dt;
+        DataTable extraAttSummarydt = new DataTable();
         SalaryRecord salaryRecord;
         public string GetEmpIdString(DataTable dtEmployees)
         {
@@ -89,9 +90,10 @@ namespace SigmaERP.classes
                 dt = getMonthInfo(CompanyId,ToDate.ToString("MM-yyyy"));
                 int TotalDays= int.Parse(dt.Rows[0]["TotalDays"].ToString());              
                 int Activeday = int.Parse(dt.Rows[0]["TotalWorkingDays"].ToString());
+                extraAttSummarydt = getExtraAttSummary(FromDate.ToString("yyyy-MM-dd"),ToDate.ToString("yyyy-MM-dd"));
 
 
-                   var allAdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId);
+                    var allAdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId);
 
                     var allPunishmentDeductions = getAllPunishment(EmpId, FromDate);
                     DataTable holidayList = getHollidayList(FromDate, CompanyId); 
@@ -132,7 +134,7 @@ namespace SigmaERP.classes
                         _FromDate = empJoiningDate;
                     //initial 
                     try {
-                          salaryRecord = new SalaryRecord
+                            salaryRecord = new SalaryRecord
                             {
                                 UserId = int.Parse(UserId),
                                 EmpId = employee["EmpId"].ToString(),
@@ -153,7 +155,7 @@ namespace SigmaERP.classes
                                 FoodAllownce = double.Parse(employee["FoodAllownce"].ToString()),
                                 TechnicalAllowance = double.Parse(employee["TechnicalAllownce"].ToString()),
                                 OthersAllownce = double.Parse(employee["OthersAllownce"].ToString()),
-                                AttendanceBonus=double.Parse(employee["AttendanceBonus"].ToString()),
+                                AttendanceBonus = double.Parse(employee["AttendanceBonus"].ToString()),
                                 DaysInMonth = TotalDays,
                                 Activeday = Activeday,
                                 WeekendHoliday = 0,
@@ -194,10 +196,12 @@ namespace SigmaERP.classes
                                 ToDate = _ToDate,
                                 FromDateForAll = _FromDateForAll,
                                 ToDateForAll = _ToDateForAll,
-                                IsSeperationGeneration= IsSeperationGeneration,
-                                EmpSeparationId= _EmpSeparationId
+                                IsSeperationGeneration = IsSeperationGeneration,
+                                EmpSeparationId = _EmpSeparationId,
+                                Additional = null
 
-                            };
+
+                          };
                     }
                     catch (Exception ex)
                         {
@@ -280,13 +284,13 @@ namespace SigmaERP.classes
 
                         //if(generateFor == "regular")
                             salaryRecord = getNetPayableCalculation(salaryRecord, hasAdvanceDeduction, payRollPolicy["AbsentDeduction"].ToString());
-                        
 
 
 
+                        string extraAttSummary = GetExtrAttendanceSummary(extraAttSummarydt,employee["EmpId"].ToString());
 
 
-
+                        salaryRecord.Additional = extraAttSummary;
 
                         if (employee["DsgId"].ToString()== "0005" && generateFor== "compliance")
 
@@ -1009,7 +1013,7 @@ namespace SigmaERP.classes
                             AnnualLeave,OthersLeave,FestivalHoliday,AbsentDay,PresentDay,EmpPresentSalary,BasicSalary,HouseRent,MedicalAllownce,ConvenceAllownce,FoodAllownce,TechnicalAllowance,
                             OthersAllownce,AdvanceDeduction,AbsentDeduction,AttendanceBonus,Payable,OverTime,OverTimeAmount,TotalOTHour,OTRate,TotalOTAmount,NetPayable,Stampdeduct,
                             TotalSalary,DptId,DsgId,GrdName,EmpTypeId,EmpStatus,UserId,IsSeperationGeneration,GenerateDate,LateDays,LateFine,TiffinDays,TiffinTaka,TiffinBillAmount,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount,ProvidentFund,
-                            OthersPay,OthersDeduction,ProfitTax,NightbilAmount,NightBillDays,EmpNetGross,FromDate,ToDate,LWP,EmpSeparationId)
+                            OthersPay,OthersDeduction,ProfitTax,NightbilAmount,NightBillDays,EmpNetGross,FromDate,ToDate,LWP,EmpSeparationId,Additional)
                             values('" + salaryRecord .CompanyId+@"',"+ salaryRecord.SftId + @",'"+ salaryRecord .EmpId+ @"','"+salaryRecord.EmpCardNo + @"','"+ salaryRecord.YearMonth.ToString("yyyy-MM-dd") + 
                             @"',"+salaryRecord.DaysInMonth+@","+salaryRecord.Activeday+@","+ salaryRecord.WeekendHoliday+ @","+ salaryRecord.PayableDays + @","+ salaryRecord.CasualLeave +
                             @"," + salaryRecord.SickLeave + @"," + salaryRecord.AnnualLeave + @"," + salaryRecord.OthersLeave + @"," + salaryRecord.FestivalHoliday + @"," + actualAbsent +
@@ -1022,7 +1026,7 @@ namespace SigmaERP.classes
                             @"','" + salaryRecord.LateDays + @"','" + salaryRecord.LateFine + @"','" + salaryRecord.TiffinDays + @"','" + salaryRecord.TiffinTaka +
                             @"','" + salaryRecord.TiffinBillAmount + @"','" + salaryRecord.HolidayWorkingDays + @"','" + salaryRecord.HolidayTaka + @"','" + salaryRecord.HoliDayBillAmount + @"','" + salaryRecord.ProvidentFund +
                             @"','" + salaryRecord.OthersPay + @"','" + salaryRecord.OthersDeduction + @"','" + salaryRecord.ProfitTax + @"','" + salaryRecord.NightbilAmount +
-                            @"','" + salaryRecord.NightBillDays + @"','" + salaryRecord.EmpNetGross + @"','" + salaryRecord.FromDateForAll.ToString("yyyy-MM-dd") + @"','" + salaryRecord.ToDateForAll.ToString("yyyy-MM-dd") + @"','" + salaryRecord.LWP + @"',"+ salaryRecord.EmpSeparationId + ")");
+                            @"','" + salaryRecord.NightBillDays + @"','" + salaryRecord.EmpNetGross + @"','" + salaryRecord.FromDateForAll.ToString("yyyy-MM-dd") + @"','" + salaryRecord.ToDateForAll.ToString("yyyy-MM-dd") + @"','" + salaryRecord.LWP + @"',"+ salaryRecord.EmpSeparationId + ",'"+salaryRecord.Additional+ "')");
 
             
          
@@ -1528,19 +1532,61 @@ namespace SigmaERP.classes
         {
             DateTime startDate = new DateTime(fromDate.Year, fromDate.Month, 1);
             DateTime endDate = startDate.AddMonths(1);
-
-            string query = $@"
-        SELECT CAST(AttDate AS DATE) AS AttDate
-        FROM tblAttendanceRecord
-        WHERE EmpId = '{empId}'
-          AND HolidayCount = 1
-          AND AttDate >= '{startDate:yyyy-MM-dd}'
-          AND AttDate < '{endDate:yyyy-MM-dd}'";
-
+            string query = $@"SELECT CAST(AttDate AS DATE) AS AttDate FROM tblAttendanceRecord
+            WHERE EmpId = '{empId}'  AND HolidayCount = 1 AND AttDate >= '{startDate:yyyy-MM-dd}' AND AttDate < '{endDate:yyyy-MM-dd}'";
             return CRUD.ExecuteReturnDataTable(query);
         }
 
 
+
+        private (string times,double amount) calculatelatelateDeductCal()
+        {
+
+            return ("19", 5000);
+        }
+
+
+    
+            public static string GetExtrAttendanceSummary(DataTable dtAttendance, string empId)
+            {
+                DataRow row = dtAttendance.AsEnumerable()
+                    .FirstOrDefault(r => r.Field<string>("EmpId") == empId);
+
+                if (row == null)
+                {
+                    return "{}";
+                }
+
+                var obj = new
+                {
+                    WeekendDutyMinutes = Convert.ToInt32(row["WeekendDutyMinutes"]),
+                    WeekendDutyDays = Convert.ToInt32(row["WeekendDutyDays"]),
+                    HolidayDutyMinutes = Convert.ToInt32(row["HolidayDutyMinutes"]),
+                    HolidayDutyDays = Convert.ToInt32(row["HolidayDutyDays"]),
+                    LateMinutes = Convert.ToInt32(row["LateMinutes"]),
+                    OTMinutes = Convert.ToInt32(row["OTMinutes"])
+                };
+
+                return new JavaScriptSerializer().Serialize(obj);
+            }
+        
+
+        private  DataTable getExtraAttSummary(string fromDate,string toDate)
+        {
+            string query = @"SELECT
+            EmpId,SUM(CASE WHEN ATTStatus = 'W' THEN DATEDIFF(MINUTE, '00:00:00', StayTime) ELSE 0 END) AS WeekendDutyMinutes,
+            SUM(CASE WHEN ATTStatus = 'W' AND StayTime > '00:00:00' THEN 1  ELSE 0  END) AS WeekendDutyDays,
+            SUM(CASE WHEN ATTStatus = 'H' THEN DATEDIFF(MINUTE, '00:00:00', StayTime) ELSE 0 END) AS HolidayDutyMinutes,
+            SUM(CASE WHEN ATTStatus = 'H' AND StayTime > '00:00:00' THEN 1  ELSE 0 END) AS HolidayDutyDays,
+            SUM(DATEDIFF(MINUTE, '00:00:00', LateTime)) AS LateMinutes,
+            SUM(DATEDIFF(MINUTE, '00:00:00', TotalOverTime)) AS OTMinutes
+
+            FROM tblAttendanceRecord WHERE ATTDate BETWEEN '"+ fromDate + "' AND '"+ toDate + "' GROUP BY EmpId; ";
+
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            return dt;
+        }
 
 
     }

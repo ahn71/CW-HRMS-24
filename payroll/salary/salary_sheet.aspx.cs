@@ -81,6 +81,7 @@ namespace SigmaERP.payroll.salary
                     classes.Payroll.loadMonthIdByCompanyForComplaince(ddlSelectMonth, ViewState["__CompanyId__"].ToString());
 
                 commonTask.loadBankNameCompanyWise(ViewState["__CompanyId__"].ToString(), ddlBankSheet);
+                classes.commonTask.loadUnit(ddlUnit, ViewState["__CompanyId__"].ToString());
                 //-----------------------------------------------------
 
 
@@ -201,6 +202,9 @@ namespace SigmaERP.payroll.salary
                 {
                     Condition += "and sftId ='" + ddlShift.SelectedValue + "'";
                 }
+
+                if(ddlUnit.SelectedValue!="0")
+                    Condition += "and unitId ='" + ddlShift.SelectedValue + "'";
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
@@ -288,7 +292,7 @@ namespace SigmaERP.payroll.salary
                         {
                             getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId, PaymentMethod,EmpPicture, EmpAccountNo, Substring(EmpCardNo,10,6) as EmpCardNo , AbsentDay, BasicSalary, HouseRent, MedicalAllownce, AbsentDeduction, " +
                                 " OverTime as TotalOTHour, OTRate, round(OverTimeAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftId,SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount," +
-                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
+                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn,Additional,DsgNameBn, GrdNameBangla " +
                                 " FROM   " + tableName + " " +
                                 " where " +
                                 " IsActive='1' " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " + holidayAllowance + " " +
@@ -377,7 +381,9 @@ namespace SigmaERP.payroll.salary
                     {
                         Session["__Language__"] = "English";
                         Session["__SalarySheet__"] = dt;
-                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetNew-" + ddlSelectMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + rblEmployeeType.SelectedValue + "-" + rblPaymentType.SelectedValue + "-" + rblSheet.SelectedValue + "');", true);  //Open New Tab for Sever side code
+
+                        ScriptManager.RegisterStartupScript(this, GetType(),"OpenSalarySheet","window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx', '_blank');", true);
+                        /* ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetNew-" + ddlSelectMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + rblEmployeeType.SelectedValue + "-" + rblPaymentType.SelectedValue + "-" + rblSheet.SelectedValue + "');", true);*/  //Open New Tab for Sever side code
 
                     }
 
