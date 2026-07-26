@@ -382,7 +382,15 @@ namespace SigmaERP.payroll.salary
                         Session["__Language__"] = "English";
                         Session["__SalarySheet__"] = dt;
 
-                        ScriptManager.RegisterStartupScript(this, GetType(),"OpenSalarySheet","window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx', '_blank');", true);
+                        //ScriptManager.RegisterStartupScript(this, GetType(),"OpenSalarySheet","window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx', '_blank');", true);
+
+                        ScriptManager.RegisterStartupScript(
+                            this,
+                            GetType(),
+                            "OpenSalarySheet",
+                            $"window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx?EmployeeType={rblEmployeeType.SelectedValue}', '_blank');",
+                            true
+                        );
                         /* ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetNew-" + ddlSelectMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + rblEmployeeType.SelectedValue + "-" + rblPaymentType.SelectedValue + "-" + rblSheet.SelectedValue + "');", true);*/  //Open New Tab for Sever side code
 
                     }
@@ -580,6 +588,84 @@ pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmo
         protected void rblEmployeeType_SelectedIndexChanged(object sender, EventArgs e)
         {
             //rblAlll.Checked = false;
+        }
+
+
+
+        private void salarySheeyV2(string tableName,string yearMonth,string Condition,string holidayAllowance)
+        {
+            string getSQLCMD = "";
+            DataTable dt = new DataTable();
+            if (rblGenerateType.SelectedItem.Text.Equals("All"))
+                    {
+                        if (rblSheet.SelectedValue == "0")
+                        {
+                            getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId, PaymentMethod,EmpPicture, EmpAccountNo, Substring(EmpCardNo,10,6) as EmpCardNo , AbsentDay, BasicSalary, HouseRent, MedicalAllownce, AbsentDeduction, " +
+                                " OverTime as TotalOTHour, OTRate, round(OverTimeAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftId,SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount," +
+                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn,Additional,DsgNameBn, GrdNameBangla " +
+                                " FROM   " + tableName + " " +
+                                " where " +
+                                " IsActive='1' " + yearMonth + " " + Condition + "  AND IsSeperationGeneration='0' " + holidayAllowance + " " +
+                                " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
+                            Session["__ReportTitle__"] = "";
+                        }
+                        else
+                        {
+                            getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId,EmpPicture, Substring(EmpCardNo,10,6) as EmpCardNo , AbsentDay, BasicSalary,PaymentMethod, HouseRent, MedicalAllownce, AbsentDeduction, " +
+                                 " OverTime as TotalOTHour, OTRate, round(OverTimeAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftId,SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount," +
+                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, FestivalHoliday, PayableDays, Payable, NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
+                                 " FROM   " + tableName + " " +
+                                 " where " +
+                                 " IsActive='1' " + yearMonth + " " + Condition + "  "+ holidayAllowance + "" +
+                                 " ORDER BY CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
+                            Session["__ReportTitle__"] = "[Separation]";
+                        }
+
+                        dt = new DataTable();
+                        sqlDB.fillDataTable(getSQLCMD, dt);
+                        if (dt.Rows.Count == 0)
+                        {
+                            lblMessage.InnerText = "warning->Data not found."; return;
+                        }
+
+
+                    }
+                    else
+                    {
+                        if (rblSheet.SelectedValue == "0")
+                        {
+                            getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId,EmpAccountNo,EmpPicture,PaymentMethod,Substring(EmpCardNo,10,6) as EmpCardNo, AbsentDay, BasicSalary,SalaryCount, HouseRent, MedicalAllownce, AbsentDeduction, " +
+                               " OverTime as TotalOTHour, OTRate, round(OverTimeAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftId,SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount," +
+                               " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
+                               " FROM   " + tableName + " " +
+                               " where " +
+                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+ "') AND IsSeperationGeneration='0' " + holidayAllowance + "" +
+                               " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
+                            Session["__ReportTitle__"] = "";
+                        }
+                        else
+                        {
+                            getSQLCMD = "SELECT EmpProximityNo as Sl,EmpId, EmpName,EmptypeId, Substring(EmpCardNo,10,6) as EmpCardNo, AbsentDay,PaymentMethod,EmpPicture, BasicSalary, HouseRent, MedicalAllownce, AbsentDeduction, " +
+                                " OverTime as TotalOTHour, OTRate, round(OverTimeAmount,0) as TotalOTAmount, AttendanceBonus, DptName, CompanyName, SftId,SftName, EmpPresentSalary, Address,HolidayWorkingDays,HolidayTaka,HoliDayBillAmount," +
+                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka,  PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
+                                " FROM   " + tableName + " " +
+                                " where " +
+                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " + holidayAllowance + " " + 
+                                " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
+                            Session["__ReportTitle__"] = "[Separation]";
+                        }
+                          dt = new DataTable();
+                         sqlDB.fillDataTable(getSQLCMD, dt);
+                        if (dt.Rows.Count == 0)
+                        {
+                            lblMessage.InnerText = "warning-> Data no found."; return;
+                        }
+                        rblEmployeeType.SelectedValue = dt.Rows[0]["EmptypeId"].ToString();
+                        //rblPaymentType.SelectedValue = dt.Rows[0]["SalaryCount"].ToString();
+
+
+                    }
+
         }
     }
 }

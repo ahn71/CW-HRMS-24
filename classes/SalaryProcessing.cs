@@ -90,13 +90,15 @@ namespace SigmaERP.classes
                 dt = getMonthInfo(CompanyId,ToDate.ToString("MM-yyyy"));
                 int TotalDays= int.Parse(dt.Rows[0]["TotalDays"].ToString());              
                 int Activeday = int.Parse(dt.Rows[0]["TotalWorkingDays"].ToString());
-                extraAttSummarydt = getExtraAttSummary(FromDate.ToString("yyyy-MM-dd"),ToDate.ToString("yyyy-MM-dd"));
+                extraAttSummarydt = getAllAdditionalSummary(FromDate.ToString("yyyy-MM-dd"),ToDate.ToString("yyyy-MM-dd"));
+                    var KPICache = GetKPICache(FromDate.ToString("yyyy-MM-dd"));
 
 
                     var allAdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId);
 
                     var allPunishmentDeductions = getAllPunishment(EmpId, FromDate);
-                    DataTable holidayList = getHollidayList(FromDate, CompanyId); 
+                    DataTable holidayList = getHollidayList(FromDate, CompanyId);
+                    var grantOtCache = GetGrantOTCache(CompanyId, FromDate.ToString("yyyy-MM-dd"), ToDate.ToString("yyyy-MM-dd"));
                     //get stamp Amount
 
                     //int count = 0;
@@ -261,10 +263,13 @@ namespace SigmaERP.classes
                         //get Punishment Deduction
                         //salaryRecord.OthersDeduction = getPunishmentDeduction(salaryRecord.EmpId, salaryRecord.FromDate);
 
-                        if (allPunishmentDeductions.TryGetValue(salaryRecord.EmpId, out DataRow punishmentDeduction))
-                    {
-                        salaryRecord.OthersDeduction = double.Parse(punishmentDeduction["PAmount"].ToString());
-                    }
+                        //    if (allPunishmentDeductions.TryGetValue(salaryRecord.EmpId, out DataRow punishmentDeduction))
+                        //{
+                        //    salaryRecord.OthersDeduction = double.Parse(punishmentDeduction["PAmount"].ToString());
+                        //}
+
+                        var punishment = getPunishementJosn(allPunishmentDeductions,EmpId);
+                        salaryRecord.OthersDeduction = punishment.totalDeduction;
 
                         //OverTime 
                     if (employee["EmpTypeId"].ToString() == "1")// for worker 
@@ -287,10 +292,10 @@ namespace SigmaERP.classes
 
 
 
-                        string extraAttSummary = GetExtrAttendanceSummary(extraAttSummarydt,employee["EmpId"].ToString());
+                        string additionJson = GetAdditionalSummaryJosn(extraAttSummarydt,employee["EmpId"].ToString(), punishment.mobileDaduction, punishment.retrunPercellDeduct,KPICache,grantOtCache);
 
 
-                        salaryRecord.Additional = extraAttSummary;
+                        salaryRecord.Additional = additionJson;
 
                         if (employee["DsgId"].ToString()== "0005" && generateFor== "compliance")
 
@@ -929,7 +934,7 @@ namespace SigmaERP.classes
         private double getOthersDeduction(string EmpId,string MonthName)
         {
             dt = new DataTable();
-            dt = CRUD.ExecuteReturnDataTable("select ISNULL(Sum(PAmount),0) PAmount from Payroll_Punishment where EmpId='" + EmpId + "' AND MonthName ='" + MonthName + "' ");
+            dt = CRUD.ExecuteReturnDataTable("select PName,ISNULL(Sum(PAmount),0) PAmount from Payroll_Punishment where EmpId='" + EmpId + "' AND MonthName ='" + MonthName + "' ");
             return double.Parse(dt.Rows[0]["PAmount"].ToString());
         }
         private double getPF(DataRow employee,DateTime ToDate)
@@ -1230,14 +1235,22 @@ namespace SigmaERP.classes
             return convertDatatableToDict(dt, "EmpId");
         }
 
-        private Dictionary<string, DataRow> getAllPunishment(string EmpId, DateTime FromDate)
+        private Dictionary<string, List<DataRow>> getAllPunishment(string EmpId, DateTime FromDate)
         {
-            string query= "select EmpId, PAmount from Payroll_Punishment where MonthName = '" + FromDate.ToString("MM-yyyy") + "'";
-            if (EmpId != "" && EmpId!="0")
+            string query = "select EmpId,PAmount,PName from Payroll_Punishment where MonthName='"
+                            + FromDate.ToString("MM-yyyy") + "'";
+
+            if (EmpId != "" && EmpId != "0")
                 query += " and EmpId='" + EmpId + "'";
-            dt = new DataTable();
-            dt = CRUD.ExecuteReturnDataTable(query);
-            return convertDatatableToDict(dt, "EmpId");
+
+            DataTable dt = CRUD.ExecuteReturnDataTable(query);
+
+            return dt.AsEnumerable()
+                     .GroupBy(r => r["EmpId"].ToString())
+                     .ToDictionary(
+                         g => g.Key,
+                         g => g.ToList()
+                     );
         }
 
 
@@ -1547,47 +1560,125 @@ namespace SigmaERP.classes
 
 
     
-            public static string GetExtrAttendanceSummary(DataTable dtAttendance, string empId)
+            public  string GetAdditionalSummaryJosn(DataTable dtAttendance, string empId,double mobilebillDeduct,double returnPerDeduc, Dictionary<string, (decimal KPIScore, decimal KPIBonusAmount)> kpiCache, Dictionary<string, int> grantOTCache)
             {
                 DataRow row = dtAttendance.AsEnumerable()
                     .FirstOrDefault(r => r.Field<string>("EmpId") == empId);
-
+               var KpIData = GetKPIData(empId,kpiCache);
                 if (row == null)
                 {
                     return "{}";
                 }
-
-                var obj = new
+            var obj = new
                 {
+                    TotalWorkingHour= Convert.ToInt32(row["TotalWorkingHour"]),
                     WeekendDutyMinutes = Convert.ToInt32(row["WeekendDutyMinutes"]),
                     WeekendDutyDays = Convert.ToInt32(row["WeekendDutyDays"]),
                     HolidayDutyMinutes = Convert.ToInt32(row["HolidayDutyMinutes"]),
                     HolidayDutyDays = Convert.ToInt32(row["HolidayDutyDays"]),
                     LateMinutes = Convert.ToInt32(row["LateMinutes"]),
-                    OTMinutes = Convert.ToInt32(row["OTMinutes"])
-                };
+                    OTMinutes = Convert.ToInt32(row["OTMinutes"]),
+                    KPIScore = KpIData.KPIScore,
+                    KPIAMount = KpIData.KPIBonusAmount,
+                    MobileBillDeduct = mobilebillDeduct,
+                    ReturnPercelDedc = returnPerDeduc,
+                    GrantOTMinutes = grantOTCache.TryGetValue(empId, out int minutes) ? minutes : 0,
+            };
 
                 return new JavaScriptSerializer().Serialize(obj);
             }
-        
 
-        private  DataTable getExtraAttSummary(string fromDate,string toDate)
+
+        private (double mobileDaduction, double retrunPercellDeduct, double totalDeduction)
+        getPunishementJosn(Dictionary<string, List<DataRow>> allPunishmentDeductions, string empId)
+        {
+            double mobile = 0;
+            double returnParcel = 0;
+            double other = 0;
+
+            if (allPunishmentDeductions.TryGetValue(empId, out var rows))
+            {
+                foreach (DataRow row in rows)
+                {
+                    string pName = row["PName"].ToString().Trim().ToLower();
+                    double amount = Convert.ToDouble(row["PAmount"]);
+
+                    switch (pName)
+                    {
+                        case "mobile bill":
+                            mobile += amount;
+                            break;
+
+                        case "retrun percel deduction":
+                            returnParcel += amount;
+                            break;
+
+                        default:
+                            other += amount;
+                            break;
+                    }
+                }
+            }
+
+            return (mobile, returnParcel, mobile + returnParcel + other);
+        }
+
+        private  DataTable getAllAdditionalSummary(string fromDate,string toDate)
         {
             string query = @"SELECT
-            EmpId,SUM(CASE WHEN ATTStatus = 'W' THEN DATEDIFF(MINUTE, '00:00:00', StayTime) ELSE 0 END) AS WeekendDutyMinutes,
+            EmpId,
+            SUM(CASE WHEN ATTStatus not in('W','H') THEN DATEDIFF(HOUR, '00:00:00', StayTime) ELSE 0 END) AS TotalWorkingHour,
+            SUM(CASE WHEN ATTStatus = 'W' THEN DATEDIFF(MINUTE, '00:00:00', StayTime) ELSE 0 END) AS WeekendDutyMinutes,
             SUM(CASE WHEN ATTStatus = 'W' AND StayTime > '00:00:00' THEN 1  ELSE 0  END) AS WeekendDutyDays,
             SUM(CASE WHEN ATTStatus = 'H' THEN DATEDIFF(MINUTE, '00:00:00', StayTime) ELSE 0 END) AS HolidayDutyMinutes,
             SUM(CASE WHEN ATTStatus = 'H' AND StayTime > '00:00:00' THEN 1  ELSE 0 END) AS HolidayDutyDays,
             SUM(DATEDIFF(MINUTE, '00:00:00', LateTime)) AS LateMinutes,
             SUM(DATEDIFF(MINUTE, '00:00:00', TotalOverTime)) AS OTMinutes
 
-            FROM tblAttendanceRecord WHERE ATTDate BETWEEN '"+ fromDate + "' AND '"+ toDate + "' GROUP BY EmpId; ";
+            FROM tblAttendanceRecord WHERE ATTDate BETWEEN '" + fromDate + "' AND '"+ toDate + "' GROUP BY EmpId; ";
 
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(query);
             return dt;
         }
 
+        private Dictionary<string, (decimal KPIScore, decimal KPIBonusAmount)> GetKPICache(string salaryMonth)
+        {
+           string query= $@"SELECT EmpId, KPIScore, KPIBonusAmount FROM Payroll_MonthlyKPIBonus
+                              WHERE SalaryMonth='{salaryMonth}'";
+            dt = new DataTable();
+            dt =CRUD.ExecuteReturnDataTable(query);
+            return dt.AsEnumerable()
+                     .ToDictionary(
+                         r => r["EmpId"].ToString(),
+                         r => (
+                             Convert.ToDecimal(r["KPIScore"]),
+                             Convert.ToDecimal(r["KPIBonusAmount"])
+                         ));
+        }
 
+        private (decimal KPIScore, decimal KPIBonusAmount) GetKPIData(string empId,Dictionary<string, (decimal KPIScore, decimal KPIBonusAmount)> kpiCache)
+        {
+            if (kpiCache.TryGetValue(empId, out var kpi))
+            {
+                return kpi;
+            }
+
+            return (0, 0);
+        }
+
+
+
+        private  Dictionary<string, int> GetGrantOTCache(string companyId,string fromDate,string toDate)
+        {
+            string query = @"SELECT  ot.EmpId,SUM(CASE WHEN DATEDIFF(MINUTE, '00:00:00', at.OverTime) <= DATEDIFF(MINUTE, '00:00:00', ot.OverTimeLimit) THEN DATEDIFF(MINUTE, '00:00:00', at.OverTime) ELSE DATEDIFF(MINUTE, '00:00:00', ot.OverTimeLimit) END) AS GrantOverTimeMinutes FROM tblOvertimeConfiguration ot INNER JOIN tblAttendanceRecord at ON ot.OverTimeDate = at.ATTDate AND ot.EmpId = at.EmpId WHERE ot.CompanyId = '"+companyId+"' AND ot.OverTimeDate >= '"+fromDate+"' AND ot.OverTimeDate <= '"+toDate+@"'
+              GROUP BY ot.EmpId";
+            dt = new DataTable();
+            dt = CRUD.ExecuteReturnDataTable(query);
+            return dt.AsEnumerable().ToDictionary(
+                 r => r["EmpId"].ToString(),
+                 r => Convert.ToInt32(r["GrantOverTimeMinutes"])
+             );
+        }
     }
 }

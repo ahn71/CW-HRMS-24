@@ -40,12 +40,30 @@ namespace SigmaERP.hrms.payroll {
         protected global::System.Web.UI.WebControls.DropDownList ddlPageSize;
         
         /// <summary>
-        /// gvSalaryReport control.
+        /// gvBackendSalaryList control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvSalaryReport;
+        protected global::System.Web.UI.WebControls.GridView gvBackendSalaryList;
+        
+        /// <summary>
+        /// gvAgentSalaryList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvAgentSalaryList;
+        
+        /// <summary>
+        /// gvPermamentSalarySheet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvPermamentSalarySheet;
     }
 }

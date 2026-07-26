@@ -95,8 +95,9 @@
                     records per page
 
                 </div>
+               <%-- Backend gridview start--%>
 
-                <asp:GridView ID="gvSalaryReport" runat="server" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager" OnPageIndexChanging="gvSalaryReport_PageIndexChanging">
+                <asp:GridView ID="gvBackendSalaryList" runat="server" Visible="false" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager" OnPageIndexChanging="gvBackendSalaryList_PageIndexChanging">
 
                     <Columns>
 
@@ -131,6 +132,100 @@
                     </Columns>
 
                 </asp:GridView>
+
+              <%--  Backend gridview end --%>
+
+
+                <%--agend Gridview start--%>
+
+                   <asp:GridView ID="gvAgentSalaryList" runat="server" Visible="true" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager"  OnPageIndexChanging="gvAgentSalaryList_PageIndexChanging">
+
+                    <Columns>
+
+
+                        <asp:TemplateField HeaderText="SL">
+                            <ItemTemplate>
+                                <%# Container.DataItemIndex + 1 %>
+                            </ItemTemplate>
+                            <ItemStyle Width="45px" />
+                        </asp:TemplateField>
+
+                        <asp:BoundField DataField="ID" HeaderText="ID" />
+                        <asp:BoundField DataField="Name" HeaderText="Agent Name" />
+                           <asp:BoundField DataField="Department" HeaderText="LOB" />
+                        <asp:BoundField DataField="Designation" HeaderText="Status" />
+                        <asp:BoundField DataField="KPI Achieve Days" HeaderText="KPI Achieve Days" />
+                        <asp:BoundField DataField="Absent Count" HeaderText="Absent Days" />
+
+                        <asp:BoundField DataField="Extra Duty Miniute" HeaderText="Extra Duty Miniutes(No OT)" />
+                        <asp:BoundField DataField="Total Working Hour" HeaderText="Total Working Hour" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="OT Extra Duty Count" HeaderText="OT Extra Duty Hour-OT" />
+                         <asp:BoundField DataField="OT Extra Duty Count Miniute" HeaderText="OT Extra Duty Min-OT" />
+                        <asp:BoundField DataField="Gross Salary" HeaderText="Per Hour Income" />
+                        <asp:BoundField DataField="Attendance Bonus" HeaderText="Attendance Bonus" />
+                        <asp:BoundField DataField="Total Working Hour Salary" HeaderText="Total Working Hour Salary/Basic" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Total Extra Duty Minute Amount" HeaderText="Total Extra Duty Min Amount" /> <%--jeta  excel theke deya jai--%>
+                        <asp:BoundField DataField="Total OT Extra Duty Count Amount" HeaderText="Total overtime Duty Min Amount
+" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Total OT KPI Amount" HeaderText="Total OT KPI amount
+" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Total KPI Amount" HeaderText="Total KPI Amount
+" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Absent Deduction" HeaderText="Absent Deduction" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Return Parcel" HeaderText="Return Parcel  Deduction / Fine
+" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Final Payable Amount" HeaderText="Final Payable Amount" DataFormatString="{0:N2}" HtmlEncode="false" />
+
+                    </Columns>
+
+                </asp:GridView>
+
+
+               <%--agend Gridview end--%>
+
+
+               <%-- perment employee gridview start--%>
+
+                <asp:GridView ID="gvPermamentSalarySheet" runat="server" Visible="false" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager"  OnPageIndexChanging="gvPermamentSalarySheet_PageIndexChanging" Width="100%">
+
+                    <Columns>
+
+                       
+                        <asp:TemplateField HeaderText="SL">
+                            <ItemTemplate>
+                                <%# Container.DataItemIndex + 1 %>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+
+                        <asp:BoundField DataField="ID" HeaderText="ID" />
+                        <asp:BoundField DataField="Name" HeaderText="Name" />
+                        <asp:BoundField DataField="Department" HeaderText="Department" />
+                        <asp:BoundField DataField="Status" HeaderText="Status" />
+
+                        <asp:BoundField DataField="Gross Salary" HeaderText="Gross Salary" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="NTR" HeaderText="NTR" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Absent Count" HeaderText="Absent Count" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="OT Extra Duty Count" HeaderText="OT Extra Duty Count" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Deduction (Min)" HeaderText="Deduction (Min)" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Extra (Min)" HeaderText="Extra (Min)" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="OT Days" HeaderText="OT Days" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Hold Salary need to adjust" HeaderText="Hold Salary Need To Adjust" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="KPI Achieved" HeaderText="KPI Achieved" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Daily Income" HeaderText="Daily Income" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Per Min Income" HeaderText="Per Min Income" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Total OT Extra Duty Count amount" HeaderText="Total OT Extra Duty Count Amount" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Total OT Extra min Duty" HeaderText="Total OT Extra Min Duty" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Absent deduction" HeaderText="Absent Deduction" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Total Deduction Min amount" HeaderText="Total Deduction Min Amount" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Return Parcel Deduction" HeaderText="Return Parcel Deduction" DataFormatString="{0:N2}" HtmlEncode="false" />
+                        <asp:BoundField DataField="Final Payable Amount" HeaderText="Final Payable Amount" DataFormatString="{0:N2}" HtmlEncode="false" />
+
+                    </Columns>
+
+                </asp:GridView>
+
+               <%-- permament employee gridview end --%>
+
             </div>
 
         </div>

@@ -617,7 +617,8 @@
                                                                 <span class="form-label">Purpose Name</span>
                                                                 <div class="form-field-wrap">
                                                                     <asp:DropDownList runat="server" ID="ddlPurpuse" CssClass="form-control">
-                                                                        <asp:ListItem Value="Mobile Bill">Mobile bill</asp:ListItem>
+                                                                        <asp:ListItem Value="Mobile Bill deduction">Mobile bill Deduction</asp:ListItem>
+                                                                        <asp:ListItem Value="Retrun percel deduction">Retrun percel Deduction</asp:ListItem>
                                                                         <asp:ListItem Value="Others Ddeduction">Others Ddeduction</asp:ListItem>
                                                                     </asp:DropDownList>
                                                                 </div>
