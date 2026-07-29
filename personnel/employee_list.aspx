@@ -391,6 +391,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="SalaryType" HeaderText="SalaryType" />
+                                                    <asp:BoundField DataField="Salary" HeaderText="Salary" />
                                                     <asp:BoundField DataField="FullName" HeaderText="FullName" />
                                                     <asp:BoundField DataField="NameBangla" HeaderText="NameBangla" />
                                                     <asp:TemplateField HeaderText="Department">
@@ -432,6 +433,7 @@
                                                     <asp:BoundField DataField="UnitName" HeaderText="UnitName" />
                                                     <asp:BoundField DataField="DutyType" HeaderText="DutyType" />
                                                     <asp:BoundField DataField="WeekendType" HeaderText="WeekendType" />
+                                                    <asp:BoundField DataField="WeekendDayName" HeaderText="Weekend Day Name" />
                                                     <asp:BoundField DataField="JoiningDate" HeaderText="JoiningDate" />
                                                     <asp:BoundField DataField="ErrorMessage" HeaderText="Problem" />
                                                 </Columns>

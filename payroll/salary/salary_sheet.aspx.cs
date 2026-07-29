@@ -384,14 +384,14 @@ namespace SigmaERP.payroll.salary
 
                         //ScriptManager.RegisterStartupScript(this, GetType(),"OpenSalarySheet","window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx', '_blank');", true);
 
-                        ScriptManager.RegisterStartupScript(
-                            this,
-                            GetType(),
-                            "OpenSalarySheet",
-                            $"window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx?EmployeeType={rblEmployeeType.SelectedValue}', '_blank');",
-                            true
-                        );
-                        /* ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetNew-" + ddlSelectMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + rblEmployeeType.SelectedValue + "-" + rblPaymentType.SelectedValue + "-" + rblSheet.SelectedValue + "');", true);*/  //Open New Tab for Sever side code
+                        //ScriptManager.RegisterStartupScript(
+                        //    this,
+                        //    GetType(),
+                        //    "OpenSalarySheet",
+                        //    $"window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx?EmployeeType={rblEmployeeType.SelectedValue}', '_blank');",
+                        //    true
+                        //);
+                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetNew-" + ddlSelectMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + rblEmployeeType.SelectedValue + "-" + rblPaymentType.SelectedValue + "-" + rblSheet.SelectedValue + "');", true);  //Open New Tab for Sever side code
 
                     }
 

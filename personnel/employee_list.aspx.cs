@@ -821,6 +821,7 @@ namespace SigmaERP.personnel
             Dictionary<string, string> employeeTypes = BuildLookupDictionary(employeeTypeTable, "EmpType", "EmpTypeId", null);
             Dictionary<string, string> designations = BuildLookupDictionary(designationTable, "DsgName", "DsgId", "DptId");
             Dictionary<string, string> groups = BuildLookupDictionary(groupTable, "GName", "GId", "DptId");
+            Dictionary<string, string> groupIds = BuildLookupDictionary(groupTable, "GId", "GId", "DptId");
             Dictionary<string, string> shifts = BuildLookupDictionary(shiftTable, "SftName", "SftId", "DptId");
             Dictionary<string, string> tblStatus = BuildLookupDictionary(empStatusTable, "EmpStatusName", "EmpStatus", null);
             Dictionary<string, string> units = BuildLookupDictionary(unitTable, "UnitName", "UnitId", null);
@@ -837,6 +838,7 @@ namespace SigmaERP.personnel
                 row["CompanyName"] = GetExcelValue(excelRow, "CompanyName");
                 row["EmpType"] = GetExcelValue(excelRow, "EmpType");
                 row["SalaryType"] = GetExcelValue(excelRow, "SalaryType");
+                row["Salary"] = GetExcelValue(excelRow, "Salary");
                 row["FullName"] = GetExcelValue(excelRow, "FullName");
                 row["NameBangla"] = GetExcelValue(excelRow, "NameBangla");
                 row["Department"] = GetExcelValue(excelRow, "Department");
@@ -850,6 +852,7 @@ namespace SigmaERP.personnel
                 row["Type"] = GetExcelValue(excelRow, "Type");
                 row["DutyType"] = GetExcelValue(excelRow, "DutyType");
                 row["WeekendType"] = GetExcelValue(excelRow, "WeekendType");
+                row["WeekendDayName"] = GetExcelValue(excelRow, "WeekendDayName");
                 row["JoiningDate"] = GetExcelValue(excelRow, "JoiningDate");
                 row["CompanyName"] = GetExcelValue(excelRow, "CompanyName");
                 row["UnitName"] = GetExcelValue(excelRow, "UnitName");
@@ -861,6 +864,11 @@ namespace SigmaERP.personnel
                 string empTypeId = FindLookupId(employeeTypes, row["EmpType"].ToString());
                 string dsgId = FindChildLookupId(designations, dptId, row["Designation"].ToString());
                 string groupId = FindChildLookupId(groups, dptId, row["Group"].ToString());
+                if (groupId.Length == 0)
+                {
+                    // Accept Group ID too when the Excel sheet contains an ID instead of the group name.
+                    groupId = FindChildLookupId(groupIds, dptId, row["Group"].ToString());
+                }
                 string shiftId = FindChildLookupId(shifts, dptId, row["Shift"].ToString());
                 string empStatusId = FindImportEmpStatusId(empStatusTable, tblStatus, row["EmpStatus"].ToString());
                 string unitId = FindLookupId(units, row["UnitName"].ToString());
@@ -896,7 +904,7 @@ namespace SigmaERP.personnel
         private DataTable CreateEmployeeImportPreviewTable()
         {
             DataTable dt = new DataTable();
-            string[] columns = { "ImportRowId", "ExcelRowNo", "CompanyName", "EmpType", "SalaryType", "FullName", "NameBangla", "Department", "Designation", "Group", "Shift", "EmpCardNo", "RegID", "EmpStatus", "Type", "DutyType", "WeekendType", "JoiningDate", "CompanyId", "DptId", "DsgId", "GId", "SftId", "EmpTypeId", "SalaryTypeId", "EmpStatusId", "DutyTypeId", "WeekendTypeId", "ErrorFields", "ErrorMessage","UnitName", "UnitId" };
+            string[] columns = { "ImportRowId", "ExcelRowNo", "CompanyName", "EmpType", "SalaryType", "Salary", "FullName", "NameBangla", "Department", "Designation", "Group", "Shift", "EmpCardNo", "RegID", "EmpStatus", "Type", "DutyType", "WeekendType", "WeekendDayName", "JoiningDate", "CompanyId", "DptId", "DsgId", "GId", "SftId", "EmpTypeId", "SalaryTypeId", "EmpStatusId", "DutyTypeId", "WeekendTypeId", "ErrorFields", "ErrorMessage","UnitName", "UnitId" };
             foreach (string column in columns) dt.Columns.Add(column);
             return dt;
         }
@@ -920,7 +928,7 @@ namespace SigmaERP.personnel
             foreach (DataRow row in table.Rows)
             {
                 string key = NormalizeImportKey(row[textColumn].ToString());
-                if (parentColumn != null) key = row[parentColumn].ToString() + "|" + key;
+                if (parentColumn != null) key = NormalizeImportParentKey(row[parentColumn].ToString()) + "|" + key;
                 if (!data.ContainsKey(key)) data.Add(key, row[valueColumn].ToString());
             }
             return data;
@@ -956,7 +964,7 @@ namespace SigmaERP.personnel
         private string FindChildLookupId(Dictionary<string, string> lookup, string parentId, string name)
         {
             if (parentId.Length == 0) return "";
-            string key = parentId + "|" + NormalizeImportKey(name);
+            string key = NormalizeImportParentKey(parentId) + "|" + NormalizeImportKey(name);
             if (lookup.ContainsKey(key)) return lookup[key];
 
             string commonKey = "0|" + NormalizeImportKey(name);
@@ -1152,12 +1160,14 @@ namespace SigmaERP.personnel
                     cmd.Parameters.AddWithValue("@EmpDutyType", row["DutyType"].ToString());
                     cmd.Parameters.AddWithValue("@AuthorizedPerson", true);
                     cmd.Parameters.AddWithValue("@WeekendType", row["WeekendType"].ToString());
-                    cmd.Parameters.AddWithValue("@Weekend", "");
+                    cmd.Parameters.AddWithValue("@Weekend", row["WeekendDayName"].ToString());
                     cmd.Parameters.AddWithValue("@UnitId", item.UnitId.Length > 0 ? item.UnitId : "0");
                     cmd.Parameters.AddWithValue("@CreatedBy", item.UnitId.Length > 0 ? item.UnitId : "0");
 
                     object result = cmd.ExecuteScalar();
-                    return result != null && Convert.ToInt32(result) > 0;
+                    bool isSaved = result != null && Convert.ToInt32(result) > 0;
+                    if (isSaved) UpdateEmployeeImportSalary(empId, empCardNo, row["Salary"].ToString());
+                    return isSaved;
                 }
             }
             catch (Exception ex)
@@ -1167,6 +1177,26 @@ namespace SigmaERP.personnel
             }
             
             
+        }
+
+        private void UpdateEmployeeImportSalary(string empId, string empCardNo, string salaryText)
+        {
+            decimal salary;
+            if (!decimal.TryParse((salaryText ?? "").Replace(",", ""), NumberStyles.Any, CultureInfo.InvariantCulture, out salary))
+            {
+                salary = 0;
+            }
+
+            using (SqlCommand cmd = new SqlCommand(
+                "UPDATE Personnel_EmployeeInfo SET EmpJoinigSalary=@Salary WHERE EmpId=@EmpId; " +
+                "UPDATE Personnel_EmpCurrentStatus SET EmpPresentSalary=@Salary WHERE EmpId=@EmpId AND EmpCardNo=@EmpCardNo AND ActiveSalary=1;",
+                sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@Salary", salary);
+                cmd.Parameters.AddWithValue("@EmpId", empId);
+                cmd.Parameters.AddWithValue("@EmpCardNo", empCardNo);
+                cmd.ExecuteNonQuery();
+            }
         }
 
         private string GenerateEmployeeImportCardNo(string companyId)
@@ -1248,13 +1278,14 @@ namespace SigmaERP.personnel
         private string GetImportColumnName(string columnName)
         {
             string key = NormalizeImportKey(columnName);
-            if (key == "department" || key == "departmentt" || key == "departmen.t") return "Department";
+            if (key == "department" || key == "departmentname" || key == "departmentt" || key == "departmen.t") return "Department";
             if (key == "companyname" || key == "company") return "CompanyName";
-            if (key == "designation") return "Designation";
-            if (key == "group") return "Group";
+            if (key == "designation" || key == "designationname" || key == "dsgname") return "Designation";
+            if (key == "group" || key == "groupname" || key == "groupid" || key == "gid") return "Group";
             if (key == "shift") return "Shift";
             if (key == "emptype") return "EmpType";
             if (key == "salarytype") return "SalaryType";
+            if (key == "salary" || key == "grosssalary" || key == "presentsalary" || key == "emppresentsalary") return "Salary";
             if (key == "fullname" || key == "name") return "FullName";
             if (key == "namebangla" || key == "banglaname") return "NameBangla";
             if (key == "empcardno") return "EmpCardNo";
@@ -1263,6 +1294,7 @@ namespace SigmaERP.personnel
             if (key == "type") return "Type";
             if (key == "dutytype") return "DutyType";
             if (key == "weekendtype") return "WeekendType";
+            if (key == "weekenddayname" || key == "weekendday" || key == "weekend") return "WeekendDayName";
             if (key == "joiningdate") return "JoiningDate";
             if (key == "unitname" || key == "unit") return "UnitName";
             return key;
@@ -1270,7 +1302,21 @@ namespace SigmaERP.personnel
 
         private string NormalizeImportKey(string value)
         {
-            return new string((value ?? "").Trim().ToLower().Where(char.IsLetterOrDigit).ToArray());
+            // Treat names such as "HR & Admin" and "HR and Admin" as the same value.
+            string normalizedValue = (value ?? "").Trim().ToLower().Replace("&", "and");
+            return new string(normalizedValue.Where(char.IsLetterOrDigit).ToArray());
+        }
+
+        private string NormalizeImportParentKey(string value)
+        {
+            string key = NormalizeImportKey(value);
+            if (key.Length > 0 && key.All(char.IsDigit))
+            {
+                key = key.TrimStart('0');
+                return key.Length == 0 ? "0" : key;
+            }
+
+            return key;
         }
 
         private void AddImportError(List<string> errorFields, List<string> errors, string fieldName, string id, string value)
@@ -1333,9 +1379,9 @@ namespace SigmaERP.personnel
                 ExcelWorksheet ws = package.Workbook.Worksheets.Add("Import Errors");
 
                 string[] headers = {
-            "EmpType", "SalaryType", "FullName", "NameBangla", "Department",
+            "EmpType", "SalaryType", "Salary", "FullName", "NameBangla", "Department",
             "Designation", "Group", "Shift", "EmpCardNo", "Reg.ID", "EmpStatus",
-            "Type", "DutyType", "WeekendType", "JoiningDate", "CompanyName", "UnitName", "ErrorReason"
+            "Type", "DutyType", "WeekendType", "Weekend Day Name", "JoiningDate", "CompanyName", "UnitName", "ErrorReason"
         };
 
                 for (int i = 0; i < headers.Length; i++)
@@ -1351,22 +1397,24 @@ namespace SigmaERP.personnel
                 {
                     ws.Cells[r, 1].Value = e.EmpType;
                     ws.Cells[r, 2].Value = e.SalaryType;
-                    ws.Cells[r, 3].Value = e.FullName;
-                    ws.Cells[r, 4].Value = e.NameBangla;
-                    ws.Cells[r, 5].Value = e.Department;
-                    ws.Cells[r, 6].Value = e.Designation;
-                    ws.Cells[r, 7].Value = e.Group;
-                    ws.Cells[r, 8].Value = e.Shift;
-                    ws.Cells[r, 9].Value = e.EmpCardNo;
-                    ws.Cells[r, 10].Value = e.RegID;
-                    ws.Cells[r, 11].Value = e.EmpStatus;
-                    ws.Cells[r, 12].Value = e.Type;
-                    ws.Cells[r, 13].Value = e.DutyType;
-                    ws.Cells[r, 14].Value = e.WeekendType;
-                    ws.Cells[r, 15].Value = e.JoiningDate;
-                    ws.Cells[r, 16].Value = e.CompanyName;
-                    ws.Cells[r, 17].Value = e.UnitName;
-                    ws.Cells[r, 18].Value = e.ErrorReason;
+                    ws.Cells[r, 3].Value = e.Salary;
+                    ws.Cells[r, 4].Value = e.FullName;
+                    ws.Cells[r, 5].Value = e.NameBangla;
+                    ws.Cells[r, 6].Value = e.Department;
+                    ws.Cells[r, 7].Value = e.Designation;
+                    ws.Cells[r, 8].Value = e.Group;
+                    ws.Cells[r, 9].Value = e.Shift;
+                    ws.Cells[r, 10].Value = e.EmpCardNo;
+                    ws.Cells[r, 11].Value = e.RegID;
+                    ws.Cells[r, 12].Value = e.EmpStatus;
+                    ws.Cells[r, 13].Value = e.Type;
+                    ws.Cells[r, 14].Value = e.DutyType;
+                    ws.Cells[r, 15].Value = e.WeekendType;
+                    ws.Cells[r, 16].Value = e.WeekendDayName;
+                    ws.Cells[r, 17].Value = e.JoiningDate;
+                    ws.Cells[r, 18].Value = e.CompanyName;
+                    ws.Cells[r, 19].Value = e.UnitName;
+                    ws.Cells[r, 20].Value = e.ErrorReason;
                     r++;
                 }
 
@@ -1390,6 +1438,7 @@ namespace SigmaERP.personnel
             {
                 EmpType = excelRow["EmpType"].ToString(),
                 SalaryType = excelRow["SalaryType"].ToString(),
+                Salary = excelRow["Salary"].ToString(),
                 FullName = excelRow["FullName"].ToString(),
                 NameBangla = excelRow["NameBangla"].ToString(),
                 Department = excelRow["Department"].ToString(),
@@ -1402,6 +1451,7 @@ namespace SigmaERP.personnel
                 Type = excelRow["Type"].ToString(),
                 DutyType = excelRow["DutyType"].ToString(),
                 WeekendType = excelRow["WeekendType"].ToString(),
+                WeekendDayName = excelRow["WeekendDayName"].ToString(),
                 JoiningDate = excelRow["JoiningDate"].ToString(),
                 CompanyName = excelRow["CompanyName"].ToString(),
                 UnitName = excelRow["UnitName"].ToString(),

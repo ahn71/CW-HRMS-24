@@ -9,6 +9,7 @@ namespace SigmaERP.hrms.DTO
     {
          public string EmpType { get; set; }
     public string SalaryType { get; set; }
+    public string Salary { get; set; }
     public string FullName { get; set; }
     public string NameBangla { get; set; }
     public string Department { get; set; }
@@ -21,6 +22,7 @@ namespace SigmaERP.hrms.DTO
     public string Type { get; set; }
     public string DutyType { get; set; }
     public string WeekendType { get; set; }
+    public string WeekendDayName { get; set; }
     public string JoiningDate { get; set; }
     public string CompanyName { get; set; }
     public string UnitName { get; set; }
