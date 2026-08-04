@@ -205,7 +205,7 @@ dr["Additional"].ToString());
                 decimal KPIAmount = Convert.ToDecimal(attendance["KPIAMount"]);
                 decimal mobileBillDeduction = Convert.ToDecimal(attendance["MobileBillDeduct"]);
 
-                decimal totalExtraOtCount = ((grossSalary * 0.65m * 1.5m) / 30) * (Convert.ToDecimal(attendance["HolidayDutyDays"]) + Convert.ToDecimal(attendance["HolidayDutyDays"]));
+                decimal totalExtraOtCount = (((grossSalary /26m)/2)*2) * (Convert.ToDecimal(attendance["HolidayDutyDays"]) + Convert.ToDecimal(attendance["WeekendDutyDays"]));
                 decimal totalLateDeductionPerMinit = Math.Round(perMinIncome, 2) * deductionMinute;
 
                 decimal finalPaySalary = grossSalary - Convert.ToDecimal(dr["AdvanceDeduction"]) + KPIAmount + totalExtraOtCount - Convert.ToDecimal(dr["AbsentDeduction"]) - totalLateDeductionPerMinit - mobileBillDeduction;

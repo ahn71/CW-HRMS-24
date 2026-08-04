@@ -23,7 +23,7 @@ namespace SigmaERP.payroll.salary
             lblMessage.InnerText = "";
             if (!IsPostBack)
             {
-                int[] pagePermission = { 337, 474 };
+                int[] pagePermission = { 337, 474, 492 };
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);

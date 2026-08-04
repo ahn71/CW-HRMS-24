@@ -279,6 +279,7 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 dt = new DataTable();
 
                 sqlDB.fillDataTable("SELECT Distinct SftName,SftId from HRD_Shift where " + condition + " and IsActive=1", dt);
+                string query = "SELECT Distinct SftName,SftId from HRD_Shift where " + condition + " and IsActive=1";
                 ddl.DataValueField = "SftId";
                 ddl.DataTextField = "SftName";
                 ddl.DataSource = dt;

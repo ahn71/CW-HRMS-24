@@ -1775,6 +1775,7 @@
     <Content Include="hrms\settings\othersSetup.aspx" />
     <Content Include="hrms\settings\qualificationSetup.aspx" />
     <Content Include="hrms\settings\religionSetup.aspx" />
+    <Content Include="hrms\settings\reportGenerate.aspx" />
     <Content Include="hrms\settings\shiftSetup.aspx" />
     <Content Include="hrms\settings\thanaSetup.aspx" />
     <Content Include="hrms\settings\unitSetup.aspx" />
@@ -3741,6 +3742,7 @@
     <Compile Include="hrms\attendance\SyncUnathorizedAttendance.aspx.designer.cs">
       <DependentUpon>SyncUnathorizedAttendance.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\BLL\TokenEngine.cs" />
     <Compile Include="hrms\dashbordUser.aspx.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3982,6 +3984,13 @@
     </Compile>
     <Compile Include="hrms\settings\religionSetup.aspx.designer.cs">
       <DependentUpon>religionSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\settings\reportGenerate.aspx.cs">
+      <DependentUpon>reportGenerate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\settings\reportGenerate.aspx.designer.cs">
+      <DependentUpon>reportGenerate.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\settings\shiftSetup.aspx.cs">
       <DependentUpon>shiftSetup.aspx</DependentUpon>
