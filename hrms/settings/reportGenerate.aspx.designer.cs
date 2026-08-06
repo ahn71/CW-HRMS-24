@@ -29,7 +29,7 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlLetterType;
-        
+
         /// <summary>
         /// ddlDepartment control.
         /// </summary>
@@ -67,15 +67,6 @@ namespace SigmaERP.hrms.settings {
         protected global::System.Web.UI.WebControls.DropDownList ddlEmployee;
         
         /// <summary>
-        /// lblAvailableTokens control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAvailableTokens;
-        
-        /// <summary>
         /// txtTemplateName control.
         /// </summary>
         /// <remarks>
@@ -92,6 +83,11 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTemplateBody;
+
+        /// <summary>
+        /// btnPreview control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnPreview;
         
         /// <summary>
         /// btnSaveTemplate control.
@@ -110,6 +106,21 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGeneratePdf;
+
+        /// <summary>
+        /// pnlPreview control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Panel pnlPreview;
+
+        /// <summary>
+        /// litPreviewSummary control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Literal litPreviewSummary;
+
+        /// <summary>
+        /// litPreviewPages control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Literal litPreviewPages;
         
         /// <summary>
         /// litMessage control.

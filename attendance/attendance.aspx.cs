@@ -990,7 +990,8 @@ namespace SigmaERP.attendance
                     divFindInfo.InnerText = EmployeeInfos[0];
                     string[] Date = txtFromDate.Text.Split('-');
                     ViewState["__AttDates__"] = Date[2] + "-" + Date[1] + "-" + Date[0];
-                    sqlDB.fillDataTable("select  InHour,InMin,InSec,OutHour,OutMin,OutSec,AttStatus,OutDuty,ReferenceID,Remark from v_tblAttendanceRecord  where attdate='" + ViewState["__AttDates__"].ToString() + "' AND EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "'", dt = new DataTable());
+                    sqlDB.fillDataTable("select  InHour,InMin,InSec,OutHour,OutMin,OutSec,AttStatus,OutDuty,ReferenceID,Remark from v_tblAttendanceRecord  where attdate='" + ViewState["__AttDates__"].ToString() + "' AND (EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "' or EmpProximityNo='" + txtEmpCardNo.Text.Trim() + "')", dt = new DataTable());
+                    string hhh = "select  InHour,InMin,InSec,OutHour,OutMin,OutSec,AttStatus,OutDuty,ReferenceID,Remark from v_tblAttendanceRecord  where attdate='" + ViewState["__AttDates__"].ToString() + "' AND (EmpCardNo like'%" + txtEmpCardNo.Text.Trim() + "' or EmpProximityNo='"+ txtEmpCardNo.Text.Trim() + "')";
                     if (dt.Rows.Count > 0)
                     {
                         //if (dt.Rows[0]["ReferenceID"].ToString().Equals(""))
