@@ -2,7 +2,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tiny.cloud/1/mkrkcjme2z7l59z0yf6whc3g972lqryj00iqcalldfkzpz0r/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
     <style>
         :root {
             --rb-navy: #102a43;
@@ -186,21 +185,28 @@
             display: flex;
             align-items: center;
             gap: 9px;
-            padding: 10px 7px;
-            border-bottom: 1px solid #f0f4f8;
-            cursor: grab;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+            border: 1px solid #e5edf7;
+            border-radius: 9px;
+            background: #fff;
+            margin: 6px 0;
+            padding: 9px 8px;
+            cursor: pointer;
             user-select: none;
-            transition: .16s
+            transition: background .16s, border-color .16s, transform .16s, box-shadow .16s
         }
 
             .rb-token:hover {
                 background: #f1f7ff;
-                border-radius: 7px;
-                padding-left: 10px
+                border-color: #9bc4fa;
+                box-shadow: 0 3px 9px #2563eb14;
+                transform: translateX(2px)
             }
 
             .rb-token:active {
-                cursor: grabbing
+                transform: translateX(1px) scale(.99)
             }
 
         .rb-token-icon {
@@ -225,8 +231,9 @@
 
         .rb-token-key {
             font-size: 10px;
-            color: #8091a7;
-            margin-top: 2px
+            color: #3971b8;
+            margin-top: 2px;
+            font-family: Consolas,'Courier New',monospace
         }
 
         .rb-editor-card {
@@ -288,6 +295,7 @@
             background: #f5f8fc
         }
 
+
         .rb-drop-hint {
             padding: 9px 13px;
             background: #eaf3ff;
@@ -346,15 +354,22 @@
             padding: 0 2px
         }
 
-        .rb-preview-modal { margin: 18px 0; border: 1px solid var(--rb-line); border-radius: 16px; overflow: hidden; background: #f1f5f9 }
+        .rb-preview-modal { position:fixed; inset:0; z-index:10050; display:flex; flex-direction:column; background:#f1f5f9; overflow:hidden }
         .rb-preview-modal-head { display:flex; align-items:center; gap:12px; padding:14px 18px; background:#fff; border-bottom:1px solid var(--rb-line) }
         .rb-preview-modal-head strong { font-size:14px }
         .rb-preview-modal-head span { color:var(--rb-muted); font-size:12px; margin-right:auto }
         .rb-preview-close { color:#39526f; text-decoration:none; font-weight:700; font-size:12px }
-        .rb-preview-pages { max-height:75vh; overflow:auto; padding:24px; }
-        .rb-a4-page { width:210mm; min-height:297mm; box-sizing:border-box; margin:0 auto 22px; padding:20mm; background:#fff; box-shadow:0 4px 18px #102a4330; color:#172b4d; page-break-after:always; overflow:hidden }
+        .rb-preview-pages { flex:1; overflow:auto; padding:24px; }
+        .rb-a4-page { width:210mm; min-height:297mm; box-sizing:border-box; margin:0 auto 22px; padding:12mm 15mm; background:#fff; box-shadow:0 4px 18px #102a4330; color:#172b4d; page-break-after:always; line-height:1.35 }
+        .rb-a4-page p { margin:0 0 7px; line-height:1.35 }
+        .rb-a4-page h1, .rb-a4-page h2, .rb-a4-page h3 { margin:0 0 10px; line-height:1.2 }
+        .rb-a4-page table {  margin: -7px 0 6px 0; border-collapse:collapse; page-break-inside:auto }
+        .rb-a4-page tr { page-break-after:auto }
+        .rb-a4-page td, .rb-a4-page th { vertical-align:top }
+        /* Preserve RichEdit image size and side alignment; only stop overflow. */
+        .rb-a4-page img { max-width:100% !important; max-height:none !important; height:auto; object-fit:contain }
         .rb-a4-page:last-child { page-break-after:auto }
-        @media print { body * { visibility:hidden } .rb-preview-modal, .rb-preview-modal * { visibility:visible } .rb-preview-modal { position:absolute; inset:0; border:0 } .rb-preview-modal-head { display:none } .rb-preview-pages { max-height:none; overflow:visible; padding:0 } .rb-a4-page { box-shadow:none; margin:0; width:210mm; min-height:297mm; page-break-after:always } }
+        @media print { @page { size:A4; margin:12mm 15mm } body * { visibility:hidden } .rb-preview-modal, .rb-preview-modal * { visibility:visible } .rb-preview-modal { position:absolute; inset:0; border:0 } .rb-preview-modal-head { display:none } .rb-preview-pages { max-height:none; overflow:visible; padding:0 } .rb-a4-page { box-shadow:none; margin:0; width:auto; min-height:0; padding:0; page-break-after:always }  }
 
         .rb-empty {
             padding: 18px 8px;
@@ -439,11 +454,11 @@
                         <asp:ListItem Text="Custom Report" Value="Custom" />
                     </asp:DropDownList></div>
                 <div class="rb-field">
-                    <label>Department</label><asp:DropDownList ID="ddlDepartment" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlDepartment_SelectedIndexChanged" /></div>
+                    <label>Department</label><asp:DropDownList ID="ddlDepartment" runat="server" /></div>
                 <div class="rb-field">
-                    <label>Designation</label><asp:DropDownList ID="ddlDesignation" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged" /></div>
+                    <label>Designation</label><asp:DropDownList ID="ddlDesignation" runat="server" /></div>
                 <div class="rb-field">
-                    <label>Unit</label><asp:DropDownList ID="ddlUnit" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged" /></div>
+                    <label>Unit</label><asp:DropDownList ID="ddlUnit" runat="server" /></div>
                 <div class="rb-field">
                     <label>Specific Employee</label><asp:DropDownList ID="ddlEmployee" runat="server" /></div>
             </div>
@@ -461,16 +476,22 @@
                         <asp:TextBox ID="txtTemplateName" runat="server" CssClass="rb-template-name" placeholder="Template Name" /></div>
                     <div class="rb-insert-tools">
                         <button type="button" class="rb-lite-btn" id="addTitle">Add Title</button>
-                        <button type="button" class="rb-lite-btn" id="addLogo">Add Logo</button><input type="file" id="logoFile" accept="image/*" hidden /></div>
+                        <button type="button" class="rb-lite-btn" id="addLogo">Insert Logo</button></div>
                 </div>
                 <div class="rb-canvas-wrap">
-                    <asp:TextBox ID="txtTemplateBody" runat="server" TextMode="MultiLine" Rows="18" Width="100%" ValidateRequestMode="Disabled" /></div>
+                    <dx:ASPxRichEdit ID="richReportEditor" runat="server" ClientInstanceName="reportRichEdit" Width="100%" Height="720px" RibbonMode="Ribbon" WorkDirectory="~/App_Data/RichEditWork">
+                        <Settings>
+                            <Behavior CreateNew="Hidden" Open="Hidden" SaveAs="Hidden" RaiseClientEventsOnModificationsViaAPI="false" />
+                            <DocumentCapabilities CharacterFormatting="Enabled" ParagraphFormatting="Enabled" Paragraphs="Enabled" Tables="Enabled" InlinePictures="Enabled" Hyperlinks="Enabled" Undo="Enabled" />
+                        </Settings>
+                    </dx:ASPxRichEdit>
+                    <asp:TextBox ID="txtTemplateBody" runat="server" TextMode="MultiLine" Rows="18" Width="100%" ValidateRequestMode="Disabled" Style="display:none" /></div>
                 <div class="rb-actions"><span class="rb-action-note">Save your changes before downloading the PDF.</span>
                     <asp:Button ID="btnPreview" runat="server" Text="Preview" OnClick="btnPreview_Click" CssClass="rb-button rb-preview" OnClientClick="return syncEditor();" /><asp:Button ID="btnSaveTemplate" runat="server" Text="Submit / Save" OnClick="btnSaveTemplate_Click" CssClass="rb-button rb-save" OnClientClick="return syncEditor();" /><asp:Button ID="btnGeneratePdf" runat="server" Text="Download PDF" OnClick="btnGeneratePdf_Click" CssClass="rb-button rb-download" OnClientClick="return syncEditor();" /></div>
             </section>
         </div>
         <asp:Panel ID="pnlPreview" runat="server" CssClass="rb-preview-modal" Visible="false">
-            <div class="rb-preview-modal-head"><strong>Print Preview</strong><span><asp:Literal ID="litPreviewSummary" runat="server" /></span><a class="rb-preview-close" href="reportGenerate.aspx">Close preview</a><button type="button" class="rb-lite-btn" onclick="window.print()">Print</button></div>
+            <div class="rb-preview-modal-head"><strong>Print Preview</strong><span><asp:Literal ID="litPreviewSummary" runat="server" /></span><button type="button" class="rb-preview-close" id="closePreview">Close preview</button><button type="button" class="rb-lite-btn" onclick="window.print()">Print</button></div>
             <div class="rb-preview-pages"><asp:Literal ID="litPreviewPages" runat="server" /></div>
         </asp:Panel>
         <div class="rb-message">
@@ -478,17 +499,22 @@
     </main>
     <script>
         (function () {
-            var editor, list = document.getElementById('tokenList'), search = document.getElementById('fieldSearch');
+            var list = document.getElementById('tokenList'), search = document.getElementById('fieldSearch');
             var fields = JSON.parse(list.getAttribute('data-fields') || '[]');
             function label(v) { return v.replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); }); }
-            function addToken(field) { var el = document.createElement('div'); el.className = 'rb-token'; el.draggable = true; el.dataset.token = field; el.innerHTML = '<span class="rb-token-icon">{ }</span><span><div class="rb-token-name">' + label(field) + '</div><div class="rb-token-key">{{' + field + '}}</div></span>'; el.addEventListener('dragstart', function (e) { e.dataTransfer.setData('text/plain', field); e.dataTransfer.effectAllowed = 'copy'; }); el.addEventListener('click', function () { insertToken(field); }); list.appendChild(el); }
-            fields.forEach(addToken); if (!fields.length) list.innerHTML = '<div class="rb-empty">No fields found.</div>';
-            search.addEventListener('input', function () { var q = this.value.toLowerCase();[].forEach.call(list.querySelectorAll('.rb-token'), function (x) { x.style.display = x.textContent.toLowerCase().indexOf(q) > -1 ? 'flex' : 'none'; }); });
-            function insertToken(field) { if (!editor) return; editor.focus(); editor.insertContent('<span style="background:#e8f1ff;color:#155ec4;border-radius:4px;padding:2px 5px;font-weight:600;white-space:nowrap">{{' + field + '}}</span>&nbsp;'); editor.save(); }
-            function init() { tinymce.init({ selector:'#<%= txtTemplateBody.ClientID %>', height: 530, menubar: false, plugins: 'lists link image table code searchreplace visualblocks wordcount', toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image table | removeformat code', content_style: "body{font-family:Inter,'Noto Sans Bengali',sans-serif;font-size:14px;line-height:1.8;padding:26px;min-height:420px;color:#172b4d} img{max-width:180px;height:auto}", setup: function (ed) { editor = ed; ed.on('init', function () { var body = ed.getBody(); body.addEventListener('dragover', function (e) { e.preventDefault(); }); body.addEventListener('drop', function (e) { e.preventDefault(); var f = e.dataTransfer.getData('text/plain'); if (f) insertToken(f); }); }); ed.on('change input undo redo', function () { ed.save(); }); } }); }
-            window.syncEditor = function () { if (editor) editor.save(); return true; }; init();
-            document.getElementById('addTitle').onclick = function () { if (editor) { editor.focus(); editor.insertContent('<h1 style="text-align:center;color:#102a43">REPORT TITLE</h1><hr />'); editor.save(); } };
-            document.getElementById('addLogo').onclick = function () { document.getElementById('logoFile').click(); }; document.getElementById('logoFile').onchange = function () { var file = this.files[0]; if (!file || !editor) return; var r = new FileReader(); r.onload = function (e) { editor.focus(); editor.insertContent('<p style="text-align:center"><img src="' + e.target.result + '" alt="Company logo" /></p>'); editor.save(); }; r.readAsDataURL(file); };
+            function insertToken(field) { reportRichEdit.commands.insertText.execute('{{' + field + '}}'); }
+            fields.forEach(function (field) {
+                var item = document.createElement('button'); item.type = 'button'; item.className = 'rb-token';
+                item.innerHTML = '<span class="rb-token-icon">{ }</span><span><div class="rb-token-name">' + label(field) + '</div><div class="rb-token-key">{{' + field + '}}</div></span>';
+                item.onclick = function () { insertToken(field); }; list.appendChild(item);
+            });
+            if (!fields.length) list.innerHTML = '<div class="rb-empty">No fields found.</div>';
+            search.addEventListener('input', function () { var q = this.value.toLowerCase(); [].forEach.call(list.querySelectorAll('.rb-token'), function (x) { x.style.display = x.textContent.toLowerCase().indexOf(q) > -1 ? 'flex' : 'none'; }); });
+            window.syncEditor = function () { return true; };
+            document.getElementById('addTitle').onclick = function () { reportRichEdit.commands.insertText.execute('REPORT TITLE'); };
+            document.getElementById('addLogo').onclick = function () { reportRichEdit.commands.openInsertPictureDialog.execute(); };
+            var closePreview = document.getElementById('closePreview');
+            if (closePreview) closePreview.onclick = function () { this.closest('.rb-preview-modal').style.display = 'none'; };
         })();
     </script>
 </asp:Content>

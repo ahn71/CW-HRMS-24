@@ -63,7 +63,8 @@ namespace SigmaERP.payroll.salary
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
-                ViewState["__CShortName__"] = "MRC";
+                //ViewState["__CShortName__"] = "MRC";
+                ViewState["__CShortName__"] = "PKG"; 
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 classes.commonTask.LoadShift(ddlShift, ViewState["__CompanyId__"].ToString());
                 if (permissions.Contains(474))
@@ -382,15 +383,21 @@ namespace SigmaERP.payroll.salary
                         Session["__Language__"] = "English";
                         Session["__SalarySheet__"] = dt;
 
-                        //ScriptManager.RegisterStartupScript(this, GetType(),"OpenSalarySheet","window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx', '_blank');", true);
+                        string jj = ViewState["__CShortName__"].ToString();
 
-                        //ScriptManager.RegisterStartupScript(
-                        //    this,
-                        //    GetType(),
-                        //    "OpenSalarySheet",
-                        //    $"window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx?EmployeeType={rblEmployeeType.SelectedValue}', '_blank');",
-                        //    true
-                        //);
+                        //ScriptManager.RegisterStartupScript(this, GetType(),"OpenSalarySheet","window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx', '_blank');", true);
+                        if (ViewState["__CShortName__"].ToString()== "PKG")
+                        {
+                            ScriptManager.RegisterStartupScript(
+                                this,
+                                GetType(),
+                                "OpenSalarySheet",
+                                $"window.open('/hrms/payroll/Salary_Sheet_ExcelV2.aspx?EmployeeType={rblEmployeeType.SelectedValue}', '_blank');",
+                                true
+                            );
+                            return;
+                        }
+
                         ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=SalarySheetNew-" + ddlSelectMonth.SelectedItem.Text.Replace('-', '/') + "-True-" + rblEmployeeType.SelectedValue + "-" + rblPaymentType.SelectedValue + "-" + rblSheet.SelectedValue + "');", true);  //Open New Tab for Sever side code
 
                     }

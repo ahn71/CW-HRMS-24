@@ -30,11 +30,14 @@ namespace SigmaERP.payroll.salary
             if (!IsPostBack)
             {
                 int[] pagePermission = { 334, 335, 336 };
+                int[] rpagePermission = { 483, 484, 485 };
+
                 ViewState["__ReadAction__"] = "0";
                 ViewState["__WriteAction__"] = "0";
                 ViewState["__DeletAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
-                if (!userPagePermition.Any())
+                int[] ruserPagePermition = AccessControl.hasPermission(rpagePermission);
+                if (!userPagePermition.Any() || !ruserPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
 
                     txtGenerateMonth.Visible = true;

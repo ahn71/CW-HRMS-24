@@ -29,7 +29,7 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlLetterType;
-
+        
         /// <summary>
         /// ddlDepartment control.
         /// </summary>
@@ -74,6 +74,15 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTemplateName;
+
+        /// <summary>
+        /// richReportEditor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxRichEdit.ASPxRichEdit richReportEditor;
         
         /// <summary>
         /// txtTemplateBody control.
@@ -83,10 +92,14 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtTemplateBody;
-
+        
         /// <summary>
         /// btnPreview control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnPreview;
         
         /// <summary>
@@ -106,20 +119,32 @@ namespace SigmaERP.hrms.settings {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnGeneratePdf;
-
+        
         /// <summary>
         /// pnlPreview control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlPreview;
-
+        
         /// <summary>
         /// litPreviewSummary control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litPreviewSummary;
-
+        
         /// <summary>
         /// litPreviewPages control.
         /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litPreviewPages;
         
         /// <summary>
