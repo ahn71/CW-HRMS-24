@@ -2844,6 +2844,29 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
         }
 
 
+        public static void LoadLetterTemplateList(DropDownList dl)
+        {
+            try
+            {
+                string query = "SELECT TemplateId, TemplateName FROM LetterTemplates WHERE IsActive = 1";
+
+                da = new SqlDataAdapter(query, sqlDB.connection);
+                da.Fill(dt = new DataTable());
+
+                dl.DataValueField = "TemplateId";
+                dl.DataTextField = "TemplateName";
+                dl.DataSource = dt;
+                dl.DataBind();
+
+                // Custom at top
+                dl.Items.Insert(0, new ListItem("Custom", "0"));
+            }
+            catch
+            {
+            }
+        }
+
+
 
     }
 }
