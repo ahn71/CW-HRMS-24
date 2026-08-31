@@ -169,7 +169,7 @@ namespace SigmaERP.hrms.settings
         // concatenation converts Bengali characters to question marks.
         private static bool SaveTemplateUnicode(string templateName, string letterType, string body, string user)
         {
-            const string sql = @"IF EXISTS (SELECT 1 FROM LetterTemplates WHERE LetterType = @LetterType)
+            const string sql = @"IF EXISTS (SELECT 1 FROM LetterTemplates WHERE LetterType = @TemplateName)
 UPDATE LetterTemplates SET TemplateName = @TemplateName, TemplateBodyHtml = @TemplateBodyHtml, CreatedBy = @CreatedBy WHERE LetterType = @LetterType
 ELSE
 INSERT INTO LetterTemplates (TemplateName, LetterType, TemplateBodyHtml, CreatedBy) VALUES (@TemplateName, @LetterType, @TemplateBodyHtml, @CreatedBy)";

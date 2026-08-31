@@ -1279,53 +1279,126 @@
                 if (Array.isArray(response)) {
                     return response;
                 }
-                if (response && Array.isArray(response.data)) {
-                    return response.data;
+
+                // The employee endpoint is used by more than one API version.
+                // Accept the common response wrappers instead of treating a valid result as empty.
+                const containers = [
+                    response && response.data,
+                    response && response.result,
+                    response && response.items,
+                    response && response.data && response.data.items,
+                    response && response.data && response.data.result,
+                    response && response.result && response.result.items
+                ];
+
+                for (let index = 0; index < containers.length; index += 1) {
+                    if (Array.isArray(containers[index])) {
+                        return containers[index];
+                    }
                 }
-                if (response && response.data && Array.isArray(response.data.items)) {
-                    return response.data.items;
-                }
+
                 return [];
             }
 
             function buildImportedRosterRows(parsedRows, employees) {
+                const employeeMap = {};
+                (employees || []).forEach(function (employee) {
+                    const employeeRecord = unwrapEmployeeRecord(employee);
+                    getEmployeeCardNumbers(employeeRecord).forEach(function (cardNumber) {
+                        employeeMap[normalizeEmployeeCardNumber(cardNumber)] = employeeRecord;
+                    });
+                });
+
                 return parsedRows.map(function (row, index) {
-                    const employee = employees.find(function (item) {
-                        return getEmployeeCardNumber(item) === row.employeeId;
-                    }) || {};
+                    const employee = employeeMap[normalizeEmployeeCardNumber(row.employeeId)] || {};
 
                     return {
                         serial: index + 1,
-                        empId: employee.empId || employee.id || employee.employeeId || '',
+                        empId: getEmployeeValue(employee, ['empId', 'id', 'employeeId']),
                         empCardNo: getEmployeeCardNumber(employee) || row.employeeId,
-                        empCard: employee.empCard || employee.empCardNo || '',
-                        empName: employee.empName || employee.name || row.excelName,
-                        dptName: employee.dptName || employee.departmentName || '',
-                        dsgName: employee.dsgName || employee.designationName || '',
-                        sftName: employee.sftName || employee.shift || '',
-                        dptId: employee.dptId || '',
-                        dsgId: employee.dsgId || '',
-                        gId: employee.gId || '',
-                        perSftid: employee.perSftid || employee.perSftId || '',
+                        empCard: getEmployeeValue(employee, ['empCard', 'empCardNo']),
+                        empName: getEmployeeValue(employee, ['empName', 'name']) || row.excelName,
+                        dptName: getEmployeeValue(employee, ['dptName', 'departmentName', 'department', 'dpt']),
+                        dsgName: getEmployeeValue(employee, ['dsgName', 'designationName', 'designation', 'dsg']),
+                        sftName: getEmployeeValue(employee, ['sftName', 'shift']),
+                        dptId: getEmployeeValue(employee, ['dptId']),
+                        dsgId: getEmployeeValue(employee, ['dsgId']),
+                        gId: getEmployeeValue(employee, ['gId']),
+                        perSftid: getEmployeeValue(employee, ['perSftid', 'perSftId']),
+                        isEmployeeMatched: Boolean(getEmployeeValue(employee, ['empId', 'id', 'employeeId'])),
                         shiftId: resolveShiftId(row.shift),
                         shiftText: row.shift,
                         rosterDate: row.rosterDate
                     };
-                }).filter(function (row) {
-                    return row.empId;
                 });
             }
 
+            function unwrapEmployeeRecord(employee) {
+                if (!employee || typeof employee !== 'object') {
+                    return employee || {};
+                }
+
+                const nestedKeys = ['employee', 'employeeInfo', 'employeeData', 'item'];
+                for (let index = 0; index < nestedKeys.length; index += 1) {
+                    const nestedEmployee = getEmployeeValue(employee, [nestedKeys[index]]);
+                    if (nestedEmployee && typeof nestedEmployee === 'object' && !Array.isArray(nestedEmployee)) {
+                        return nestedEmployee;
+                    }
+                }
+
+                return employee;
+            }
+
+            function getEmployeeValue(employee, names) {
+                if (!employee) {
+                    return '';
+                }
+
+                const keys = Object.keys(employee);
+                for (let index = 0; index < names.length; index += 1) {
+                    const key = keys.find(function (item) {
+                        return normalizeEmployeeFieldName(item) === normalizeEmployeeFieldName(names[index]);
+                    });
+                    if (key && employee[key] !== null && employee[key] !== undefined) {
+                        return employee[key];
+                    }
+                }
+
+                return '';
+            }
+
+            function normalizeEmployeeFieldName(value) {
+                return String(value || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
+            }
+
             function getEmployeeCardNumber(employee) {
-                return String(
-                    employee.empCard ||
-                    employee.empCardNo ||
-                    employee.cardNo ||
-                    employee.cardNumber ||
-                    employee.employeeCard ||
-                    employee.employeeId ||
-                    ''
-                ).trim();
+                return getEmployeeCardNumbers(employee)[0] || '';
+            }
+
+            function getEmployeeCardNumbers(employee) {
+                const cardNumberFields = [
+                    'empCard',
+                    'empCardNo',
+                    'cardNo',
+                    'cardNumber',
+                    'employeeCard',
+                    'empCode',
+                    'employeeCode',
+                    'empProximityNo',
+                    'badgeNo',
+                    'badgeNumber',
+                    'employeeId'
+                ];
+
+                return cardNumberFields.map(function (field) {
+                    return String(getEmployeeValue(employee, [field]) || '').trim();
+                }).filter(Boolean);
+            }
+
+            function normalizeEmployeeCardNumber(value) {
+                const cardNumber = String(value || '').trim();
+                // Excel often converts numeric card numbers (for example 000123) to 123.
+                return /^\d+$/.test(cardNumber) ? String(Number(cardNumber)) : cardNumber.toLowerCase();
             }
 
             function resolveShiftId(value) {
@@ -1489,6 +1562,7 @@
             $(document).on('change', '.import-shift', function () {
                 const index = Number($(this).data('index'));
                 importedRosterRows[index].shiftId = $(this).val();
+                importedRosterRows[index].shiftText = $(this).find('option:selected').text().trim();
                 ValidateRosterImportDuplicates(false);
             });
 
@@ -1663,6 +1737,19 @@
                     return;
                 }
 
+                const unmatchedEmployees = importedRosterRows.filter(function (row) {
+                    return !row.empId;
+                });
+                if (unmatchedEmployees.length) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Employee Not Matched',
+                        text: `${unmatchedEmployees.length} imported employee could not be matched with an Employee ID. Please correct those EmployeeId values before submitting.`,
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
                 if (!ValidateRosterImportDuplicates(true)) {
                     return;
                 }
@@ -1671,9 +1758,16 @@
                 $('#rosterSubmitResult').empty();
 
                 const payload = importedRosterRows.map(function (row) {
+                    const matchedShift = rosterShiftList.find(function (shift) {
+                        return String(shift.id) === String(row.shiftId);
+                    });
+                    // Keep an unmatched Excel shift as text. Converting it with Number() previously sent 0.
+                    const submittedShift = matchedShift ? Number(matchedShift.id) : String(row.shiftText || row.shiftId || '').trim();
+
                     return {
                         empId: String(row.empId || ''),
-                        sftId: Number(row.shiftId) || 0,
+                        sftId: submittedShift,
+                        sftName: String(row.shiftText || '').trim(),
                         rosterDate: toRosterApiDate(row.rosterDate),
                         companyId: String(CompanyID || ''),
                         dptId: String(row.dptId || ''),
