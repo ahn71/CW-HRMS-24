@@ -34,7 +34,7 @@ namespace SigmaERP.classes
 
         public static string UserDashboardRoutName = "UserDashboard";
         public static string UserDashboardUrl = rootURL + "user-dashboard";
-        private static string UserDashboardPhyLocation = "~/hrms/dashbordUser.aspx";
+        private static string UserDashboardPhyLocation = "~/hrms/userdashboard.aspx";
 
         public static string appSettingsName = "appSettings";
         public static string appSettingsUrl = rootURL + "app-settings";

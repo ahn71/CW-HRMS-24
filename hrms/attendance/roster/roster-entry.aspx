@@ -356,6 +356,7 @@
                                         <th>Department</th>
                                         <th>Designation</th>
                                         <th>Shift</th>
+                                        <th>Weekend Status</th>
                                         <th>Roster Date</th>
                                         <th>Status</th>
                                     </tr>
@@ -394,6 +395,7 @@
             var token = '<%= Session["__UserToken__"] %>';
             var rosterShiftList = [];
             var importedRosterRows = [];
+            var rosterProximityMismatchRows = [];
             var rosterFailedRows = [];
 
             $(document).on('change', '#rosterExcelFile', function () {
@@ -1075,14 +1077,14 @@
 
             function DownloadRosterDemo() {
                 const demoData = [
-                    { EmployeeId: '993050', Name: 'Demo Employee 1', Shift: '1', RosterDate: formatDate(new Date()) },
-                    { EmployeeId: '993795', Name: 'Demo Employee 2', Shift: '1', RosterDate: formatDate(new Date()) },
-                    { EmployeeId: '993918', Name: 'Demo Employee 3', Shift: '1', RosterDate: formatDate(new Date()) }
+                    { Proximity: '993050', Name: 'Demo Employee 1', Shift: '1', WeekendStatus: 'Off', RosterDate: formatDate(new Date()) },
+                    { Proximity: '993795', Name: 'Demo Employee 2', Shift: '1', WeekendStatus: 'Off', RosterDate: formatDate(new Date()) },
+                    { Proximity: '993918', Name: 'Demo Employee 3', Shift: '1', WeekendStatus: 'Off', RosterDate: formatDate(new Date()) }
                 ];
 
                 if (typeof XLSX === 'undefined') {
-                    const csv = 'EmployeeId,Name,Shift,RosterDate\r\n' +
-                        demoData.map(row => `${row.EmployeeId},${row.Name},${row.Shift},${row.RosterDate}`).join('\r\n');
+                    const csv = 'Proximity,Name,Shift,WeekendStatus,RosterDate\r\n' +
+                        demoData.map(row => `${row.Proximity},${row.Name},${row.Shift},${row.WeekendStatus},${row.RosterDate}`).join('\r\n');
                     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                     downloadBlob(blob, 'Roster_Import_Demo.csv');
                     return;
@@ -1143,7 +1145,7 @@
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'No Valid Data',
-                                text: 'Excel file must contain EmployeeId, Name, Shift and RosterDate columns.',
+                                text: 'Excel file must contain Proximity (or EmployeeId), Name, Shift and RosterDate columns.',
                                 confirmButtonText: 'OK'
                             });
                             return;
@@ -1168,19 +1170,22 @@
                 return rows.map(function (row) {
                     const rosterDateValue = getCellValue(row, 'RosterDate') || getCellValue(row, 'RosterDate(yyy-MM-dd)');
                     return {
-                        employeeId: getCellValue(row, 'EmployeeId'),
+                        // EmployeeId is retained as a fallback for existing import files.
+                        proximityNo: getCellValue(row, 'Proximity') || getCellValue(row, 'ProximityNo') || getCellValue(row, 'EmpProximityNo') || getCellValue(row, 'EmployeeId'),
                         excelName: getCellValue(row, 'Name'),
                         shift: getCellValue(row, 'Shift'),
+                        weekendStatus: getCellValue(row, 'WeekendStatus'),
                         rosterDate: normalizeExcelDate(rosterDateValue)
                     };
                 }).filter(function (row) {
-                    return row.employeeId && row.shift && row.rosterDate;
+                    return row.proximityNo && row.shift && row.rosterDate;
                 });
             }
 
             function getCellValue(row, columnName) {
+                const normalizedColumnName = normalizeExcelColumnName(columnName);
                 const key = Object.keys(row).find(function (item) {
-                    return item.replace(/\s/g, '').toLowerCase() === columnName.toLowerCase();
+                    return normalizeExcelColumnName(item) === normalizedColumnName;
                 });
                 if (!key) {
                     return '';
@@ -1192,6 +1197,11 @@
                 }
 
                 return String(value).trim();
+            }
+
+            function normalizeExcelColumnName(value) {
+                // Ignore spaces, invisible BOM characters, underscores, and punctuation in Excel headers.
+                return String(value || '').replace(/[^a-z0-9]/gi, '').toLowerCase();
             }
 
             function normalizeExcelDate(value) {
@@ -1231,7 +1241,7 @@
 
             function LoadImportedEmployees(parsedRows) {
                 const cardNumbers = [...new Set(parsedRows.map(function (row) {
-                    return row.employeeId;
+                    return row.proximityNo;
                 }))];
 
                 $('.loaderDaily').show();
@@ -1250,11 +1260,22 @@
                     success: function (response) {
                         const employees = normalizeApiData(response);
                         console.log("Imported employees",employees)
-                        importedRosterRows = buildImportedRosterRows(parsedRows, employees);
+                        const allImportedRows = buildImportedRosterRows(parsedRows, employees);
+                        rosterProximityMismatchRows = allImportedRows.filter(function (row) {
+                            return !row.isProximityMatched || !row.isEmployeeMatched;
+                        }).map(function (row) {
+                            return Object.assign({}, row, {
+                                mismatchReason: row.isProximityMatched ? 'Employee ID is missing in API response' : 'Proximity not found in API response'
+                            });
+                        });
+                        // Only API-proximity matched employees are shown and can be submitted.
+                        importedRosterRows = allImportedRows.filter(function (row) {
+                            return row.isProximityMatched && row.isEmployeeMatched;
+                        });
                         console.log("Imported data",importedRosterRows)
                         rosterFailedRows = [];
                         BindRosterImportTable(importedRosterRows);
-                        $('#rosterImportSummary').text(`${importedRosterRows.length} row(s) ready. You can edit Shift and Roster Date before submit.`);
+                        $('#rosterImportSummary').text(`${importedRosterRows.length} proximity-matched row(s) ready${rosterProximityMismatchRows.length ? `; ${rosterProximityMismatchRows.length} mismatch(es) will be included in the log after submit` : ''}. You can edit Shift and Roster Date before submit.`);
                         $('#rosterSubmitResult').empty();
                          OpenRosterImportModal();
                          
@@ -1304,18 +1325,25 @@
                 const employeeMap = {};
                 (employees || []).forEach(function (employee) {
                     const employeeRecord = unwrapEmployeeRecord(employee);
-                    getEmployeeCardNumbers(employeeRecord).forEach(function (cardNumber) {
-                        employeeMap[normalizeEmployeeCardNumber(cardNumber)] = employeeRecord;
-                    });
+                    const proximityNo = getEmployeeProximityNumber(employeeRecord);
+                    if (proximityNo) {
+                        employeeMap[normalizeEmployeeCardNumber(proximityNo)] = employeeRecord;
+                    }
                 });
 
                 return parsedRows.map(function (row, index) {
-                    const employee = employeeMap[normalizeEmployeeCardNumber(row.employeeId)] || {};
+                    const employee = employeeMap[normalizeEmployeeCardNumber(row.proximityNo)] || {};
+                    const apiProximityNo = getEmployeeProximityNumber(employee);
 
                     return {
                         serial: index + 1,
+                        sourceIndex: index,
+                        importedEmployeeId: row.proximityNo,
+                        importedProximityNo: row.proximityNo,
+                        apiProximityNo: apiProximityNo,
+                        importedEmployeeName: row.excelName,
                         empId: getEmployeeValue(employee, ['empId', 'id', 'employeeId']),
-                        empCardNo: getEmployeeCardNumber(employee) || row.employeeId,
+                        empCardNo: getEmployeeCardNumber(employee) || row.proximityNo,
                         empCard: getEmployeeValue(employee, ['empCard', 'empCardNo']),
                         empName: getEmployeeValue(employee, ['empName', 'name']) || row.excelName,
                         dptName: getEmployeeValue(employee, ['dptName', 'departmentName', 'department', 'dpt']),
@@ -1326,8 +1354,10 @@
                         gId: getEmployeeValue(employee, ['gId']),
                         perSftid: getEmployeeValue(employee, ['perSftid', 'perSftId']),
                         isEmployeeMatched: Boolean(getEmployeeValue(employee, ['empId', 'id', 'employeeId'])),
+                        isProximityMatched: Boolean(apiProximityNo) && normalizeEmployeeCardNumber(apiProximityNo) === normalizeEmployeeCardNumber(row.proximityNo),
                         shiftId: resolveShiftId(row.shift),
                         shiftText: row.shift,
+                        weekendStatus: row.weekendStatus,
                         rosterDate: row.rosterDate
                     };
                 });
@@ -1375,6 +1405,10 @@
                 return getEmployeeCardNumbers(employee)[0] || '';
             }
 
+            function getEmployeeProximityNumber(employee) {
+                return String(getEmployeeValue(employee, ['empProximityNo', 'proximityNo', 'proximity']) || '').trim();
+            }
+
             function getEmployeeCardNumbers(employee) {
                 const cardNumberFields = [
                     'empCard',
@@ -1419,9 +1453,11 @@
                 $tbody.empty();
 
                 rows.forEach(function (row, index) {
+                    row.tableIndex = index;
                     const empCard = row.empCard || row.empCardNo || '';
                     const shiftId = row.shiftId || '';
                     const shiftText = row.shiftText || row.sftName || '';
+                    const weekendStatus = row.weekendStatus || '';
                     const rosterDate = row.rosterDate || '';
 
                     $tbody.append(`
@@ -1442,6 +1478,9 @@
                                 </select>
                             </td>
                             <td>
+                                <input type="text" class="form-control import-weekend-status" data-index="${index}" value="${escapeHtml(weekendStatus)}">
+                            </td>
+                            <td>
                                 <input type="date" class="form-control import-roster-date" data-index="${index}" value="${rosterDate}">
                             </td>
                             <td class="text-center roster-duplicate-status"></td>
@@ -1450,7 +1489,7 @@
                 });
 
                 if (rows.length === 0) {
-                    $tbody.append('<tr><td colspan="8" class="text-center text-muted">No matching employee found from imported EmployeeId values.</td></tr>');
+                    $tbody.append('<tr><td colspan="9" class="text-center text-muted">No matching employee found from imported EmployeeId values.</td></tr>');
                 }
 
                 ValidateRosterImportDuplicates(false);
@@ -1597,6 +1636,7 @@
                 // 3. Imported data clear
                 importedRosterRows = [];
                 rosterFailedRows = [];
+                rosterProximityMismatchRows = [];
             }
 
             function postSingleRosterCreate(payload) {
@@ -1618,12 +1658,13 @@
                         },
                         error: function (xhr, status, error) {
                             if (xhr.responseJSON) {
-                                resolve(xhr.responseJSON);
+                                reject({ response: xhr.responseJSON, status: xhr.status, message: getApiResponseMessage(xhr.responseJSON, error) });
                                 return;
                             }
                             if (xhr.responseText) {
                                 try {
-                                    resolve(JSON.parse(xhr.responseText));
+                                    const response = JSON.parse(xhr.responseText);
+                                    reject({ response: response, status: xhr.status, message: getApiResponseMessage(response, error) });
                                     return;
                                 } catch (parseError) {
                                     console.error('Roster response parse error:', parseError);
@@ -1643,10 +1684,10 @@
                 return response && (response.msg || response.message || response.Message) ? (response.msg || response.message || response.Message) : fallbackMessage;
             }
 
-        function renderRosterSubmitResult(response) {
+        function renderRosterSubmitResult(response, submittedRowCount) {
             const data = getRosterSubmitData(response);
 
-            const totalRows = Number(data.totalRows || importedRosterRows.length || 0);
+            const totalRows = Number(data.totalRows || submittedRowCount || importedRosterRows.length || 0);
             const successCount = Number(data.successCount || 0);
             const failedCount = Number(data.failedCount || 0);
             const message = getApiResponseMessage(response, '');
@@ -1674,9 +1715,9 @@
             $('#rosterSubmitResult').html(topMessage + summary);
         }
 
-            function mapRosterFailedRows(errors) {
+            function mapRosterFailedRows(errors, submittedRows) {
                 return (errors || []).map(function (error) {
-                    const sourceRow = importedRosterRows[Number(error.rowIndex)] || {};
+                    const sourceRow = (submittedRows || importedRosterRows)[Number(error.rowIndex)] || {};
                     return {
                         RowIndex: error.rowIndex,
                         EmployeeId: error.empId || sourceRow.empId || '',
@@ -1718,6 +1759,40 @@
                 XLSX.writeFile(workbook, 'Roster_Failed_Rows.xlsx');
             }
 
+            function downloadRosterMismatchRows(rows) {
+                const mismatchRows = (rows || []).map(function (row) {
+                    return {
+                        Proximity: row.importedProximityNo || row.importedEmployeeId || row.empCardNo || '',
+                        ApiProximity: row.apiProximityNo || '',
+                        Name: row.importedEmployeeName || row.empName || '',
+                        Shift: row.shiftText || row.shiftId || '',
+                        WeekendStatus: row.weekendStatus || '',
+                        RosterDate: row.rosterDate || '',
+                        MismatchReason: row.mismatchReason || 'Proximity not found in API response'
+                    };
+                });
+
+                if (!mismatchRows.length) {
+                    return;
+                }
+
+                if (typeof XLSX === 'undefined') {
+                    const headers = Object.keys(mismatchRows[0]);
+                    const csvRows = mismatchRows.map(function (row) {
+                        return headers.map(function (header) {
+                            return `"${String(row[header] || '').replace(/"/g, '""')}"`;
+                        }).join(',');
+                    });
+                    downloadBlob(new Blob([headers.join(',') + '\r\n' + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' }), 'Roster_Mismatch.csv');
+                    return;
+                }
+
+                const worksheet = XLSX.utils.json_to_sheet(mismatchRows);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Roster Mismatch');
+                XLSX.writeFile(workbook, 'Roster_Mismatch.xlsx');
+            }
+
             function toRosterApiDate(dateText) {
                 if (!dateText) {
                     return null;
@@ -1728,54 +1803,92 @@
 
             function SubmitImportedRoster() {
                 if (importedRosterRows.length === 0) {
+                    if (rosterProximityMismatchRows.length) {
+                        downloadRosterMismatchRows(rosterProximityMismatchRows);
+                    }
                     Swal.fire({
                         icon: 'warning',
                         title: 'No Data',
-                        text: 'There is no imported roster data to submit.',
+                        text: rosterProximityMismatchRows.length ? 'No proximity-matched roster data was found. Roster_Mismatch.xlsx has been downloaded.' : 'There is no imported roster data to submit.',
                         confirmButtonText: 'OK'
                     });
                     return;
                 }
 
-                const unmatchedEmployees = importedRosterRows.filter(function (row) {
-                    return !row.empId;
+                const rowsWithoutShift = importedRosterRows.filter(function (row) {
+                    const shiftId = String(row.shiftId || '').trim();
+                    return !shiftId || shiftId.toLowerCase() === 'null' || isNaN(Number(shiftId));
+                }).map(function (row) {
+                    return Object.assign({}, row, { mismatchReason: 'Shift ID is missing or invalid' });
                 });
-                if (unmatchedEmployees.length) {
+                const matchedEmployees = importedRosterRows.filter(function (row) {
+                    const shiftId = String(row.shiftId || '').trim();
+                    return row.empId && shiftId && shiftId.toLowerCase() !== 'null' && !isNaN(Number(shiftId));
+                });
+                const excludedRows = rosterProximityMismatchRows.concat(rowsWithoutShift);
+
+                if (!matchedEmployees.length) {
+                    // Rows with unmatched proximity or a null/invalid SftId are never sent to the API.
+                    downloadRosterMismatchRows(excludedRows);
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Employee Not Matched',
-                        text: `${unmatchedEmployees.length} imported employee could not be matched with an Employee ID. Please correct those EmployeeId values before submitting.`,
+                        title: 'No Valid Rows',
+                        text: 'No proximity-matched row with a valid Shift ID is available. Roster_Mismatch.xlsx has been downloaded.',
                         confirmButtonText: 'OK'
                     });
                     return;
                 }
 
-                if (!ValidateRosterImportDuplicates(true)) {
+                const matchedDuplicateKeys = {};
+                const hasMatchedDuplicates = matchedEmployees.some(function (row) {
+                    const key = getRosterDuplicateKey(row);
+                    if (!key) {
+                        return false;
+                    }
+                    if (matchedDuplicateKeys[key]) {
+                        return true;
+                    }
+                    matchedDuplicateKeys[key] = true;
+                    return false;
+                });
+                if (hasMatchedDuplicates) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Duplicate Roster Entry',
+                        text: 'Duplicate Employee, Shift and Roster Date entry found. Please correct duplicate matched rows before submitting.',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 }
 
                 rosterFailedRows = [];
                 $('#rosterSubmitResult').empty();
 
-                const payload = importedRosterRows.map(function (row) {
+                const payload = matchedEmployees.map(function (row) {
                     const matchedShift = rosterShiftList.find(function (shift) {
                         return String(shift.id) === String(row.shiftId);
                     });
-                    // Keep an unmatched Excel shift as text. Converting it with Number() previously sent 0.
-                    const submittedShift = matchedShift ? Number(matchedShift.id) : String(row.shiftText || row.shiftId || '').trim();
+                    const submittedShift = matchedShift ? Number(matchedShift.id) : Number(row.shiftId);
+                    const weekendStatusValue = String($(`.import-weekend-status[data-index="${row.tableIndex}"]`).val() || '').trim() || null;
 
+                    // Keep this payload aligned with the singleRosterCreate API contract.
                     return {
                         empId: String(row.empId || ''),
                         sftId: submittedShift,
-                        sftName: String(row.shiftText || '').trim(),
-                        rosterDate: toRosterApiDate(row.rosterDate),
-                        companyId: String(CompanyID || ''),
                         dptId: String(row.dptId || ''),
                         perSftId: String(row.perSftid || row.perSftId || ''),
                         gId: String(row.gId || ''),
-                        dsgId: String(row.dsgId || '')
+                        dsgId: String(row.dsgId || ''),
+                        rosterDate: toRosterApiDate(row.rosterDate),
+                        companyId: String(CompanyID || ''),
+                        // Read the value from the modal so any edit made there is submitted.
+                        weekendStatus: weekendStatusValue
                     };
                 });
+
+                if (excludedRows.length) {
+                    $('#rosterSubmitResult').html(`<span class="text-warning font-weight-bold">${excludedRows.length} mismatched/invalid row(s) were excluded. Submitting ${matchedEmployees.length} matched row(s).</span>`);
+                }
 
                 $('#btnSubmitImportedRoster').prop('disabled', true).text('Submitting...');
                 $('.loaderDaily').show();
@@ -1786,8 +1899,8 @@
                         const data = getRosterSubmitData(response);
                         const failedCount = Number(data.failedCount || 0);
                         const responseMessage = getApiResponseMessage(response, 'Roster submit completed.');
-                        rosterFailedRows = mapRosterFailedRows(data.errors);
-                        renderRosterSubmitResult(response);
+                        rosterFailedRows = mapRosterFailedRows(data.errors, matchedEmployees);
+                        renderRosterSubmitResult(response, matchedEmployees.length);
 
                         Swal.fire({
                             icon: failedCount > 0 ? 'warning' : 'success',
@@ -1805,8 +1918,20 @@
                     })
                     .catch(function (error) {
                         console.error('Imported roster submit error:', error);
+                        const message = error && error.message ? error.message : 'Roster submit failed.';
+                        $('#rosterSubmitResult').html(`<span class="text-danger font-weight-bold">${escapeHtml(message)}</span>`);
+                        Swal.fire({
+                            icon: 'error',
+                            title: error && error.status === 400 ? 'Invalid Roster Request' : 'Roster Submit Failed',
+                            text: message,
+                            confirmButtonText: 'OK'
+                        });
                     })
                     .finally(function () {
+                        // Download one log after the submit attempt, even if the roster API reports an error.
+                        if (excludedRows.length) {
+                            downloadRosterMismatchRows(excludedRows);
+                        }
                         $('#btnSubmitImportedRoster').prop('disabled', false).text('Submit');
                         $('.loaderDaily').hide();
                         $('.loaderparent').css('opacity', '1');

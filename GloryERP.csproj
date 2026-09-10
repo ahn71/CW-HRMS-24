@@ -1298,6 +1298,7 @@
     <Content Include="hrms\attendance\roster\roster-list.aspx" />
     <Content Include="hrms\attendance\SyncUnathorizedAttendance.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
+    <Content Include="hrms\userdashboard.aspx" />
     <Content Include="hrms\Leave\LieuLeaveReport.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
     <Content Include="hrms\assets\theme_assets\js\apexmain.js" />
@@ -3881,6 +3882,13 @@
     </Compile>
     <Compile Include="hrms\dashbordUser.aspx.designer.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\userdashboard.aspx.cs">
+      <DependentUpon>userdashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\userdashboard.aspx.designer.cs">
+      <DependentUpon>userdashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\DTO\EmployeeImportErrorItem.cs" />
     <Compile Include="hrms\DTO\ShiftDTO.cs" />
