@@ -28,7 +28,8 @@ namespace SigmaERP.attendance
                 setPrivilege();
                 if (!classes.commonTask.HasBranch())
                     ddlCompany.Enabled = false;
-                ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
+                if (ViewState["__CompanyId__"] != null)
+                    ddlCompany.SelectedValue = ViewState["__CompanyId__"].ToString();
                 Session["__MinDigits__"] = "6";
                 txtDate.Text = txtToDate.Text = DateTime.Now.ToString("dd-MM-yyyy");
 

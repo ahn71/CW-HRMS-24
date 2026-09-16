@@ -94,7 +94,7 @@ namespace SigmaERP.classes
                "sum(case DATEPART (day,AttDate) when 31 then InHour else 0 end) as '31_InH',sum(case DATEPART (day,AttDate) when 31 then InMin else 0 end) as '31_InM',sum(case DATEPART (day,AttDate) when 31 then OutHour else 0 end) as '31_OutH',sum(case DATEPART (day,AttDate) when 31 then OutMin else 0 end) as '31_OutM'" +
                ",DptId,DptName,PSftId as SftId,PSftName as GName,CompanyName,Address " +
                "from v_tblAttendanceRecord " +
-               "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' " + unitCondition + "" +
+               "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND (EmpCardNo Like '%" + EmpCardNo + "' or EmpProximityNo='"+ EmpCardNo + "') " + unitCondition + "" +
                "group by EmpCardNo,EmpProximityNo, EmpId,EmpName,DptId,DptName,PSftId ,PSftName ,CompanyName,Address";
                     sqlDB.fillDataTable(
                        
@@ -112,7 +112,7 @@ namespace SigmaERP.classes
             {
                 DataTable dt = new DataTable();
                 string cmd = "";
-                if (index == 0)
+                if (index == 0) //all
                 {
                     cmd = "select EmpId,substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo,EmpName," +
                     "sum(case DATEPART (day,AttDate) when 1 then code else 0 end) as '1'," +
@@ -190,7 +190,7 @@ namespace SigmaERP.classes
                     "sum(case DATEPART (day,AttDate) when 31 then code else 0 end) as '31'," +
                     "  DsgName,DptId,DptName,SftId,SftName, PSftName as GName,CompanyId,CompanyName,Address " +
                     "from v_tblAttendanceRecord " +
-                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "' " + unitCondition + "" +
+                    "Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND (EmpCardNo Like '%" + EmpCardNo + "' or EmpProximityNo='"+ EmpCardNo + "') " + unitCondition + "" +
                     "group by EmpId,EmpCardNo,EmpProximityNo,EmpName,DptId, DsgName,DptName,SftId,SftName,PSftName,CompanyId,CompanyName,Address ", dt = new DataTable());
                 }
 
@@ -205,7 +205,7 @@ namespace SigmaERP.classes
             {
                 string query = "";
                
-                if (index == 0)                
+                if (index == 0)       //all         
                     query = "SELECT  EmpId, substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS EmpCardNo, PSftName as SftName,EmpName,Address,GId,GName,PSftId as SftId, SUM(CASE DATEPART(day, AttDate) WHEN 1 THEN code ELSE 0 END) AS [1], SUM(CASE DATEPART(day, AttDate) WHEN 2 THEN code ELSE 0 END) AS [2]," +
                          "SUM(CASE DATEPART(day, AttDate) WHEN 3 THEN code ELSE 0 END) AS [3], SUM(CASE DATEPART(day, AttDate) WHEN 4 THEN code ELSE 0 END) AS [4], SUM(CASE DATEPART(day, AttDate) " +
                          "WHEN 5 THEN code ELSE 0 END) AS [5], SUM(CASE DATEPART(day, AttDate) WHEN 6 THEN code ELSE 0 END) AS [6], SUM(CASE DATEPART(day, AttDate) WHEN 7 THEN code ELSE 0 END) AS [7]," +
@@ -242,7 +242,7 @@ namespace SigmaERP.classes
                          "(SUM(case Code when 112 then 1 else 0 end)+SUM(case Code when 108 then 1 else 0 end)+SUM(case Code when 104  then 1 else 0 end)+SUM(case Code when 119  then 1 else 0 end)+SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)) as P,SUM(case Code when 97 then 1 else 0 end) as A ,SUM(case Code when 108 then 1 else 0 end) as L,SUM(case Code when 104  then 1 else 0 end) as H,SUM(case Code when 119  then 1 else 0 end) as W," +
                          "(SUM(case Code when 207  then 1 else 0 end)+SUM(case Code when 223  then 1 else 0 end)+SUM(case Code when 205  then 1 else 0 end)+SUM(case Code when 217  then 1 else 0 end)+SUM(case Code when 227  then 1 else 0 end)) as LV, sum(NightAllowCount) as MonthlyTotalOT" +
                         "   FROM dbo.v_tblAttendanceRecord " +
-                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND EmpCardNo Like '%" + EmpCardNo + "'" + unitCondition + " "+ pSftCondition + " " +
+                        "   Where CompanyId " + CompanyId + " AND MONTH(ATTDate) ='" + Month + "' AND Year(ATTDate)='" + Year + "' AND (EmpCardNo Like '%" + EmpCardNo + "' or EmpProximityNo='" + EmpCardNo + "') " + unitCondition + " "+ pSftCondition + " " +
                         "    GROUP BY EmpId, EmpCardNo,EmpProximityNo, PSftId,EmpName, DsgName,PSftName, DptId, DptName,GId,GName, CompanyId, CompanyName,Address,CustomOrdering";
                 DataTable dt = new DataTable();
                

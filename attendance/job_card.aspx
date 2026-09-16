@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Job Card(Actual)" Language="C#" MasterPageFile="~/Glory.Master" AutoEventWireup="true" CodeBehind="job_card.aspx.cs" Inherits="SigmaERP.attendance.job_card" %>
+﻿<%@ Page Title="Job Card(Actual)" Language="C#" MasterPageFile="~/hrms/HRMS.Master" AutoEventWireup="true" CodeBehind="job_card.aspx.cs" Inherits="SigmaERP.attendance.job_card" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
      <style>

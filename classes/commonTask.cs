@@ -799,7 +799,7 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
             try
             {
                 string conditon = AccessControl.loadDepartmetCondition(companyId);
- 
+                string hh = "SELECT DptId, DptName FROM HRD_Department where " + conditon + "";
                 da = new SqlDataAdapter("SELECT DptId, DptName FROM HRD_Department where "+ conditon + "", sqlDB.connection);
                 da.Fill(dt = new DataTable());
                 dl.DataValueField = "DptId";

@@ -22,6 +22,7 @@
     <link href="../style/personnel.css" rel="stylesheet" />
     <link href="../style/Leave.css" rel="stylesheet" />
     <link href="../style/attendance.css" rel="stylesheet" />
+    <link href="../style/asset.css" rel="stylesheet" />
     <link href="../style/payroll.css" rel="stylesheet" />
     <link href="../style/Pf.css" rel="stylesheet" />
     <link href="../style/tools.css" rel="stylesheet" />
@@ -190,10 +191,7 @@
                                     : "";
                             %>
 
-                            <% if (accessLevel == "1")
-                            { %>
-                            <% }
-                            else
+                            <% if (accessLevel != "1")
                             { %>
                             <li class="has-subMenu">
                                 <li class="has-subMenux d-flex align-items-center gap-1">
@@ -201,7 +199,6 @@
                                     <a href="dashboard" runat="server">Dashboard</a>
                                 </li>
                             </li>
-                            <% } %>
 
 
 
@@ -550,6 +547,151 @@
                                 </ul>
                             </li>
                             <% } %>
+
+                            <% if (IsRouteExists("asset"))
+                                { %>
+                            <li class="mega-item has-subMenu">
+                                <a href="#" class="">Asset</a>
+                                <ul class="megaMenu-wrapper megaMenu-md">
+                                    <% if (IsRouteExists("asset/list") || IsRouteExists("asset/item-setup"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Asset</span>
+                                        <ul>
+                                            <% if (IsRouteExists("asset/list"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/list" class="">
+                                                    <span class="menu-text">Asset List</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("asset/item-setup"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/item-setup" class="">
+                                                    <span class="menu-text">Asset Item Setup</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+
+                                    <% if (IsRouteExists("asset/assignment"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Asset Assignment</span>
+                                        <ul>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/assignment" class="">
+                                                    <span class="menu-text">Assign / Receive / Return</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+
+                                    <% if (IsRouteExists("asset/service"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Asset Service</span>
+                                        <ul>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/service" class="">
+                                                    <span class="menu-text">Service / Repair</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+
+                                    <% if (IsRouteExists("asset/report"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Asset Reports</span>
+                                        <ul>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/report" class="">
+                                                    <span class="menu-text">In-Servicing Report</span>
+                                                </a>
+                                            </li>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/report#replace" class="">
+                                                    <span class="menu-text">Replacement Report</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+
+                                    <% if (IsRouteExists("asset/gatepass-entry") || IsRouteExists("asset/gatepass-approval") || IsRouteExists("asset/gatepass-history"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Gate Pass</span>
+                                        <ul>
+                                            <% if (IsRouteExists("asset/gatepass-entry"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/gatepass-entry" class="">
+                                                    <span class="menu-text">Gate Pass Entry</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("asset/gatepass-approval"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/gatepass-approval" class="">
+                                                    <span class="menu-text">Gate Pass Approval</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+                                            <% if (IsRouteExists("asset/gatepass-history"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/gatepass-history" class="">
+                                                    <span class="menu-text">Gate Pass History</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+
+                                    <% if (IsRouteExists("asset/recognition-approval"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Asset Recognition</span>
+                                        <ul>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/recognition-approval" class="">
+                                                    <span class="menu-text">Recognition Approval</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+
+                                    <% if (IsRouteExists("asset/request-approval"))
+                                        { %>
+                                    <li class="bordered">
+                                        <span class="mega-title">Asset Request</span>
+                                        <ul>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/asset/request-approval" class="">
+                                                    <span class="menu-text">Request Approval</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <%} %>
+                                </ul>
+                            </li>
+                            <% } %>
+
                             <%--                   <li class="mega-item has-subMenu">
                      <a href="attendance" class="">Attendance
                      </a>
@@ -1419,6 +1561,7 @@
                                 </ul>
                             </li>
                             <% } %>
+                            <% } %>
                         </ul>
                     </div>
 
@@ -1453,7 +1596,7 @@
                         </div>
                     </li>
                     <!-- ends: .nav-notification -->
-                    <% if (IsRouteExists("settings"))
+                    <% if (accessLevel != "1" && IsRouteExists("settings"))
                         { %>
 
                     <li class="nav-settings">
@@ -1709,6 +1852,8 @@
                                     </div>
                                     <div class="nav-author__options">
                                         <ul>
+                                            <% if (accessLevel != "1")
+                                                { %>
                                             <li>
                                                 <a href="/hrms/profile">
                                                     <i class="uil uil-user"></i>Profile</a>
@@ -1724,6 +1869,7 @@
                                                     <i class="uil uil-sun"></i>
                                                     Light</a>
                                             </li>
+                                            <% } %>
 
                                         </ul>
                                         <%-- <a href="" class="nav-author__signout">

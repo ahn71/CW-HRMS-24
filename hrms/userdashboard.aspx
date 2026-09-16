@@ -74,13 +74,47 @@
             <article class="ud-stat absent"><div class="ud-stat-icon"><i class="uil uil-user-times"></i></div><div><span class="ud-stat-label">Absent Days</span><span class="ud-stat-value" id="statAbsent">0</span></div></article>
             <article class="ud-stat late"><div class="ud-stat-icon"><i class="uil uil-clock-nine"></i></div><div><span class="ud-stat-label">Late Days</span><span class="ud-stat-value" id="statLate">0</span></div></article>
             <article class="ud-stat leave"><div class="ud-stat-icon"><i class="uil uil-calendar-alt"></i></div><div><span class="ud-stat-label">Leave Taken</span><span class="ud-stat-value" id="statLeaveTaken">0</span></div></article>
+            <%
+                bool udCanLeaveApplication = SigmaERP.classes.PermissionManager.IsUrlAllowed("leave/leave-application");
+                bool udCanAttendanceReport = SigmaERP.classes.PermissionManager.IsUrlAllowed("attendance/report-daterange");
+                bool udCanJobCard = SigmaERP.classes.PermissionManager.IsUrlAllowed("attendance/jobcard");
+                bool udCanGatePassEntry = SigmaERP.classes.PermissionManager.IsUrlAllowed("asset/gatepass-entry");
+                bool udCanMyAssets = SigmaERP.classes.PermissionManager.IsUrlAllowed("asset/my-assets");
+                bool udCanAssetRequest = SigmaERP.classes.PermissionManager.IsUrlAllowed("asset/request");
+                bool udHasAnyQuickLink = udCanLeaveApplication || udCanAttendanceReport || udCanJobCard || udCanGatePassEntry || udCanMyAssets || udCanAssetRequest;
+            %>
             <div class="ud-quick-menu">
                 <button type="button" class="ud-quick-toggle" id="quickLinksToggle" aria-label="Open quick links" aria-expanded="false" aria-controls="quickLinksList"><span class="ud-quick-toggle-icon"><i class="uil uil-th-large"></i></span></button>
                 <div class="ud-quick-panel" id="quickLinksList" role="menu" aria-label="Quick links">
                     <div class="ud-quick-panel-head"><span>Quick Links</span><button type="button" class="ud-quick-panel-close" id="quickLinksClose" aria-label="Close quick links">&times;</button></div>
-                    <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("~/hrms/Leave/leaveApplication.aspx") %>"><span class="ud-quick-icon"><i class="uil uil-file-plus-alt"></i></span><span><strong>Leave Application</strong><span>Apply for a new leave</span></span></a>
+                    <% if (udCanLeaveApplication)
+                        { %>
+                    <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("leave/leave-application") %>"><span class="ud-quick-icon"><i class="uil uil-file-plus-alt"></i></span><span><strong>Leave Application</strong><span>Apply for a new leave</span></span></a>
+                    <% } %>
+                    <% if (udCanAttendanceReport)
+                        { %>
                     <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("~/attendance/att_report_daterange.aspx") %>"><span class="ud-quick-icon"><i class="uil uil-chart-line"></i></span><span><strong>Attendance Report</strong><span>View attendance history</span></span></a>
+                    <% } %>
+                    <% if (udCanJobCard)
+                        { %>
                     <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("~/attendance/job_card.aspx") %>"><span class="ud-quick-icon"><i class="uil uil-clipboard-notes"></i></span><span><strong>Job Card Report</strong><span>Review work-time details</span></span></a>
+                    <% } %>
+                    <% if (udCanGatePassEntry)
+                        { %>
+                    <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("/hrms/asset/gatepass-entry") %>"><span class="ud-quick-icon"><i class="uil uil-truck"></i></span><span><strong>Gate Pass Entry</strong><span>Request a new gate pass</span></span></a>
+                    <% } %>
+                    <% if (udCanMyAssets)
+                        { %>
+                    <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("~/hrms/asset/MyAssets.aspx") %>"><span class="ud-quick-icon"><i class="uil uil-box"></i></span><span><strong>My Assets</strong><span>Acknowledge assets assigned to you</span></span></a>
+                    <% } %>
+                    <% if (udCanAssetRequest)
+                        { %>
+                    <a class="ud-quick-link" role="menuitem" href="<%= ResolveUrl("~/hrms/asset/AssetRequest.aspx") %>"><span class="ud-quick-icon"><i class="uil uil-hand-holding-heart"></i></span><span><strong>Request Asset</strong><span>Request an asset for admin approval</span></span></a>
+                    <% } %>
+                    <% if (!udHasAnyQuickLink)
+                        { %>
+                    <div class="ud-quick-empty" style="padding:14px 8px;color:#8d98ae;font-size:12.5px;text-align:center;">No quick links available</div>
+                    <% } %>
                 </div>
             </div>
         </section>

@@ -41,11 +41,16 @@ namespace SigmaERP.classes
             //Note: ProcessNo is 1 for Separation Employees and 0 for Regular Employees
             try
             {
+                dt = new DataTable();
+              
                 string errorData = "";
                 string EmpIdS = "";
             string[] getDays = SelectedDate.Split('-');
-            DateTime FromDate=DateTime.Parse( getDays[2] + "-" + getDays[1] + "-01");
-            DateTime ToDate = DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]);
+             dt = getMonthInfo(CompanyId, DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]).ToString("MM-yyyy"));
+                string fromDate = dt.Rows[0]["FromDate"].ToString();
+                string toDate = dt.Rows[0]["ToDate"].ToString();
+            DateTime FromDate=DateTime.Parse(fromDate);
+            DateTime ToDate = DateTime.Parse(toDate);
 
                
                var payRollPolicy=getPayrollPolicy(CompanyId, generateFor);
@@ -83,12 +88,12 @@ namespace SigmaERP.classes
                         else
                             salarySheetClear_Complaince(ToDate, CompanyId, EmpId);
                     }
-                        
 
-                // getting month info 
-                dt = new DataTable();
-                dt = getMonthInfo(CompanyId,ToDate.ToString("MM-yyyy"));
-                int TotalDays= int.Parse(dt.Rows[0]["TotalDays"].ToString());              
+
+                    // getting month info 
+                    dt = new DataTable();
+                    dt = getMonthInfo(CompanyId, ToDate.ToString("MM-yyyy"));
+                    int TotalDays= int.Parse(dt.Rows[0]["TotalDays"].ToString());              
                 int Activeday = int.Parse(dt.Rows[0]["TotalWorkingDays"].ToString());
                 extraAttSummarydt = getAllAdditionalSummary(FromDate.ToString("yyyy-MM-dd"),ToDate.ToString("yyyy-MM-dd"));
                     var KPICache = GetKPICache(FromDate.ToString("yyyy-MM-dd"));
@@ -193,7 +198,7 @@ namespace SigmaERP.classes
                                 Stampdeduct = stampDeduct,
                                 NetPayable = 0,
                                 TotalSalary = 0,
-                                YearMonth = DateTime.Parse(FromDate.ToString("yyyy-MM") + "-01"),
+                                YearMonth = DateTime.Parse(ToDate.ToString("yyyy-MM") + "-01"),
                                 FromDate = _FromDate,
                                 ToDate = _ToDate,
                                 FromDateForAll = _FromDateForAll,
@@ -1491,6 +1496,8 @@ namespace SigmaERP.classes
         decimal grossSalary,
     int daysInMonth,DateTime fromDate, DataTable holidayList)
         {
+            if (holidayList == null)
+                return (0, 0);
             int holidayCount = 0;
             decimal amount = 0;
             decimal foodAllowance = 0;

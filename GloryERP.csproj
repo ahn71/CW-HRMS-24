@@ -1291,6 +1291,18 @@
     <Content Include="hrd\SpecialTimeTable.aspx" />
     <Content Include="hrd\Thana.aspx" />
     <Content Include="hrd_default.aspx" />
+    <Content Include="hrms\asset\AssetItemSetup.aspx" />
+    <Content Include="hrms\asset\AssetList.aspx" />
+    <Content Include="hrms\asset\AssetAssignment.aspx" />
+    <Content Include="hrms\asset\AssetService.aspx" />
+    <Content Include="hrms\asset\AssetReport.aspx" />
+    <Content Include="hrms\asset\GatePassEntry.aspx" />
+    <Content Include="hrms\asset\GatePassApproval.aspx" />
+    <Content Include="hrms\asset\GatePassHistory.aspx" />
+    <Content Include="hrms\asset\MyAssets.aspx" />
+    <Content Include="hrms\asset\AssetRecognitionApproval.aspx" />
+    <Content Include="hrms\asset\AssetRequest.aspx" />
+    <Content Include="hrms\asset\AssetRequestApproval.aspx" />
     <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
     <Content Include="hrms\attendance\attendanceProcessing.aspx" />
     <Content Include="hrms\attendance\attendanceWeekendSetup.aspx" />
@@ -2769,6 +2781,7 @@
     <Content Include="scripts\select2.min.js" />
     <Content Include="scripts\treeMenu.js" />
     <Content Include="style\attendance.css" />
+    <Content Include="style\asset.css" />
     <Content Include="style\dataTables.css" />
     <Content Include="style\Design.css" />
     <Content Include="style\flipclock.css" />
@@ -3839,6 +3852,90 @@
     </Compile>
     <Compile Include="hrd_default.aspx.designer.cs">
       <DependentUpon>hrd_default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetItemSetup.aspx.cs">
+      <DependentUpon>AssetItemSetup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetItemSetup.aspx.designer.cs">
+      <DependentUpon>AssetItemSetup.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetList.aspx.cs">
+      <DependentUpon>AssetList.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetList.aspx.designer.cs">
+      <DependentUpon>AssetList.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetAssignment.aspx.cs">
+      <DependentUpon>AssetAssignment.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetAssignment.aspx.designer.cs">
+      <DependentUpon>AssetAssignment.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetService.aspx.cs">
+      <DependentUpon>AssetService.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetService.aspx.designer.cs">
+      <DependentUpon>AssetService.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetReport.aspx.cs">
+      <DependentUpon>AssetReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetReport.aspx.designer.cs">
+      <DependentUpon>AssetReport.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\GatePassEntry.aspx.cs">
+      <DependentUpon>GatePassEntry.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\GatePassEntry.aspx.designer.cs">
+      <DependentUpon>GatePassEntry.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\GatePassApproval.aspx.cs">
+      <DependentUpon>GatePassApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\GatePassApproval.aspx.designer.cs">
+      <DependentUpon>GatePassApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\GatePassHistory.aspx.cs">
+      <DependentUpon>GatePassHistory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\GatePassHistory.aspx.designer.cs">
+      <DependentUpon>GatePassHistory.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\MyAssets.aspx.cs">
+      <DependentUpon>MyAssets.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\MyAssets.aspx.designer.cs">
+      <DependentUpon>MyAssets.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetRecognitionApproval.aspx.cs">
+      <DependentUpon>AssetRecognitionApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetRecognitionApproval.aspx.designer.cs">
+      <DependentUpon>AssetRecognitionApproval.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetRequest.aspx.cs">
+      <DependentUpon>AssetRequest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetRequest.aspx.designer.cs">
+      <DependentUpon>AssetRequest.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\asset\AssetRequestApproval.aspx.cs">
+      <DependentUpon>AssetRequestApproval.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\asset\AssetRequestApproval.aspx.designer.cs">
+      <DependentUpon>AssetRequestApproval.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\attendance\attendanceProcessing.aspx.cs">
       <DependentUpon>attendanceProcessing.aspx</DependentUpon>

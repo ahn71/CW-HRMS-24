@@ -1,0 +1,95 @@
+ASSET REQUEST FEATURE - BACKEND REQUIREMENTS
+=============================================
+Frontend pages already built (this repo, GloryERP WebForms app):
+  - hrms/asset/AssetRequest.aspx         (employee: submit a request, view own requests)
+  - hrms/asset/AssetRequestApproval.aspx (admin: view pending requests, approve/reject)
+
+This repo has NO backend/API project (ApiConnector.RootUrl points to an external API
+server). The endpoints below need to be implemented there before these pages work.
+Design: employee requests an ASSET ITEM (type, e.g. "Dell Latitude Laptop" from the
+existing AssetItem master), not a specific serialized asset. Admin approves/rejects;
+actually handing over a physical asset still goes through the existing
+AssetAssignment "Assign Asset" flow separately.
+
+------------------------------------------------------------------
+1) POST {rootUrl}/api/AssetRequest/create
+   Employee submits a new request.
+   Request body (JSON):
+   {
+     "companyId": <int>,
+     "empId": <int>,
+     "itemId": <int>,       // FK to AssetItem (see /api/AssetItem/list, already exists)
+     "quantity": <int>,
+     "reason": <string>     // optional
+   }
+   Response: { "statusCode": 200, "message": "...", "data": <created request id or object> }
+
+   Suggested table: AssetRequest
+     RequestId (PK), CompanyId, EmpId, ItemId, Quantity, Reason,
+     Status ("Pending" | "Approved" | "Rejected"), RequestDate (default now),
+     AdminRemarks (nullable), DecidedBy (nullable), DecidedDate (nullable)
+
+------------------------------------------------------------------
+2) GET {rootUrl}/api/AssetRequest/mine?companyId={companyId}&empId={empId}
+   Employee's own request history (for the "My Requests" table on AssetRequest.aspx).
+   Response data: array of
+   {
+     "requestId": <int>,
+     "itemId": <int>,
+     "itemName": <string>,
+     "quantity": <int>,
+     "reason": <string>,
+     "status": "Pending" | "Approved" | "Rejected",
+     "requestDate": <datetime>,
+     "adminRemarks": <string|null>
+   }
+
+------------------------------------------------------------------
+3) GET {rootUrl}/api/AssetRequest/pending?companyId={companyId}
+   All pending requests across employees, for AssetRequestApproval.aspx.
+   Response data: array of
+   {
+     "requestId": <int>,
+     "empId": <int>,
+     "empName": <string>,
+     "itemId": <int>,
+     "itemName": <string>,
+     "quantity": <int>,
+     "reason": <string>,
+     "requestDate": <datetime>
+   }
+
+------------------------------------------------------------------
+4) POST {rootUrl}/api/AssetRequest/approve
+   Body: { "requestId": <int>, "adminRemarks": <string> }
+   Sets Status = "Approved", stores AdminRemarks/DecidedBy/DecidedDate.
+
+------------------------------------------------------------------
+5) POST {rootUrl}/api/AssetRequest/reject
+   Body: { "requestId": <int>, "adminRemarks": <string> }
+   Sets Status = "Rejected", stores AdminRemarks/DecidedBy/DecidedDate.
+
+------------------------------------------------------------------
+ACCESS CONTROL / MENU PERMISSIONS (separate external system, not in this repo)
+------------------------------------------------------------------
+The user-dashboard "Quick Links" panel (hrms/userdashboard.aspx) and the admin
+top-nav Asset menu (hrms/HRMS.Master) now gate every link behind
+PermissionManager.IsUrlAllowed("<route-key>") - the same mechanism already used
+for the rest of the admin menu. These route-key strings must exist as
+Module/Permission rows in the Access Control admin screens and be assigned to
+whichever roles should see them:
+
+  User-dashboard quick links (assign to the "User"/employee role):
+    - leave/leave-application   -> already used by admin menu too, likely already
+                                    assigned to User role (reused as-is)
+    - attendance/report-daterange -> NEW key, for attendance/att_report_daterange.aspx
+    - attendance/jobcard        -> already used by admin menu (Job Card), reused as-is
+    - asset/gatepass-entry      -> already used by admin menu, reused as-is
+    - asset/my-assets           -> NEW key, for hrms/asset/MyAssets.aspx
+    - asset/request             -> NEW key, for hrms/asset/AssetRequest.aspx
+
+  Admin top-nav (assign to admin/Master Admin roles as appropriate):
+    - asset/request-approval    -> NEW key, for hrms/asset/AssetRequestApproval.aspx
+
+Until these rows are added and assigned, the corresponding link/menu item simply
+stays hidden for that role (same behavior as any other module in this system).
