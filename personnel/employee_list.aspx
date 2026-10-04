@@ -432,6 +432,7 @@
 
                                                     <asp:BoundField DataField="UnitName" HeaderText="UnitName" />
                                                     <asp:BoundField DataField="DutyType" HeaderText="DutyType" />
+                                                    <asp:BoundField DataField="PunchSource" HeaderText="PunchSource" />
                                                     <asp:BoundField DataField="WeekendType" HeaderText="WeekendType" />
                                                     <asp:BoundField DataField="WeekendDayName" HeaderText="Weekend Day Name" />
                                                     <asp:BoundField DataField="JoiningDate" HeaderText="JoiningDate" />

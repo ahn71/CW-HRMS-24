@@ -1306,10 +1306,12 @@
     <Content Include="hrms\assets\theme_assets\js\loadCompany.js" />
     <Content Include="hrms\attendance\attendanceProcessing.aspx" />
     <Content Include="hrms\attendance\attendanceWeekendSetup.aspx" />
+    <Content Include="hrms\attendance\MonthlyAttendanceReportV1.aspx" />
     <Content Include="hrms\attendance\roster\roster-entry.aspx" />
     <Content Include="hrms\attendance\roster\roster-list.aspx" />
     <Content Include="hrms\attendance\SyncUnathorizedAttendance.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
+    <Content Include="hrms\Leave\MonthwiseLeaveSummaryReport.aspx" />
     <Content Include="hrms\userdashboard.aspx" />
     <Content Include="hrms\Leave\LieuLeaveReport.aspx" />
     <Content Include="hrms\packages\AppSettings.aspx" />
@@ -3678,6 +3680,7 @@
     <Compile Include="classes\BusinessLogic.cs" />
     <Compile Include="classes\commonAtt.cs" />
     <Compile Include="classes\commonTask.cs" />
+    <Compile Include="classes\ReportExcelHeader.cs" />
     <Compile Include="classes\CRUD.cs" />
     <Compile Include="classes\Employee.cs" />
     <Compile Include="classes\LeaveLibrary.cs" />
@@ -3951,6 +3954,13 @@
     <Compile Include="hrms\attendance\attendanceWeekendSetup.aspx.designer.cs">
       <DependentUpon>attendanceWeekendSetup.aspx</DependentUpon>
     </Compile>
+    <Compile Include="hrms\attendance\MonthlyAttendanceReportV1.aspx.cs">
+      <DependentUpon>MonthlyAttendanceReportV1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\MonthlyAttendanceReportV1.aspx.designer.cs">
+      <DependentUpon>MonthlyAttendanceReportV1.aspx</DependentUpon>
+    </Compile>
     <Compile Include="hrms\attendance\roster\roster-entry.aspx.cs">
       <DependentUpon>roster-entry.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3979,6 +3989,13 @@
     </Compile>
     <Compile Include="hrms\dashbordUser.aspx.designer.cs">
       <DependentUpon>dashbordUser.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\Leave\MonthwiseLeaveSummaryReport.aspx.cs">
+      <DependentUpon>MonthwiseLeaveSummaryReport.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\Leave\MonthwiseLeaveSummaryReport.aspx.designer.cs">
+      <DependentUpon>MonthwiseLeaveSummaryReport.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\userdashboard.aspx.cs">
       <DependentUpon>userdashboard.aspx</DependentUpon>

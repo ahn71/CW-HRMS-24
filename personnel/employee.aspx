@@ -310,6 +310,14 @@
                                             </asp:RadioButtonList>
                                         </td>
                                     </tr><tr>
+                                        <td>Punch Source
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtPunchSource" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" MaxLength="100"></asp:TextBox>
+                                        </td>
+                                    </tr><tr>
                                         <td>Weekend Type
                                         </td>
                                         <td>:

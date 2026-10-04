@@ -156,13 +156,13 @@ left join tblAttendanceRecordPunchLog pl on at.EmpId = pl.EmpId and at.ATTDate =
                 //left join tblAttendanceRecordPunchLog pl on at.EmpId = pl.EmpId and at.ATTDate = pl.AttDate  left join users u on at.UserId = u.UserId where at.AttManual = 'MC'  and at.ATTDate>='" + F_YMD + "' and at.ATTDate<='" + T_YMD + "' and at.CompanyId " + CompanyList + "   and cs.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' " + AttStatus + " " + unitCondition + "    order by convert(int,dpt.DptCode),convert(int,at.GId), convert(int,at.SftId),cs.CustomOrdering ";
 
 
-                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where ar.AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "'  and ar.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and ar.CompanyId " + CompanyList + " " + AttStatus + "  " + unitCondition + " ";
+                query = "select  ar.EmpId,SUBSTRING(ar.EmpCardNo,10,6) as EmpCardNo, ar.EmpName,ar.DptId,ar.DptName,ar.DsgId,ar.DsgName,SftId,SftName,GId,GName,ar.CompanyId,ar.CompanyName,ar.Address, CONVERT(VARCHAR(10), ar.AttDate, 105) as AttDate,PInHour,PInMin,PInSec,POutHour,POutMin,POutSec  ,InHour,InMin,InSec,OutHour,OutMin,OutSec,OutDuty,ISNULL( FirstName,ua.EmpName) as FirstName,LastName  from v_tblAttendanceRecord ar left join tblAttendanceRecordPunchLog pl on ar.EmpId=pl.EmpId and ar.ATTDate=pl.AttDate left join  v_UserAccount ua on ar.UserId=ua.UserId where ar.AttManual='MC'  and  ar.ATTDate>='" + F_YMD + "' and ar.ATTDate<='" + T_YMD + "'  and (ar.EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' or ar.EmpProximityNo='"+ txtCardNo.Text.Trim() + "') and ar.CompanyId " + CompanyList + " " + AttStatus + "  " + unitCondition + " ";
 
             }
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(query);
             //sqlDB.fillDataTable(query, dt = new DataTable());
-            if (dt == null)
+            if (dt == null || dt.Rows.Count==0)
             {
                 lblMessage.InnerText = "warning->No Manual Attendance Available";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);

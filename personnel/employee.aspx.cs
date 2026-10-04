@@ -776,6 +776,8 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@AuthorizedPerson", ckbAuthorized.Checked);                
                 cmd.Parameters.AddWithValue("@WeekendType", rblWeekendType.SelectedValue);
                 cmd.Parameters.AddWithValue("@Weekend", ddlWeekend.SelectedValue);
+                
+
                 int userId = Convert.ToInt32(Session["__GetUserId__"]);
 
                 cmd.Parameters.AddWithValue("@CreatedBy", userId);
@@ -784,6 +786,7 @@ namespace SigmaERP.personnel
 
                 if (result > 0)
                 {
+                    SavePunchSource(ViewState["__EmpId__"].ToString());
                     DataTable dtMaxEmpId = new DataTable();
                     sqlDB.fillDataTable("SELECT Max(EmpId) as EmpId From Personnel_EmployeeInfo", dtMaxEmpId);
                     //  saveShiftTransferDetails(dtMaxEmpId.Rows[0]["EmpId"].ToString());
@@ -1240,6 +1243,7 @@ namespace SigmaERP.personnel
 
                 if (result > 0)
                 {
+                    SavePunchSource(ddlEmpCardNo.SelectedValue);
                     SaveAttachFile();
                     if (ckbProximityChange.Checked)
                     {
@@ -1274,6 +1278,33 @@ namespace SigmaERP.personnel
                 return false;
             }
         }
+
+        private void SavePunchSource(string empId)
+        {
+            using (SqlCommand cmd = new SqlCommand(
+                "UPDATE Personnel_EmployeeInfo SET PunchSource=@PunchSource WHERE EmpId=@EmpId",
+                sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpId", empId);
+                cmd.Parameters.AddWithValue("@PunchSource", string.IsNullOrWhiteSpace(txtPunchSource.Text)
+                    ? (object)DBNull.Value
+                    : txtPunchSource.Text.Trim());
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private string GetPunchSource(string empId)
+        {
+            using (SqlCommand cmd = new SqlCommand(
+                "SELECT PunchSource FROM Personnel_EmployeeInfo WHERE EmpId=@EmpId",
+                sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpId", empId);
+                object result = cmd.ExecuteScalar();
+                return result == null || result == DBNull.Value ? "" : result.ToString();
+            }
+        }
+
         private void UpdateSpecificEmployee(string EmpId)
         {
             try
@@ -1535,6 +1566,7 @@ namespace SigmaERP.personnel
                 txtNickName.Text = "";
                 txtNameBangla.Text = "";
                 txtProximityNo.Text = "";
+                txtPunchSource.Text = "";
                 hdfBasic.Value = "0";
                 hdfConveyance.Value = "0";
                 hdfhouserent.Value = "0";
@@ -1773,6 +1805,7 @@ namespace SigmaERP.personnel
                     ddlDepartment.SelectedValue = dtall.Rows[0]["DptId"].ToString(); 
                 }
                 txtRegistrationId.Text = dtall.Rows[0]["EmpProximityNo"].ToString();
+                txtPunchSource.Text = GetPunchSource(dtall.Rows[0]["EmpId"].ToString());
                 txtTIN.Text = dtall.Rows[0]["TIN"].ToString();
                             
               //  classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);

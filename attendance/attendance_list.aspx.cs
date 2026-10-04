@@ -235,11 +235,11 @@ namespace SigmaERP.attendance
                 //    lblMessage.InnerText = "warning-> Please, Select Company Name.";
                 //    return;
                 //}
-                if (txtCardNo.Text.Trim() != "") 
-                {
-                    if (txtCardNo.Text.Length < 6)
-                    { lblMessage.InnerText = "warning-> Please Type Employee Card No Minimum 6 Character!"; return; }
-                }
+                //if (txtCardNo.Text.Trim() != "") 
+                //{
+                //    if (txtCardNo.Text.Length < 6)
+                //    { lblMessage.InnerText = "warning-> Please Type Employee Card No Minimum 6 Character!"; return; }
+                //}
                 if (txtCardNo.Text.Trim() == ""  && ddlCompanyList.Text.Trim() != "" && ddlShift.SelectedIndex<1 && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && ((txtToDate.Text.Trim() != "" && txtFromDate.Text.Trim() != "") || ddlChoseYear.SelectedItem.Text.Trim() != ""))
                 {
                     lblMessage.InnerText = "warning-> Please, Select a Department.";
@@ -271,7 +271,7 @@ namespace SigmaERP.attendance
                 //1. Search by Company, Card No
                 if (ddlCompanyList.SelectedItem.Text.Trim() != "" && (ddlDepartmentName.SelectedIndex == -1 || ddlDepartmentName.SelectedIndex == 0) && (ddlShift.SelectedIndex == -1 || ddlShift.SelectedIndex == 0) && (ddlGrouping.SelectedIndex == -1 || ddlGrouping.SelectedItem.Text.Trim() == "") && txtFromDate.Text.Trim().Length == 0 && txtToDate.Text.Trim().Length == 0 && txtCardNo.Text.Trim().Length > 0)
                     {
-                        queryCondition = " " + dataAccesCondition + "  and EmpCardNo Like '%" + txtCardNo.Text.Trim() + "'  "+unitCondition+" order by AttDate desc";
+                        queryCondition = " " + dataAccesCondition + "  and ( EmpCardNo Like '%" + txtCardNo.Text.Trim() + "' or EmpProximityNo='"+ txtCardNo.Text.Trim() + "')  " + unitCondition+" order by AttDate desc";
                     }
 
 

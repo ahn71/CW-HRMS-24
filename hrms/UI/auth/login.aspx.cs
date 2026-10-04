@@ -355,7 +355,7 @@ namespace SigmaERP.hrms.UI.auth
                         ["__getUserType__"] = userData.isGuestUser.ToString(),
                         ["__CompanyId__"] = userData.companyId, 
                         ["__CompanyName__"] = userData.companyName.ToString(),
-                        ["__CShortName__"] = "",
+                        ["__CShortName__"] = userData.companyShortname.ToString(),
                         ["__DptId__"] = userData.dptId.ToString(),
                         ["__isLvAuthority__"] = "0",
                         ["__LvOnlyDpt__"] = "0",

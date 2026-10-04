@@ -232,6 +232,14 @@ namespace SigmaERP.attendance
                 {
                     ShiftName += " and PSftId='" + ddlPermanentShift.SelectedValue + "' ";
                 }
+                if (rblReportType.SelectedValue == "1" || rblReportType.SelectedValue == "2")
+                {
+                    if (ViewState["__CShortName__"].ToString() == "SBR")
+                    {
+                        AttendnaceSummaryReport_V1(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text.Trim(), EmpTypeID, unitCondition, ShiftName, isregular);
+                        return;
+                    }
+                }
                 if (rblReportType.SelectedValue == "0")
                 {
                     dt = classes.BusinessLogic.get_MonthlyLoginLogOutTime(CompanyList, DepartmentList, MY[0], MY[1], rblGenerateType.SelectedIndex, txtCardNo.Text, EmpTypeID, unitCondition, ShiftName, isregular);
@@ -261,7 +269,83 @@ namespace SigmaERP.attendance
             }
             catch { }
         }
-    
+
+        private void AttendnaceSummaryReport_V1(string CompanyList, string DepartmentList, string Month, string Year, int index, string EmpCardNo, string EmpTypeID, string unitCondition, string ShiftName, string isregular)
+        {
+            try
+            {
+                DateTime fromDate = new DateTime(int.Parse(Year), int.Parse(Month), 1);
+                int days = DateTime.DaysInMonth(fromDate.Year, fromDate.Month);
+
+                DataTable dtLeave = classes.CRUD.ExecuteReturnDataTable(
+                    "SELECT dbo.GetInitials(LeaveName) AS ShortName, MIN(LTRIM(RTRIM(LeaveName))) AS LeaveName FROM tblLeaveConfig " +
+                    "WHERE NULLIF(LTRIM(RTRIM(LeaveName)), '') IS NOT NULL GROUP BY dbo.GetInitials(LeaveName) ORDER BY ShortName");
+
+                string leaveColumns = "";
+                if (dtLeave != null)
+                {
+                    foreach (DataRow lv in dtLeave.Rows)
+                    {
+                        string shortName = lv["ShortName"].ToString().Trim();
+                        if (shortName.Length == 0) continue;
+                        leaveColumns += ", SUM(CASE WHEN AttendanceStatus = '" + shortName.Replace("'", "''") + "' THEN 1 ELSE 0 END) AS [LV_" + shortName.Replace("]", "]]") + "]";
+                    }
+                }
+
+                string filter = "";
+                if (index == 0) // all
+                    filter = " AND DptId " + DepartmentList + " " + EmpTypeID + " " + ShiftName + " " + isregular;
+                else            // by card no
+                {
+                    string cardNo = EmpCardNo.Replace("'", "''");
+                    filter = " AND (EmpCardNo LIKE '%" + cardNo + "' OR EmpProximityNo = '" + cardNo + "')";
+                }
+
+                string dayColumns = "";
+                for (int d = 1; d <= days; d++)
+                    dayColumns += "ISNULL(MAX(CASE WHEN DAY(AttDate) = " + d + " THEN AttendanceStatus END), '') AS [" + d.ToString("00") + "],";
+
+                string query =
+                    "WITH Attendance AS ( " +
+                    "SELECT  EmpId,substring(EmpCardNo,8,15)  + ' (' + EmpProximityNo + ')' AS  EmpCardNo, EmpName, PaybleDays, CAST(AttDate AS DATE) AS AttDate, " +
+                    "DsgName, DptId, DptName, SftId, SftName, PSftName AS GName, CompanyId, CompanyName, Address, DptCode, CustomOrdering, " +
+                    "CASE WHEN LTRIM(RTRIM(ATTStatus)) = 'Lv' " +
+                    "THEN ISNULL(dbo.GetInitials((SELECT TOP 1 LC.LeaveName FROM tblLeaveConfig LC WHERE LTRIM(RTRIM(LC.LeaveName)) = LTRIM(RTRIM(StateStatus)))), 'Lv') " +
+                    "ELSE ISNULL(LTRIM(RTRIM(ATTStatus)), '') END AS AttendanceStatus " +
+                    "FROM v_tblAttendanceRecord " +
+                    "WHERE CompanyId " + CompanyList + filter + " " + unitCondition +
+                    " AND AttDate >= '" + fromDate.ToString("yyyy-MM-dd") + "' AND AttDate < '" + fromDate.AddMonths(1).ToString("yyyy-MM-dd") + "' ) " +
+                    "SELECT EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName, SftId, SftName, GName, CompanyId, CompanyName, Address, " +
+                    dayColumns +
+                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'p' THEN 1 ELSE 0 END) AS P, " +
+                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'l' THEN 1 ELSE 0 END) AS L, " +
+                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'a' THEN 1 ELSE 0 END) AS A, " +
+                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'w' THEN 1 ELSE 0 END) AS W, " +
+                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'h' THEN 1 ELSE 0 END) AS H" +
+                    leaveColumns + ", " +
+                    "SUM(CASE WHEN PaybleDays = 1 THEN 1 ELSE 0 END) AS TotalPayAbleDays " +
+                    "FROM Attendance " +
+                    "GROUP BY EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName, SftId, SftName, GName, CompanyId, CompanyName, Address, DptCode, CustomOrdering " +
+                    "ORDER BY CASE WHEN ISNUMERIC(DptCode) = 1 THEN CONVERT(INT, DptCode) ELSE 999999 END, DptName, " +
+                    "CASE WHEN ISNUMERIC(SftId) = 1 THEN CONVERT(INT, SftId) ELSE 999999 END, CustomOrdering";
+
+                DataTable dt = classes.CRUD.ExecuteReturnDataTable(query);
+                if (dt == null || dt.Rows.Count == 0)
+                {
+                    lblMessage.InnerText = "warning->No Attendance Available";
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+
+                Session["__MonthlyAttendanceV1__"] = dt;
+                Session["__MonthlyAttendanceV1Month__"] = fromDate;
+                Session["__MonthlyAttendanceV1Leaves__"] = dtLeave;
+
+                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/hrms/attendance/MonthlyAttendanceReportV1.aspx');", true);  //Open New Tab for Sever side code
+            }
+            catch { }
+        }
+
         private void GenerateReportBangla()
         {
             try
@@ -777,7 +861,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                         format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,
                         StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,
                         GName,MonthId,BreakStartTime,BreakEndTime,TotalDays,PaybleDays From v_tblAttendanceRecord 
-                        Where CompanyId='" + ddlCompanyName.SelectedValue + "' and (EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' or or EmpProximityNo='" + txtCardNo.Text.Trim() + "')  and MonthName='" + Month[1] + "-" + Month[0] + "' "+ unitCondition + " " + ShiftName + " "+ isregular + " order by  ATTDate";
+                        Where CompanyId='" + ddlCompanyName.SelectedValue + "' and (EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'  or EmpProximityNo='" + txtCardNo.Text.Trim() + "')  and MonthName='" + Month[1] + "-" + Month[0] + "' "+ unitCondition + " " + ShiftName + " "+ isregular + " order by  ATTDate";
                 else
                     sql = @"DECLARE @maxOT VARCHAR(8) = '02:00:00'
 DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin

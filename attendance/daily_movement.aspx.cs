@@ -397,14 +397,14 @@ namespace SigmaERP.attendance
                 
             else
             {
-                if (txtCardNo.Text.Trim().Length <int.Parse(Session["__MinDigits__"].ToString()))
-                {
-                    lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
-                    txtCardNo.Focus();
-                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
-                    return;
-                }
-                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and CompanyId " + CompanyList + " " + AttStatus + " "+unitCondition+"";
+                //if (txtCardNo.Text.Trim().Length <int.Parse(Session["__MinDigits__"].ToString()))
+                //{
+                //    lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
+                //    txtCardNo.Focus();
+                //    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                //    return;
+                //}
+                query = "Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,PSftName as MobileNo,Address,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and( EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' or EmpProximityNo ='"+ txtCardNo.Text.Trim() + "') and CompanyId " + CompanyList + " " + AttStatus + " "+unitCondition+"";
                 
             }
             sqlDB.fillDataTable(query, dt = new DataTable());

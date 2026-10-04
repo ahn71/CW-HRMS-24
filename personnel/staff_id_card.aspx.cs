@@ -67,8 +67,8 @@ namespace SigmaERP.personnel
                 CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
                 string condition = AccessControl.loadEmpCardNumber(CompanyID);
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo  From v_EmployeeDetails where CompanyId='" + CompanyID + "' and EmpTypeId="+rblEmpType.SelectedValue+" and EmpStatus in ('1','8')" +
-                                    " and  ActiveSalary='True' and "+ condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode,CustomOrdering", dt);
+                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpId,EmpCardNo+'('+EmpProximityNo+')' +' [ '+EmpName+' ]' as EmpCardNo  From v_EmployeeDetails where CompanyId='" + CompanyID + "' and EmpTypeId="+rblEmpType.SelectedValue+" and EmpStatus in ('1','8')" +
+                                    " and  ActiveSalary='True' and "+ condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering,EmpProximityNo order by DptCode,CustomOrdering", dt);
                 lstAll.DataSource = dt;
                 lstAll.DataTextField = "EmpCardNo";
                 lstAll.DataValueField = "SN";
@@ -131,7 +131,7 @@ namespace SigmaERP.personnel
         {
             CompanyID = (ddlBranch.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlBranch.SelectedValue;
             dt = new DataTable();
-            sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId, EmpCardNo +' ['+EmpName+']' as EmpCardNo From v_EmployeeDetails where CompanyId='" + CompanyID + "' and EmpTypeId="+rblEmpType.SelectedValue+" and EmpStatus in ('1','8') and  ActiveSalary='True' Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode,CustomOrdering", dt);
+            sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId, EmpId,EmpCardNo+'('+EmpProximityNo+')' +' [ '+EmpName+' ]' as EmpCardNo  From v_EmployeeDetails where CompanyId='" + CompanyID + "' and EmpTypeId="+rblEmpType.SelectedValue+ " and EmpStatus in ('1','8') and  ActiveSalary='True' Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering,EmpProximityNo order by DptCode,CustomOrdering", dt);
             dl.DataSource = dt;
             dl.DataTextField = "EmpCardNo";
             dl.DataValueField = "SN";

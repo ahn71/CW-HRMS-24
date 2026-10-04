@@ -64,7 +64,7 @@ namespace SigmaERP.payroll.salary
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 //ViewState["__CShortName__"] = "MRC";
-                ViewState["__CShortName__"] = "PKG"; 
+                ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
                 classes.commonTask.LoadShift(ddlShift, ViewState["__CompanyId__"].ToString());
                 if (permissions.Contains(474))

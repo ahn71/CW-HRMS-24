@@ -1012,6 +1012,13 @@
                                             </li>
                                             <% } %>
 
+                                             <% if (IsRouteExists("leave/monthly-leave-summary-report"))
+                                                { %>
+                                            <li class="">
+                                                <a href="leave/monthly-leave-summary-report" runat="server">Monthly Lv Summary Report</a>
+                                            </li>
+                                            <% } %>
+
                                             <% if (IsRouteExists("leave/el-processing"))
                                                 { %>
                                             <li class="">

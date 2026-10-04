@@ -278,8 +278,8 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 string condition = AccessControl.loadDepartmetCondition(CompnayId);
                 dt = new DataTable();
 
-                sqlDB.fillDataTable("SELECT Distinct SftName,SftId from HRD_Shift where " + condition + " and IsActive=1", dt);
-                string query = "SELECT Distinct SftName,SftId from HRD_Shift where " + condition + " and IsActive=1";
+                sqlDB.fillDataTable("SELECT Distinct SftName,SftId from HRD_Shift where CompanyId ='"+ CompnayId + "'and IsActive=1", dt);
+                string query = "SELECT Distinct SftName,SftId from HRD_Shift where CompanyId ='" + CompnayId + "'and IsActive=1";
                 ddl.DataValueField = "SftId";
                 ddl.DataTextField = "SftName";
                 ddl.DataSource = dt;
@@ -385,7 +385,8 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 string condition = AccessControl.loadEmpCardNumber(CompanyId);
                 EmpTypeID = (EmpTypeID == "All") ? "" : "EmpTypeId=" + EmpTypeID + " and";
                 dt = new DataTable();
-                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeProfile where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering order by DptCode, CustomOrdering", dt);
+                sqlDB.fillDataTable("Select MAX(SN) as SN,EmpId,EmpCardNo+'('+EmpProximityNo+')' +' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeDetails where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering,EmpProximityNo order by DptCode, CustomOrdering", dt);
+                string test = "Select MAX(SN) as SN,EmpId,EmpCardNo+'('+EmpProximityNo+')' +' [ '+EmpName+' ]' as EmpCardNo From v_EmployeeDetails where " + EmpTypeID + "  EmpStatus in ('1','8') and IsActive='1' and " + condition + " Group by EmpId,EmpCardNo,EmpName,DptCode,CustomOrdering,EmpProximityNo order by DptCode, CustomOrdering";
                 dl.DataSource = dt;
                 dl.DataTextField = "EmpCardNo";
                 dl.DataValueField = "SN";
@@ -901,6 +902,20 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 dl.DataTextField = "DsgName";
                 dl.DataBind();
                 dl.Items.Insert(0, new ListItem(string.Empty, "0"));
+            }
+            catch { }
+        }
+
+        public static void LoadDesignationByCompany(string CompanyId, DropDownList dl)
+        {
+            try
+            {
+                sqlDB.fillDataTable("Select distinct DsgId,DsgName From v_HRD_Designation where CompanyId='" + CompanyId + "' and DsgStatus='True' order by DsgName", dt = new DataTable());
+                dl.DataSource = dt;
+                dl.DataValueField = "DsgId";
+                dl.DataTextField = "DsgName";
+                dl.DataBind();
+                dl.Items.Insert(0, new ListItem("All", "0"));
             }
             catch { }
         }

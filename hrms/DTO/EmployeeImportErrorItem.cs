@@ -21,6 +21,7 @@ namespace SigmaERP.hrms.DTO
     public string EmpStatus { get; set; }
     public string Type { get; set; }
     public string DutyType { get; set; }
+    public string PunchSource { get; set; }
     public string WeekendType { get; set; }
     public string WeekendDayName { get; set; }
     public string JoiningDate { get; set; }

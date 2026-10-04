@@ -60,12 +60,15 @@ namespace SigmaERP.hrms.Leave
         {
             try
             {
+                ViewState["__CShortName__"] = "";
                 HttpCookie getCookies = Request.Cookies["userInfo"];
 
                 string getUserId = getCookies["__getUserId__"].ToString();
                 ViewState["__CompanyId__"] = getCookies["__CompanyId__"].ToString();
                 ViewState["__UserType__"] = getCookies["__getUserType__"].ToString();
                 classes.commonTask.LoadBranch(ddlCompanyName, ViewState["__CompanyId__"].ToString());
+                ViewState["__CShortName__"] = getCookies["__CShortName__"].ToString();
+
                 //string[] AccessPermission = new string[0];
                 ////System.Web.UI.HtmlControls.HtmlTable a = tblGenerateType;
                 //AccessPermission = checkUserPrivilege.checkUserPrivilegeForReport(ViewState["__CompanyId__"].ToString(), getUserId, ComplexLetters.getEntangledLetters(ViewState["__UserType__"].ToString()), "yearly_leaveStatus_report.aspx", ddlCompanyName, WarningMessage, tblGenerateType, btnPreview);
@@ -334,8 +337,303 @@ namespace SigmaERP.hrms.Leave
 
         protected void btnPreview_Click(object sender, EventArgs e)
         {
+            if (ViewState["__CShortName__"].ToString() == "ABR")
+                monthwiseLeaveSummary();
             //GenerateYearlyLeaveStarus();
             GenerateYearlyLeaveStarus_SG();
+
+
+        }
+
+
+        private void monthwiseLeaveSummary()
+        {
+            string query = @"DECLARE @Year INT = 2026;
+
+            DECLARE @FromDate DATE = '2026-06-01';
+            DECLARE @ToDate   DATE = '2026-06-30';
+
+            DECLARE @LeaveColumns NVARCHAR(MAX);
+            DECLARE @SQL NVARCHAR(MAX);
+
+
+            SELECT @LeaveColumns =
+                STUFF
+                (
+                    (
+                        SELECT
+            
+                            ',
+            
+                            MAX(CASE
+            
+                                WHEN ShortName = ''' + REPLACE(LC.ShortName, '''', '''''') + '''
+            
+                                THEN AssignedDays
+            
+                            END) AS[' + REPLACE(LC.ShortName, ']', ']]') + '_Assigned],
+
+                MAX(CASE
+                    WHEN ShortName = ''' + REPLACE(LC.ShortName, '''', '''''') + '''
+                    THEN TakenDays
+                END) AS[' + REPLACE(LC.ShortName, ']', ']]') + '_Taken],
+
+                MAX(CASE
+                    WHEN ShortName = ''' + REPLACE(LC.ShortName, '''', '''''') + '''
+                    THEN RemainingDays
+                END) AS[' + REPLACE(LC.ShortName, ']', ']]') + '_Remaining]'
+            FROM tblLeaveConfig LC
+            WHERE NULLIF(LTRIM(RTRIM(LC.ShortName)), '') IS NOT NULL
+            ORDER BY LC.LeaveId
+            FOR XML PATH(''), TYPE
+        ).value('.', 'NVARCHAR(MAX)')
+    , 1, 1, '');
+
+
+            SET @SQL = N'
+
+WITH CLTable AS
+(
+    SELECT * FROM ( VALUES  (''01 - 01'', ''01 - 31'', 10),
+            (''02 - 01'', ''02 - 28'', 9),
+            (''03 - 01'', ''03 - 31'', 8),
+            (''04 - 01'',''05 - 15'',7),
+            (''05 - 16'',''06 - 15'',6),
+            (''06 - 16'',''07 - 15'',5),
+            (''07 - 16'',''08 - 15'',4),
+            (''08 - 16'',''10 - 15'',3),
+            (''10 - 16'',''11 - 30'',2),
+            (''12 - 01'',''12 - 31'',1)
+    ) AS x(StartDate, EndDate, Days)
+),
+
+SLTable AS
+(
+    SELECT*
+    FROM
+    (
+        VALUES
+            (''01 - 01'',''01 - 31'',14),
+            (''02 - 01'',''02 - 15'',13),
+            (''02 - 16'',''03 - 15'',12),
+            (''03 - 16'',''03 - 31'',11),
+            (''04 - 01'',''04 - 30'',10),
+            (''05 - 01'',''05 - 31'',9),
+            (''06 - 01'',''06 - 30'',8),
+            (''07 - 01'',''07 - 31'',7),
+            (''08 - 01'',''08 - 15'',6),
+            (''08 - 16'',''09 - 15'',5),
+            (''09 - 16'',''09 - 30'',4),
+            (''10 - 01'',''10 - 31'',3),
+            (''11 - 01'',''11 - 30'',2),
+            (''12 - 01'',''12 - 31'',1)
+    ) AS x(StartDate, EndDate, Days)
+),
+
+
+pEL AS
+(
+    SELECT
+        EmpID,
+        ISNULL(SUM(ReserveEeanLeaveDays), 0) AS PreviousEL
+    FROM Earnleave_Reserved
+    WHERE ReserveFor >= DATEFROMPARTS(@Year - 1, 1, 1)
+      AND ReserveFor<DATEFROMPARTS(@Year, 1, 1)
+    GROUP BY EmpID
+),
+
+
+bEL AS
+(
+    SELECT
+        EmpID,
+        ISNULL(SUM(EarnLeaveDays), 0) AS EarnedEL
+    FROM Earnleave_BalanceDetailsLog
+    WHERE GenerateDate >= DATEFROMPARTS(@Year, 1, 1)
+      AND GenerateDate<DATEFROMPARTS(@Year +1, 1, 1)
+    GROUP BY EmpID
+),
+
+
+ed AS
+(
+    SELECT*
+    FROM v_EmployeeDetails
+
+    WHERE IsActive = 1
+      AND CompanyId IN (''0001'')
+      AND DptId IN(''0005'')
+      AND EmpStatus IN(1, 8)
+),
+
+
+LeaveTaken AS
+(
+    SELECT
+        LVA.EmpId,
+        LVA.LeaveTypeId,
+
+        SUM(ISNULL(LVA.TotalLeaveDays, 0)) AS TakenDays
+
+    FROM Leave_LeaveApplications LVA
+
+    WHERE LVA.IsDeleted = 0
+      AND LVA.ApprovalStatus = ''1''
+
+      -- Month wise filter
+      AND LVA.LeaveStartDate >= @FromDate
+      AND LVA.LeaveStartDate < DATEADD(DAY, 1, @ToDate)
+
+    GROUP BY
+        LVA.EmpId,
+        LVA.LeaveTypeId
+),
+
+
+LeaveCalculation AS
+(
+    SELECT ed.EmpId, ed.EmpName, CONVERT(VARCHAR(10), ed.EmpJoiningDate, 105)
+            AS JoiningDate, ed.EmpCardNo, ed.EmpProximityNo, ed.Sex,ed.DptId,ed.DptName, ed.DsgId,
+        ed.DsgName, ed.CompanyId,ed.CompanyName,ed.SftId,ed.Address, LC.LeaveId,LC.ShortName,LC.LeaveName,
+
+        CASE
+
+            -- Casual Leave
+            WHEN LOWER(LC.ShortName) = ''c / l''
+            THEN
+                CASE
+                    WHEN YEAR(ed.EmpJoiningDate) = @Year
+                    THEN ISNULL(clmap.Days, 0)
+                    ELSE ISNULL(LC.LeaveDays, 0)
+                END
+
+
+            -- Sick Leave
+            WHEN LOWER(LC.ShortName) = ''s / l''
+            THEN
+                CASE
+                    WHEN YEAR(ed.EmpJoiningDate) = @Year
+                    THEN ISNULL(slmap.Days, 0)
+                    ELSE ISNULL(LC.LeaveDays, 0)
+                END
+
+
+            -- Earn Leave
+            WHEN LOWER(LC.ShortName) = ''el''
+            THEN
+                ISNULL(pEL.PreviousEL, 0)
+                +
+                ISNULL(bEL.EarnedEL, 0)
+
+
+            -- Other Leave
+            ELSE
+                ISNULL(LC.LeaveDays, 0)
+
+        END AS AssignedDays,
+
+        ISNULL(LT.TakenDays, 0) AS TakenDays,
+
+        CASE
+
+            --Casual Leave
+           WHEN LOWER(LC.ShortName) = ''c / l''
+            THEN
+                (
+                    CASE
+                        WHEN YEAR(ed.EmpJoiningDate) = @Year
+                        THEN ISNULL(clmap.Days, 0)
+                        ELSE ISNULL(LC.LeaveDays, 0)
+                    END
+                    -
+                    ISNULL(LT.TakenDays, 0)
+                )
+
+
+            -- Sick Leave
+            WHEN LOWER(LC.ShortName) = ''s / l''
+            THEN
+                (
+                    CASE
+                        WHEN YEAR(ed.EmpJoiningDate) = @Year
+                        THEN ISNULL(slmap.Days, 0)
+                        ELSE ISNULL(LC.LeaveDays, 0)
+                    END
+                    -
+                    ISNULL(LT.TakenDays, 0)
+                )
+
+
+            -- Earn Leave
+            WHEN LOWER(LC.ShortName) = ''el''
+            THEN
+                (
+                    ISNULL(pEL.PreviousEL, 0)
+                    +
+                    ISNULL(bEL.EarnedEL, 0)
+                    -
+                    ISNULL(LT.TakenDays, 0)
+                )
+
+
+            -- Other Leave
+            ELSE
+                (
+                    ISNULL(LC.LeaveDays, 0)
+                    -
+                    ISNULL(LT.TakenDays, 0)
+                )
+
+        END AS RemainingDays
+
+
+    FROM ed
+
+
+    LEFT JOIN CLTable clmap
+        ON CONVERT(VARCHAR(5), ed.EmpJoiningDate, 110)
+           BETWEEN clmap.StartDate AND clmap.EndDate
+
+    LEFT JOIN SLTable slmap
+        ON CONVERT(VARCHAR(5), ed.EmpJoiningDate, 110)
+           BETWEEN slmap.StartDate AND slmap.EndDate
+
+
+    CROSS JOIN tblLeaveConfig LC
+
+
+    LEFT JOIN LeaveTaken LT
+        ON LT.EmpId = ed.EmpId
+       AND LT.LeaveTypeId = LC.LeaveId
+
+
+    LEFT JOIN bEL
+        ON bEL.EmpID = ed.EmpId
+
+    LEFT JOIN pEL
+        ON pEL.EmpID = ed.EmpId
+)
+
+
+SELECT EmpId, EmpName, JoiningDate, EmpCardNo, EmpProximityNo, Sex, DptId, DptName, DsgId, DsgName, CompanyId, CompanyName, SftId, Address, ' + @LeaveColumns + ' FROM LeaveCalculation
+GROUP BY  EmpId,EmpName,JoiningDate,EmpCardNo,EmpProximityNo, Sex,DptId,DptName,DsgId, DsgName, CompanyId,CompanyName,SftId,Address
+
+ORDER BY
+CASE
+        WHEN ISNUMERIC(DptId) = 1
+        THEN CONVERT(INT, DptId)
+        ELSE 999999
+    END,
+
+    EmpId;
+            ';
+
+EXEC sp_executesql
+    @SQL,
+    N'@Year INT, @FromDate DATE, @ToDate DATE',
+    @Year = @Year,
+    @FromDate = @FromDate,
+    @ToDate = @ToDate; ";
         }
     }
 }
