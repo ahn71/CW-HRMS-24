@@ -67,22 +67,22 @@ namespace SigmaERP.hrms.Leave {
         protected global::System.Web.UI.WebControls.RadioButtonList rblEmpType;
         
         /// <summary>
-        /// ddlYear control.
+        /// txtFromDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlYear;
-        
+        protected global::System.Web.UI.WebControls.TextBox txtFromDate;
+
         /// <summary>
-        /// ddlMonth control.
+        /// txtToDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlMonth;
+        protected global::System.Web.UI.WebControls.TextBox txtToDate;
         
         /// <summary>
         /// txtCardNo control.

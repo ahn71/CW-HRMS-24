@@ -842,7 +842,7 @@ namespace SigmaERP.classes
 
 
 
-        private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType,string AttendanceBonus)
+        private SalaryRecord _checkAttendanceBonus(SalaryRecord salaryRecord, string EmpDutyType,string AttendanceBonus)
         {
 
               
@@ -895,9 +895,215 @@ namespace SigmaERP.classes
         }
 
 
-        
 
-        
+        private SalaryRecord checkAttendanceBonus(SalaryRecord salaryRecord,string EmpDutyType, string AttendanceBonus)
+        {
+            try
+            {
+                if (salaryRecord == null)
+                    return salaryRecord;
+
+                // Default: কোনো bonus না পেলে 0
+                salaryRecord.AttendanceBonus = 0;
+
+                if (!HasCompleteDutyDays())
+                    return salaryRecord;
+
+                if (salaryRecord.AbsentDay != salaryRecord.LWP)
+                    return salaryRecord;
+
+                if (string.IsNullOrWhiteSpace(AttendanceBonus))
+                    return salaryRecord;
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+                var data = serializer.DeserializeObject(AttendanceBonus)
+                           as Dictionary<string, object>;
+
+                if (data == null || !data.ContainsKey("rules"))
+                    return salaryRecord;
+
+                var rules = data["rules"] as object[];
+
+                if (rules == null || rules.Length == 0)
+                    return salaryRecord;
+
+                foreach (var ruleObj in rules)
+                {
+                    try
+                    {
+                        var rule = ruleObj as Dictionary<string, object>;
+
+                        if (rule == null)
+                            continue;
+
+                        bool criteriaMatched = false;
+
+                        if (rule.ContainsKey("designationIds"))
+                        {
+                            criteriaMatched = IsIdMatched(
+                                rule["designationIds"],
+                                salaryRecord.DsgId);
+                        }
+                        else if (rule.ContainsKey("departmentIds"))
+                        {
+                            criteriaMatched = IsIdMatched(
+                                rule["departmentIds"],
+                                salaryRecord.DptId);
+                        }
+                        else if (rule.ContainsKey("employeeTypeIds"))
+                        {
+                            criteriaMatched = IsIdMatched(
+                                rule["employeeTypeIds"],
+                                salaryRecord.EmpTypeId);
+                        }
+
+                        // Criteria match না করলে next rule
+                        if (!criteriaMatched)
+                            continue;
+
+
+                        if (!rule.ContainsKey("bonusRules") ||rule["bonusRules"] == null)
+                            continue;
+
+                        var bonusRules = rule["bonusRules"] as object[];
+
+                        if (bonusRules == null || bonusRules.Length == 0)
+                            continue;
+
+                        foreach (var bonusRuleObj in bonusRules)
+                        {
+                            try
+                            {
+                                var bonusRule =
+                                    bonusRuleObj as Dictionary<string, object>;
+
+                                if (bonusRule == null)
+                                    continue;
+
+                                int maxLeave = 0;
+                                int maxLate = 0;
+                                double bonusAmount = 0;
+
+
+                                // maxLeave
+                                if (bonusRule.ContainsKey("maxLeave") &&
+                                    bonusRule["maxLeave"] != null)
+                                {
+                                    int.TryParse(
+                                        bonusRule["maxLeave"].ToString(),
+                                        out maxLeave);
+                                }
+
+
+                                // maxLate
+                                if (bonusRule.ContainsKey("maxLate") &&
+                                    bonusRule["maxLate"] != null)
+                                {
+                                    int.TryParse(
+                                        bonusRule["maxLate"].ToString(),
+                                        out maxLate);
+                                }
+
+
+                                // bonusAmount
+                                if (bonusRule.ContainsKey("bonusAmount") &&
+                                    bonusRule["bonusAmount"] != null)
+                                {
+                                    double.TryParse(
+                                        bonusRule["bonusAmount"].ToString(),
+                                        out bonusAmount);
+                                }
+
+
+                                // Leave condition
+                                if (salaryRecord.TotalLeave > maxLeave)
+                                    continue;
+
+
+                                // Late condition
+                                if (salaryRecord.LateDays > maxLate)
+                                    continue;
+
+                                salaryRecord.AttendanceBonus = bonusAmount;
+
+                                return salaryRecord;
+                            }
+                            catch
+                            {
+                                // কোনো bonus rule invalid হলে
+                                // পরের bonus rule check করবে
+                                continue;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // কোনো main rule invalid হলে
+                        // salary process বন্ধ না করে next rule check করবে
+                        continue;
+                    }
+                }
+
+                // কোনো matching rule পাওয়া যায়নি
+                salaryRecord.AttendanceBonus = 0;
+
+                return salaryRecord;
+            }
+            catch
+            {
+                // JSON invalid / conversion error / unexpected error
+                // কোনোভাবেই salary process বন্ধ হবে না
+
+                if (salaryRecord != null)
+                    salaryRecord.AttendanceBonus = 0;
+
+                return salaryRecord;
+            }
+        }
+
+
+        private bool IsIdMatched(object idsObject, object employeeId)
+        {
+            try
+            {
+                if (idsObject == null || employeeId == null)
+                    return false;
+
+                string currentId = employeeId.ToString()?.Trim();
+
+                if (string.IsNullOrWhiteSpace(currentId))
+                    return false;
+
+                var ids = idsObject as object[];
+
+                if (ids == null || ids.Length == 0)
+                    return false;
+
+                foreach (var id in ids)
+                {
+                    if (id == null)
+                        continue;
+
+                    string configuredId = id.ToString()?.Trim();
+
+                    if (string.Equals(
+                        configuredId,
+                        currentId,
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
 
         private double getOthersPay(string EmpId)
@@ -973,8 +1179,8 @@ namespace SigmaERP.classes
         }
         private double getOTRate(double Salary)
         {
-          return Math.Round((Salary / 208) *2, 2); // here 208 is static.                
-          //return Math.Round((Salary * .005), 2); // 0.5 % of Gross for Mollah Fashion          
+          //return Math.Round((Salary / 208) *2, 2); // here 208 is static.                
+          return Math.Round((Salary * .005), 2); // 0.5 % of Gross for Mollah Fashion          
         }
         private double getOTAmout(string OverTime,double OTRate)
         {            
@@ -993,7 +1199,7 @@ namespace SigmaERP.classes
         }
         private SalaryRecord getOverTime(SalaryRecord salaryRecord,DataRow employee)
         {
-            salaryRecord.OTRate = getOTRate(double.Parse(employee["BasicSalary"].ToString()));
+            salaryRecord.OTRate = getOTRate(double.Parse(employee["EmpPresentSalary"].ToString()));
            // salaryRecord.OTRate = getOTRate(double.Parse(employee["EmpPresentSalary"].ToString())); // Gross for Mollah Fashion
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(@"DECLARE @maxOT VARCHAR(8) = '02:00:00' 
@@ -1305,6 +1511,10 @@ namespace SigmaERP.classes
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable("select distinct SftId, EmpId,Convert(varchar(11),ATTDate,111) as ATTDate,InHour,InMin,InSec,OutHour,OutMin,OutSec,ATTStatus from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND ATTStatus In ('P','L')  AND AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM") + '-' + "01" + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' AND PaybleDays='1' ");
             totalDays += dt.Rows.Count;
+
+
+            string kk = @"select distinct SftId, EmpId,Convert(varchar(11),ATTDate,111) as ATTDate,InHour,InMin,InSec,OutHour,OutMin,OutSec,ATTStatus from v_tblAttendanceRecord where EmpId='" + salaryRecord.EmpId + "' AND ATTStatus In ('P','L')  AND AttDate >='" + salaryRecord.FromDate.ToString("yyyy-MM") + '-' + "01" + "' AND AttDate <= '" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' AND PaybleDays='1' ";
+
 
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable("select distinct format(ATTDate,'yyyy-MM-dd') as WeekendDate from v_tblAttendanceRecord where  ATTDate>='" + salaryRecord.FromDate.ToString("yyyy-MM") + "-" + "01" + "' and  ATTDate<='" + salaryRecord.ToDate.ToString("yyyy-MM-dd") + "' and EmpId='" + salaryRecord.EmpId + "' and ATTStatus in('LV') ");

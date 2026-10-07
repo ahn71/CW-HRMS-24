@@ -111,13 +111,13 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>Year &nbsp;</td>
+                                                    <td>From Date &nbsp;</td>
                                                     <td>
-                                                        <asp:DropDownList runat="server" ID="ddlYear" CssClass="form-control select_width" Width="96%"></asp:DropDownList>
+                                                        <asp:TextBox runat="server" ID="txtFromDate" TextMode="Date" CssClass="form-control" Width="96%"></asp:TextBox>
                                                     </td>
-                                                    <td>Month &nbsp;</td>
+                                                    <td>To Date &nbsp;</td>
                                                     <td>
-                                                        <asp:DropDownList runat="server" ID="ddlMonth" CssClass="form-control select_width" Width="96%"></asp:DropDownList>
+                                                        <asp:TextBox runat="server" ID="txtToDate" TextMode="Date" CssClass="form-control" Width="96%"></asp:TextBox>
                                                     </td>
                                                 </tr>
                                                 <tr>

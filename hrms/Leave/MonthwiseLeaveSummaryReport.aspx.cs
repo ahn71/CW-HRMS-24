@@ -47,32 +47,34 @@ namespace SigmaERP.hrms.Leave
                 ddlCompanyName.SelectedValue = "0000";
 
                 commonTask.LoadDepartment(companyId, lstAll);
-                LoadYears(companyId);
-                LoadMonths();
+
+                // default: start of this year to end of this month
+                DateTime today = DateTime.Today;
+                txtFromDate.Text = new DateTime(today.Year, 1, 1).ToString(DateFormat, CultureInfo.InvariantCulture);
+                txtToDate.Text = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month)).ToString(DateFormat, CultureInfo.InvariantCulture);
             }
             catch { }
         }
 
-        private void LoadYears(string companyId)
+        private const string DateFormat = "yyyy-MM-dd";
+
+        private static bool TryParseDate(string value, out DateTime date)
         {
-            ddlYear.Items.Clear();
-            var years = new List<int>();
-            DataTable dt = CRUD.ExecuteReturnDataTable("SELECT DISTINCT YEAR(LeaveStartDate) AS Yr FROM Leave_LeaveApplications WHERE CompanyId='" + companyId.Replace("'", "''") + "'");
-            if (dt != null)
-                foreach (DataRow row in dt.Rows) years.Add(Convert.ToInt32(row["Yr"]));
-            if (!years.Contains(DateTime.Today.Year)) years.Add(DateTime.Today.Year);
-            years.Sort();
-            years.Reverse();
-            foreach (int y in years) ddlYear.Items.Add(new ListItem(y.ToString(CultureInfo.InvariantCulture), y.ToString(CultureInfo.InvariantCulture)));
-            ddlYear.SelectedValue = DateTime.Today.Year.ToString(CultureInfo.InvariantCulture);
+            return DateTime.TryParseExact((value ?? "").Trim(), DateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
         }
 
-        private void LoadMonths()
+        // Calendar months touched by the range, e.g. 15-Jan to 10-Mar = 3
+        private static int MonthCount(DateTime fromDate, DateTime toDate)
         {
-            ddlMonth.Items.Clear();
-            for (int m = 1; m <= 12; m++)
-                ddlMonth.Items.Add(new ListItem(new DateTime(2000, m, 1).ToString("MMMM", CultureInfo.InvariantCulture), m.ToString(CultureInfo.InvariantCulture)));
-            ddlMonth.SelectedValue = DateTime.Today.Month.ToString(CultureInfo.InvariantCulture);
+            return (toDate.Year - fromDate.Year) * 12 + toDate.Month - fromDate.Month + 1;
+        }
+
+        private static string MonthRangeLabel(DateTime fromDate, DateTime toDate)
+        {
+            string from = fromDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            string to = toDate.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            int months = MonthCount(fromDate, toDate);
+            return (from == to ? from : from + " to " + to) + " (" + months + (months == 1 ? " month)" : " months)");
         }
 
         protected void ddlCompanyName_SelectedIndexChanged(object sender, EventArgs e)
@@ -81,7 +83,6 @@ namespace SigmaERP.hrms.Leave
             lstAll.Items.Clear();
             lstSelected.Items.Clear();
             commonTask.LoadDepartment(companyId, lstAll);
-            LoadYears(companyId);
         }
 
         protected void btnAddItem_Click(object sender, EventArgs e) { commonTask.AddRemoveItem(lstAll, lstSelected); }
@@ -100,12 +101,29 @@ namespace SigmaERP.hrms.Leave
                 return;
             }
 
+            DateTime fromDate, toDate;
+            if (!TryParseDate(txtFromDate.Text, out fromDate) || !TryParseDate(txtToDate.Text, out toDate))
+            {
+                lblMessage.Text = "Please select both From Date and To Date.";
+                return;
+            }
+            if (toDate < fromDate)
+            {
+                lblMessage.Text = "To Date must be on or after From Date.";
+                return;
+            }
+            if (toDate.Year != fromDate.Year)
+            {
+                lblMessage.Text = "From Date and To Date must be in the same year.";
+                return;
+            }
+
             string companyId = ddlCompanyName.SelectedValue == "0000" ? ViewState["__CompanyId__"].ToString() : ddlCompanyName.SelectedValue;
 
             var url = new StringBuilder();
             url.Append(Request.Url.AbsolutePath).Append("?view=1");
-            url.Append("&year=").Append(HttpUtility.UrlEncode(ddlYear.SelectedValue));
-            url.Append("&month=").Append(HttpUtility.UrlEncode(ddlMonth.SelectedValue));
+            url.Append("&from=").Append(fromDate.ToString(DateFormat, CultureInfo.InvariantCulture));
+            url.Append("&to=").Append(toDate.ToString(DateFormat, CultureInfo.InvariantCulture));
             url.Append("&companyId=").Append(HttpUtility.UrlEncode(companyId));
             if (rblEmpType.SelectedValue != "All") url.Append("&empType=").Append(HttpUtility.UrlEncode(rblEmpType.SelectedValue));
 
@@ -125,12 +143,11 @@ namespace SigmaERP.hrms.Leave
 
         private void RunReport()
         {
-            int year;
-            int month;
-            if (!int.TryParse(Request.QueryString["year"], out year) || year < 2000 || year > 2100)
-                year = DateTime.Today.Year;
-            if (!int.TryParse(Request.QueryString["month"], out month) || month < 1 || month > 12)
-                month = DateTime.Today.Month;
+            DateTime fromDate, toDate;
+            if (!TryParseDate(Request.QueryString["from"], out fromDate) || fromDate.Year < 2000 || fromDate.Year > 2100)
+                fromDate = new DateTime(DateTime.Today.Year, 1, 1);
+            if (!TryParseDate(Request.QueryString["to"], out toDate) || toDate < fromDate || toDate.Year != fromDate.Year)
+                toDate = new DateTime(fromDate.Year, 12, 31);
 
             string companyId = Request.QueryString["companyId"];
             if (string.IsNullOrWhiteSpace(companyId)) companyId = "0001";
@@ -152,10 +169,7 @@ namespace SigmaERP.hrms.Leave
                 }
             }
 
-            DateTime fromDate = new DateTime(year, 1, 1);
-            DateTime toDate = new DateTime(year, month, DateTime.DaysInMonth(year, month));
-
-            DataTable data = CRUD.ExecuteReturnDataTable(BuildQuery(year, fromDate, toDate, companyId, deptIds, empTypeClause, cardEmpId));
+            DataTable data = CRUD.ExecuteReturnDataTable(BuildQuery(fromDate, toDate, companyId, deptIds, empTypeClause, cardEmpId));
 
             if (data == null || data.Rows.Count == 0)
             {
@@ -163,29 +177,32 @@ namespace SigmaERP.hrms.Leave
                 return;
             }
 
-            ApplyLieuLeave(data);
+            ApplyLieuLeave(data, fromDate, toDate);
             if (string.Equals(Request.QueryString["export"], "excel", StringComparison.OrdinalIgnoreCase))
             {
-                ExportExcel(data, year, month, fromDate, toDate);
+                ExportExcel(data, fromDate, toDate);
                 return;
             }
-            RenderReport(data, year, month, fromDate, toDate);
+            RenderReport(data, fromDate, toDate);
         }
 
-        // Lieu leave: 1 day earned for every 6 days since joining (as of today).
+        // Lieu leave: 1 day earned for every 6 days inside the selected range
+        // (from the later of From Date / joining date, to the earlier of To Date / today).
         // Returns true when the employee still has lieu leave left to take.
-        private static bool VerifyLieuLeave(DateTime? joiningDate, double spentDays, out int earnedDays, out double balanceDays)
+        private static bool VerifyLieuLeave(DateTime? joiningDate, DateTime fromDate, DateTime toDate, double spentDays, out int earnedDays, out double balanceDays)
         {
             DateTime today = DateTime.Today;
-            DateTime joining = (joiningDate ?? today).Date;
+            DateTime start = fromDate.Date;
+            if (joiningDate.HasValue && joiningDate.Value.Date > start) start = joiningDate.Value.Date;
+            DateTime end = toDate.Date < today ? toDate.Date : today;
 
-            int totalWorkingDays = Math.Max(0, (int)(today - joining).TotalDays);
+            int totalWorkingDays = end >= start ? (int)(end - start).TotalDays + 1 : 0;
             earnedDays = totalWorkingDays / 6;
             balanceDays = Math.Max(0, earnedDays - spentDays);
             return balanceDays > 0;
         }
 
-        private static void ApplyLieuLeave(DataTable data)
+        private static void ApplyLieuLeave(DataTable data, DateTime fromDate, DateTime toDate)
         {
             var lieu = GetLeaveTypeColumns(data).FirstOrDefault(lt => lt.ShortName.Replace(" ", "").Equals("l/l", StringComparison.OrdinalIgnoreCase));
             if (lieu == null || !data.Columns.Contains(lieu.Remaining)) return;
@@ -202,7 +219,7 @@ namespace SigmaERP.hrms.Leave
 
                 int earnedDays;
                 double balanceDays;
-                VerifyLieuLeave(joiningDate, spentDays, out earnedDays, out balanceDays);
+                VerifyLieuLeave(joiningDate, fromDate, toDate, spentDays, out earnedDays, out balanceDays);
 
                 row[assignedCol] = Convert.ChangeType(earnedDays, assignedCol.DataType, CultureInfo.InvariantCulture);
                 row[remainingCol] = Convert.ChangeType(balanceDays, remainingCol.DataType, CultureInfo.InvariantCulture);
@@ -220,8 +237,10 @@ namespace SigmaERP.hrms.Leave
             return "''" + (value ?? "").Replace("'", "''''") + "''";
         }
 
-        private static string BuildQuery(int year, DateTime fromDate, DateTime toDate, string companyId, string[] deptIds, string empTypeClause, string cardEmpId)
+        private static string BuildQuery(DateTime fromDate, DateTime toDate, string companyId, string[] deptIds, string empTypeClause, string cardEmpId)
         {
+            int year = fromDate.Year;
+            int months = MonthCount(fromDate, toDate);
             string from = fromDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             string to = toDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
@@ -230,7 +249,7 @@ namespace SigmaERP.hrms.Leave
                 ? " AND EmpId = " + ToSqlLiteral(cardEmpId)
                 : " AND DptId IN (" + ToSqlInList(deptIds) + ")";
 
-            return @"DECLARE @Year INT = " + year + @"; DECLARE @FromDate DATE = '" + from + @"'; DECLARE @ToDate DATE = '" + to + @"'; DECLARE @LeaveColumns NVARCHAR(MAX); DECLARE @SQL NVARCHAR(MAX);
+            return @"DECLARE @Year INT = " + year + @"; DECLARE @Months INT = " + months + @"; DECLARE @FromDate DATE = '" + from + @"'; DECLARE @ToDate DATE = '" + to + @"'; DECLARE @LeaveColumns NVARCHAR(MAX); DECLARE @SQL NVARCHAR(MAX);
 SELECT @LeaveColumns = STUFF((SELECT ',MAX(CASE WHEN ShortName = ''' + REPLACE(LC.ShortName, '''', '''''') + ''' THEN AssignedDays END) AS[' + REPLACE(LC.ShortName, ']', ']]') + '_Assigned], MAX(CASE WHEN ShortName = ''' + REPLACE(LC.ShortName, '''', '''''') + ''' THEN TakenDays END) AS[' + REPLACE(LC.ShortName, ']', ']]') + '_Taken], MAX(CASE WHEN ShortName = ''' + REPLACE(LC.ShortName, '''', '''''') + ''' THEN RemainingDays END) AS[' + REPLACE(LC.ShortName, ']', ']]') + '_Remaining]' FROM tblLeaveConfig LC WHERE NULLIF(LTRIM(RTRIM(LC.ShortName)), '') IS NOT NULL ORDER BY LC.LeaveId FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'), 1, 1, '');
 SET @SQL = N'
 WITH CLTable AS (SELECT * FROM (VALUES(''01 - 01'', ''01 - 31'', 10),(''02 - 01'', ''02 - 28'', 9),(''03 - 01'', ''03 - 31'', 8),(''04 - 01'',''05 - 15'',7),(''05 - 16'',''06 - 15'',6),(''06 - 16'',''07 - 15'',5),(''07 - 16'',''08 - 15'',4),(''08 - 16'',''10 - 15'',3),(''10 - 16'',''11 - 30'',2),(''12 - 01'',''12 - 31'',1)) AS x(StartDate, EndDate, Days)),
@@ -239,17 +258,13 @@ pEL AS (SELECT EmpID, ISNULL(SUM(ReserveEeanLeaveDays), 0) AS PreviousEL FROM Ea
 bEL AS (SELECT EmpID, ISNULL(SUM(EarnLeaveDays), 0) AS EarnedEL FROM Earnleave_BalanceDetailsLog WHERE GenerateDate >= DATEFROMPARTS(@Year, 1, 1) AND GenerateDate<DATEFROMPARTS(@Year +1, 1, 1) GROUP BY EmpID),
 ed AS (SELECT* FROM v_EmployeeDetails WHERE IsActive = 1 AND CompanyId IN (" + companyInList + @") AND EmpStatus IN(" + EmpStatusFilter + @")" + scopeClause + empTypeClause + @"),
 LeaveTaken AS (SELECT LVA.EmpId, LVA.LeaveTypeId, SUM(ISNULL(LVA.TotalLeaveDays, 0)) AS TakenDays FROM Leave_LeaveApplications LVA WHERE LVA.IsDeleted = 0 AND LVA.ApprovalStatus = ''1'' AND LVA.LeaveStartDate >= @FromDate AND LVA.LeaveStartDate < DATEADD(DAY, 1, @ToDate) GROUP BY LVA.EmpId, LVA.LeaveTypeId),
-LieuUsed AS (SELECT LVA.EmpId, SUM(ISNULL(LVA.TotalLeaveDays, 0)) AS UsedDays FROM Leave_LeaveApplications LVA INNER JOIN tblLeaveConfig LLC ON LLC.LeaveId = LVA.LeaveTypeId WHERE LVA.IsDeleted = 0 AND LVA.ApprovalStatus = ''1'' AND REPLACE(LOWER(LLC.ShortName), '' '', '''') = ''l/l'' GROUP BY LVA.EmpId),
-LeaveCalculation AS (SELECT ed.EmpId, ed.EmpName, CONVERT(VARCHAR(10), ed.EmpJoiningDate, 105) AS JoiningDate, CAST(ed.EmpJoiningDate AS DATE) AS JoiningDateRaw, ISNULL(LU.UsedDays, 0) AS LieuUsedDays, ed.EmpCardNo, ed.EmpProximityNo, ed.Sex, ed.DptId, ed.DptName, ed.DsgId, ed.DsgName, ed.CompanyId, ed.CompanyName, ed.SftId, ed.Address, LC.LeaveId, LC.ShortName, LC.LeaveName,
+LieuUsed AS (SELECT LVA.EmpId, SUM(ISNULL(LVA.TotalLeaveDays, 0)) AS UsedDays FROM Leave_LeaveApplications LVA INNER JOIN tblLeaveConfig LLC ON LLC.LeaveId = LVA.LeaveTypeId WHERE LVA.IsDeleted = 0 AND LVA.ApprovalStatus = ''1'' AND REPLACE(LOWER(LLC.ShortName), '' '', '''') = ''l/l'' AND LVA.LeaveStartDate >= @FromDate AND LVA.LeaveStartDate < DATEADD(DAY, 1, @ToDate) GROUP BY LVA.EmpId),
+LeaveBase AS (SELECT ed.EmpId, ed.EmpName, CONVERT(VARCHAR(10), ed.EmpJoiningDate, 105) AS JoiningDate, CAST(ed.EmpJoiningDate AS DATE) AS JoiningDateRaw, ISNULL(LU.UsedDays, 0) AS LieuUsedDays, ed.EmpCardNo, ed.EmpProximityNo, ed.Sex, ed.DptId, ed.DptName, ed.DsgId, ed.DsgName, ed.CompanyId, ed.CompanyName, ed.SftId, ed.Address, LC.LeaveId, LC.ShortName, LC.LeaveName,
     CASE WHEN LOWER(LC.ShortName) = ''c / l'' THEN CASE WHEN YEAR(ed.EmpJoiningDate) = @Year THEN ISNULL(clmap.Days, 0) ELSE ISNULL(LC.LeaveDays, 0) END
          WHEN LOWER(LC.ShortName) = ''s / l'' THEN CASE WHEN YEAR(ed.EmpJoiningDate) = @Year THEN ISNULL(slmap.Days, 0) ELSE ISNULL(LC.LeaveDays, 0) END
          WHEN LOWER(LC.ShortName) = ''el'' THEN ISNULL(pEL.PreviousEL, 0) + ISNULL(bEL.EarnedEL, 0)
-         ELSE ISNULL(LC.LeaveDays, 0) END AS AssignedDays,
-    ISNULL(LT.TakenDays, 0) AS TakenDays,
-    CASE WHEN LOWER(LC.ShortName) = ''c / l'' THEN (CASE WHEN YEAR(ed.EmpJoiningDate) = @Year THEN ISNULL(clmap.Days, 0) ELSE ISNULL(LC.LeaveDays, 0) END - ISNULL(LT.TakenDays, 0))
-         WHEN LOWER(LC.ShortName) = ''s / l'' THEN (CASE WHEN YEAR(ed.EmpJoiningDate) = @Year THEN ISNULL(slmap.Days, 0) ELSE ISNULL(LC.LeaveDays, 0) END - ISNULL(LT.TakenDays, 0))
-         WHEN LOWER(LC.ShortName) = ''el'' THEN (ISNULL(pEL.PreviousEL, 0) + ISNULL(bEL.EarnedEL, 0) - ISNULL(LT.TakenDays, 0))
-         ELSE (ISNULL(LC.LeaveDays, 0) - ISNULL(LT.TakenDays, 0)) END AS RemainingDays
+         ELSE ISNULL(LC.LeaveDays, 0) END AS YearlyDays,
+    ISNULL(LT.TakenDays, 0) AS TakenDays
     FROM ed
     LEFT JOIN CLTable clmap ON CONVERT(VARCHAR(5), ed.EmpJoiningDate, 110) BETWEEN clmap.StartDate AND clmap.EndDate
     LEFT JOIN SLTable slmap ON CONVERT(VARCHAR(5), ed.EmpJoiningDate, 110) BETWEEN slmap.StartDate AND slmap.EndDate
@@ -257,11 +272,17 @@ LeaveCalculation AS (SELECT ed.EmpId, ed.EmpName, CONVERT(VARCHAR(10), ed.EmpJoi
     LEFT JOIN LeaveTaken LT ON LT.EmpId = ed.EmpId AND LT.LeaveTypeId = LC.LeaveId
     LEFT JOIN bEL ON bEL.EmpID = ed.EmpId
     LEFT JOIN pEL ON pEL.EmpID = ed.EmpId
-    LEFT JOIN LieuUsed LU ON LU.EmpId = ed.EmpId)
+    LEFT JOIN LieuUsed LU ON LU.EmpId = ed.EmpId),
+-- Entitle for the selected months = yearly entitle / 12 * months, rounded to whole days (2.5 -> 3)
+-- (EL is an earned balance and L/L is recalculated in code, so neither is prorated; EL is still rounded)
+LeaveEntitle AS (SELECT *, CASE WHEN REPLACE(LOWER(ShortName), '' '', '''') = ''l/l'' THEN CAST(YearlyDays AS DECIMAL(10, 2))
+         WHEN LOWER(ShortName) = ''el'' THEN CAST(ROUND(YearlyDays, 0) AS DECIMAL(10, 2))
+         ELSE CAST(ROUND(YearlyDays * @Months / 12.0, 0) AS DECIMAL(10, 2)) END AS AssignedDays FROM LeaveBase),
+LeaveCalculation AS (SELECT *, AssignedDays - TakenDays AS RemainingDays FROM LeaveEntitle)
 SELECT EmpId, EmpName, JoiningDate, JoiningDateRaw, LieuUsedDays, EmpCardNo, EmpProximityNo, Sex, DptId, DptName, DsgId, DsgName, CompanyId, CompanyName, SftId, Address, ' + @LeaveColumns + ' FROM LeaveCalculation
 GROUP BY EmpId, EmpName, JoiningDate, JoiningDateRaw, LieuUsedDays, EmpCardNo, EmpProximityNo, Sex, DptId, DptName, DsgId, DsgName, CompanyId, CompanyName, SftId, Address
 ORDER BY CASE WHEN ISNUMERIC(DptId) = 1 THEN CONVERT(INT, DptId) ELSE 999999 END, EmpId;';
-EXEC sp_executesql @SQL, N'@Year INT, @FromDate DATE, @ToDate DATE', @Year = @Year, @FromDate = @FromDate, @ToDate = @ToDate;";
+EXEC sp_executesql @SQL, N'@Year INT, @Months INT, @FromDate DATE, @ToDate DATE', @Year = @Year, @Months = @Months, @FromDate = @FromDate, @ToDate = @ToDate;";
         }
 
         private class LeaveTypeColumns
@@ -290,16 +311,21 @@ EXEC sp_executesql @SQL, N'@Year INT, @FromDate DATE, @ToDate DATE', @Year = @Ye
             return result;
         }
 
-        private void RenderReport(DataTable data, int year, int month, DateTime fromDate, DateTime toDate)
+        private static string FileTag(DateTime fromDate, DateTime toDate)
+        {
+            return "MonthwiseLeaveSummary-" + fromDate.ToString("yyyyMMdd", CultureInfo.InvariantCulture) + "-" + toDate.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
+        }
+
+        private void RenderReport(DataTable data, DateTime fromDate, DateTime toDate)
         {
             var leaveTypes = GetLeaveTypeColumns(data);
             DataRow first = data.Rows[0];
             string company = Value(first, "CompanyName", "Company");
             string address = Value(first, "Address", "");
             string department = string.Join(", ", data.AsEnumerable().Select(r => Value(r, "DptName", "")).Where(s => s.Length > 0).Distinct());
-            string monthLabel = new DateTime(year, month, 1).ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            string monthLabel = MonthRangeLabel(fromDate, toDate);
             string periodLabel = fromDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture) + " to " + toDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
-            string fileTag = "MonthwiseLeaveSummary-" + year + "-" + month.ToString("00", CultureInfo.InvariantCulture);
+            string fileTag = FileTag(fromDate, toDate);
 
             var html = new StringBuilder();
 
@@ -345,9 +371,9 @@ EXEC sp_executesql @SQL, N'@Year INT, @FromDate DATE, @ToDate DATE', @Year = @Ye
                 html.Append("<td>").Append(E(Value(row, "JoiningDate", ""))).Append("</td>");
                 html.Append("<td class='left'>").Append(E(Value(row, "DsgName", ""))).Append("</td>");
                 html.Append("<td class='left'>").Append(E(Value(row, "DptName", ""))).Append("</td>");
-                foreach (var lt in leaveTypes) html.Append("<td>").Append(E(Value(row, lt.Assigned, "0"))).Append("</td>");
-                foreach (var lt in leaveTypes) html.Append("<td>").Append(E(Value(row, lt.Taken, "0"))).Append("</td>");
-                foreach (var lt in leaveTypes) html.Append("<td>").Append(E(Value(row, lt.Remaining, "0"))).Append("</td>");
+                foreach (var lt in leaveTypes) html.Append("<td>").Append(E(Days(Value(row, lt.Assigned, "0")))).Append("</td>");
+                foreach (var lt in leaveTypes) html.Append("<td>").Append(E(Days(Value(row, lt.Taken, "0")))).Append("</td>");
+                foreach (var lt in leaveTypes) html.Append("<td>").Append(E(Days(Value(row, lt.Remaining, "0")))).Append("</td>");
                 html.Append("</tr>");
             }
 
@@ -429,12 +455,12 @@ EXEC sp_executesql @SQL, N'@Year INT, @FromDate DATE, @ToDate DATE', @Year = @Ye
             reportContent.Text = html.ToString();
         }
 
-        private void ExportExcel(DataTable data, int year, int month, DateTime fromDate, DateTime toDate)
+        private void ExportExcel(DataTable data, DateTime fromDate, DateTime toDate)
         {
             var leaveTypes = GetLeaveTypeColumns(data);
             DataRow first = data.Rows[0];
             string department = string.Join(", ", data.AsEnumerable().Select(r => Value(r, "DptName", "")).Where(s => s.Length > 0).Distinct());
-            string monthLabel = new DateTime(year, month, 1).ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+            string monthLabel = MonthRangeLabel(fromDate, toDate);
             string periodLabel = fromDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture) + " to " + toDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture);
             string meta = "Duration: " + periodLabel + "      Month: " + monthLabel + "      Department: " + (department.Length > 0 ? department : "All") + "      Employees: " + data.Rows.Count;
 
@@ -506,10 +532,17 @@ EXEC sp_executesql @SQL, N'@Year INT, @FromDate DATE, @ToDate DATE', @Year = @Ye
                 Response.Clear();
                 Response.Buffer = true;
                 Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                Response.AddHeader("Content-Disposition", "attachment; filename=MonthwiseLeaveSummary-" + year + "-" + month.ToString("00", CultureInfo.InvariantCulture) + ".xlsx");
+                Response.AddHeader("Content-Disposition", "attachment; filename=" + FileTag(fromDate, toDate) + ".xlsx");
                 Response.BinaryWrite(package.GetAsByteArray());
                 Response.End();
             }
+        }
+
+        // 2.50 -> 2.5, 10.00 -> 10
+        private static string Days(string value)
+        {
+            decimal number;
+            return decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out number) ? number.ToString("0.##", CultureInfo.InvariantCulture) : value;
         }
 
         // Numeric values go to Excel as numbers so they can be summed

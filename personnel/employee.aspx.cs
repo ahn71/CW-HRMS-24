@@ -1295,8 +1295,8 @@ namespace SigmaERP.personnel
 
         private string GetPunchSource(string empId)
         {
-            using (SqlCommand cmd = new SqlCommand(
-                "SELECT PunchSource FROM Personnel_EmployeeInfo WHERE EmpId=@EmpId",
+            string jj = "SELECT PunchSource FROM Personnel_EmployeeInfo WHERE EmpId=@EmpId";
+            using (SqlCommand cmd = new SqlCommand("SELECT PunchSource FROM Personnel_EmployeeInfo WHERE EmpId=@EmpId",
                 sqlDB.connection))
             {
                 cmd.Parameters.AddWithValue("@EmpId", empId);

@@ -66,7 +66,7 @@ namespace SigmaERP.hrms.attendance
                 int row = ReportExcelHeader.Write(ws, cols, Value(first, "CompanyName", "Company"), Value(first, "Address", ""), "Monthly Attendance Sheet", "Human Resources Division", meta);
 
                 // Legend, same as the preview
-                var legend = new List<string> { "P = Present", "L = Late", "A = Absent", "W = Weekend", "PH = Public Holiday" };
+                var legend = new List<string> { "P = Present", "L = Late", "A = Absent", "DO = Day Off", "PH = Public Holiday" };
                 DataTable leaves = Session["__MonthlyAttendanceV1Leaves__"] as DataTable;
                 if (leaves != null)
                     foreach (DataRow lv in leaves.Rows) legend.Add(LeaveLabel(Value(lv, "ShortName", "")) + " = " + Value(lv, "LeaveName", ""));
@@ -158,7 +158,7 @@ namespace SigmaERP.hrms.attendance
                 .Append("</strong></div><div><b>Month</b><strong>").Append(month.ToString("MMMM yyyy", CultureInfo.InvariantCulture))
                 .Append("</strong></div><div><b>Total Days</b><strong>").Append(days).Append("</strong></div><div><b>Employees</b><strong>").Append(data.Rows.Count).Append("</strong></div></div>");
 
-            html.Append("<div class='legend'><span><b class='present'>P</b> Present</span><span><b>L</b> Late</span><span><b class='absent'>A</b> Absent</span><span><b class='holiday'>W</b> Weekend</span><span><b class='holiday'>PH</b> Public Holiday</span>");
+            html.Append("<div class='legend'><span><b class='present'>P</b> Present</span><span><b>L</b> Late</span><span><b class='absent'>A</b> Absent</span><span><b class='holiday'>DO</b> Day Off</span><span><b class='holiday'>PH</b> Public Holiday</span>");
             DataTable leaves = Session["__MonthlyAttendanceV1Leaves__"] as DataTable;
             if (leaves != null)
                 foreach (DataRow lv in leaves.Rows)
@@ -248,7 +248,7 @@ namespace SigmaERP.hrms.attendance
             var summary = data.Columns.Cast<DataColumn>().Select(c => c.ColumnName)
                 .Where(name => !fixedColumns.Contains(name) && !Regex.IsMatch(name, "^\\d{1,2}$"))
                 .ToList();
-            var order = new[] { "P", "L", "A", "W", "H", "PH" };
+            var order = new[] { "P", "L", "A", "DO", "W", "H", "PH" };
             summary = order.Where(name => summary.Contains(name, StringComparer.OrdinalIgnoreCase))
                 .Concat(summary.Where(name => !order.Contains(name, StringComparer.OrdinalIgnoreCase)))
                 .ToList();
@@ -276,7 +276,7 @@ namespace SigmaERP.hrms.attendance
             {
                 case 112: return "P";
                 case 97: return "A";
-                case 119: return "W";
+                case 119: return "DO";
                 case 104: return "PH";
                 case 108: return "L";
                 case 226: return "Lv";
@@ -291,7 +291,7 @@ namespace SigmaERP.hrms.attendance
                 case "P": case "PRESENT": return "present";
                 case "L": return "late";
                 case "A": case "ABSENT": return "absent";
-                case "W": case "O": case "WO": case "OFF": case "H": case "PH": return "holiday";
+                case "W": case "DO": case "O": case "WO": case "OFF": case "H": case "PH": return "holiday";
                 default: return "leave"; // any configured leave initial (CL, SL, AL, Lv ...)
             }
         }

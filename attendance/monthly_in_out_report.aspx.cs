@@ -311,16 +311,25 @@ namespace SigmaERP.attendance
                     "DsgName, DptId, DptName, SftId, SftName, PSftName AS GName, CompanyId, CompanyName, Address, DptCode, CustomOrdering, " +
                     "CASE WHEN LTRIM(RTRIM(ATTStatus)) = 'Lv' " +
                     "THEN ISNULL(dbo.GetInitials((SELECT TOP 1 LC.LeaveName FROM tblLeaveConfig LC WHERE LTRIM(RTRIM(LC.LeaveName)) = LTRIM(RTRIM(StateStatus)))), 'Lv') " +
+                    // worked on a weekend / holiday (has an in-punch): P when within shift start + acceptable late, else L
+                    "WHEN LTRIM(RTRIM(ATTStatus)) IN ('W', 'H') AND (ISNULL(LTRIM(RTRIM(InHour)), '') NOT IN ('', '0', '00') OR ISNULL(LTRIM(RTRIM(InMin)), '') NOT IN ('', '0', '00')) " +
+                    "THEN CASE WHEN SH.SftStartTime IS NULL OR TRY_CONVERT(TIME, LTRIM(RTRIM(InHour)) + ':' + LTRIM(RTRIM(InMin))) IS NULL " +
+                    "OR TRY_CONVERT(TIME, LTRIM(RTRIM(InHour)) + ':' + LTRIM(RTRIM(InMin))) <= DATEADD(MINUTE, ISNULL(SH.SftAcceptableLate, 0), CAST(SH.SftStartTime AS TIME)) THEN 'P' ELSE 'L' END " +
+                    // weekend without punch shows as day off
+                    "WHEN LTRIM(RTRIM(ATTStatus)) = 'W' THEN 'DO' " +
                     "ELSE ISNULL(LTRIM(RTRIM(ATTStatus)), '') END AS AttendanceStatus " +
                     "FROM v_tblAttendanceRecord " +
+                    "OUTER APPLY (SELECT TOP 1 HS.SftStartTime, HS.SftAcceptableLate FROM HRD_Shift HS WHERE HS.SftId = v_tblAttendanceRecord.SftId) SH " +
                     "WHERE CompanyId " + CompanyList + filter + " " + unitCondition +
-                    " AND AttDate >= '" + fromDate.ToString("yyyy-MM-dd") + "' AND AttDate < '" + fromDate.AddMonths(1).ToString("yyyy-MM-dd") + "' ) " +
+                    " AND AttDate >= '" + fromDate.ToString("yyyy-MM-dd") + "' AND AttDate < '" + fromDate.AddMonths(1).ToString("yyyy-MM-dd") + "' " +
+                    // dates after today are left blank (processed rows there are only placeholder A)
+                    " AND AttDate < '" + DateTime.Today.AddDays(1).ToString("yyyy-MM-dd") + "' ) " +
                     "SELECT EmpId, EmpCardNo, EmpName, DsgName, DptId, DptName, SftId, SftName, GName, CompanyId, CompanyName, Address, " +
                     dayColumns +
                     "SUM(CASE WHEN LOWER(AttendanceStatus) = 'p' THEN 1 ELSE 0 END) AS P, " +
                     "SUM(CASE WHEN LOWER(AttendanceStatus) = 'l' THEN 1 ELSE 0 END) AS L, " +
                     "SUM(CASE WHEN LOWER(AttendanceStatus) = 'a' THEN 1 ELSE 0 END) AS A, " +
-                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'w' THEN 1 ELSE 0 END) AS W, " +
+                    "SUM(CASE WHEN LOWER(AttendanceStatus) = 'do' THEN 1 ELSE 0 END) AS DO, " +
                     "SUM(CASE WHEN LOWER(AttendanceStatus) = 'h' THEN 1 ELSE 0 END) AS H" +
                     leaveColumns + ", " +
                     "SUM(CASE WHEN PaybleDays = 1 THEN 1 ELSE 0 END) AS TotalPayAbleDays " +
@@ -843,11 +852,11 @@ From v_tblAttendanceRecord as v left outer join h on v.ATTDate = h.HDate Where v
                 string[] Month = ddlMonthList.SelectedValue.Split('-');
                 string sql = "";
                 DataTable dt = new DataTable();
-
+                //'00:00:00'   case when ATTStatus='W' or ATTStatus='H' then TotalOverTime else 
                 if (rblGenerateType.SelectedValue == "1")
-                    sql = @"DECLARE @maxOT VARCHAR(8) = '02:00:00'
+                    sql = @"DECLARE @maxOT VARCHAR(8) = '08:00:00'
 DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
-                           select TotalOverTime as actualTotalOverTime, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end as TotalOverTime,
+                           select TotalOverTime as actualTotalOverTime, case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime  end as TotalOverTime,
 						  case when DptId in('0043','0075') and StayTime>@maxStayTime then
 						 CONVERT(TIME,  DATEADD(SECOND, DATEDIFF(SECOND, 0, '09:0'+SUBSTRING(OutMin,2,1)+':'+OutSec), '2022-01-01 '+InHour+':'+InMin+':'+InSec))
 						   else 
@@ -863,9 +872,9 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                         GName,MonthId,BreakStartTime,BreakEndTime,TotalDays,PaybleDays From v_tblAttendanceRecord 
                         Where CompanyId='" + ddlCompanyName.SelectedValue + "' and (EmpCardNo Like'%" + txtCardNo.Text.Trim() + "'  or EmpProximityNo='" + txtCardNo.Text.Trim() + "')  and MonthName='" + Month[1] + "-" + Month[0] + "' "+ unitCondition + " " + ShiftName + " "+ isregular + " order by  ATTDate";
                 else
-                    sql = @"DECLARE @maxOT VARCHAR(8) = '02:00:00'
+                    sql = @"DECLARE @maxOT VARCHAR(8) = '08:00:00'
 DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
-                           select TotalOverTime as actualTotalOverTime, case when ATTStatus='W' or ATTStatus='H' then '00:00:00' else case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime end end as TotalOverTime,
+                           select TotalOverTime as actualTotalOverTime, case when TotalOverTime>@maxOT then  '02:0'+SUBSTRING(OutMin,2,1)+':'+OutSec else TotalOverTime  end as TotalOverTime,
 						  case when DptId in('0043','0075') and StayTime>@maxStayTime then
 						 CONVERT(TIME,  DATEADD(SECOND, DATEDIFF(SECOND, 0, '09:0'+SUBSTRING(OutMin,2,1)+':'+OutSec), '2022-01-01 '+InHour+':'+InMin+':'+InSec))
 						   else 
