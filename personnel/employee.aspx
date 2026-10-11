@@ -4,7 +4,199 @@
     <link href="/style/dataTables.css" rel="stylesheet" />
     <style>
         #ContentPlaceHolder1_MainContent_rblPunchType {
-             margin-top: 10px;
+             margin-top: 0;
+        }
+
+        /* ===== Employee entry: responsive layout (design only) ===== */
+        #divEmpInfo > .row > [class*="col-"] {
+            margin-bottom: 15px;
+        }
+        #divEmpInfo .employee_box_left,
+        #divEmpInfo .employee_box_center {
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 6px;
+            padding: 10px 12px;
+            height: 100%;
+        }
+        #divEmpInfo .employee_table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        #divEmpInfo .employee_table > tbody > tr > td {
+            padding: 4px 0;
+            vertical-align: middle;
+        }
+        #divEmpInfo .employee_table > tbody > tr > td:first-child {
+            width: 40%;
+            max-width: none;
+            padding-right: 8px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.3;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+        #divEmpInfo .employee_table > tbody > tr > td:nth-child(2) {
+            width: 14px;
+            text-align: center;
+        }
+        #divEmpInfo .employee_table .form-control,
+        #divEmpInfo .employee_table .text_box_width,
+        #divEmpInfo .employee_table .select_width {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        #divEmpInfo .employee_table .select2-container {
+            display: block;
+            width: 100% !important;
+            max-width: 100%;
+        }
+
+        /* RadioButtonList tables inside a field */
+        #divEmpInfo .employee_table td table {
+            width: auto;
+        }
+        #divEmpInfo .employee_table td table tr {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        #divEmpInfo .employee_table td table td {
+            display: flex;
+            align-items: center;
+            padding: 2px 12px 2px 0;
+            white-space: nowrap;
+        }
+        #divEmpInfo .employee_table td table td input {
+            margin: 0;
+        }
+        #divEmpInfo .employee_table td table td label {
+            font-weight: normal;
+            margin: 0 0 0 4px;
+        }
+
+        /* Several controls on one line */
+        #divEmpInfo .emp-inline {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 10px;
+        }
+        #divEmpInfo .emp-inline .form-control {
+            flex: 1 1 90px;
+            width: auto;
+            min-width: 0;
+        }
+        #divEmpInfo .emp-inline label {
+            font-weight: normal;
+            margin: 0 0 0 4px;
+        }
+        #divEmpInfo .emp-inline > span {
+            display: inline-flex;
+            align-items: center;
+        }
+        #divEmpInfo .emp-order-box {
+            color: red;
+            text-align: center;
+        }
+
+        /* Right column: photo, signature, actions */
+        #divEmpInfo .employee_box_right {
+            background: #fafafa;
+            border: 1px solid #e3e3e3;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+        }
+        #divEmpInfo .employee_box_right small {
+            display: block;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        #divEmpInfo .employee_box_right .profileImage {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            object-fit: cover;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #divEmpInfo .employee_box_right .profileImage_2 {
+            display: block;
+            margin: 15px auto 0;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        #divEmpInfo .employee_box_right input[type="file"] {
+            width: 100%;
+            max-width: 100%;
+            margin-top: 10px !important;
+            font-size: 12px;
+            overflow: hidden;
+        }
+        #divEmpInfo .employee_box_right .emp_right_area {
+            padding: 12px 0 0 0 !important;
+            margin: 0;
+        }
+        #divEmpInfo .emp-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+        }
+        #divEmpInfo .emp-actions .css_btn {
+            flex: 1 1 60px;
+            margin: 0;
+        }
+        #divEmpInfo .em_right_button_area {
+            margin-top: 14px;
+        }
+        #divEmpInfo .em_right_button {
+            white-space: normal;
+        }
+        #divEmpInfo .emp-import {
+            margin-top: 12px;
+        }
+        #divEmpInfo .emp-import .css_btn {
+            width: 100%;
+            margin-top: 6px;
+        }
+        #divEmpInfo .employee_box_right fieldset {
+            text-align: left;
+            margin-right: 0 !important;
+        }
+
+        /* Medium screens: right column moves below, lay it out across */
+        @media (min-width: 768px) and (max-width: 1199px) {
+            #divEmpInfo .employee_box_right .profileImage,
+            #divEmpInfo .employee_box_right .profileImage_2 {
+                display: inline-block;
+                vertical-align: top;
+                margin: 0 10px;
+            }
+            #divEmpInfo .emp-actions .css_btn {
+                flex: 0 1 120px;
+            }
+        }
+
+        /* Small screens: label above field */
+        @media (max-width: 575px) {
+            #divEmpInfo .employee_table,
+            #divEmpInfo .employee_table > tbody,
+            #divEmpInfo .employee_table > tbody > tr,
+            #divEmpInfo .employee_table > tbody > tr > td {
+                display: block;
+                width: 100% !important;
+            }
+            #divEmpInfo .employee_table > tbody > tr > td:nth-child(2) {
+                display: none;
+            }
+            #divEmpInfo .employee_table > tbody > tr > td:first-child {
+                padding: 6px 0 2px 0;
+            }
         }
     </style>
 </asp:Content>
@@ -64,7 +256,7 @@
             <div class="employee_box_content" style="overflow:initial;">
                 <div id="divEmpInfo">
                     <div class="row">
-                    <div class="col-lg-5">
+                    <div class="col-lg-5 col-md-6 col-sm-12">
                     <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
                         <Triggers>
                             <asp:AsyncPostBackTrigger ControlID="ddlBranch" />
@@ -213,21 +405,22 @@
                                         <td>:
                                         </td>
                                         <td>
-                                            <asp:TextBox   ID="txtEmpCardNo" Style="float: left; " CssClass="form-control text_box_width" Visible="false" runat="server" MaxLength="15"></asp:TextBox><asp:DropDownList ID="ddlEmpCardNo" runat="server" ClientIDMode="Static" Style="margin-right: 0px; float: left" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlEmpCardNo_SelectedIndexChanged"></asp:DropDownList>
+                                            <asp:TextBox   ID="txtEmpCardNo" CssClass="form-control text_box_width" Visible="false" runat="server" MaxLength="15"></asp:TextBox><asp:DropDownList ID="ddlEmpCardNo" runat="server" ClientIDMode="Static" CssClass="form-control select_width" AutoPostBack="True" OnSelectedIndexChanged="ddlEmpCardNo_SelectedIndexChanged"></asp:DropDownList>
                                         </td>
-                                        <td></td>
                                     </tr>
                                        
                                     <tr>
-                                        <td style="white-space: nowrap;">Alternate Card
+                                        <td>Alternate Card
                                         </td>
                                         <td>:
                                         </td>
-                                        <td style="white-space: nowrap;">
-                                            <asp:TextBox ID="txtAlternativeCard" Style="float: left; width: 110px;" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width_2" MaxLength="5" Enabled="False"></asp:TextBox>&nbsp;
+                                        <td>
+                                            <div class="emp-inline">
+                                            <asp:TextBox ID="txtAlternativeCard" ClientIDMode="Static" runat="server" CssClass="form-control text_box_width_2" MaxLength="5" Enabled="False"></asp:TextBox>
                                             <asp:FilteredTextBoxExtender ID="F1" runat="server" FilterType="Numbers" 
                                 TargetControlID="txtAlternativeCard" ValidChars=""></asp:FilteredTextBoxExtender>
-                                            <asp:CheckBox ID="chkAlternativeEmpCard" Style="line-height: 3;" ClientIDMode="Static" CssClass="empchkLunch" Text="Active" Checked="false" runat="server" OnCheckedChanged="chkAlternativeEmpCard_CheckedChanged" AutoPostBack="True" />
+                                            <asp:CheckBox ID="chkAlternativeEmpCard" ClientIDMode="Static" CssClass="empchkLunch" Text="Active" Checked="false" runat="server" OnCheckedChanged="chkAlternativeEmpCard_CheckedChanged" AutoPostBack="True" />
+                                            </div>
                                         </td>
                                     </tr>
                                       <tr>
@@ -236,11 +429,10 @@
                                         <td>:
                                         </td>
                                         <td>
-                                            <asp:TextBox   ID="txtRegistrationId" Style="float: left; " CssClass="form-control text_box_width"  runat="server" MaxLength="15"></asp:TextBox>
+                                            <asp:TextBox   ID="txtRegistrationId" CssClass="form-control text_box_width"  runat="server" MaxLength="15"></asp:TextBox>
                                             <asp:FilteredTextBoxExtender ID="FilteredTextBoxExtender2" runat="server" FilterType="Numbers" 
                                 TargetControlID="txtRegistrationId" ValidChars=""></asp:FilteredTextBoxExtender>
                                         </td>
-                                        <td></td>
                                     </tr>
                                    
                                        <tr>
@@ -249,15 +441,17 @@
                                         <td>:
                                         </td>
                                         <td>
-                                         <asp:TextBox   ID="txtProximityNo" ClientIDMode="Static"   CssClass="form-control text_box_width"  style="float:left; width:110px" runat="server" MaxLength="10"></asp:TextBox>
+                                         <div class="emp-inline">
+                                         <asp:TextBox   ID="txtProximityNo" ClientIDMode="Static"   CssClass="form-control text_box_width" runat="server" MaxLength="10"></asp:TextBox>
                                              <asp:FilteredTextBoxExtender ID="FilteredTextBoxExtender1" runat="server" FilterType="Numbers" 
                                 TargetControlID="txtProximityNo" ValidChars=""></asp:FilteredTextBoxExtender>   
-                                             <asp:CheckBox runat="server" ID="ckbProximityChange" style="float:left;padding:9px" ToolTip="Click this box to change proximity no." Enabled="false"  AutoPostBack="true" OnCheckedChanged="ckbProximityChange_CheckedChanged" />  
+                                             <asp:CheckBox runat="server" ID="ckbProximityChange" ToolTip="Click this box to change proximity no." Enabled="false"  AutoPostBack="true" OnCheckedChanged="ckbProximityChange_CheckedChanged" />  
                                                                                 
                                             <asp:RadioButtonList ID="rblPunchType" runat="server" RepeatDirection="Horizontal" AutoPostBack="True" OnSelectedIndexChanged="rblPunchType_SelectedIndexChanged" >
                                                  <asp:ListItem Value="0" Selected="True">Finger Or Face</asp:ListItem>
                                                <asp:ListItem Value="1" >Proximity</asp:ListItem>                                                
                                             </asp:RadioButtonList>
+                                         </div>
                                         </td>
                                     </tr>
                                        <tr runat="server" visible="false" id="trProximityChangeDate">
@@ -344,14 +538,17 @@
                                                 <asp:ListItem Text="Saturday" Value="Saturday"></asp:ListItem>
                                             </asp:DropDownList>
                                         </td>
+                                    </tr>
                                     <tr>
                                         <td>Ordering </td>
                                         <td>: </td>
                                         <td>
-                                            <asp:TextBox ID="txtDptWise" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Font-Bold="true" MaxLength="4" placeholder="Dpt Wise" style="width:39%;float:left;color:red;text-align:center" ToolTip="Dpertment Wise Custom Ordering"></asp:TextBox>
-                                            <asp:CheckBox ID="cskDptWise" runat="server" AutoPostBack="true" OnCheckedChanged="cskDptWise_CheckedChanged" style="float:left;padding-left: 2px;padding-right: 2px;padding-top: 8px" ToolTip="Dpertment Wise Custom Ordering" />
-                                            <asp:TextBox ID="txtFlatOrder" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" Font-Bold="true" MaxLength="4" placeholder="Flat" style="width:39%;float:left; color:red; text-align:center" ToolTip="Flat Custom Ordering"></asp:TextBox>
-                                            <asp:CheckBox ID="cskFlatOrder" runat="server" AutoPostBack="true" OnCheckedChanged="cskFlatOrder_CheckedChanged" style="float:left;  padding-left: 2px;padding-top: 8px" ToolTip="Flat Custom Ordering" />
+                                            <div class="emp-inline">
+                                            <asp:TextBox ID="txtDptWise" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width emp-order-box" Font-Bold="true" MaxLength="4" placeholder="Dpt Wise" ToolTip="Dpertment Wise Custom Ordering"></asp:TextBox>
+                                            <asp:CheckBox ID="cskDptWise" runat="server" AutoPostBack="true" OnCheckedChanged="cskDptWise_CheckedChanged" ToolTip="Dpertment Wise Custom Ordering" />
+                                            <asp:TextBox ID="txtFlatOrder" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width emp-order-box" Font-Bold="true" MaxLength="4" placeholder="Flat" ToolTip="Flat Custom Ordering"></asp:TextBox>
+                                            <asp:CheckBox ID="cskFlatOrder" runat="server" AutoPostBack="true" OnCheckedChanged="cskFlatOrder_CheckedChanged" ToolTip="Flat Custom Ordering" />
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr runat="server" visible="false">
@@ -388,7 +585,7 @@
                         </ContentTemplate>
                     </asp:UpdatePanel>
                     </div>
-                    <div class="col-lg-5">
+                    <div class="col-lg-5 col-md-6 col-sm-12">
                     <div class="employee_box_center">
                        
                                 <div>
@@ -402,7 +599,7 @@
                                 <asp:AsyncPostBackTrigger ControlID="btnFindEmployee" />
                             </Triggers>
                             <ContentTemplate>
-                                <table class="employee_table" style="height: 578px;">
+                                <table class="employee_table">
                     
                                     <tr>
                                         <td style="width:175px;">Father's Name
@@ -465,9 +662,6 @@
                                              <asp:TextBox ID="txtHusbandOrwifeName" runat="server" CssClass="form-control text_box_width"></asp:TextBox>
                                          </td>
                                         </tr>
-                                    <tr>
-                                        
-
                                       <tr>
                                         <td>স্বামী/স্ত্রীর নাম 
                                         </td>
@@ -477,13 +671,14 @@
                                             <asp:TextBox ID="txtHusbandOrWifeBN" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" style="font-family:SutonnyMJ;"></asp:TextBox>
                                         </td>
                                     </tr>
-
+                                     <tr>
                                          <td>Date of Birth </td>
                                          <td>: </td>
                                          <td>
                                              <asp:TextBox ID="dsDateOfBirth" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:TextBox>
                                              <asp:CalendarExtender ID="CalendarExtender5" runat="server" Format="d-M-yyyy" TargetControlID="dsDateOfBirth" />
                                          </td>
+                                     </tr>
                                      <tr>
                                          <td>Place of Birth </td>
                                          <td>: </td>
@@ -605,7 +800,7 @@
                                 </div>                                                   
                     </div>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-2 col-md-12 col-sm-12">
                     <div class="employee_box_right">
                      
                         <asp:UpdatePanel ID="UpdatePanel2" runat="server" UpdateMode="Conditional">
@@ -651,16 +846,12 @@
 
                             <ContentTemplate>
                                     <div class="emp_right_area" style="padding-top: 10px; padding-left: 0px">
-                                        <table class="emp_right_table">
-                                            <tbody>
-                                                <tr>
+                                        <div class="emp-actions">
                                                     <asp:Button ID="btnNew" Class="css_btn Ptbut" runat="server" Text="New" OnClick="btnNew_Click" />
                                                     <asp:Button Visible="false" ID="btnListAll" Class="css_btn Ptbut" runat="server" Text="List All"  PostBackUrl="~/personnel/employee_list.aspx" />
                                                     <asp:Button ID="btnSave" CssClass="css_btn Ptbut" ClientIDMode="Static" runat="server" OnClientClick="return InputValidation();" Text="Save" OnClick="btnSave_Click" />
                                                     <asp:Button ID="btnClose" Class="css_btn Ptbut" runat="server" Text="Close" PostBackUrl="~/personnel_defult.aspx" />
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        </div>
                                     </div>
                                 <div style="margin-top: 20px;display:none;" id="divUserType" runat="server">
                                     <fieldset id="fs" runat="server" visible="true" style="margin-right: 55px">
@@ -705,7 +896,7 @@
                                 </div>
                                 </ContentTemplate>
                         </asp:UpdatePanel>
-                            <div style="margin-top: 14px" class="em_right_button_area">
+                            <div class="em_right_button_area">
                             <asp:Button Visible="false" ID="btnPersonalInfo" runat="server" ClientIDMode="Static" CssClass="em_right_button" Text="Personal Details" OnClientClick="return divEmpInfoHide();" OnClick="btnPersonalInfo_Click" /><br />
                             <asp:Button ID="btnEmployeeAd" runat="server" CssClass="em_right_button" OnClientClick="return divEmpAddress();" Text="Employee's Address" OnClick="btnEmployeeAd_Click" /><br />
                             <asp:Button ID="btnExperience" runat="server" CssClass="em_right_button" OnClientClick="return divEmpExperienceList();" Text="Experience" OnClick="btnExperience_Click" /><br />
@@ -718,7 +909,7 @@
                                 
                                  </ContentTemplate>
                         </asp:UpdatePanel>  
-                            <div>   
+                            <div class="emp-import">
                          <asp:UpdatePanel ID="UpdatePanel7" runat="server" UpdateMode="Always">
                     <Triggers>    
                         <asp:PostBackTrigger ControlID="btnImport" />

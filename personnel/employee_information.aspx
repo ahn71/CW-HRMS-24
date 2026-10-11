@@ -19,6 +19,179 @@
             width:400px;
             height:45px;
         }
+
+        /* ===== Employee information report: responsive layout (design only) ===== */
+        .emp-info-form .punishment_against {
+            width: 100%;
+            max-width: 660px;
+            margin: 0 auto 10px;
+            padding: 12px 16px;
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 6px;
+            overflow: visible;
+        }
+        .emp-info-form .employee_table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        .emp-info-form .employee_table > tbody > tr > td {
+            padding: 6px 0;
+            height: auto;
+            vertical-align: middle;
+        }
+        .emp-info-form .employee_table > tbody > tr > td:first-child {
+            width: 30%;
+            max-width: none;
+            padding-right: 8px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.3;
+        }
+        .emp-info-form .employee_table > tbody > tr > td:nth-child(2) {
+            width: 14px;
+            text-align: center;
+        }
+        .emp-info-form .employee_table > tbody > tr > td.tdWidth {
+            width: auto;
+        }
+        .emp-info-form .employee_table .form-control:not(.select2-hidden-accessible) {
+            width: 100% !important;
+            max-width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        /* select2: block-level so it never drops below the label at any zoom */
+        .emp-info-form .employee_table .select2-container {
+            display: block;
+            width: 100% !important;
+            max-width: 100%;
+            vertical-align: middle;
+        }
+        .emp-info-form .employee_table .select2-container .select2-selection--single {
+            height: 34px;
+        }
+        .emp-info-form .employee_table .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 32px;
+        }
+        .emp-info-form .employee_table .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 32px;
+        }
+
+        /* RadioButtonLists */
+        .emp-info-form .employee_table td table {
+            width: auto;
+        }
+        .emp-info-form .employee_table td table tbody {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .emp-info-form .employee_table td table tr {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .emp-info-form .employee_table td table td {
+            display: flex;
+            align-items: center;
+            padding: 3px 14px 3px 0;
+            white-space: nowrap;
+        }
+        .emp-info-form .employee_table td table td input {
+            margin: 0;
+        }
+        .emp-info-form .employee_table td table td label {
+            font-weight: normal;
+            margin: 0 0 0 5px;
+        }
+
+        /* Designation picker */
+        .emp-info-form .emp-dsg-picker {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+            width: 100%;
+            max-width: 660px;
+            margin: 10px auto;
+            padding: 12px 16px;
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 6px;
+        }
+        .emp-info-form .emp-dsg-picker .id_card_left,
+        .emp-info-form .emp-dsg-picker .id_card_right {
+            float: none;
+            flex: 1 1 0;
+            width: auto;
+            min-width: 0;
+            margin: 0;
+        }
+        .emp-info-form .emp-dsg-picker p {
+            margin: 0 0 5px;
+            font-weight: 600;
+        }
+        .emp-info-form .emp-dsg-picker .lstdata {
+            width: 100%;
+        }
+        .emp-info-form .emp-dsg-picker .id_card_center {
+            float: none;
+            flex: 0 0 auto;
+            width: auto;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .emp-info-form .emp-dsg-picker .id_card_center table {
+            margin: 0 !important;
+            width: auto;
+        }
+        .emp-info-form .emp-dsg-picker .arrow_button {
+            min-width: 44px;
+            margin: 3px 0;
+        }
+
+        /* Buttons */
+        .emp-info-form .button_area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            max-width: 660px;
+            margin: 0 auto;
+        }
+        .emp-info-form .button_area .css_btn {
+            margin: 0;
+            min-width: 90px;
+        }
+
+        @media (max-width: 575px) {
+            .emp-info-form .employee_table,
+            .emp-info-form .employee_table > tbody,
+            .emp-info-form .employee_table > tbody > tr,
+            .emp-info-form .employee_table > tbody > tr > td {
+                display: block;
+                width: 100% !important;
+            }
+            .emp-info-form .employee_table > tbody > tr > td:nth-child(2) {
+                display: none;
+            }
+            .emp-info-form .employee_table > tbody > tr > td:first-child {
+                padding: 6px 0 2px;
+            }
+            .emp-info-form .emp-dsg-picker {
+                flex-direction: column;
+            }
+            .emp-info-form .emp-dsg-picker .id_card_center {
+                justify-content: center;
+            }
+            .emp-info-form .emp-dsg-picker .id_card_center table tr {
+                display: inline-block;
+            }
+            .emp-info-form .emp-dsg-picker .arrow_button {
+                margin: 0 3px;
+            }
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -53,7 +226,7 @@
         </div>
         <div class="employee_box_body">
             <div class="employee_box_content">
-        <div class="punishment_against1">
+        <div class="punishment_against1 emp-info-form">
                 <div class="punishment_against">  
                     <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center"></h1>                  
                   <table runat="server" id="tblGenerateType" class="employee_table">                 
@@ -98,7 +271,7 @@
                             <tr>
                                 <td>Employee Type</td>
                                 <td>:</td>
-                                <td colspan="6">
+                                <td>
                                     <asp:RadioButtonList runat="server" ID="rblEmpType" AutoPostBack="true" RepeatDirection="Horizontal" OnSelectedIndexChanged="rblEmpType_SelectedIndexChanged" >
                                     </asp:RadioButtonList>
                                 </td>
@@ -147,7 +320,7 @@
                                 :
                             </td>
                                 <td>
-                                    <asp:TextBox ID="dtpFromDate" CssClass="form-control text_box_width" Width="42%" runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="dtpFromDate" CssClass="form-control text_box_width" runat="server"></asp:TextBox>
                                      <asp:CalendarExtender ID="CalendarExtender2" Format=dd-MM-yyyy runat="server" TargetControlID="dtpFromDate"></asp:CalendarExtender>
                                 </td>
                             </tr>   
@@ -159,7 +332,7 @@
                                 :
                             </td>
                                 <td >
-                                    <asp:TextBox ID="dtpTodate" CssClass="form-control text_box_width" Width="42%"  runat="server"></asp:TextBox>
+                                    <asp:TextBox ID="dtpTodate" CssClass="form-control text_box_width" runat="server"></asp:TextBox>
                                     <asp:CalendarExtender ID="CalendarExtender1" Format=dd-MM-yyyy runat="server" TargetControlID="dtpTodate"></asp:CalendarExtender>
                                 </td>
                             </tr> 
@@ -197,13 +370,13 @@
                     </tbody>
                   </table>
                 </div>
-                   <div id="divdesignation" visible="false" runat="server" class="id_card" style="background-color:white; width:61%;">
+                   <div id="divdesignation" visible="false" runat="server" class="id_card emp-dsg-picker">
                     <div class="id_card_left EilistL">
                         <p>Available Designation</p>
                         <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" SelectionMode="Multiple"></asp:ListBox>
                     </div>
                     <div class="id_card_center EilistC">
-                        <table style="margin-top:38px;" class="employee_table">                     
+                        <table class="emp-dsg-buttons">                     
                               <tr>
                                     <td>
                                         <asp:Button ID="btnAddItem" Class="arrow_button" runat="server" Text=">" OnClick="btnAddItem_Click"   />
@@ -231,7 +404,7 @@
                           <asp:ListBox ID="lstSelected" SelectionMode="Multiple" CssClass="lstdata EilistCec"  ClientIDMode="Static" runat="server"></asp:ListBox>
                     </div>
                 </div>
-                <div class="button_area Rbutton_area" style="text-align: center; width: auto;">
+                <div class="button_area Rbutton_area">
                     <asp:Image ID="Image1" runat="server" ImageUrl="~/images/lock.png.jpg" Height="60px" Width="60px" Visible="false" />                              
                     <asp:Button ID="btnPreview" ClientIDMode="Static" CssClass="css_btn Ptbut" runat="server"  Text="Preview" OnClick="btnPreview_Click" />
                     <asp:Button ID="btnClose" CssClass="css_btn Ptbut" runat="server" Text="Close" PostBackUrl="~/personnel_defult.aspx" />

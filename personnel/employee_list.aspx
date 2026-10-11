@@ -41,14 +41,125 @@
             font: bold;
         }
 
-        #ContentPlaceHolder1_MainContent_gvForApprovedList th, td {
+        #ContentPlaceHolder1_MainContent_gvForApprovedList th,
+        #ContentPlaceHolder1_MainContent_gvForApprovedList > tbody > tr > td {
             text-align: center;
         }
 
-            #ContentPlaceHolder1_MainContent_gvForApprovedList th:nth-child(3), td:nth-child(3) {
+            #ContentPlaceHolder1_MainContent_gvForApprovedList th:nth-child(3),
+            #ContentPlaceHolder1_MainContent_gvForApprovedList td:nth-child(3) {
                 text-align: left;
-                padding-left: 3px;
+                padding-left: 6px;
             }
+
+        /* ===== Header bar (title + actions) ===== */
+        .emp-list-head {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px 12px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,.25);
+        }
+        .emp-list-title {
+            margin: 0;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 500;
+            text-shadow: 2px 2px 4px #000;
+        }
+        .emp-list-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+        .emp-list-actions .total_emp {
+            font-size: 15px;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+        .emp-list-actions .css_btn {
+            margin: 0;
+        }
+        .emp-list-actions .import-file-name {
+            display: inline-block;
+            margin: 0;
+        }
+
+        /* ===== Filters ===== */
+        .emp-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px 10px;
+            align-items: end;
+            padding: 0 12px 12px;
+        }
+        .emp-filter-item label {
+            display: block;
+            margin: 0 0 3px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .emp-filter .form-control {
+            width: 100% !important;
+            max-width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        .emp-filter-btn .css_btn {
+            width: 100% !important;
+            margin: 0;
+        }
+
+        /* ===== Employee grid ===== */
+        .emp-grid-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            background: #fff;
+        }
+        #ContentPlaceHolder1_MainContent_gvForApprovedList {
+            min-width: 1100px;
+            border-collapse: collapse;
+        }
+        #ContentPlaceHolder1_MainContent_gvForApprovedList th {
+            padding: 8px 6px;
+            white-space: nowrap;
+        }
+        #ContentPlaceHolder1_MainContent_gvForApprovedList > tbody > tr > td {
+            padding: 5px 6px;
+            border-bottom: 1px solid #e5e5e5;
+            vertical-align: middle;
+        }
+        #ContentPlaceHolder1_MainContent_gvForApprovedList tr:nth-child(even) {
+            background: #fafafa;
+        }
+        #ContentPlaceHolder1_MainContent_gvForApprovedList input[type="submit"] {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+        }
+        #ContentPlaceHolder1_MainContent_gvForApprovedList input[type="submit"]:hover {
+            background: #f1f1f1;
+        }
+
+        @media (max-width: 575px) {
+            .emp-list-head {
+                justify-content: center;
+                text-align: center;
+            }
+            .emp-list-actions {
+                justify-content: center;
+            }
+            .emp-filter {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
         #ContentPlaceHolder1_MainContent_gvForApprovedList td:nth-child(1) {
             color: red;
@@ -214,10 +325,9 @@
                             <asp:PostBackTrigger ControlID="btnPreviewUpload" />
                         </Triggers>
                         <ContentTemplate>
-                            <div style="overflow: hidden;margin-bottom: 5px; border-bottom: 1px solid #ddd;">
-                                <h3 class="emp_header_left">
-                                <p style="font-size: 20px;text-align: center;font-weight: 500; text-shadow: 5px 5px 5px #000;">Employee List Panel</p>
-                                <h2 class="emp_header_right">                
+                            <div class="emp-list-head">
+                                <h3 class="emp-list-title">Employee List Panel</h3>
+                                <div class="emp-list-actions">
                                     <span id="pTotalEmployee" runat="server" class="total_emp">Any Employee Not Founded</span>
                                     <asp:FileUpload ID="fuEmployeeExcel" runat="server" ClientIDMode="Static" Style="display:none" accept=".xlsx,.xls" onchange="showImportFileName(this)" />
                                     <asp:Button runat="server" ID="btnChooseUpload" CssClass="css_btn Ptbut" Text="Choose" Width="75px" Height="34px" OnClientClick="document.getElementById('fuEmployeeExcel').click(); return false;" />
@@ -225,62 +335,52 @@
                                     <asp:Label ID="lblUploadFileName" runat="server" ClientIDMode="Static" CssClass="import-file-name"></asp:Label>
                                     <asp:Button runat="server" ID="btnClear" CssClass="css_btn Ptbut" Text="Clear" Width="75px" Height="34px" OnClick="btnClear_Click"   />                       
                                     <asp:Button  runat="server" ID="btnRefresh" CssClass="css_btn Ptbut" Text="Refresh" Width="75px" Height="34px" OnClick="btnRefresh_Click"     />
-                                </h2>
+                                </div>
                             </div>
-                   <div>
-                    
-                    <table border="0" cellpadding="4" width="99%" cellspacing="0" style="margin:0 0 5px 6px; border-collapse: collapse;">
-                        <tr>
-                            <td>Unit</td>
-                            <td>Depertment</td>
-                            <td>Shift</td>
-                            <td>Line / Grp</td>
-                            <td>Card No/ Reg.</td>
-                            <td>Year</td>
-                            <td>From Date</td>
-                            <td>To Date</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>
+                   <div class="emp-filter">
+                            <div class="emp-filter-item">
+                                <label>Unit</label>
                                 <asp:DropDownList ID="ddlCompanyList" Visible="false" ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlCompanyList_SelectedIndexChanged">
                                 </asp:DropDownList>
-
-                                   <asp:DropDownList ID="ddlUnit"  ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
+                                <asp:DropDownList ID="ddlUnit"  ClientIDMode="Static" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlUnit_SelectedIndexChanged">
                                 </asp:DropDownList>
-
-                            </td>
-                            <td>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>Depertment</label>
                                 <asp:DropDownList ID="ddlDepartmentList" CssClass="form-control inline_form_text_box_width" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlDepartmentList_SelectedIndexChanged"></asp:DropDownList>
-                            </td>
-                            <td>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>Shift</label>
                                 <asp:DropDownList runat="server" ID="ddlShift" CssClass="form-control inline_form_text_box_width"  AutoPostBack="True" OnSelectedIndexChanged="ddlShift_SelectedIndexChanged"    ></asp:DropDownList>
-                            </td>
-                            <td>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>Line / Grp</label>
                                 <asp:DropDownList ID="ddlGrouping" runat="server" AutoPostBack="True" CssClass="form-control inline_form_text_box_width" OnSelectedIndexChanged="ddlGrouping_SelectedIndexChanged">
-                                </asp:DropDownList>                                   
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtCardNo" runat="server" CssClass="form-control inline_form_text_box_width" ClientIDMode="Static" MaxLength="12" style="width:100px !important;" onkeypress="loadEmpInfo(event)"></asp:TextBox>
-                            </td>
-                            <td>
-                                <asp:DropDownList runat="server" ID="ddlChoseYear" CssClass="form-control inline_form_text_box_width" AutoPostBack="True" OnSelectedIndexChanged="ddlChoseYear_SelectedIndexChanged" style="width:100px !important;"></asp:DropDownList>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtFromDate" runat="server" CssClass="form-control inline_form_text_box_width" ClientIDMode="Static" MaxLength="12" style="width:100px !important;"></asp:TextBox>
+                                </asp:DropDownList>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>Card No/ Reg.</label>
+                                <asp:TextBox ID="txtCardNo" runat="server" CssClass="form-control inline_form_text_box_width" ClientIDMode="Static" MaxLength="12" onkeypress="loadEmpInfo(event)"></asp:TextBox>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>Year</label>
+                                <asp:DropDownList runat="server" ID="ddlChoseYear" CssClass="form-control inline_form_text_box_width" AutoPostBack="True" OnSelectedIndexChanged="ddlChoseYear_SelectedIndexChanged"></asp:DropDownList>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>From Date</label>
+                                <asp:TextBox ID="txtFromDate" runat="server" CssClass="form-control inline_form_text_box_width" ClientIDMode="Static" MaxLength="12"></asp:TextBox>
                                 <asp:CalendarExtender ID="txtFromDate_CalendarExtender" runat="server" Format="dd-MM-yyyy" TargetControlID="txtFromDate">
                                 </asp:CalendarExtender>
-                            </td>
-                            <td>
-                                <asp:TextBox ID="txtToDate" runat="server" CssClass="form-control inline_form_text_box_width" ClientIDMode="Static" MaxLength="12" style="width:100px !important;"></asp:TextBox>
+                            </div>
+                            <div class="emp-filter-item">
+                                <label>To Date</label>
+                                <asp:TextBox ID="txtToDate" runat="server" CssClass="form-control inline_form_text_box_width" ClientIDMode="Static" MaxLength="12"></asp:TextBox>
                                 <asp:CalendarExtender ID="txtToDate_CalendarExtender" runat="server"  Format="dd-MM-yyyy" TargetControlID="txtToDate">
                                 </asp:CalendarExtender>
-                            </td>
-                            <td><asp:Button runat="server" ID="btnSearch" CssClass="css_btn Ptbut" Text="Search" Width="75px" Height="34px" OnClick="btnSearch_Click"   /> </td>
-                        </tr>
-                    </table>
-                            
-                  
+                            </div>
+                            <div class="emp-filter-item emp-filter-btn">
+                                <asp:Button runat="server" ID="btnSearch" CssClass="css_btn Ptbut" Text="Search" Width="75px" Height="34px" OnClick="btnSearch_Click"   />
+                            </div>
                      </div>
                             </ContentTemplate>
                         </asp:UpdatePanel>
@@ -289,7 +389,7 @@
                        <asp:UpdateProgress ID="UpdateProgress1" runat="server">
                                     <ProgressTemplate>
                                         <span style=" font-family:'Times New Roman'; font-size:20px; color:green;font-weight:bold;float:left"><p>&nbsp;</p> </span> <br />
-                                        <img cursor:pointer; float:left" src="/images/loader-2.gif"/>  
+                                        <img src="/images/loader-2.gif" alt="Loading..." />  
                                     </ProgressTemplate>
                                 </asp:UpdateProgress>
                   </div>
@@ -298,7 +398,7 @@
                        
                     </Triggers>
                     <ContentTemplate>
-                     <div  style="width: 100%; background-color:#fff;margin: auto;">
+                     <div class="emp-grid-wrap">
                      <asp:GridView HeaderStyle-BackColor="#750000" ID="gvForApprovedList" runat="server" AutoGenerateColumns="false"  HeaderStyle-ForeColor="White" HeaderStyle-Font-Bold="true" HeaderStyle-Height="25px" HeaderStyle-Font-Size="14px" AllowPaging="true" PageSize="25" Width="100%" DataKeyNames="EmpId,CompanyId" OnRowCommand="gvForApprovedList_RowCommand"  OnPageIndexChanging="gvForApprovedList_PageIndexChanging" OnRowDataBound="gvForApprovedList_RowDataBound">
                          <PagerStyle CssClass="gridview" />
                           <Columns>  

@@ -9,6 +9,173 @@
         .division_table_leave1 tr {
                 height: 35px;
         }
+
+        /* ===== Daily movement report: responsive layout (design only) ===== */
+        .dmr-page .dmr-form {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 14px 16px;
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 6px;
+        }
+        .dmr-page .division_table_leave1 {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        .dmr-page .division_table_leave1 > tbody > tr > td {
+            padding: 6px 0;
+            vertical-align: middle;
+        }
+        .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(1),
+        .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(4) {
+            width: 15%;
+            padding-right: 6px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.3;
+        }
+        .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(4) {
+            padding-left: 16px;
+        }
+        .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(2),
+        .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(5) {
+            width: 14px;
+            text-align: center;
+        }
+        .dmr-page .division_table_leave1 .form-control {
+            width: 100% !important;
+            max-width: 100%;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* RadioButtonLists */
+        .dmr-page .division_table_leave1 td table {
+            width: auto;
+        }
+        .dmr-page .division_table_leave1 td table tr {
+            display: flex;
+            flex-wrap: wrap;
+            height: auto;
+        }
+        .dmr-page .division_table_leave1 td table td {
+            display: flex;
+            align-items: center;
+            padding: 3px 14px 3px 0;
+            white-space: nowrap;
+        }
+        .dmr-page .division_table_leave1 td table td input {
+            margin: 0;
+        }
+        .dmr-page .division_table_leave1 td table td label {
+            font-weight: normal;
+            margin: 0 0 0 5px;
+        }
+
+        /* Card no + "New" link */
+        .dmr-page .dmr-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dmr-page .dmr-inline .form-control {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+        .dmr-page .dmr-inline a {
+            flex: 0 0 auto;
+            font-weight: 600;
+        }
+
+        /* Employee picker */
+        .dmr-page .dmr-picker {
+            display: flex;
+            align-items: stretch;
+            gap: 12px;
+            width: 100%;
+            max-width: 900px;
+            margin: 12px auto 0;
+            padding: 14px 16px;
+            background: #fff;
+            border: 1px solid #e3e3e3;
+            border-radius: 6px;
+        }
+        .dmr-page .dmr-picker .id_card_left,
+        .dmr-page .dmr-picker .id_card_right {
+            float: none;
+            flex: 1 1 0;
+            width: auto;
+            min-width: 0;
+            margin: 0;
+        }
+        .dmr-page .dmr-picker .lstdata {
+            width: 100%;
+        }
+        .dmr-page .dmr-picker .id_card_center {
+            float: none;
+            flex: 0 0 auto;
+            width: auto;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .dmr-page .dmr-picker .id_card_center table {
+            width: auto;
+            margin: 0;
+        }
+        .dmr-page .dmr-picker .arrow_button {
+            min-width: 44px;
+            margin: 3px 0;
+        }
+
+        /* Buttons */
+        .dmr-page .job_card_button_area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .dmr-page .job_card_button_area .Mbutton {
+            margin: 0;
+            min-width: 90px;
+        }
+
+        /* Tablet / mobile: one field per line */
+        @media (max-width: 767px) {
+            .dmr-page .division_table_leave1,
+            .dmr-page .division_table_leave1 > tbody,
+            .dmr-page .division_table_leave1 > tbody > tr,
+            .dmr-page .division_table_leave1 > tbody > tr > td {
+                display: block;
+                width: 100% !important;
+                height: auto;
+            }
+            .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(2),
+            .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(5) {
+                display: none;
+            }
+            .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(1),
+            .dmr-page .division_table_leave1 > tbody > tr > td:nth-child(4) {
+                padding: 8px 0 3px;
+            }
+        }
+        @media (max-width: 575px) {
+            .dmr-page .dmr-picker {
+                flex-direction: column;
+            }
+            .dmr-page .dmr-picker .id_card_center {
+                justify-content: center;
+            }
+            .dmr-page .dmr-picker .id_card_center table tr {
+                display: inline-block;
+            }
+            .dmr-page .dmr-picker .arrow_button {
+                margin: 0 3px;
+            }
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -45,9 +212,9 @@
                     <div class="main_box_content">
                         <div style="text-align:-moz-center" class="bonus_generation">--%>
                 <div class="employee_box_body">
-                    <div class="employee_box_content">
+                    <div class="employee_box_content dmr-page">
 
-                <div class="bonus_generation" style="width:61%; margin:0px auto;">
+                <div class="bonus_generation dmr-form">
 
 <h1  runat="server" visible="false" id="WarningMessage"  style="color:red; text-align:center">You Have Not Any Access Permission!</h1>
                      <table runat="server" visible="true" id="tblGenerateType"  class="division_table_leave1">
@@ -108,10 +275,11 @@
                             </td>
                             <td>:</td>
                             <td>
+                                <div class="dmr-inline">
                                   <asp:TextBox ID="txtCardNo" ClientIDMode="Static" runat="server" PlaceHolder=" For Individual" CssClass="form-control text_box_width"></asp:TextBox>
-                               
+                                  <asp:LinkButton ID="lnkNew" Text="New" runat="server" OnClientClick="InputBoxNew()"></asp:LinkButton>
+                                </div>
                             </td>
-                                <td> <asp:LinkButton ID="lnkNew" Text="New" runat="server" OnClientClick="InputBoxNew()"></asp:LinkButton></td>
                             
   
                         </tr>
@@ -126,12 +294,12 @@
                     </table>          
                                        
                         </div>
-                      <div id="workerlist" runat="server" class="id_card" style="background-color:white; width:61%;">
+                      <div id="workerlist" runat="server" class="id_card dmr-picker">
                             <div class="id_card_left EilistL">
                                 <asp:ListBox ID="lstAll" runat="server" CssClass="lstdata EilistCec" style="height:270px !important" SelectionMode="Multiple"></asp:ListBox>
                             </div>
                             <div class="id_card_center EilistC">
-                                <table style="margin-top:60px;" class="employee_table">                    
+                                <table class="employee_table">                    
                               <tr>
                                     <td >
                                         <asp:Button ID="btnAddItem" Class="arrow_button" runat="server" Text=">" OnClick="btnAddItem_Click"  />
@@ -168,7 +336,6 @@
                                     </center>
                             </div>--%>
                             <asp:Button ID="btnPreview" CssClass="Mbutton" runat="server" ValidationGroup="save" OnClientClick="return InputValidation();" Text="Preview" OnClick="btnPreview_Click" />
-                            &nbsp; &nbsp; &nbsp;
                     <asp:Button ID="Button3" runat="server" Text="Close" PostBackUrl="~/default.aspx" CssClass="Mbutton" />
                         </div>
                     </div>
