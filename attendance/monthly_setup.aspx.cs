@@ -43,6 +43,7 @@ namespace SigmaERP.attendance
                 ViewState["__UpdateAction__"] = "0";
                 ViewState["__DeletAction__"] = "0";
                 int[] userPagePermition = AccessControl.hasPermission(pagePermission);
+                classes.commonTask.loadEmpTye(ddlEmpType);
                 if (!userPagePermition.Any())
                     Response.Redirect(Routing.defualtUrl);
 
@@ -102,12 +103,12 @@ namespace SigmaERP.attendance
                 byte isActive = (ddlMonthStatus.SelectedItem.Text.ToString().Equals("Active")) ? (byte)1 : (byte)0;
                 string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
 
-                string[] getColumns = { "MonthName", "FromDate", "ToDate", "TotalDays", "TotalWeekend", "TotalHoliday", "TotalWorkingDays", "ExpectedPaymentDate", "MonthStatus", "CompanyId", "UserId" };
+                string[] getColumns = { "MonthName", "FromDate", "ToDate", "TotalDays", "TotalWeekend", "TotalHoliday", "TotalWorkingDays", "ExpectedPaymentDate", "MonthStatus", "CompanyId", "UserId", "EmptypeId" };
                 string[] getValues = { txtMonthName.Text.Trim(), fd[2]+"-"+fd[1]+"-"+fd[0],
-                                       td[2]+"-"+td[1]+"-"+td[0], txtTotalNOofDay.Text.Trim(), 
+                                       td[2]+"-"+td[1]+"-"+td[0], txtTotalNOofDay.Text.Trim(),
                                        txtTotalWeekend.Text.Trim(), txtTotalHoliday.Text.Trim(), txtTotalWorkingDays.Text.Trim(),
-                                       epd[2]+"-"+epd[1]+"-"+epd[0], isActive.ToString(), 
-                                       CompanyId,ViewState["__getUserId__"].ToString()};
+                                       epd[2]+"-"+epd[1]+"-"+epd[0], isActive.ToString(),
+                                       CompanyId,ViewState["__getUserId__"].ToString(), ddlEmpType.SelectedValue};
                 if (SQLOperation.forSaveValue("tblMonthSetup", getColumns, getValues, sqlDB.connection) == true)
                 {
                     saveAttendance_WeekendInfo();
@@ -136,16 +137,18 @@ namespace SigmaERP.attendance
                 byte isActive = (ddlMonthStatus.SelectedItem.Text.ToString().Equals("Active")) ? (byte)1 : (byte)0;
                 string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
 
-                string[] getColumns = { "FromDate", "ToDate", "TotalDays", "TotalWeekend", "TotalHoliday", "TotalWorkingDays", "ExpectedPaymentDate", "MonthStatus", "CompanyId","UserId" };
+                string[] getColumns = { "FromDate", "ToDate", "TotalDays", "TotalWeekend", "TotalHoliday", "TotalWorkingDays", "ExpectedPaymentDate", "MonthStatus", "CompanyId","UserId", "EmptypeId" };
                 string[] getValues = { fd[2]+"-"+fd[1]+"-"+fd[0],
                                          td[2]+"-"+td[1]+"-"+td[0], txtTotalNOofDay.Text.Trim(),
                                          txtTotalWeekend.Text.Trim(), txtTotalHoliday.Text.Trim(), txtTotalWorkingDays.Text.Trim(),
                                          epd[2]+"-"+epd[1]+"-"+epd[0], isActive.ToString(),
-                                         CompanyId,ViewState["__getUserId__"].ToString() };
+                                         CompanyId,ViewState["__getUserId__"].ToString(), ddlEmpType.SelectedValue };
 
                 if (SQLOperation.forUpdateValue("tblMonthSetup", getColumns, getValues, "MonthId", ViewState["__hid__"].ToString(), sqlDB.connection) == true)
                 {
-                    saveAttendance_WeekendInfo();
+                    // without recalculation the weekend grid is empty, so keep existing weekend info
+                    if (ViewState["__IsCalculated__"].ToString().Equals("Yes"))
+                        saveAttendance_WeekendInfo();
                     lblMessage.InnerText = "success->Successfully month setup updated";
                     LoadGrid(); Clear();
                 }
@@ -160,7 +163,7 @@ namespace SigmaERP.attendance
         {
             DataTable dt;
             string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
-            sqlDB.fillDataTable("select MonthId from tblMonthSetup where MonthName='" + txtMonthName.Text.Trim() + "' And CompanyId='" + CompanyId + "'", dt = new DataTable());
+            sqlDB.fillDataTable("select MonthId from tblMonthSetup where MonthName='" + txtMonthName.Text.Trim() + "' And CompanyId='" + CompanyId + "' And EmptypeId='" + ddlEmpType.SelectedValue + "'", dt = new DataTable());
             try
             {
                 SQLOperation.forDeleteRecordByIdentifier("Attendance_WeekendInfo", "MonthID", dt.Rows[0]["MonthId"].ToString(), sqlDB.connection);
@@ -221,6 +224,7 @@ namespace SigmaERP.attendance
                     btnSave.CssClass = "Mbutton";
                 }
                 ddlMonthStatus.SelectedIndex = -1;
+                ddlEmpType.SelectedValue = "0";
                 btnSave.Text = "Save";
                 ViewState["__IsCalculated__"] = "No";
                 //ddlCompanyList.SelectedIndex = 0;
@@ -232,9 +236,11 @@ namespace SigmaERP.attendance
         void LoadGrid()
         {
             string CompanyId = (ddlCompanyList.SelectedValue.ToString().Equals("0000")) ? ViewState["__CompanyId__"].ToString() : ddlCompanyList.SelectedValue.ToString();
-            string strSQL = @"select MonthID, MonthName, convert(varchar(11), [FromDate],106) as FromDate,convert(varchar(11), [ToDate],106) as ToDate,[TotalDays],
-                                [TotalWeekend],[TotalHoliday],[TotalWorkingDays], convert(varchar(11), [ExpectedPaymentDate],106) 
-                                as[ExpectedPaymentDate] from [dbo].[tblMonthSetup] where CompanyId='" + CompanyId + "' order by MonthID desc";
+            string strSQL = @"select ms.MonthID, ms.MonthName, et.EmpType, convert(varchar(11), ms.[FromDate],106) as FromDate,convert(varchar(11), ms.[ToDate],106) as ToDate,ms.[TotalDays],
+                                ms.[TotalWeekend],ms.[TotalHoliday],ms.[TotalWorkingDays], convert(varchar(11), ms.[ExpectedPaymentDate],106)
+                                as[ExpectedPaymentDate] from [dbo].[tblMonthSetup] ms
+                                left join HRD_EmployeeType et on et.EmpTypeId = ms.EmptypeId
+                                where ms.CompanyId='" + CompanyId + "' order by ms.MonthID desc";
             DataTable DTLocal = new DataTable();
 
             sqlDB.fillDataTable(strSQL, DTLocal);
@@ -260,7 +266,7 @@ namespace SigmaERP.attendance
             {
                 string strSQL = @"select MonthID, MonthName, FromDate, ToDate, TotalDays, TotalWeekend, 
                                 TotalHoliday, TotalWorkingDays, ExpectedPaymentDate, 
-                                MonthStatus,CompanyId from dbo.tblMonthSetup where MonthID='" + hid + "'";
+                                MonthStatus,CompanyId,EmptypeId from dbo.tblMonthSetup where MonthID='" + hid + "'";
                 DataTable DTLocal = new DataTable();
                // ConManager.DBConnection("local");
                // ConManager.OpenDataTableThroughAdapter(strSQL, out DTLocal, true);
@@ -290,7 +296,9 @@ namespace SigmaERP.attendance
                     btnSave.CssClass = "Mbutton";
                 }
                 ddlCompanyList.SelectedValue = DTLocal.Rows[0]["CompanyId"].ToString();
-                   
+                string empTypeId = DTLocal.Rows[0]["EmptypeId"].ToString();
+                ddlEmpType.SelectedValue = ddlEmpType.Items.FindByValue(empTypeId) != null ? empTypeId : "0";
+
                 //Convert.ToDateTime(DTLocal.Rows[0]["HDate"]).ToString("dd-MMM-yyyy");
             }
             catch (Exception ex)
@@ -331,6 +339,7 @@ namespace SigmaERP.attendance
                         btnSave.CssClass = "Mbutton";
                     }
 
+                   ViewState["__IsCalculated__"] = "No";
                    ViewState["__hid__"] = gvMonthSetup.DataKeys[rIndex].Value.ToString();
                    SetValueToControl(ViewState["__hid__"].ToString());
 
@@ -401,7 +410,12 @@ namespace SigmaERP.attendance
                     lblMessage.InnerText = "warning->Please select month.";
                     txtMonthName.Focus(); return false;
                 }
-           
+                if (ddlEmpType.SelectedValue == "0")
+                {
+                    lblMessage.InnerText = "warning->Please select employee type.";
+                    ddlEmpType.Focus(); return false;
+                }
+
                 if (txtFromDate.Text.Trim().Length < 10)
                 {
                     lblMessage.InnerText = "warning->Please from month.";
@@ -439,7 +453,8 @@ namespace SigmaERP.attendance
                     ddlMonthStatus.Focus(); return false;
 
                 }
-                if (ViewState["__IsCalculated__"].ToString().Equals("No")) 
+                // calculation is mandatory only for new setup; on update it is optional
+                if (btnSave.Text.Equals("Save") && ViewState["__IsCalculated__"].ToString().Equals("No"))
                 {
                     lblMessage.InnerText = "warning->Please click calculation button."; return false;
                 }

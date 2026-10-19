@@ -238,6 +238,19 @@
                                                     <%--Close--%>
                                                 </div>
                                                
+                                                <!-- Search any: filters the loaded employees by name, ID, department, designation... -->
+                                                <div class="input-group mb-15">
+                                                    <span class="input-group-text bg-white border-end-0">
+                                                        <i class="uil uil-search"></i>
+                                                    </span>
+                                                    <input type="text" id="txtSearchAnyEmployee" class="form-control border-start-0 border-end-0" autocomplete="off"
+                                                        placeholder="Search any name, employee ID, department, designation...">
+                                                    <button type="button" class="input-group-text bg-white" title="Clear search" onclick="clearEmployeeSearch()">
+                                                        <i class="fas fa-times text-muted"></i>
+                                                    </button>
+                                                </div>
+                                                <div id="employeeSearchInfo" class="text-muted mb-10" style="display:none; font-size: 13px;"></div>
+
                                                 <div id="employeeContainer">
                                                     <table class="table mb-0 packagesTable table-borderless adv-table"
                                                         data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="10">
@@ -985,17 +998,62 @@
             ApiCall(url, token)
                 .then(response => {
                     if (response.statusCode === 200) {
-                        bindTableData(response.data);
+                        employeeMasterData = response.data || [];
+                        applyEmployeeSearch();
                     } else {
                         console.error('API Error:', response.message);
-                        
+
                     }
                 })
                 .catch(error => {
                     console.error('Network Error:', error);
-                     bindTableData([]);
+                    employeeMasterData = [];
+                    applyEmployeeSearch();
                 });
         }
+
+
+        // ===== Search any (client side, over the employees already loaded) =====
+        let employeeMasterData = [];
+        let employeeSearchTimer = null;
+        const employeeSearchSkipFields = ['userImage', 'select', 'serial'];
+
+        function applyEmployeeSearch() {
+            const term = ($('#txtSearchAnyEmployee').val() || '').trim().toLowerCase();
+            const rows = term.length === 0
+                ? employeeMasterData
+                : employeeMasterData.filter(row => Object.keys(row).some(key =>
+                    employeeSearchSkipFields.indexOf(key) === -1
+                    && row[key] !== null && row[key] !== undefined
+                    && typeof row[key] !== 'object'
+                    && String(row[key]).toLowerCase().indexOf(term) !== -1));
+
+            const $info = $('#employeeSearchInfo');
+            if (term.length > 0) {
+                $info.text(`Found ${rows.length} of ${employeeMasterData.length} employee(s)`).show();
+            } else {
+                $info.hide();
+            }
+            bindTableData(rows);
+        }
+
+        function clearEmployeeSearch() {
+            $('#txtSearchAnyEmployee').val('');
+            applyEmployeeSearch();
+        }
+
+        $(document).on('input', '#txtSearchAnyEmployee', function () {
+            clearTimeout(employeeSearchTimer);
+            employeeSearchTimer = setTimeout(applyEmployeeSearch, 200);
+        });
+
+        $(document).on('keydown', '#txtSearchAnyEmployee', function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                clearTimeout(employeeSearchTimer);
+                applyEmployeeSearch();
+            }
+        });
 
 
         let allEmployeeData = [];

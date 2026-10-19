@@ -46,20 +46,19 @@ namespace SigmaERP.classes
                 string errorData = "";
                 string EmpIdS = "";
             string[] getDays = SelectedDate.Split('-');
-             dt = getMonthInfo(CompanyId, DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]).ToString("MM-yyyy"));
-                string fromDate = dt.Rows[0]["FromDate"].ToString();
-                string toDate = dt.Rows[0]["ToDate"].ToString();
-            DateTime FromDate=DateTime.Parse(fromDate);
-            DateTime ToDate = DateTime.Parse(toDate);
+                // month info of all employee types for the selected month
+                DataTable dtMonthInfo = getMonthInfo(CompanyId, DateTime.Parse(getDays[2] + "-" + getDays[1] + "-" + getDays[0]).ToString("MM-yyyy"));
+                if (dtMonthInfo == null || dtMonthInfo.Rows.Count == 0)
+                    return "Month setup not found for the selected month.";
+                // last ToDate among all employee types, used for employee loading and sheet clearing
+            DateTime ToDate = dtMonthInfo.AsEnumerable().Max(r => DateTime.Parse(r["ToDate"].ToString()));
 
-               
+
                var payRollPolicy=getPayrollPolicy(CompanyId, generateFor);
-                  // getting selected employees 
+                  // getting selected employees
                   DataTable dtEmployees = new DataTable();
-                if (IsSeperationGeneration == "0")// regular employee 
+                if (IsSeperationGeneration == "0")// regular employee
                 {
-                    // check half month salary and set From Date            
-                    FromDate = setFromDate(CompanyId, FromDate, ToDate);
                     dtEmployees = getEmployees(CompanyId, EmpId, ToDate.ToString("yyyy-MM-dd"));
                 }
                 else
@@ -83,27 +82,31 @@ namespace SigmaERP.classes
 
                     else
                     {
-                        if (generateFor == "regular")
-                            salarySheetClear(ToDate, CompanyId, EmpId);
-                        else
-                            salarySheetClear_Complaince(ToDate, CompanyId, EmpId);
+                        // each employee type may have its own ToDate, clear sheet for every one
+                        var toDates = dtMonthInfo.AsEnumerable().Select(r => DateTime.Parse(r["ToDate"].ToString()).Date).Distinct();
+                        foreach (DateTime clearToDate in toDates)
+                        {
+                            if (generateFor == "regular")
+                                salarySheetClear(clearToDate, CompanyId, EmpId);
+                            else
+                                salarySheetClear_Complaince(clearToDate, CompanyId, EmpId);
+                        }
                     }
 
 
-                    // getting month info 
-                    dt = new DataTable();
-                    dt = getMonthInfo(CompanyId, ToDate.ToString("MM-yyyy"));
-                    int TotalDays= int.Parse(dt.Rows[0]["TotalDays"].ToString());              
-                int Activeday = int.Parse(dt.Rows[0]["TotalWorkingDays"].ToString());
-                extraAttSummarydt = getAllAdditionalSummary(FromDate.ToString("yyyy-MM-dd"),ToDate.ToString("yyyy-MM-dd"));
-                    var KPICache = GetKPICache(FromDate.ToString("yyyy-MM-dd"));
-
-
-                    var allAdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId);
-
-                    var allPunishmentDeductions = getAllPunishment(EmpId, FromDate);
-                    DataTable holidayList = getHollidayList(FromDate, CompanyId);
-                    var grantOtCache = GetGrantOTCache(CompanyId, FromDate.ToString("yyyy-MM-dd"), ToDate.ToString("yyyy-MM-dd"));
+                    // month info by employee type (row without EmpTypeId is the old common setup)
+                    var monthInfoByEmpType = new Dictionary<string, DataRow>();
+                    DataRow defaultMonthInfo = null;
+                    foreach (DataRow r in dtMonthInfo.Rows)
+                    {
+                        string key = r["EmpTypeId"].ToString();
+                        if (key == "")
+                            defaultMonthInfo = r;
+                        else if (!monthInfoByEmpType.ContainsKey(key))
+                            monthInfoByEmpType.Add(key, r);
+                    }
+                    // month wise data loaded once per employee type with its own date range
+                    var empTypeMonthData = new Dictionary<string, EmpTypeMonthData>();
                     //get stamp Amount
 
                     //int count = 0;
@@ -122,11 +125,42 @@ namespace SigmaERP.classes
                                 continue;
                         }
 
+                        // getting month info and month wise data of employee type
+                        string empTypeId = employee["EmpTypeId"].ToString();
+                        EmpTypeMonthData typeData;
+                        if (!empTypeMonthData.TryGetValue(empTypeId, out typeData))
+                        {
+                            DataRow monthInfo;
+                            if (!monthInfoByEmpType.TryGetValue(empTypeId, out monthInfo))
+                                monthInfo = defaultMonthInfo;
+                            typeData = (monthInfo == null) ? null : loadEmpTypeMonthData(monthInfo, IsSeperationGeneration, CompanyId, EmpId);
+                            empTypeMonthData.Add(empTypeId, typeData);
+                        }
+                        if (typeData == null)
+                        {
+                            errorData += "," + employee["EmpId"].ToString();
+                            continue;
+                        }
+                        int TotalDays = typeData.TotalDays;
+                        int Activeday = typeData.Activeday;
+                        DateTime empFromDate = typeData.FromDate;
+                        DateTime empToDate = typeData.ToDate;
+                        extraAttSummarydt = typeData.AttSummary;
+                        var KPICache = typeData.KPICache;
+                        var allAdvanceDeductions = typeData.AdvanceDeductions;
+                        var allPunishmentDeductions = typeData.PunishmentDeductions;
+                        DataTable holidayList = typeData.HolidayList;
+                        var grantOtCache = typeData.GrantOtCache;
+
+                        // employee joined after this type's month end
+                        if (IsSeperationGeneration == "0" && DateTime.Parse(employee["EmpJoiningDate"].ToString()) > empToDate)
+                            continue;
+
                         //count++;
-                    DateTime _FromDateForAll = FromDate;
-                    DateTime _ToDateForAll = ToDate;
-                    DateTime _FromDate = FromDate;
-                    DateTime _ToDate = ToDate;
+                    DateTime _FromDateForAll = empFromDate;
+                    DateTime _ToDateForAll = empToDate;
+                    DateTime _FromDate = empFromDate;
+                    DateTime _ToDate = empToDate;
                     string _EmpSeparationId = "0";
                     if (IsSeperationGeneration == "1")// separation employee 
                     {
@@ -198,7 +232,7 @@ namespace SigmaERP.classes
                                 Stampdeduct = stampDeduct,
                                 NetPayable = 0,
                                 TotalSalary = 0,
-                                YearMonth = DateTime.Parse(ToDate.ToString("yyyy-MM") + "-01"),
+                                YearMonth = DateTime.Parse(empToDate.ToString("yyyy-MM") + "-01"),
                                 FromDate = _FromDate,
                                 ToDate = _ToDate,
                                 FromDateForAll = _FromDateForAll,
@@ -232,7 +266,7 @@ namespace SigmaERP.classes
                         salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
 
                         //holiday allowence start
-                        var holidayAlloence = CalculateHolidayAllowance(EmpId, employee["EmpTypeId"].ToString(), employee["DsgId"].ToString(), decimal.Parse(employee["EmpPresentSalary"].ToString()), TotalDays, FromDate,holidayList);
+                        var holidayAlloence = CalculateHolidayAllowance(EmpId, employee["EmpTypeId"].ToString(), employee["DsgId"].ToString(), decimal.Parse(employee["EmpPresentSalary"].ToString()), TotalDays, empFromDate,holidayList);
                         salaryRecord.HoliDayBillAmount = Convert.ToDouble(holidayAlloence.Amount);
                         salaryRecord.HolidayWorkingDays = holidayAlloence.Count;
 
@@ -244,7 +278,7 @@ namespace SigmaERP.classes
 
                         //get PF Deduction 
                         if (hasPF)
-                        salaryRecord.ProvidentFund = getPF(employee,ToDate);
+                        salaryRecord.ProvidentFund = getPF(employee,empToDate);
                         //get Advance Deduction
 
                         //get Advance Deduction
@@ -470,10 +504,48 @@ namespace SigmaERP.classes
 
             return CRUD.ExecuteReturnDataTable(query);
         }
+        // month info and month wise data of one employee type
+        private class EmpTypeMonthData
+        {
+            public int TotalDays;
+            public int Activeday;
+            public DateTime FromDate;
+            public DateTime ToDate;
+            public DataTable AttSummary;
+            public Dictionary<string, (decimal KPIScore, decimal KPIBonusAmount)> KPICache;
+            public Dictionary<string, DataRow> AdvanceDeductions;
+            public Dictionary<string, List<DataRow>> PunishmentDeductions;
+            public DataTable HolidayList;
+            public Dictionary<string, int> GrantOtCache;
+        }
+
+        private EmpTypeMonthData loadEmpTypeMonthData(DataRow monthInfo, string IsSeperationGeneration, string CompanyId, string EmpId)
+        {
+            DateTime FromDate = DateTime.Parse(monthInfo["FromDate"].ToString());
+            DateTime ToDate = DateTime.Parse(monthInfo["ToDate"].ToString());
+            // check half month salary and set From Date
+            if (IsSeperationGeneration == "0")
+                FromDate = setFromDate(CompanyId, FromDate, ToDate);
+
+            return new EmpTypeMonthData
+            {
+                TotalDays = int.Parse(monthInfo["TotalDays"].ToString()),
+                Activeday = int.Parse(monthInfo["TotalWorkingDays"].ToString()),
+                FromDate = FromDate,
+                ToDate = ToDate,
+                AttSummary = getAllAdditionalSummary(FromDate.ToString("yyyy-MM-dd"), ToDate.ToString("yyyy-MM-dd")),
+                KPICache = GetKPICache(FromDate.ToString("yyyy-MM-dd")),
+                AdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId),
+                PunishmentDeductions = getAllPunishment(EmpId, FromDate),
+                HolidayList = getHollidayList(FromDate, CompanyId),
+                GrantOtCache = GetGrantOTCache(CompanyId, FromDate.ToString("yyyy-MM-dd"), ToDate.ToString("yyyy-MM-dd"))
+            };
+        }
+
         private DataTable getMonthInfo(string  CompanyId,string Month)
         {
-            string jjj = "select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'";
-            return CRUD.ExecuteReturnDataTable("select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'"); 
+            string jjj = "select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays,EmpTypeId from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'";
+            return CRUD.ExecuteReturnDataTable("select TotalDays,TotalWeekend ,FromDate,ToDate,TotalHoliday,TotalWorkingDays,EmpTypeId from tblMonthSetup where CompanyId='" + CompanyId + "' and MonthName='" + Month + "'"); 
             
         }
         private SalaryRecord getAttendanceStatus_Old(SalaryRecord salaryRecord)

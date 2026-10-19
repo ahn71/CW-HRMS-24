@@ -40,6 +40,50 @@
                 background: #e8f4ff;
             }
 
+        /* Pager (page numbers under the grid) */
+        .salary-grid tr.gridPager,
+        .salary-grid tr.gridPager:hover {
+            background: #fff;
+        }
+        .salary-grid tr.gridPager > td {
+            padding: 12px 6px;
+            border: 0;
+        }
+        .salary-grid tr.gridPager table {
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 4px 0;
+        }
+        .salary-grid tr.gridPager table td {
+            padding: 0;
+            border: 0;
+        }
+        .salary-grid tr.gridPager a,
+        .salary-grid tr.gridPager span {
+            display: inline-block;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            line-height: 30px;
+            border: 1px solid #0D6EFD;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .salary-grid tr.gridPager a {
+            background: #fff;
+            color: #0D6EFD;
+        }
+        .salary-grid tr.gridPager a:hover {
+            background: #e8f4ff;
+        }
+        .salary-grid tr.gridPager span {
+            background: #0D6EFD;
+            color: #fff;
+            font-weight: 600;
+        }
+
         .btn {
             display: inline-block;
             padding: 8px 18px;
@@ -97,7 +141,7 @@
                 </div>
                <%-- Backend gridview start--%>
 
-                <asp:GridView ID="gvBackendSalaryList" runat="server" Visible="false" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager" OnPageIndexChanging="gvBackendSalaryList_PageIndexChanging">
+                <asp:GridView ID="gvBackendSalaryList" runat="server" Visible="false" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager" PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="10" PagerSettings-FirstPageText="&laquo; First" PagerSettings-LastPageText="Last &raquo;" OnPageIndexChanging="gvBackendSalaryList_PageIndexChanging">
 
                     <Columns>
 
@@ -138,7 +182,7 @@
 
                 <%--agend Gridview start--%>
 
-                   <asp:GridView ID="gvAgentSalaryList" runat="server" Visible="true" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager"  OnPageIndexChanging="gvAgentSalaryList_PageIndexChanging">
+                   <asp:GridView ID="gvAgentSalaryList" runat="server" Visible="true" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager" PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="10" PagerSettings-FirstPageText="&laquo; First" PagerSettings-LastPageText="Last &raquo;"  OnPageIndexChanging="gvAgentSalaryList_PageIndexChanging">
 
                     <Columns>
 
@@ -186,7 +230,7 @@
 
                <%-- perment employee gridview start--%>
 
-                <asp:GridView ID="gvPermamentSalarySheet" runat="server" Visible="false" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager"  OnPageIndexChanging="gvPermamentSalarySheet_PageIndexChanging" Width="100%">
+                <asp:GridView ID="gvPermamentSalarySheet" runat="server" Visible="false" CssClass="salary-grid" AutoGenerateColumns="False" AllowPaging="true" PageSize="15" PagerStyle-HorizontalAlign="Center" PagerStyle-CssClass="gridPager" PagerSettings-Mode="NumericFirstLast" PagerSettings-PageButtonCount="10" PagerSettings-FirstPageText="&laquo; First" PagerSettings-LastPageText="Last &raquo;"  OnPageIndexChanging="gvPermamentSalarySheet_PageIndexChanging" Width="100%">
 
                     <Columns>
 

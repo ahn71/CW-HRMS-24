@@ -53,6 +53,39 @@
             margin-top: -37px;
             font: bold;
         }
+        /* Search any */
+        .att-search-any {
+            position: relative;
+            margin: 0 6px 8px 6px;
+        }
+        .att-search-any .form-control {
+            width: 100% !important;
+            max-width: 100%;
+            height: 36px;
+            padding: 6px 36px 6px 10px;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .att-search-any-clear {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            margin-top: -13px;
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: #999;
+            font-size: 20px;
+            line-height: 26px;
+            cursor: pointer;
+        }
+        .att-search-any-clear:hover {
+            background: #eee;
+            color: #2B5E4E;
+        }
          .Mbody {
   background: #c6c6b4 none repeat scroll 0 0;
   border-bottom: 2px solid #2B5E4E !important;
@@ -101,6 +134,7 @@
            <asp:AsyncPostBackTrigger  ControlID="ddlDepartmentName" />
             <asp:AsyncPostBackTrigger  ControlID="ddlShift" />
             <asp:AsyncPostBackTrigger  ControlID="ddlGrouping" />
+            <asp:AsyncPostBackTrigger  ControlID="btnSearchAny" />
 
         </Triggers>
     <ContentTemplate>
@@ -113,8 +147,8 @@
                  <h2 class="emp_header_right">
                      <!--<a href="/leave/aplication.aspx">Close</a>-->
                      <asp:Button ID="Button1" runat="server" CssClass="Mbutton" Height="34px"  PostBackUrl="~/attendance_default.aspx"  Style="border: 1px solid;" Text="Close" Width="75px" />
-                     <asp:Button ID="btnRefresh" runat="server" CssClass="Mbutton" Height="34px" OnClick="btnRefresh_Click" Text="Refresh" Width="75px" />
-                     <asp:Button ID="btnClear" runat="server" CssClass="Mbutton" Height="34px" OnClick="btnClear_Click" Text="Clear" Width="75px" />
+                     <asp:Button ID="btnRefresh" runat="server" CssClass="Mbutton" Height="34px" OnClientClick="clearSearchAny(false);" OnClick="btnRefresh_Click" Text="Refresh" Width="75px" />
+                     <asp:Button ID="btnClear" runat="server" CssClass="Mbutton" Height="34px" OnClientClick="clearSearchAny(false);" OnClick="btnClear_Click" Text="Clear" Width="75px" />
                  </h2>
            </h2>
         </div>
@@ -181,6 +215,13 @@
                      <%--</h2>--%>
                             </ContentTemplate>
 </asp:UpdatePanel>
+                    <%-- Search any: kept outside UpdatePanel1 so typing is never interrupted by a partial refresh. --%>
+                    <div class="att-search-any">
+                        <asp:TextBox ID="txtSearchAny" runat="server" ClientIDMode="Static" CssClass="form-control" MaxLength="100" autocomplete="off"
+                            placeholder="Search any name, card no, date, status, type..." oninput="searchAnyChanged()" onkeydown="return searchAnyKeyDown(event)"></asp:TextBox>
+                        <button type="button" class="att-search-any-clear" title="Clear search" onclick="clearSearchAny(true)">&times;</button>
+                        <asp:Button ID="btnSearchAny" runat="server" Style="display:none" UseSubmitBehavior="false" OnClick="btnSearchAny_Click" />
+                    </div>
                 </div>
                     <%--</div>--%>
                  <%-- <div class="dataTables_wrapper" style="width:944px; margin:0px auto; background-color:white">--%>
@@ -197,6 +238,7 @@
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="btnSearch" />
                         <asp:AsyncPostBackTrigger ControlID="btnRefresh" />
+                        <asp:AsyncPostBackTrigger ControlID="btnSearchAny" />
                     </Triggers>
                     <ContentTemplate>
              <div style="width: 100%; margin:0px auto ">
@@ -251,4 +293,30 @@
 </asp:UpdatePanel>
                       </div>
             </div>
+  <script type="text/javascript">
+      // "Search any": filters the list while typing (short delay), Enter searches at once.
+      var searchAnyTimer = null;
+      function runSearchAny() {
+          clearTimeout(searchAnyTimer);
+          __doPostBack('<%= btnSearchAny.UniqueID %>', '');
+      }
+      function searchAnyChanged() {
+          clearTimeout(searchAnyTimer);
+          searchAnyTimer = setTimeout(runSearchAny, 450);
+      }
+      function searchAnyKeyDown(e) {
+          if (e.keyCode == 13) {
+              if (e.preventDefault) e.preventDefault();
+              runSearchAny();
+              return false;
+          }
+          return true;
+      }
+      function clearSearchAny(search) {
+          var box = document.getElementById('txtSearchAny');
+          if (!box || box.value === '') return;
+          box.value = '';
+          if (search) runSearchAny();
+      }
+  </script>
 </asp:Content>

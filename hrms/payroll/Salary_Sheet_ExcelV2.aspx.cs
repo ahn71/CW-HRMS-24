@@ -51,16 +51,51 @@ namespace SigmaERP.hrms.payroll
 
         protected void gvBackendSalaryList_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-
+            BindPage(gvBackendSalaryList, e.NewPageIndex);
         }
         protected void gvAgentSalaryList_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
+            BindPage(gvAgentSalaryList, e.NewPageIndex);
+        }
 
+        protected void gvPermamentSalarySheet_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            BindPage(gvPermamentSalarySheet, e.NewPageIndex);
         }
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // New page size: start again from the first page.
+            GridView grid = GetActiveGrid();
+            if (grid != null) BindPage(grid, 0);
+        }
 
+        private GridView GetActiveGrid()
+        {
+            string employeeType = Convert.ToString(ViewState["__employeeType__"]);
+            if (employeeType == "3") return gvAgentSalaryList;
+            if (employeeType == "5" || employeeType == "6") return gvPermamentSalarySheet;
+            if (employeeType == "4") return gvBackendSalaryList;
+            return null;
+        }
+
+        // Re-binds the already built report table (kept in ViewState by BindData) at the requested page.
+        private void BindPage(GridView grid, int pageIndex)
+        {
+            DataTable reportDt = ViewState["SalaryData"] as DataTable;
+            if (reportDt == null)
+            {
+                BindData();
+                reportDt = ViewState["SalaryData"] as DataTable;
+                if (reportDt == null) return;
+            }
+
+            grid.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
+            int pageCount = (int)Math.Ceiling(reportDt.Rows.Count / (double)grid.PageSize);
+            grid.PageIndex = Math.Max(0, Math.Min(pageIndex, pageCount - 1));
+            grid.DataSource = reportDt;
+            grid.DataBind();
+            grid.Visible = true;
         }
 
 
@@ -217,14 +252,53 @@ namespace SigmaERP.hrms.payroll
         }
 
 
+        // Parses the "Additional" JSON column; returns an empty (case-insensitive) dictionary for null/empty/invalid JSON
+        private Dictionary<string, object> ParseAdditional(object additional)
+        {
+            var result = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+            if (additional == null || additional == DBNull.Value)
+                return result;
+
+            string json = additional.ToString();
+            if (string.IsNullOrWhiteSpace(json))
+                return result;
+
+            try
+            {
+                var parsed = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                if (parsed != null)
+                {
+                    foreach (var kv in parsed)
+                        result[kv.Key] = kv.Value;
+                }
+            }
+            catch (JsonException)
+            {
+                // invalid JSON -> treat as no additional data
+            }
+
+            return result;
+        }
+
+        // Returns the value for the key as decimal; 0 if the key is missing, null or not a number
+        private decimal GetAttendanceDecimal(Dictionary<string, object> attendance, string key)
+        {
+            object value;
+            if (attendance == null || !attendance.TryGetValue(key, out value) || value == null)
+                return 0m;
+
+            decimal result;
+            return decimal.TryParse(value.ToString(), System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out result) ? result : 0m;
+        }
+
         private DataTable FillBackendSalaryReportTable(DataTable sourceDt)
         {
             DataTable dt = CreateBackendSalaryReportTable();
 
             foreach (DataRow dr in sourceDt.Rows)
             {
-                var attendance = JsonConvert.DeserializeObject<Dictionary<string, object>>(
-dr["Additional"].ToString());
+                var attendance = ParseAdditional(dr["Additional"]);
 
                 decimal grossSalary = Convert.ToDecimal(dr["EmpPresentSalary"]);
                 decimal daysInMonth = Convert.ToDecimal(dr["DaysInMonth"]);
@@ -232,12 +306,12 @@ dr["Additional"].ToString());
                 decimal dailyIncome = daysInMonth == 0 ? 0 : grossSalary / daysInMonth;
                 decimal perMinIncome = dailyIncome / 480; // 8 Hour = 480 Min
 
-                decimal deductionMinute = Convert.ToDecimal(attendance["LateMinutes"]);
+                decimal deductionMinute = GetAttendanceDecimal(attendance, "LateMinutes");
                 decimal deductionMinuteAmount = deductionMinute * perMinIncome;
-                decimal KPIAmount = Convert.ToDecimal(attendance["KPIAMount"]);
-                decimal mobileBillDeduction = Convert.ToDecimal(attendance["MobileBillDeduct"]);
+                decimal KPIAmount = GetAttendanceDecimal(attendance, "KPIAMount");
+                decimal mobileBillDeduction = GetAttendanceDecimal(attendance, "MobileBillDeduct");
 
-                decimal totalExtraOtCount = (((grossSalary /26m)/2)*2) * (Convert.ToDecimal(attendance["HolidayDutyDays"]) + Convert.ToDecimal(attendance["WeekendDutyDays"]));
+                decimal totalExtraOtCount = (((grossSalary /26m)/2)*2) * (GetAttendanceDecimal(attendance, "HolidayDutyDays") + GetAttendanceDecimal(attendance, "WeekendDutyDays"));
                 decimal totalLateDeductionPerMinit = Math.Round(perMinIncome, 2) * deductionMinute;
                 decimal absentDeduction = dailyIncome * (Convert.ToDecimal(dr["AbsentDay"]) + Convert.ToDecimal( dr["ShortLeave"]));
 
@@ -250,10 +324,10 @@ dr["Additional"].ToString());
                     dr["DsgName"],                   // Designation
                     grossSalary,                     // Gross Salary
                     dr["AbsentDay"],// Absent Count
-                    Convert.ToDecimal(attendance["WeekendDutyDays"]),// OT Extra Duty Count
+                    GetAttendanceDecimal(attendance, "WeekendDutyDays"),// OT Extra Duty Count
                     dr["ShortLeave"],                               // NTR / Duty Adjust //lwp
                     deductionMinute,               // Deduction Min
-                    Convert.ToDecimal(attendance["HolidayDutyDays"]),      // OT Days
+                    GetAttendanceDecimal(attendance, "HolidayDutyDays"),      // OT Days
                     dr["AdvanceDeduction"],          // Deduction / Loan
                     KPIAmount,// KPI Achieved
                     Math.Round(dailyIncome, 2),      // Daily Income
@@ -278,19 +352,18 @@ dr["Additional"].ToString());
 
             foreach (DataRow dr in sourceDt.Rows)
             {
-                var attendance = JsonConvert.DeserializeObject<Dictionary<string, object>>(
-                    dr["Additional"].ToString());
+                var attendance = ParseAdditional(dr["Additional"]);
 
 
-                decimal totalWorkingHour = Convert.ToDecimal(attendance["TotalWorkingHour"]);
-                decimal grantOTMinutes = Convert.ToDecimal(attendance["GrantOTMinutes"]);
+                decimal totalWorkingHour = GetAttendanceDecimal(attendance, "TotalWorkingHour");
+                decimal grantOTMinutes = GetAttendanceDecimal(attendance, "GrantOTMinutes");
 
-                decimal weekendDutyMinutes = Convert.ToDecimal(attendance["WeekendDutyMinutes"]);
-                decimal holidayDutyMinutes = Convert.ToDecimal(attendance["HolidayDutyMinutes"]);
+                decimal weekendDutyMinutes = GetAttendanceDecimal(attendance, "WeekendDutyMinutes");
+                decimal holidayDutyMinutes = GetAttendanceDecimal(attendance, "HolidayDutyMinutes");
 
-                decimal lateMinutes = Convert.ToDecimal(attendance["LateMinutes"]);
-                decimal kpiScore = Convert.ToDecimal(attendance["KPIScore"]);
-                decimal returnParcelDeduction = Convert.ToDecimal(attendance["ReturnPercelDedc"]);
+                decimal lateMinutes = GetAttendanceDecimal(attendance, "LateMinutes");
+                decimal kpiScore = GetAttendanceDecimal(attendance, "KPIScore");
+                decimal returnParcelDeduction = GetAttendanceDecimal(attendance, "ReturnPercelDedc");
 
      
 
@@ -374,7 +447,7 @@ dr["Additional"].ToString());
 
             foreach (DataRow dr in sourceDt.Rows)
             {
-                var attendance = JsonConvert.DeserializeObject<Dictionary<string, object>>(dr["Additional"].ToString());
+                var attendance = ParseAdditional(dr["Additional"]);
 
                 decimal grossSalary = Convert.ToDecimal(dr["EmpPresentSalary"]);
                 decimal daysInMonth = Convert.ToDecimal(dr["DaysInMonth"]);
@@ -382,20 +455,20 @@ dr["Additional"].ToString());
                 decimal dailyIncome =Math.Round (grossSalary / 30);
                 decimal perMinIncome = Math.Round(dailyIncome / 9 / 60m, 1);
 
-                decimal deductionMinute = Convert.ToDecimal(attendance["LateMinutes"]);
+                decimal deductionMinute = GetAttendanceDecimal(attendance, "LateMinutes");
                 decimal totalLateDeductionPerMinit = Math.Round(perMinIncome, 2) * deductionMinute;
-                decimal KPIAmount = Convert.ToDecimal(attendance["KPIAMount"]);
-                decimal mobileBillDeduction = Convert.ToDecimal(attendance["MobileBillDeduct"]);
+                decimal KPIAmount = GetAttendanceDecimal(attendance, "KPIAMount");
+                decimal mobileBillDeduction = GetAttendanceDecimal(attendance, "MobileBillDeduct");
                 decimal holdSalaryNeedToAdjust = 0m;
-                decimal returnParcelDeduction = Convert.ToDecimal(attendance["ReturnPercelDedc"]);
-                decimal extraDutyMinute = Convert.ToDecimal(attendance["GrantOTMinutes"]);  //db  theke asbe 
+                decimal returnParcelDeduction = GetAttendanceDecimal(attendance, "ReturnPercelDedc");
+                decimal extraDutyMinute = GetAttendanceDecimal(attendance, "GrantOTMinutes");  //db  theke asbe 
                 decimal extraDutyMinuteAmount = perMinIncome * extraDutyMinute * 0.65m * 1.5m;
-                decimal totalOtExtraDutyAmount =Math.Round(dailyIncome * 0.65m * 1.5m * ((Convert.ToDecimal(attendance["WeekendDutyDays"])) + Convert.ToDecimal(attendance["HolidayDutyDays"])),2);
+                decimal totalOtExtraDutyAmount =Math.Round(dailyIncome * 0.65m * 1.5m * ((GetAttendanceDecimal(attendance, "WeekendDutyDays")) + GetAttendanceDecimal(attendance, "HolidayDutyDays")),2);
 
 
                 decimal absentDeduction =Math.Round( dailyIncome * (Convert.ToDecimal(dr["AbsentDay"]) + Convert.ToDecimal(dr["ShortLeave"])),2);
 
-                decimal totalDeductionMinAmount = perMinIncome * Convert.ToDecimal(attendance["LateMinutes"]);
+                decimal totalDeductionMinAmount = perMinIncome * GetAttendanceDecimal(attendance, "LateMinutes");
 
                 decimal finalPaySalary =Math.Round( grossSalary + KPIAmount + totalOtExtraDutyAmount + extraDutyMinuteAmount - absentDeduction - totalDeductionMinAmount - returnParcelDeduction,2);
                 
@@ -408,11 +481,11 @@ dr["Additional"].ToString());
                     grossSalary,                                                      // Gross Salary
                     dr["ShortLeave"],                                                                // lwp NTR
                     dr["AbsentDay"],                                                  // Absent Count
-                    Convert.ToDecimal(attendance["WeekendDutyDays"]),                // OT Extra Duty Count
-                    Convert.ToDecimal(attendance["LateMinutes"]),                     // Deduction (Min)
+                    GetAttendanceDecimal(attendance, "WeekendDutyDays"),                // OT Extra Duty Count
+                    GetAttendanceDecimal(attendance, "LateMinutes"),                     // Deduction (Min)
                     extraDutyMinute,                                                  // Extra (Min)
 
-                    Convert.ToDecimal(attendance["HolidayDutyDays"]),                 // OT Days
+                    GetAttendanceDecimal(attendance, "HolidayDutyDays"),                 // OT Days
                     holdSalaryNeedToAdjust,                                           // Hold Salary need to adjust
                     KPIAmount,                                                        // KPI Achieved
                     dailyIncome,                                                      // Daily Income
@@ -427,11 +500,6 @@ dr["Additional"].ToString());
             }
 
             return dt;
-        }
-
-        protected void gvPermamentSalarySheet_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-
         }
 
 

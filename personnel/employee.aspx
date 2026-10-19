@@ -55,6 +55,42 @@
             width: 100% !important;
             max-width: 100%;
         }
+        /* Optional "Salary & Payment" group at the end of the left box */
+        #divEmpInfo .employee_table > tbody > tr.emp-section-row > td {
+            width: 100% !important;
+            padding: 14px 0 6px 0;
+        }
+        #divEmpInfo .emp-section-title {
+            padding: 6px 10px;
+            background: #f4f6f9;
+            border-left: 4px solid #750000;
+            border-radius: 4px;
+            color: #750000;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        #divEmpInfo .emp-section-title .emp-section-hint {
+            color: #888;
+            font-size: 12px;
+            font-weight: normal;
+        }
+
+        /* Searchable dropdowns: match the height of the other form controls */
+        .employee_table .select2-container--default .select2-selection--single {
+            height: 34px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .employee_table .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 32px;
+            padding-left: 10px;
+        }
+        .employee_table .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 32px;
+        }
+        .employee_table .select2-container--default.select2-container--disabled .select2-selection--single {
+            background-color: #eee;
+        }
 
         /* RadioButtonList tables inside a field */
         #divEmpInfo .employee_table td table {
@@ -504,14 +540,6 @@
                                             </asp:RadioButtonList>
                                         </td>
                                     </tr><tr>
-                                        <td>Punch Source
-                                        </td>
-                                        <td>:
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtPunchSource" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" MaxLength="100"></asp:TextBox>
-                                        </td>
-                                    </tr><tr>
                                         <td>Weekend Type
                                         </td>
                                         <td>:
@@ -580,10 +608,69 @@
                                             <asp:CalendarExtender ID="CalendarExtender6" Format="d-M-yyyy" runat="server" TargetControlID="txtExpireDate"></asp:CalendarExtender>
                                         </td>
                                     </tr>
+
+                                    <%-- Optional: salary, payment account and punch source --%>
+                                    <tr class="emp-section-row">
+                                        <td colspan="3">
+                                            <div class="emp-section-title">
+                                                <i class="fa fa-money"></i> Salary &amp; Payment <span class="emp-section-hint">(Optional)</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Salary
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtSalary" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" MaxLength="12" placeholder="Gross salary"></asp:TextBox>
+                                            <asp:FilteredTextBoxExtender ID="ftbSalary" runat="server" FilterType="Numbers, Custom" ValidChars="."
+                                                TargetControlID="txtSalary"></asp:FilteredTextBoxExtender>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank Account Type
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtAccountType" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" MaxLength="100" placeholder="Bank, Cash, bKash..." list="dlAccountTypeOptions" autocomplete="off"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank Account Number
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtAccountNumber" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" MaxLength="100" placeholder="Account number" autocomplete="off"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Punch Source
+                                        </td>
+                                        <td>:
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtPunchSource" runat="server" ClientIDMode="Static" CssClass="form-control text_box_width" MaxLength="100" placeholder="Punch source" list="dlPunchSourceOptions" autocomplete="off"></asp:TextBox>
+                                        </td>
+                                    </tr>
                                 </table>
                             </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
+                    <%-- Suggestions for the optional text fields; user can still type any value. --%>
+                    <datalist id="dlAccountTypeOptions">
+                        <option value="Bank"></option>
+                        <option value="Cash"></option>
+                        <option value="Cheque"></option>
+                        <option value="bKash"></option>
+                        <option value="Nagad"></option>
+                        <option value="Rocket"></option>
+                    </datalist>
+                    <datalist id="dlPunchSourceOptions">
+                        <asp:Literal ID="litPunchSourceOptions" runat="server"></asp:Literal>
+                    </datalist>
                     </div>
                     <div class="col-lg-5 col-md-6 col-sm-12">
                     <div class="employee_box_center">
@@ -1022,8 +1109,49 @@
 }
     </script>--%>
     <script type="text/javascript">
+        // Dropdowns on this page that get A-Z sorting and a select2 search box.
+        var empDropdownIds = ['ddlBranch', 'ddlUnit', 'ddlDepartment', 'ddlDesingnation', 'ddlGrouping', 'ddlShift',
+            'ddlEmpCardNo', 'ddlEmpStatus', 'ddlType', 'ddlWeekend', 'dsMaritialStatus', 'dsBloodGroup', 'dsSex',
+            'dsReligion', 'ddlLastEdQualification'];
+        // Keep natural order for these (week days).
+        var empDropdownNoSort = ['ddlWeekend'];
+
+        function isEmpDropdownPlaceholder(option) {
+            var value = $.trim(option.value);
+            var text = $.trim($(option).text()).toLowerCase();
+            return value === '' || value === '0' || text === '' || text.indexOf('select') !== -1 || text.charAt(0) === '-';
+        }
+
+        function sortEmpDropdown(select) {
+            var options = $(select).children('option').get();
+            if (options.length < 2) return;
+            var selectedOption = select.selectedIndex >= 0 ? select.options[select.selectedIndex] : null;
+            var placeholder = isEmpDropdownPlaceholder(options[0]) ? options.shift() : null;
+            options.sort(function (a, b) {
+                return $.trim($(a).text()).localeCompare($.trim($(b).text()), undefined, { numeric: true, sensitivity: 'base' });
+            });
+            if (placeholder) options.unshift(placeholder);
+            $(select).append(options);
+            // Moving options can reset the browser's default pick, so restore it.
+            if (selectedOption) selectedOption.selected = true;
+        }
+
+        function initEmpDropdowns() {
+            if (!$.fn.select2) return;
+            $.each(empDropdownIds, function (i, id) {
+                var $ddl = $('#' + id);
+                if ($ddl.length === 0 || $ddl.hasClass('select2-hidden-accessible')) return;
+                if ($.inArray(id, empDropdownNoSort) === -1) sortEmpDropdown($ddl[0]);
+                $ddl.select2({ width: '100%' });
+            });
+        }
+
         $(document).ready(function () {
-            $("#ddlEmpCardNo").select2();
+            initEmpDropdowns();
+            // UpdatePanels re-render dropdowns after partial postbacks; sort + re-attach search each time.
+            if (typeof Sys !== 'undefined' && Sys.WebForms && Sys.WebForms.PageRequestManager) {
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(initEmpDropdowns);
+            }
             var expiredate = $('#txtExpireDate').val();
             if (expiredate == "") {
                 AddYear();
@@ -1036,7 +1164,7 @@
         });
 
         function load() {
-            $("#ddlEmpCardNo").select2();
+            initEmpDropdowns();
         }
 
         //function previewFile() {
@@ -1507,12 +1635,27 @@
 
                 }
                 function CardValidate() {
-                    showMessage("This Employee Card is used by another person", "warning");
-                    load();
+                    showEmpSaveAlert('warning', 'Unable to Save', 'This Employee Card No is already used by another employee. Please use a different Card No.', null);
                 }
                 function ProximityNoValidate() {
-                    showMessage("This Proximity No is used by another person", "warning");
-                    load();
+                    showEmpSaveAlert('warning', 'Unable to Save', 'This Proximity No is already used by another employee. Please use a different Proximity No.', null);
+                }
+                // Save/Update result alert. redirectUrl given => after closing, reload to a fresh (empty) entry panel.
+                function showEmpSaveAlert(icon, title, text, redirectUrl) {
+                    var show = function () {
+                        Swal.fire({
+                            icon: icon,
+                            title: title,
+                            text: text,
+                            confirmButtonText: 'OK',
+                            allowOutsideClick: false
+                        }).then(function () {
+                            if (redirectUrl) window.location.href = redirectUrl;
+                        });
+                        load();
+                    };
+                    if (typeof Swal === 'undefined') window.addEventListener('load', show);
+                    else show();
                 }
                 function SaveSuccess() {
                     showMessage("Successfully saved", "success");

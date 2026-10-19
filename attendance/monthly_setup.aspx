@@ -180,7 +180,10 @@
                                         <asp:CalendarExtender ID="txtExpectedPaymetnDate_CalendarExtender" runat="server" TargetControlID="txtExpectedPaymetnDate" Format="dd-MM-yyyy">
                                         </asp:CalendarExtender>
                             </div>
-
+                                <div class="col-lg-3">
+                                    <label>Employee Type</label>
+                                    <asp:DropDownList runat="server" ID="ddlEmpType" ClientIDMode="Static" CssClass="form-control text_box_width"></asp:DropDownList>
+                                </div>
                             <div class="col-lg-3">
                               <p>Month Status<span class="requerd1">*</span></p>  
                                 <asp:DropDownList ID="ddlMonthStatus" CssClass="form-control text_box_width" runat="server" >
@@ -222,6 +225,11 @@
                                     <asp:TemplateField HeaderText="Month">
                                         <ItemTemplate>
                                             <asp:Label ID="lblMonthName" runat="server" Text='<%# Eval("MonthName") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Emp Type">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblEmpType" runat="server" Text='<%# Eval("EmpType") %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="From">

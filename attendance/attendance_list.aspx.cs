@@ -85,6 +85,8 @@ namespace SigmaERP.attendance
                 // 1 means all load at first time
                 sqlDB.fillDataTable("select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where Year='" + DateTime.Now.Year + "' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by AttDate desc", dt = new DataTable());
                 string jjjj = "select distinct EmpId,EmpCardNo,MonthId,Format(AttDate,'dd-MM-yyyy') as AttDate,AttStatus,AttManual,InTime,OutTime,EmpType,EmpName,StateStatus from v_tblAttendanceRecord where Year='" + DateTime.Now.Year + "' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by AttDate desc";
+                Session[AttendanceListCacheSessionKey] = dt;
+                dt = ApplySearchAnyFilter(dt);
 
 
                 if (dt.Rows.Count<1)
@@ -127,8 +129,62 @@ namespace SigmaERP.attendance
         {
             
         }
+        // Last list loaded by the filters (unfiltered by "Search any"), so typing can filter it without re-querying.
+        private const string AttendanceListCacheSessionKey = "__AttendanceListAllRows__";
+
+        protected void btnSearchAny_Click(object sender, EventArgs e)
+        {
+            gvAttendanceList.PageIndex = 0;
+            if (!BindAttendanceListFromCache())
+                loadAttendanceList();
+        }
+
+        private bool BindAttendanceListFromCache()
+        {
+            DataTable allRows = Session[AttendanceListCacheSessionKey] as DataTable;
+            if (allRows == null) return false;
+
+            DataTable filtered = ApplySearchAnyFilter(allRows);
+            lblMessage.InnerText = "";
+            divRecordMessage.Visible = filtered.Rows.Count == 0;
+            if (filtered.Rows.Count == 0)
+                divRecordMessage.InnerText = "No attendance record matches \"" + txtSearchAny.Text.Trim() + "\"";
+            gvAttendanceList.DataSource = filtered;
+            gvAttendanceList.DataBind();
+            return true;
+        }
+
+        // "Search any": keep rows where any visible column contains the typed text (case-insensitive).
+        private DataTable ApplySearchAnyFilter(DataTable source)
+        {
+            string term = txtSearchAny.Text.Trim();
+            if (term.Length == 0 || source == null || source.Rows.Count == 0) return source;
+
+            DataTable filtered = source.Clone();
+            foreach (DataRow row in source.Rows)
+            {
+                foreach (DataColumn column in source.Columns)
+                {
+                    // EmpId is an internal id that is not shown in the grid.
+                    if (column.ColumnName == "EmpId") continue;
+                    if (row[column].ToString().IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        filtered.ImportRow(row);
+                        break;
+                    }
+                }
+            }
+            return filtered;
+        }
+
         protected void gvAttendanceList_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
+            // While searching, page through the searched rows instead of reloading the full list.
+            if (txtSearchAny.Text.Trim().Length > 0)
+            {
+                gvAttendanceList.PageIndex = e.NewPageIndex;
+                if (BindAttendanceListFromCache()) return;
+            }
             try
             {
                 if (searchStatus == (byte)1) loadAttendanceList();
@@ -458,6 +514,8 @@ namespace SigmaERP.attendance
                 }
                 query += queryCondition;
                 sqlDB.fillDataTable(query,dt=new DataTable());
+                Session[AttendanceListCacheSessionKey] = dt;
+                dt = ApplySearchAnyFilter(dt);
                 //------------------------------------------------------------------------------------------------
 
                 if (dt.Rows.Count == 0)
@@ -484,6 +542,7 @@ namespace SigmaERP.attendance
         private void allClear()
         {
             lblMessage.InnerText = "";
+            txtSearchAny.Text = "";
             ddlChoseYear.SelectedIndex = 0;
            // ddlCompanyList.SelectedIndex = 0;
            // ddlDivisionName.SelectedIndex = -1;
@@ -587,6 +646,7 @@ namespace SigmaERP.attendance
 
         protected void btnRefresh_Click(object sender, EventArgs e)
         {
+            txtSearchAny.Text = "";
             loadAttendanceList();
             loadYear();
             allClear();

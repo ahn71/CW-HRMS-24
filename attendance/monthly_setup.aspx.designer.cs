@@ -184,6 +184,15 @@ namespace SigmaERP.attendance {
         protected global::AjaxControlToolkit.CalendarExtender txtExpectedPaymetnDate_CalendarExtender;
         
         /// <summary>
+        /// ddlEmpType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlEmpType;
+        
+        /// <summary>
         /// ddlMonthStatus control.
         /// </summary>
         /// <remarks>

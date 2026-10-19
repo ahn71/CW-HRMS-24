@@ -1287,7 +1287,7 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
                 dl.DataValueField = "EmpTypeId";
                 dl.DataTextField = "EmpType";
                 dl.DataBind();
-                dl.Items.Insert(dl.Items.Count, new ListItem("Select Type", "Select Type"));
+                dl.Items.Insert(dl.Items.Count, new ListItem("Select Type", "0"));
                 dl.SelectedIndex = dl.Items.Count - 1;
 
             }

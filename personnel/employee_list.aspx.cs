@@ -86,7 +86,7 @@ namespace SigmaERP.personnel
                     classes.commonTask.LoadGrouping(ddlGrouping, ViewState["__CompanyId__"].ToString());
 
                 string condition = AccessControl.getDataAccessCondition(ViewState["__CompanyId__"].ToString(),"0");
-                string query = "Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and " + condition + " order by DptCode, CustomOrdering";
+                string query = "Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType,ISNULL(PunchSource,'') as PunchSource From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and " + condition + " order by DptCode, CustomOrdering";
 
 
                  LoadAllEmployeeList(query);
@@ -161,6 +161,8 @@ namespace SigmaERP.personnel
             {
                 DataTable dt = new DataTable();
                 sqlDB.fillDataTable(cmd, dt);
+                Session[EmployeeListCacheSessionKey] = dt;
+                dt = ApplySearchAnyFilter(dt);
 
                 gvForApprovedList.DataSource = dt;
                 gvForApprovedList.DataBind();
@@ -205,7 +207,7 @@ namespace SigmaERP.personnel
                 
                 
 
-                string query = "Select EmpDutyType,CompanyId, EmpId,EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType From v_EmployeeDetails where ";
+                string query = "Select EmpDutyType,CompanyId, EmpId,EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType,ISNULL(PunchSource,'') as PunchSource From v_EmployeeDetails where ";
                 string queryCondition = "";
                 DataTable dt = new DataTable();
                 // 0.Search by Compnay
@@ -403,6 +405,8 @@ namespace SigmaERP.personnel
                 }
                 query += queryCondition;
                 sqlDB.fillDataTable(query,dt=new DataTable());
+                Session[EmployeeListCacheSessionKey] = dt;
+                dt = ApplySearchAnyFilter(dt);
 
                 //-----------------------------------------
                 if (dt.Rows.Count == 0)
@@ -418,9 +422,59 @@ namespace SigmaERP.personnel
             }
             catch { }
         }
+        // Last list loaded by the filters (unfiltered by "Search Any Name"), so typing can filter it without re-querying.
+        private const string EmployeeListCacheSessionKey = "__EmployeeListAllRows__";
+
+        protected void btnSearchAny_Click(object sender, EventArgs e)
+        {
+            gvForApprovedList.PageIndex = 0;
+            Session["pageNumber"] = 0;
+            if (!BindEmployeeListFromCache())
+                SearchingInEmployeeList();
+        }
+
+        private bool BindEmployeeListFromCache()
+        {
+            DataTable allRows = Session[EmployeeListCacheSessionKey] as DataTable;
+            if (allRows == null) return false;
+
+            DataTable dt = ApplySearchAnyFilter(allRows);
+            gvForApprovedList.DataSource = dt;
+            gvForApprovedList.DataBind();
+            pTotalEmployee.InnerText = txtSearchAny.Text.Trim().Length > 0
+                ? "Found -> " + dt.Rows.Count + " of " + allRows.Rows.Count
+                : "Total Running -> " + allRows.Rows.Count;
+            if (dt.Rows.Count == 0) lblMessage.InnerText = "warning->No employee matches \"" + txtSearchAny.Text.Trim() + "\"";
+            return true;
+        }
+
+        // "Search Any Name": keep rows where any column contains the typed text (case-insensitive).
+        private DataTable ApplySearchAnyFilter(DataTable dt)
+        {
+            string term = txtSearchAny.Text.Trim();
+            if (term.Length == 0 || dt == null || dt.Rows.Count == 0) return dt;
+
+            DataTable filtered = dt.Clone();
+            foreach (DataRow row in dt.Rows)
+            {
+                foreach (DataColumn column in dt.Columns)
+                {
+                    // Internal ids are not shown in the grid, so they should not produce matches.
+                    if (column.ColumnName == "EmpId" || column.ColumnName == "CompanyId") continue;
+                    if (row[column].ToString().IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        filtered.ImportRow(row);
+                        break;
+                    }
+                }
+            }
+            return filtered;
+        }
+
         private void allClear()
         {
             lblMessage.InnerText = "";
+            txtSearchAny.Text = "";
             ddlChoseYear.SelectedIndex = 0;
             ddlCompanyList.SelectedIndex = 0;
             ddlDepartmentList.SelectedIndex = -1;
@@ -526,13 +580,21 @@ namespace SigmaERP.personnel
 
         protected void btnRefresh_Click(object sender, EventArgs e)
         {
-            LoadAllEmployeeList("Select CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by EmpCardNo"); 
+            txtSearchAny.Text = "";
+            LoadAllEmployeeList("Select EmpDutyType,CompanyId,EmpId, EmpCardNo+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,UnitName,DptName,DsgName,SftName, convert(varchar(11),EmpShiftStartDate,105) as EmpShiftStartDate,EmpStatusName,EmpType,ISNULL(WeekendType,'Regular') as WeekendType,ISNULL(PunchSource,'') as PunchSource From v_EmployeeDetails where EmpStatus in ('1','8') and IsActive='1' and ActiveSalary='True' and CompanyId='" + ViewState["__CompanyId__"].ToString() + "' order by EmpCardNo"); 
             loadYear();
             allClear();
         }
 
         protected void gvForApprovedList_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
+            // While searching, page through the searched rows instead of re-running the filters.
+            if (txtSearchAny.Text.Trim().Length > 0)
+            {
+                gvForApprovedList.PageIndex = e.NewPageIndex;
+                Session["pageNumber"] = e.NewPageIndex;
+                if (BindEmployeeListFromCache()) return;
+            }
             try
             {
                 SearchingInEmployeeList();
@@ -693,13 +755,12 @@ namespace SigmaERP.personnel
 
             MarkImportErrorCellIfBlank(e.Row, ddlCompany, 2);
             MarkImportErrorCellIfBlank(e.Row, ddlEmpType, 3);
-            MarkImportErrorCellIfBlank(e.Row, ddlDepartment, 7);
-            MarkImportErrorCellIfBlank(e.Row, ddlDesignation, 8);
-            MarkImportErrorCellIfBlank(e.Row, ddlGroup, 9);
-            MarkImportErrorCellIfBlank(e.Row, ddlShift, 10);
-            MarkImportErrorCellIfBlank(e.Row, ddlEmpstatus, 13);
-            MarkImportErrorCellIfBlank(e.Row, ddlUnitRow,19);
-        }
+            MarkImportErrorCellIfBlank(e.Row, ddlDepartment, 8);
+            MarkImportErrorCellIfBlank(e.Row, ddlDesignation, 9);
+            MarkImportErrorCellIfBlank(e.Row, ddlGroup, 10);
+            MarkImportErrorCellIfBlank(e.Row, ddlShift, 11);
+            MarkImportErrorCellIfBlank(e.Row, ddlEmpstatus, 14);
+            MarkImportErrorCellIfBlank(e.Row, ddlUnitRow, 16);        }
 
         private List<EmployeeImportErrorItem> importErrors = new List<EmployeeImportErrorItem>();
        
@@ -852,6 +913,8 @@ namespace SigmaERP.personnel
                 row["Type"] = GetExcelValue(excelRow, "Type");
                 row["DutyType"] = GetExcelValue(excelRow, "DutyType");
                 row["PunchSource"] = GetExcelValue(excelRow, "PunchSource");
+                row["AccountType"] = GetExcelValue(excelRow, "AccountType");
+                row["AccountNumber"] = GetExcelValue(excelRow, "AccountNumber");
                 row["WeekendType"] = GetExcelValue(excelRow, "WeekendType");
                 row["WeekendDayName"] = GetExcelValue(excelRow, "WeekendDayName");
                 row["JoiningDate"] = GetExcelValue(excelRow, "JoiningDate");
@@ -905,7 +968,7 @@ namespace SigmaERP.personnel
         private DataTable CreateEmployeeImportPreviewTable()
         {
             DataTable dt = new DataTable();
-            string[] columns = { "ImportRowId", "ExcelRowNo", "CompanyName", "EmpType", "SalaryType", "Salary", "FullName", "NameBangla", "Department", "Designation", "Group", "Shift", "EmpCardNo", "RegID", "EmpStatus", "Type", "DutyType", "PunchSource", "WeekendType", "WeekendDayName", "JoiningDate", "CompanyId", "DptId", "DsgId", "GId", "SftId", "EmpTypeId", "SalaryTypeId", "EmpStatusId", "DutyTypeId", "WeekendTypeId", "ErrorFields", "ErrorMessage","UnitName", "UnitId" };
+            string[] columns = { "ImportRowId", "ExcelRowNo", "CompanyName", "EmpType", "SalaryType", "Salary", "FullName", "NameBangla", "Department", "Designation", "Group", "Shift", "EmpCardNo", "RegID", "EmpStatus", "Type", "DutyType", "PunchSource", "WeekendType", "WeekendDayName", "JoiningDate", "CompanyId", "DptId", "DsgId", "GId", "SftId", "EmpTypeId", "SalaryTypeId", "EmpStatusId", "DutyTypeId", "WeekendTypeId", "ErrorFields", "ErrorMessage","UnitName", "UnitId", "AccountType", "AccountNumber" };
             foreach (string column in columns) dt.Columns.Add(column);
             return dt;
         }
@@ -1171,6 +1234,7 @@ namespace SigmaERP.personnel
                     {
                         UpdateEmployeeImportSalary(empId, empCardNo, row["Salary"].ToString());
                         UpdateEmployeeImportPunchSource(empId, row["PunchSource"].ToString());
+                        UpdateEmployeeImportAccount(empId, empCardNo, row["AccountType"].ToString(), row["AccountNumber"].ToString());
                     }
                     return isSaved;
                 }
@@ -1214,6 +1278,22 @@ namespace SigmaERP.personnel
                 cmd.Parameters.AddWithValue("@PunchSource", string.IsNullOrWhiteSpace(punchSource)
                     ? (object)DBNull.Value
                     : punchSource.Trim());
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        private void UpdateEmployeeImportAccount(string empId, string empCardNo, string accountType, string accountNumber)
+        {
+            using (SqlCommand cmd = new SqlCommand(
+                "UPDATE Personnel_EmpCurrentStatus SET BankAcountType=@AccountType, EmpAccountNo=@EmpAccountNo WHERE EmpId=@EmpId AND EmpCardNo=@EmpCardNo AND ActiveSalary=1",
+                sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpId", empId);
+                cmd.Parameters.AddWithValue("@EmpCardNo", empCardNo);
+                cmd.Parameters.AddWithValue("@AccountType", string.IsNullOrWhiteSpace(accountType)
+                    ? (object)DBNull.Value
+                    : accountType.Trim());
+                cmd.Parameters.AddWithValue("@EmpAccountNo", (accountNumber ?? "").Trim());
                 cmd.ExecuteNonQuery();
             }
         }
@@ -1313,6 +1393,8 @@ namespace SigmaERP.personnel
             if (key == "type") return "Type";
             if (key == "dutytype") return "DutyType";
             if (key == "punchsource") return "PunchSource";
+            if (key == "accounttype" || key == "paymenttype" || key == "salarycount") return "AccountType";
+            if (key == "accountnumber" || key == "accountno" || key == "accno" || key == "empaccountno") return "AccountNumber";
             if (key == "weekendtype") return "WeekendType";
             if (key == "weekenddayname" || key == "weekendday" || key == "weekend") return "WeekendDayName";
             if (key == "joiningdate") return "JoiningDate";
@@ -1401,7 +1483,7 @@ namespace SigmaERP.personnel
                 string[] headers = {
             "EmpType", "SalaryType", "Salary", "FullName", "NameBangla", "Department",
             "Designation", "Group", "Shift", "EmpCardNo", "Reg.ID", "EmpStatus",
-            "Type", "DutyType", "PunchSource", "WeekendType", "Weekend Day Name", "JoiningDate", "CompanyName", "UnitName", "ErrorReason"
+            "Type", "DutyType", "PunchSource", "AccountType", "AccountNumber", "WeekendType", "Weekend Day Name", "JoiningDate", "CompanyName", "UnitName", "ErrorReason"
         };
 
                 for (int i = 0; i < headers.Length; i++)
@@ -1430,12 +1512,14 @@ namespace SigmaERP.personnel
                     ws.Cells[r, 13].Value = e.Type;
                     ws.Cells[r, 14].Value = e.DutyType;
                     ws.Cells[r, 15].Value = e.PunchSource;
-                    ws.Cells[r, 16].Value = e.WeekendType;
-                    ws.Cells[r, 17].Value = e.WeekendDayName;
-                    ws.Cells[r, 18].Value = e.JoiningDate;
-                    ws.Cells[r, 19].Value = e.CompanyName;
-                    ws.Cells[r, 20].Value = e.UnitName;
-                    ws.Cells[r, 21].Value = e.ErrorReason;
+                    ws.Cells[r, 16].Value = e.AccountType;
+                    ws.Cells[r, 17].Value = e.AccountNumber;
+                    ws.Cells[r, 18].Value = e.WeekendType;
+                    ws.Cells[r, 19].Value = e.WeekendDayName;
+                    ws.Cells[r, 20].Value = e.JoiningDate;
+                    ws.Cells[r, 21].Value = e.CompanyName;
+                    ws.Cells[r, 22].Value = e.UnitName;
+                    ws.Cells[r, 23].Value = e.ErrorReason;
                     r++;
                 }
 
@@ -1472,6 +1556,8 @@ namespace SigmaERP.personnel
                 Type = excelRow["Type"].ToString(),
                 DutyType = excelRow["DutyType"].ToString(),
                 PunchSource = excelRow["PunchSource"].ToString(),
+                AccountType = excelRow["AccountType"].ToString(),
+                AccountNumber = excelRow["AccountNumber"].ToString(),
                 WeekendType = excelRow["WeekendType"].ToString(),
                 WeekendDayName = excelRow["WeekendDayName"].ToString(),
                 JoiningDate = excelRow["JoiningDate"].ToString(),

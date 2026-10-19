@@ -111,6 +111,47 @@
             margin: 0;
             box-sizing: border-box;
         }
+        /* ===== Search any name ===== */
+        .emp-search-any {
+            position: relative;
+            margin: 0 12px 12px;
+        }
+        .emp-search-any .form-control {
+            width: 100% !important;
+            max-width: 100%;
+            height: 38px;
+            padding: 6px 36px 6px 34px;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .emp-search-any-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            pointer-events: none;
+        }
+        .emp-search-any-clear {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 26px;
+            height: 26px;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: #999;
+            font-size: 20px;
+            line-height: 26px;
+            cursor: pointer;
+        }
+        .emp-search-any-clear:hover {
+            background: #eee;
+            color: #750000;
+        }
         .emp-filter-btn .css_btn {
             width: 100% !important;
             margin: 0;
@@ -322,6 +363,7 @@
                             <asp:AsyncPostBackTrigger ControlID="btnSearch" />
                             <asp:AsyncPostBackTrigger ControlID="btnRefresh" />
                             <asp:AsyncPostBackTrigger ControlID="btnClear" />
+                            <asp:AsyncPostBackTrigger ControlID="btnSearchAny" />
                             <asp:PostBackTrigger ControlID="btnPreviewUpload" />
                         </Triggers>
                         <ContentTemplate>
@@ -333,8 +375,8 @@
                                     <asp:Button runat="server" ID="btnChooseUpload" CssClass="css_btn Ptbut" Text="Choose" Width="75px" Height="34px" OnClientClick="document.getElementById('fuEmployeeExcel').click(); return false;" />
                                     <asp:Button runat="server" ID="btnPreviewUpload" CssClass="css_btn Ptbut" Text="Upload" Width="75px" Height="34px" OnClick="btnPreviewUpload_Click" />
                                     <asp:Label ID="lblUploadFileName" runat="server" ClientIDMode="Static" CssClass="import-file-name"></asp:Label>
-                                    <asp:Button runat="server" ID="btnClear" CssClass="css_btn Ptbut" Text="Clear" Width="75px" Height="34px" OnClick="btnClear_Click"   />                       
-                                    <asp:Button  runat="server" ID="btnRefresh" CssClass="css_btn Ptbut" Text="Refresh" Width="75px" Height="34px" OnClick="btnRefresh_Click"     />
+                                    <asp:Button runat="server" ID="btnClear" CssClass="css_btn Ptbut" Text="Clear" Width="75px" Height="34px" OnClientClick="clearSearchAny(false);" OnClick="btnClear_Click"   />                       
+                                    <asp:Button  runat="server" ID="btnRefresh" CssClass="css_btn Ptbut" Text="Refresh" Width="75px" Height="34px" OnClientClick="clearSearchAny(false);" OnClick="btnRefresh_Click"     />
                                 </div>
                             </div>
                    <div class="emp-filter">
@@ -384,6 +426,14 @@
                      </div>
                             </ContentTemplate>
                         </asp:UpdatePanel>
+                        <%-- Kept outside UpdatePanel1 so typing is never interrupted by a partial refresh. --%>
+                        <div class="emp-search-any">
+                            <i class="fa fa-search emp-search-any-icon"></i>
+                            <asp:TextBox ID="txtSearchAny" runat="server" ClientIDMode="Static" CssClass="form-control" MaxLength="100" autocomplete="off"
+                                placeholder="Search any name, card no, department, designation, shift..." oninput="searchAnyChanged()" onkeydown="return searchAnyKeyDown(event)"></asp:TextBox>
+                            <button type="button" class="emp-search-any-clear" title="Clear search" onclick="clearSearchAny(true)">&times;</button>
+                            <asp:Button ID="btnSearchAny" runat="server" Style="display:none" UseSubmitBehavior="false" OnClick="btnSearchAny_Click" />
+                        </div>
                     </div >
                    <div class="loding_img">
                        <asp:UpdateProgress ID="UpdateProgress1" runat="server">
@@ -416,7 +466,8 @@
                                  <asp:BoundField DataField="DsgName" HeaderText="Designation" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="SftName" HeaderText="Shift" ItemStyle-HorizontalAlign="Center" />
                                  <asp:BoundField DataField="EmpType" HeaderText="Type" ItemStyle-HorizontalAlign="Center" />
-                                 <asp:BoundField DataField="EmpDutyType" HeaderText="Duty Type" ItemStyle-HorizontalAlign="Center" />   
+                                 <asp:BoundField DataField="EmpDutyType" HeaderText="Duty Type" ItemStyle-HorizontalAlign="Center" />
+                                 <asp:BoundField DataField="PunchSource" HeaderText="Punch Source" ItemStyle-HorizontalAlign="Center" />
                               <asp:BoundField DataField="WeekendType" HeaderText="Weekend Type" ItemStyle-HorizontalAlign="Center" />
                               <asp:TemplateField HeaderText="Profile" HeaderStyle-Width="30px" ItemStyle-HorizontalAlign="Center">
                                   <ItemTemplate>
@@ -533,6 +584,8 @@
                                                     <asp:BoundField DataField="UnitName" HeaderText="UnitName" />
                                                     <asp:BoundField DataField="DutyType" HeaderText="DutyType" />
                                                     <asp:BoundField DataField="PunchSource" HeaderText="PunchSource" />
+                                                    <asp:BoundField DataField="AccountType" HeaderText="AccountType" />
+                                                    <asp:BoundField DataField="AccountNumber" HeaderText="AccountNumber" />
                                                     <asp:BoundField DataField="WeekendType" HeaderText="WeekendType" />
                                                     <asp:BoundField DataField="WeekendDayName" HeaderText="Weekend Day Name" />
                                                     <asp:BoundField DataField="JoiningDate" HeaderText="JoiningDate" />
@@ -564,6 +617,30 @@
 
                });
            });
+           // "Search any name": filters the list while typing (short delay), Enter searches at once.
+           var searchAnyTimer = null;
+           function runSearchAny() {
+               clearTimeout(searchAnyTimer);
+               __doPostBack('<%= btnSearchAny.UniqueID %>', '');
+           }
+           function searchAnyChanged() {
+               clearTimeout(searchAnyTimer);
+               searchAnyTimer = setTimeout(runSearchAny, 450);
+           }
+           function searchAnyKeyDown(e) {
+               if (e.keyCode == 13) {
+                   e.preventDefault();
+                   runSearchAny();
+                   return false;
+               }
+               return true;
+           }
+           function clearSearchAny(search) {
+               var box = document.getElementById('txtSearchAny');
+               if (!box || box.value === '') return;
+               box.value = '';
+               if (search) runSearchAny();
+           }
            function goToNewTabandWindow(url) {
                window.open(url);
                loadcardNo();

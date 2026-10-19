@@ -89,6 +89,7 @@ namespace SigmaERP.personnel
                     //-----------------For Employee Personel---------------------
                     classes.commonTask.LoadRligion(dsReligion);
                     classes.commonTask.LoadEducationalQui(ddlLastEdQualification);
+                    LoadPunchSourceOptions();
                     // ..............................................
                     //LoadAllownceSetting();
                     Session["_EditStatus_"] = "Save";
@@ -524,8 +525,12 @@ namespace SigmaERP.personnel
                 if (Session["_EditStatus_"].ToString() == "Save")
                 {
                     if (SaveCardValidation() == false) return;
-                    //if (SaveValidation() == false) return;                    
-                    if (saveEmployeeInfo() == true && saveEmpPersonnal() == true)
+                    //if (SaveValidation() == false) return;
+                    if (saveEmployeeInfo() == false || saveEmpPersonnal() == false)
+                    {
+                        ShowSaveAlert("error", "Unable to Save", "Employee could not be saved. Reason: " + GetSaveErrorMessage(), null);
+                    }
+                    else
                     {
                         if(txtMobileNo.Text.Trim().Length>0)
                             saveEmpAddress();//only mobile no
@@ -546,8 +551,7 @@ namespace SigmaERP.personnel
                         string response = PostDocument(apiUrl, empId, ddlBranch.SelectedValue, empImageBase64, signatureImageBase64, token);
 
 
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "SweetAlertSuccess",
-              "Swal.fire({ icon: 'success', title: 'Saved!', text: 'Employee information saved successfully.' });", true);
+                        ShowSaveAlert("success", "Saved Successfully", "Employee information has been saved successfully.", Request.RawUrl);
 
                         //                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "callMe", 
                         //$"goToNewTab('/personnel/EmployeeAddress.aspx?EmpId={empId}');", true);
@@ -581,20 +585,45 @@ namespace SigmaERP.personnel
                                 updateEmpAddress(EmpId);
                             AllClear();
                             if (EmpId == null)
-                                ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UpdateSuccess();", true);
+                                ShowSaveAlert("success", "Updated Successfully", "Employee information has been updated successfully.", Request.RawUrl);
                             else
                             {
+                                // Opened from the list: go back to the list after the message is closed
                                 Session["IsRedirect"] = "Yes";
-                                Response.Redirect("~/hrms/employees/list");
+                                ShowSaveAlert("success", "Updated Successfully", "Employee information has been updated successfully.", ResolveUrl("~/hrms/employees/list"));
                             }
                           }
+                        else ShowSaveAlert("error", "Unable to Update", "Employee personal information could not be updated. Reason: " + GetSaveErrorMessage(), null);
                      }
-                        
-                        else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableUpdate();", true);
-                   
+
+                        else ShowSaveAlert("error", "Unable to Update", "Employee could not be updated. Reason: " + GetSaveErrorMessage(), null);
+
                 }
             }
-            catch(Exception ex) { }
+            catch(Exception ex)
+            {
+                ShowSaveAlert("error", "Something Went Wrong", "Reason: " + ex.Message, null);
+            }
+        }
+
+        // Reason of the last failed save/update, shown in the alert
+        private string saveErrorMessage = "";
+
+        private string GetSaveErrorMessage()
+        {
+            return saveErrorMessage.Length > 0 ? saveErrorMessage : "Unknown error. Please try again.";
+        }
+
+        // Shows a SweetAlert; when redirectUrl is given the page navigates there after the alert is closed (fresh, empty entry panel)
+        private void ShowSaveAlert(string icon, string title, string text, string redirectUrl)
+        {
+            string script = "showEmpSaveAlert("
+                + HttpUtility.JavaScriptStringEncode(icon, true) + ","
+                + HttpUtility.JavaScriptStringEncode(title, true) + ","
+                + HttpUtility.JavaScriptStringEncode(text, true) + ","
+                + (redirectUrl == null ? "null" : HttpUtility.JavaScriptStringEncode(redirectUrl, true))
+                + ");";
+            ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "EmpSaveAlert", script, true);
         }
 
 
@@ -787,6 +816,8 @@ namespace SigmaERP.personnel
                 if (result > 0)
                 {
                     SavePunchSource(ViewState["__EmpId__"].ToString());
+                    SaveAccountInfo(ViewState["__EmpId__"].ToString(), true);
+                    SaveEntrySalary(ViewState["__EmpId__"].ToString(), true);
                     DataTable dtMaxEmpId = new DataTable();
                     sqlDB.fillDataTable("SELECT Max(EmpId) as EmpId From Personnel_EmployeeInfo", dtMaxEmpId);
                     //  saveShiftTransferDetails(dtMaxEmpId.Rows[0]["EmpId"].ToString());
@@ -831,13 +862,18 @@ namespace SigmaERP.personnel
                     //ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTab('/personnel/EmployeePersonal.aspx');", true); // For Test
 
                 }
-                else ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "UnableSave();", true);
+                else
+                {
+                    saveErrorMessage = "Employee information could not be saved to the database.";
+                    return false;
+                }
 
                 return true;
-             
+
             }
             catch (Exception ex)
             {
+                saveErrorMessage = ex.Message;
                 lblMessage.InnerText = "error->" + ex.Message;
                 return false;
             }
@@ -1244,6 +1280,8 @@ namespace SigmaERP.personnel
                 if (result > 0)
                 {
                     SavePunchSource(ddlEmpCardNo.SelectedValue);
+                    SaveAccountInfo(ddlEmpCardNo.SelectedValue, false);
+                    SaveEntrySalary(ddlEmpCardNo.SelectedValue, false);
                     SaveAttachFile();
                     if (ckbProximityChange.Checked)
                     {
@@ -1274,6 +1312,7 @@ namespace SigmaERP.personnel
             }
             catch (Exception ex)
             {
+                saveErrorMessage = ex.Message;
                 lblMessage.InnerText = "error->" + ex.Message;
                 return false;
             }
@@ -1291,6 +1330,102 @@ namespace SigmaERP.personnel
                     : txtPunchSource.Text.Trim());
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        private void SaveAccountInfo(string empId, bool isNewEmployee)
+        {
+            using (SqlCommand cmd = new SqlCommand(
+                "UPDATE Personnel_EmpCurrentStatus SET BankAcountType=@AccountType, EmpAccountNo=@EmpAccountNo WHERE " + CurrentStatusRowCondition(isNewEmployee),
+                sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@EmpId", empId);
+                cmd.Parameters.AddWithValue("@AccountType", string.IsNullOrWhiteSpace(txtAccountType.Text)
+                    ? (object)DBNull.Value
+                    : txtAccountType.Text.Trim());
+                cmd.Parameters.AddWithValue("@EmpAccountNo", txtAccountNumber.Text.Trim());
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // Optional salary from the entry panel. Blank = leave the stored salary untouched.
+        private void SaveEntrySalary(string empId, bool isNewEmployee)
+        {
+            decimal salary;
+            string salaryText = txtSalary.Text.Trim().Replace(",", "");
+            if (salaryText.Length == 0 || !decimal.TryParse(salaryText, NumberStyles.Any, CultureInfo.InvariantCulture, out salary))
+                return;
+
+            string query = "UPDATE Personnel_EmpCurrentStatus SET EmpPresentSalary=@Salary WHERE " + CurrentStatusRowCondition(isNewEmployee) + ";";
+            if (isNewEmployee)
+                query = "UPDATE Personnel_EmployeeInfo SET EmpJoinigSalary=@Salary WHERE EmpId=@EmpId; " + query;
+
+            using (SqlCommand cmd = new SqlCommand(query, sqlDB.connection))
+            {
+                cmd.Parameters.AddWithValue("@Salary", salary);
+                cmd.Parameters.AddWithValue("@EmpId", empId);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // Existing employee: the same current status row the form loads (latest active SN in v_EmployeeDetails),
+        // looked up at save time so it is still right if the update created a new status row.
+        // New employee: the active salary row created by saveEmployeeInfo (same as the Excel import).
+        private string CurrentStatusRowCondition(bool isNewEmployee)
+        {
+            return isNewEmployee
+                ? "EmpId=@EmpId AND ActiveSalary=1"
+                : "EmpId=@EmpId AND SN=(SELECT MAX(SN) FROM v_EmployeeDetails WHERE EmpId=@EmpId AND IsActive=1)";
+        }
+
+        private void LoadAccountInfo(string empId)
+        {
+            txtAccountType.Text = "";
+            txtAccountNumber.Text = "";
+            txtSalary.Text = "";
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                    // Prefer the row the form shows; if it is not found, fall back to the active salary row.
+                    "SELECT TOP 1 BankAcountType, EmpAccountNo, EmpPresentSalary FROM Personnel_EmpCurrentStatus " +
+                    "WHERE EmpId=@EmpId AND (SN=(SELECT MAX(SN) FROM v_EmployeeDetails WHERE EmpId=@EmpId AND IsActive=1) OR ActiveSalary=1) " +
+                    "ORDER BY CASE WHEN SN=(SELECT MAX(SN) FROM v_EmployeeDetails WHERE EmpId=@EmpId AND IsActive=1) THEN 0 ELSE 1 END, SN DESC",
+                    sqlDB.connection))
+                {
+                    cmd.Parameters.AddWithValue("@EmpId", empId);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            txtAccountType.Text = reader["BankAcountType"] == DBNull.Value ? "" : reader["BankAcountType"].ToString();
+                            txtAccountNumber.Text = reader["EmpAccountNo"] == DBNull.Value ? "" : reader["EmpAccountNo"].ToString();
+                            decimal salary;
+                            if (reader["EmpPresentSalary"] != DBNull.Value
+                                && decimal.TryParse(reader["EmpPresentSalary"].ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out salary))
+                                txtSalary.Text = salary.ToString("0.##", CultureInfo.InvariantCulture);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Never let these optional fields stop the rest of the employee from loading.
+                lblMessage.InnerText = "warning->Salary/account info could not be loaded: " + ex.Message;
+            }
+        }
+
+        // Fills the Punch Source suggestion list with values already used.
+        private void LoadPunchSourceOptions()
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+                sqlDB.fillDataTable("SELECT DISTINCT LTRIM(RTRIM(PunchSource)) AS PunchSource FROM Personnel_EmployeeInfo WHERE ISNULL(LTRIM(RTRIM(PunchSource)),'')<>'' ORDER BY PunchSource", dt);
+                StringBuilder options = new StringBuilder();
+                foreach (DataRow row in dt.Rows)
+                    options.Append("<option value=\"").Append(HttpUtility.HtmlAttributeEncode(row["PunchSource"].ToString())).Append("\"></option>");
+                litPunchSourceOptions.Text = options.ToString();
+            }
+            catch { }
         }
 
         private string GetPunchSource(string empId)
@@ -1567,6 +1702,9 @@ namespace SigmaERP.personnel
                 txtNameBangla.Text = "";
                 txtProximityNo.Text = "";
                 txtPunchSource.Text = "";
+                txtAccountType.Text = "";
+                txtAccountNumber.Text = "";
+                txtSalary.Text = "";
                 hdfBasic.Value = "0";
                 hdfConveyance.Value = "0";
                 hdfhouserent.Value = "0";
@@ -1806,6 +1944,7 @@ namespace SigmaERP.personnel
                 }
                 txtRegistrationId.Text = dtall.Rows[0]["EmpProximityNo"].ToString();
                 txtPunchSource.Text = GetPunchSource(dtall.Rows[0]["EmpId"].ToString());
+                LoadAccountInfo(dtall.Rows[0]["EmpId"].ToString());
                 txtTIN.Text = dtall.Rows[0]["TIN"].ToString();
                             
               //  classes.commonTask.LoadDesignation(dtall.Rows[0]["DptId"].ToString(), ddlDesingnation);
@@ -2263,6 +2402,7 @@ namespace SigmaERP.personnel
             }
             catch (Exception ex)
             {
+                saveErrorMessage = "Personal information could not be saved. " + ex.Message;
                 lblMessage.InnerText = "error->" + ex.Message;
                 return false;
             }
@@ -2336,7 +2476,11 @@ namespace SigmaERP.personnel
 
                 return true;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                ShowSaveAlert("error", "Unable to Save", "Card No validation failed. Reason: " + ex.Message, null);
+                return false;
+            }
         }
         private Boolean UpdateCardValidation()
         {
@@ -2379,7 +2523,11 @@ namespace SigmaERP.personnel
                 }
                 return true;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                ShowSaveAlert("error", "Unable to Update", "Card No validation failed. Reason: " + ex.Message, null);
+                return false;
+            }
         }
         private void saveShiftTransferDetails(string EmpId)
         {
@@ -2495,6 +2643,7 @@ namespace SigmaERP.personnel
             }
             catch (Exception ex)
             {
+                saveErrorMessage = ex.Message;
                 lblMessage.InnerText = "error->" + ex.Message;
                 return false;
             }

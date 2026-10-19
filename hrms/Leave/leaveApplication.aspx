@@ -1020,10 +1020,10 @@
                 documentsBase64: base64Files 
             };
 
+            const loaderLeaveSave = $(".loaderLeaveSave");
+            loaderLeaveSave.show();
             try {
-                 const loaderLeaveSave = $(".loaderLeaveSave"); // Use jQuery or 
-                loaderLeaveSave.show();
-                let response = await ApiCallPost(createLvUrl, token, postData);
+                let response = await ApiCallPostLeave(createLvUrl, token, postData);
                 if (response && response.statusCode === 200) {
                     loaderLeaveSave.hide();
                     Swal.fire({
@@ -1054,15 +1054,54 @@
                     return false; 
                 }
             } catch (error) {
-                  loaderLeaveSave.hide();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to save the leave application. Please try again.'
-                });
-                console.error("API Error:", error); 
-                return false; 
+                // Server message is already shown by ApiCallPostLeave when available
+                if (!error || !error.messageShown) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to save the leave application. Please try again.'
+                    });
+                }
+                console.error("API Error:", error);
+                return false;
+            } finally {
+                loaderLeaveSave.hide();
             }
+        }
+
+        // Same as ApiCallPost, but rejects on error so the caller can stop the loader
+        function ApiCallPostLeave(url, token, postData) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    data: JSON.stringify(postData),
+                    success: function (data) {
+                        resolve(data);
+                    },
+                    error: function (xhr, status, error) {
+                        var message = null;
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            message = response && response.message;
+                        } catch (e) { }
+
+                        if (message) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Warning',
+                                text: message
+                            });
+                        }
+                        reject({ status: xhr.status, error: error, messageShown: !!message });
+                    }
+                });
+            });
         }
 
         let allFiles = [];
