@@ -271,7 +271,7 @@
                                 <center>                                                               
                                     <asp:RadioButtonList class="rb" ID="rblLanguage" runat="server"  RepeatDirection="Horizontal" >
                                     <asp:ListItem Text="English" Value="EN" Selected="True" ></asp:ListItem>
-                                     <asp:ListItem Text="Bangla" Value="BN"></asp:ListItem>
+                                    
                                 </asp:RadioButtonList>
                                     </center>
                             </div>

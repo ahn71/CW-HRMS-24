@@ -4,132 +4,370 @@
     <!-- SheetJS: client-side Excel reader -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        .kpi-upload-row {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .kpi-page {
+            --kpi-primary: #3f51b5;
+            --kpi-primary-soft: #eef0fb;
+            --kpi-border: #e3e6ef;
+            --kpi-text: #2d3142;
+            --kpi-muted: #6b7280;
+            --kpi-bg: #f6f7fb;
+            --kpi-radius: 10px;
+            color: var(--kpi-text);
+            padding: 10px 4px 30px;
         }
 
-            .kpi-upload-row input[type="file"] {
-                font-size: 12px;
-            }
-
-        .kpi-top-row {
+        /* Page header */
+        .kpi-page-header {
             display: flex;
-            gap: 12px;
-            align-items: stretch;
-            margin-bottom: 15px;
+            align-items: center;
+            gap: 14px;
+            margin: 10px 0 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--kpi-border);
         }
 
-        .kpi-excel-panel {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 12px 14px;
-            background: #fafafa;
-            width: 230px;
+        .kpi-page-header-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: var(--kpi-primary-soft);
+            color: var(--kpi-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
             flex-shrink: 0;
         }
 
-            .kpi-excel-panel label {
-                font-size: 12px;
-                font-weight: 600;
-                color: #555;
+        .kpi-page-header h3 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .kpi-page-header p {
+            margin: 2px 0 0;
+            font-size: 13px;
+            color: var(--kpi-muted);
+        }
+
+        /* Cards */
+        .kpi-card {
+            background: #fff;
+            border: 1px solid var(--kpi-border);
+            border-radius: var(--kpi-radius);
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+            padding: 18px 20px;
+        }
+
+        .kpi-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0 0 14px;
+            color: var(--kpi-text);
+        }
+
+            .kpi-card-title .kpi-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--kpi-primary);
             }
 
-        .btn-sm-compact {
-            padding: 4px 12px;
-            font-size: 12px;
+        .kpi-top-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 290px;
+            gap: 18px;
+            align-items: stretch;
+            margin-bottom: 20px;
         }
+
+        /* Single entry panel */
+        .kpi-single-entry-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kpi-single-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+            .kpi-single-row > div {
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+            }
+
+            .kpi-single-row .kpi-field-wide {
+                grid-column: 1 / -1;
+            }
+
+        .kpi-field-label,
+        .kpi-excel-panel > label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--kpi-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .kpi-single-row input,
+        .kpi-single-row select {
+            width: 100%;
+            height: 38px;
+            padding: 6px 10px;
+            border: 1px solid #d5d9e2;
+            border-radius: 6px;
+            font-size: 13px;
+            background: #fff;
+            color: var(--kpi-text);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+            .kpi-single-row input:focus,
+            .kpi-single-row select:focus {
+                outline: none;
+                border-color: var(--kpi-primary);
+                box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.15);
+            }
+
+            .kpi-single-row input[readonly] {
+                background: #f1f3f7;
+            }
+
+        .kpi-actions {
+            margin-top: auto;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* Employee dropdown (select2) */
+        .kpi-single-row .select2-container .select2-selection--single {
+            height: 38px;
+            border: 1px solid #d5d9e2;
+            border-radius: 6px;
+        }
+
+            .kpi-single-row .select2-container .select2-selection--single .select2-selection__rendered {
+                line-height: 36px;
+                padding-left: 10px;
+                font-size: 13px;
+            }
+
+            .kpi-single-row .select2-container .select2-selection--single .select2-selection__arrow {
+                height: 36px;
+            }
+
+        .kpi-single-row .select2-container--focus .select2-selection--single,
+        .kpi-single-row .select2-container--open .select2-selection--single {
+            border-color: var(--kpi-primary);
+            box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.15);
+        }
+
+        /* Excel panel */
+        .kpi-excel-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kpi-upload-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .kpi-file-drop {
+            border: 2px dashed #c9cfe0;
+            border-radius: 8px;
+            background: var(--kpi-bg);
+            padding: 14px 10px;
+            text-align: center;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+            .kpi-file-drop:hover {
+                border-color: var(--kpi-primary);
+                background: var(--kpi-primary-soft);
+            }
+
+            .kpi-file-drop input[type="file"] {
+                width: 100%;
+                font-size: 12px;
+            }
+
+        .kpi-file-hint {
+            display: block;
+            font-size: 11px;
+            color: var(--kpi-muted);
+            margin-top: 6px;
+        }
+
+        .kpi-upload-row .btn {
+            width: 100%;
+        }
+
+        .btn-sm-compact {
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .btn-kpi-outline {
+            background: #fff;
+            color: var(--kpi-primary);
+            border: 1px solid var(--kpi-primary);
+        }
+
+            .btn-kpi-outline:hover {
+                background: var(--kpi-primary-soft);
+                color: var(--kpi-primary);
+            }
 
         /* KPI List section */
         .kpi-list-section {
-            margin-top: 25px;
+            margin-top: 4px;
         }
 
         .kpi-list-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             flex-wrap: wrap;
             gap: 10px;
         }
 
+            .kpi-list-header .kpi-card-title {
+                margin: 0;
+            }
+
         .kpi-search-box {
-            padding: 6px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            height: 36px;
+            padding: 6px 12px 6px 32px;
+            border: 1px solid #d5d9e2;
+            border-radius: 18px;
             font-size: 13px;
-            width: 260px;
+            width: 280px;
             max-width: 100%;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.5' y2='16.5'/%3E%3C/svg%3E") no-repeat 11px center;
+        }
+
+            .kpi-search-box:focus {
+                outline: none;
+                border-color: var(--kpi-primary);
+                box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.15);
+            }
+
+        .kpi-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .kpi-action-icon {
             cursor: pointer;
-            font-size: 15px;
-            margin: 0 4px;
-            display: inline-block;
+            font-size: 14px;
+            margin: 0 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            transition: background 0.15s;
         }
 
         .kpi-action-edit {
-            color: #2980b9;
+            color: #2563eb;
+            background: #eff4ff;
         }
 
         .kpi-action-delete {
             color: #c0392b;
+            background: #fdecea;
         }
 
         .kpi-action-icon:hover {
-            opacity: 0.7;
+            filter: brightness(0.93);
         }
 
         .kpi-editing-banner {
             background: #fff8e1;
             border: 1px solid #ffe082;
             color: #8a6d00;
-            padding: 6px 10px;
-            border-radius: 4px;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 12px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: none;
         }
 
         .kpi-table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 12px;
+            border: 1px solid var(--kpi-border);
+            border-radius: 8px;
+            min-width: 640px;
         }
 
             .kpi-table th, .kpi-table td {
-                border: 1px solid #ddd;
-                padding: 8px;
+                border-bottom: 1px solid var(--kpi-border);
+                padding: 10px 12px;
                 text-align: left;
                 font-size: 13px;
+                white-space: nowrap;
             }
 
             .kpi-table th {
-                background-color: #f2f2f2;
+                background-color: #f3f5fa;
+                color: #4b5563;
+                font-weight: 600;
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+
+            .kpi-table tbody tr:nth-child(even) td {
+                background: #fafbfd;
+            }
+
+            .kpi-table tbody tr:hover td {
+                background: var(--kpi-primary-soft);
+            }
+
+            .kpi-table tbody tr:last-child td {
+                border-bottom: none;
             }
 
         .kpi-error {
             color: #c0392b;
-            font-weight: bold;
+            font-weight: 600;
             display: block;
             margin-top: 10px;
         }
 
         .kpi-info {
             color: #2e7d32;
-            font-weight: bold;
+            font-weight: 600;
             display: block;
             margin-top: 10px;
         }
 
         .kpi-loading {
-            color: #555;
+            color: var(--kpi-muted);
             font-style: italic;
             display: none;
-            margin-top: 10px;
+            margin: 0 0 10px;
         }
 
         /* Popup modal (shared: error/success + excel preview) */
@@ -140,10 +378,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(15, 23, 42, 0.5);
             z-index: 9999;
             align-items: center;
             justify-content: center;
+            padding: 12px;
         }
 
             .kpi-modal-overlay.show {
@@ -152,11 +391,11 @@
 
         .kpi-modal-box {
             background: #fff;
-            border-radius: 8px;
+            border-radius: 12px;
             max-width: 420px;
-            width: 90%;
-            padding: 24px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+            width: 100%;
+            padding: 26px 24px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.25);
             text-align: center;
             animation: kpi-modal-in 0.18s ease-out;
         }
@@ -174,8 +413,8 @@
         }
 
         .kpi-modal-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background: #fdecea;
             color: #c0392b;
@@ -190,7 +429,7 @@
         .kpi-modal-title {
             font-size: 17px;
             font-weight: 600;
-            color: #333;
+            color: var(--kpi-text, #333);
             margin-bottom: 8px;
         }
 
@@ -198,37 +437,34 @@
             font-size: 14px;
             color: #555;
             margin-bottom: 20px;
-            line-height: 1.5;
+            line-height: 1.6;
+            word-break: break-word;
         }
 
         .kpi-modal-btn {
-            background: #c0392b;
+            background: #3f51b5;
             color: #fff;
             border: none;
-            padding: 8px 24px;
-            border-radius: 5px;
+            padding: 9px 28px;
+            border-radius: 6px;
             font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
         }
 
             .kpi-modal-btn:hover {
-                background: #a93226;
+                background: #303f9f;
             }
-
-        .border {
-            border-bottom: 1px solid gray;
-            width: 100%
-        }
 
         /* Excel preview modal (bigger box) */
         .kpi-preview-box {
             background: #fff;
-            border-radius: 8px;
-            max-width: 950px;
-            width: 95%;
-            max-height: 85vh;
+            border-radius: 12px;
+            max-width: 980px;
+            width: 100%;
+            max-height: 88vh;
             padding: 20px 24px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.25);
             text-align: left;
             animation: kpi-modal-in 0.18s ease-out;
             display: flex;
@@ -239,79 +475,110 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #e3e6ef;
         }
 
         .kpi-preview-close {
-            background: none;
+            background: #f3f5fa;
             border: none;
-            font-size: 22px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 20px;
             cursor: pointer;
-            color: #888;
+            color: #6b7280;
             line-height: 1;
         }
 
             .kpi-preview-close:hover {
+                background: #e5e7eb;
                 color: #333;
             }
 
         .kpi-preview-body {
-            overflow-y: auto;
+            overflow: auto;
         }
 
-        /* Single entry panel */
-        .kpi-single-entry-panel {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 12px 14px;
-            background: #fafafa;
-            flex: 1;
-        }
-
-        .kpi-single-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-            .kpi-single-row > div {
-                display: flex;
-                flex-direction: column;
-                min-width: 160px;
+            .kpi-preview-body .kpi-table th {
+                position: sticky;
+                top: 0;
+                z-index: 1;
             }
 
-                .kpi-single-row > div label {
-                    font-size: 12px;
-                    font-weight: 600;
-                    color: #555;
-                    margin-bottom: 4px;
-                }
+        /* Responsive */
+        @media (max-width: 991px) {
+            .kpi-top-row {
+                grid-template-columns: 1fr;
+            }
 
-                .kpi-single-row > div input {
-                    padding: 6px 8px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    font-size: 13px;
-                }
+            .kpi-upload-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
 
-                .kpi-single-row > div input[readonly] {
-                    background: #eee;
+                .kpi-upload-row .kpi-file-drop {
+                    grid-column: 1 / -1;
                 }
+        }
 
-        .kpi-find-btn-wrap {
-            justify-content: flex-end;
+        @media (max-width: 575px) {
+            .kpi-page {
+                padding: 6px 0 20px;
+            }
+
+            .kpi-page-header h3 {
+                font-size: 18px;
+            }
+
+            .kpi-card {
+                padding: 14px;
+            }
+
+            .kpi-single-row {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-upload-row {
+                grid-template-columns: 1fr;
+            }
+
+            .kpi-actions .btn {
+                width: 100%;
+            }
+
+            .kpi-list-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .kpi-search-box {
+                width: 100%;
+            }
+
+            .kpi-preview-box {
+                padding: 14px;
+                max-height: 92vh;
+            }
         }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 
-    <h3 class="text-center mt-4">KPI Bonus - Configuration</h3>
-    <p class="border"></p>
+  <div class="kpi-page">
+    <div class="kpi-page-header">
+        <div class="kpi-page-header-icon">&#128202;</div>
+        <div>
+            <h3>KPI Bonus - Configuration</h3>
+            <p>Employee-দের KPI score ও bonus single entry অথবা Excel upload করে সেট করুন</p>
+        </div>
+    </div>
 
     <div class="kpi-top-row">
         <!-- ============ Single Entry Panel ============ -->
-        <div class="kpi-single-entry-panel">
-            <h5>Single Entry</h5>
+        <div class="kpi-card kpi-single-entry-panel">
+            <h5 class="kpi-card-title"><span class="kpi-dot"></span>Single Entry</h5>
 
             <div id="editingBanner" class="kpi-editing-banner">
                 আপনি একটি বিদ্যমান রেকর্ড Edit করছেন। <a href="javascript:void(0)" id="btnCancelEdit">বাতিল করুন</a>
@@ -319,40 +586,45 @@
 
             <div class="kpi-single-row">
                 <div>
-                    <label>Employee</label>
+                    <label class="kpi-field-label">Employee</label>
                     <select id="ddlEmployee">
                         <option value="">-- Select Employee --</option>
                     </select>
                 </div>
                 <div>
-                    <label>Salary Month</label>
+                    <label class="kpi-field-label">Salary Month</label>
                     <input type="date" id="singleSalaryMonth" />
                 </div>
                 <div>
-                    <label>KPI Score</label>
-                    <input type="number" id="singleKpiScore" step="any" />
+                    <label class="kpi-field-label">KPI Score</label>
+                    <input type="number" id="singleKpiScore" step="any" placeholder="0" />
                 </div>
                 <div>
-                    <label>KPI Bonus Amount</label>
-                    <input type="number" id="singleKpiBonus" step="any" />
+                    <label class="kpi-field-label">KPI Bonus Amount</label>
+                    <input type="number" id="singleKpiBonus" step="any" placeholder="0.00" />
                 </div>
-                <div style="flex: 1;">
-                    <label>Remarks</label>
-                    <input type="text" id="singleRemarks" />
+                <div class="kpi-field-wide">
+                    <label class="kpi-field-label">Remarks</label>
+                    <input type="text" id="singleRemarks" placeholder="Optional" />
                 </div>
             </div>
 
-            <div style="text-align: right;">
+            <div class="kpi-actions">
                 <button type="button" id="btnSingleSubmit" class="btn btn-success btn-sm-compact">SUBMIT</button>
             </div>
         </div>
 
         <!-- ============ Excel Import (right side, compact) ============ -->
-        <div class="kpi-excel-panel">
+        <div class="kpi-card kpi-excel-panel">
+            <h5 class="kpi-card-title"><span class="kpi-dot"></span>Excel Import</h5>
             <label>KPI Excel File</label>
             <div class="kpi-upload-row">
-                <input type="file" id="fuKPIExcel" accept=".xlsx,.xls" />
+                <div class="kpi-file-drop">
+                    <input type="file" id="fuKPIExcel" accept=".xlsx,.xls" />
+                    <span class="kpi-file-hint">.xlsx / .xls file সিলেক্ট করুন</span>
+                </div>
                 <button type="button" id="btnLoad" class="btn btn-primary btn-sm-compact">Load &amp; Process</button>
+                <button type="button" id="btnDemoExcel" class="btn btn-kpi-outline btn-sm-compact">&#11015; Download Demo Excel</button>
             </div>
         </div>
     </div>
@@ -360,13 +632,14 @@
     <span id="lblLoading" class="kpi-loading">Processing... please wait</span>
 
     <!-- ============ KPI List Section ============ -->
-    <div class="kpi-list-section">
+    <div class="kpi-card kpi-list-section">
         <div class="kpi-list-header">
-            <h5 style="margin: 0;">KPI List</h5>
+            <h5 class="kpi-card-title"><span class="kpi-dot"></span>KPI List</h5>
             <input type="text" id="kpiSearchBox" class="kpi-search-box" placeholder="Search anything in the table..." />
         </div>
-        <div id="kpiListTableWrapper"></div>
+        <div id="kpiListTableWrapper" class="kpi-table-wrap"></div>
     </div>
+  </div>
 
     <!-- ============ Excel Preview Modal ============ -->
     <div id="excelPreviewOverlay" class="kpi-modal-overlay">
@@ -383,7 +656,7 @@
             <span id="lblMessage" class="kpi-error"></span>
 
             <div class="kpi-preview-body">
-                <div id="resultTableWrapper"></div>
+                <div id="resultTableWrapper" class="kpi-table-wrap"></div>
             </div>
         </div>
     </div>
@@ -434,19 +707,19 @@
 
             // ---------------- Error / Success popup ----------------
             function showErrorPopup(message) {
-                document.querySelector(".kpi-modal-icon").textContent = "!";
-                document.querySelector(".kpi-modal-icon").style.background = "#fdecea";
-                document.querySelector(".kpi-modal-icon").style.color = "#c0392b";
-                document.querySelector(".kpi-modal-title").textContent = "দুঃখিত!";
+                modalOverlay.querySelector(".kpi-modal-icon").textContent = "!";
+                modalOverlay.querySelector(".kpi-modal-icon").style.background = "#fdecea";
+                modalOverlay.querySelector(".kpi-modal-icon").style.color = "#c0392b";
+                modalOverlay.querySelector(".kpi-modal-title").textContent = "দুঃখিত!";
                 modalMessage.textContent = message;
                 modalOverlay.classList.add("show");
             }
 
             function showSuccessPopup(message) {
-                document.querySelector(".kpi-modal-icon").textContent = "✓";
-                document.querySelector(".kpi-modal-icon").style.background = "#e8f5e9";
-                document.querySelector(".kpi-modal-icon").style.color = "#2e7d32";
-                document.querySelector(".kpi-modal-title").textContent = "সফল হয়েছে!";
+                modalOverlay.querySelector(".kpi-modal-icon").textContent = "✓";
+                modalOverlay.querySelector(".kpi-modal-icon").style.background = "#e8f5e9";
+                modalOverlay.querySelector(".kpi-modal-icon").style.color = "#2e7d32";
+                modalOverlay.querySelector(".kpi-modal-title").textContent = "সফল হয়েছে!";
                 modalMessage.textContent = message;
                 modalOverlay.classList.add("show");
             }
@@ -599,10 +872,15 @@
                     });
             }
 
+            // Searchable employee dropdown (select2 loads at the end of the master page)
+            $(document).ready(function () {
+                $(ddlEmployee).select2({ placeholder: "-- Select Employee --", allowClear: true, width: "100%" });
+            });
+
             loadEmployeeDropdown();
 
             function resetSingleForm() {
-                ddlEmployee.value = "";
+                $(ddlEmployee).val("").trigger("change");
                 singleSalaryMonth.value = "";
                 singleKpiScore.value = "";
                 singleKpiBonus.value = "";
@@ -772,7 +1050,7 @@
                             throw new Error("রেকর্ড পাওয়া যায়নি।");
                         }
 
-                        ddlEmployee.value = d.empId;
+                        $(ddlEmployee).val(d.empId).trigger("change");
                         singleSalaryMonth.value = toSalaryMonthDateString(d.salaryMonth);
                         singleKpiScore.value = d.kpiScore;
                         singleKpiBonus.value = d.kpiBonusAmount;
@@ -988,10 +1266,10 @@
 
                         var map = {};
                         list.forEach(function (emp) {
-                            // empCard -> card number, empName -> Name, dptName -> Department, dsgName -> Designation
-                            var cardNo = emp.empCard;
-                            if (cardNo) {
-                                map[String(cardNo).trim()] = {
+                            // empProximityNo -> match key, empName -> Name, dptName -> Department, dsgName -> Designation
+                            var proximityNo = emp.empProximityNo;
+                            if (proximityNo) {
+                                map[String(proximityNo).trim()] = {
                                     empId: emp.empId || "",
                                     name: emp.empName || "N/A",
                                     department: emp.dptName || "N/A",
@@ -1039,6 +1317,22 @@
                 XLSX.utils.book_append_sheet(wb, worksheet, "Missing Employees");
                 XLSX.writeFile(wb, "Missing_Employees.xlsx");
             }
+
+            // ---------- Demo Excel template download ----------
+            function downloadDemoExcel() {
+                var demoData = [
+                    { EmpId: "1001", SalaryMonth: "2026-10-01", KPIScore: "85", KPIBonusAmount: "2000", Remarks: "Good performance" },
+                    { EmpId: "1002", SalaryMonth: "2026-10-01", KPIScore: "70", KPIBonusAmount: "1000", Remarks: "" }
+                ];
+
+                var worksheet = XLSX.utils.json_to_sheet(demoData, { header: REQUIRED_COLUMNS });
+                worksheet["!cols"] = [{ wch: 12 }, { wch: 14 }, { wch: 10 }, { wch: 16 }, { wch: 25 }];
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, worksheet, "KPI");
+                XLSX.writeFile(wb, "KPI_Demo.xlsx");
+            }
+
+            document.getElementById("btnDemoExcel").addEventListener("click", downloadDemoExcel);
 
             // ---------- Render preview table (inside modal) ----------
             function renderTable(kpiRows, employeeMap) {

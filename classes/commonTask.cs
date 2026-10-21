@@ -2030,8 +2030,10 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
         {
             try
             {
+                string kk = @"SELECT DISTINCT FromDate,ToDate,FORMAT(FromDate, 'MMM-yyyy') + ' (' + FORMAT(FromDate, 'dd-MM-yyyy') + ' - ' + FORMAT(ToDate, 'dd-MM-yyyy') + ')' AS YearMonth,FORMAT(FromDate, 'MM-yyyy') AS MonthYear
+FROM tblMonthSetup WHERE CompanyId = '"+ CompanyId + "' ORDER BY FromDate DESC, ToDate DESC";
                 DataTable dt = new DataTable();
-                sqlDB.fillDataTable(" select Format(FromDate,'MMM-yyyy') as YearMonth,Format(FromDate,'MM-yyyy') as MonthYear from tblMonthSetup where CompanyId='" + CompanyId + "' order by Year(FromDate) desc ,Month(FromDate) desc", dt);
+                sqlDB.fillDataTable(@"SELECT DISTINCT FromDate,ToDate,FORMAT(FromDate, 'MMM-yyyy') + ' (' + FORMAT(FromDate, 'dd-MM-yyyy') + ' - ' + FORMAT(ToDate, 'dd-MM-yyyy') + ')' AS YearMonth,FORMAT(FromDate, 'MM-yyyy') AS MonthYear FROM tblMonthSetup WHERE CompanyId = '" + CompanyId + "' ORDER BY FromDate DESC, ToDate DESC", dt);
                 ddlMonthList.DataSource = dt;
                 ddlMonthList.DataValueField = "MonthYear";
                 ddlMonthList.DataTextField = "YearMonth";
@@ -2040,6 +2042,68 @@ WHERE Sheet = '" + Sheet + @"' and IsActive = 1 and
             }
             catch { }
         }
+
+
+        public static void _loadMonthIdByCompany(DropDownList ddlMonthList, string CompanyId)
+        {
+            try
+            {
+                string query = @"WITH MonthData AS
+           (
+                        SELECT
+                            FromDate,
+                            MonthName,
+                            ToDate,
+                            FORMAT(ToDate, 'MMM-yyyy') + ' (' +
+                            FORMAT(FromDate, 'dd-MM-yyyy') + ' - ' +
+                            FORMAT(ToDate, 'dd-MM-yyyy') + ')' AS YearMonth,
+
+                            FORMAT(FromDate, 'MM-yyyy') + ' (' +
+                            (
+                                SELECT STRING_AGG(CAST(X.EmpTypeId AS VARCHAR(10)), ',')
+                                FROM
+                                (
+                                    SELECT DISTINCT EmpTypeId
+                                    FROM tblMonthSetup
+                                    WHERE CompanyId = '0001'
+                                      AND FORMAT(FromDate, 'MM-yyyy') = FORMAT(T.FromDate, 'MM-yyyy')
+                                ) X
+                            ) + ')' AS MonthYear,
+
+                            EmpTypeId,
+
+                            ROW_NUMBER() OVER(
+                                PARTITION BY
+                                    FORMAT(ToDate, 'MMM-yyyy') + ' (' +
+                                    FORMAT(FromDate, 'dd-MM-yyyy') + ' - ' +
+                                    FORMAT(ToDate, 'dd-MM-yyyy') + ')'
+                                ORDER BY FromDate DESC, ToDate DESC
+                            ) AS RN
+
+                        FROM tblMonthSetup T
+                        WHERE CompanyId = '0001'
+                    )
+                    SELECT
+                        FromDate,
+                        MonthName,
+                        ToDate,
+                        YearMonth,
+                        MonthYear,
+                        EmpTypeId
+                    FROM MonthData
+                    WHERE RN = 1
+                    ORDER BY FromDate DESC, ToDate DESC; ";
+                dt = new DataTable();
+                dt = CRUD.ExecuteReturnDataTable(query);
+                ddlMonthList.DataSource = dt;
+                ddlMonthList.DataValueField = "MonthYear";
+                ddlMonthList.DataTextField = "YearMonth";
+                ddlMonthList.DataBind();
+                ddlMonthList.Items.Insert(0, new ListItem(" ", "0"));
+            }
+            catch { }
+        }
+
         //------------------------------------------------------------------------------------------------------------------------------------------------
         public static void LoadShiftByDepartmentForOnloyInitilizedShift(DropDownList ddl, string DptId)
         {
