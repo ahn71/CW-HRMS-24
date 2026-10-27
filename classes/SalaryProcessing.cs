@@ -239,6 +239,7 @@ namespace SigmaERP.classes
                                 ToDateForAll = _ToDateForAll,
                                 IsSeperationGeneration = IsSeperationGeneration,
                                 EmpSeparationId = _EmpSeparationId,
+                                GenerateDate = DateTime.Now,
                                 Additional = null
 
 
@@ -266,7 +267,7 @@ namespace SigmaERP.classes
                         salaryRecord.OthersPay = getOthersPay(salaryRecord.EmpId);
 
                         //holiday allowence start
-                        var holidayAlloence = CalculateHolidayAllowance(EmpId, employee["EmpTypeId"].ToString(), employee["DsgId"].ToString(), decimal.Parse(employee["EmpPresentSalary"].ToString()), TotalDays, empFromDate,holidayList);
+                        var holidayAlloence = CalculateHolidayAllowance(salaryRecord.EmpId, employee["EmpTypeId"].ToString(), employee["DsgId"].ToString(), decimal.Parse(employee["EmpPresentSalary"].ToString()), TotalDays, empFromDate, empToDate, holidayList);
                         salaryRecord.HoliDayBillAmount = Convert.ToDouble(holidayAlloence.Amount);
                         salaryRecord.HolidayWorkingDays = holidayAlloence.Count;
 
@@ -307,7 +308,7 @@ namespace SigmaERP.classes
                         //    salaryRecord.OthersDeduction = double.Parse(punishmentDeduction["PAmount"].ToString());
                         //}
 
-                        var punishment = getPunishementJosn(allPunishmentDeductions,EmpId);
+                        var punishment = getPunishementJosn(allPunishmentDeductions, salaryRecord.EmpId);
                         salaryRecord.OthersDeduction = punishment.totalDeduction;
 
                         //OverTime 
@@ -534,10 +535,11 @@ namespace SigmaERP.classes
                 FromDate = FromDate,
                 ToDate = ToDate,
                 AttSummary = getAllAdditionalSummary(FromDate.ToString("yyyy-MM-dd"), ToDate.ToString("yyyy-MM-dd")),
-                KPICache = GetKPICache(FromDate.ToString("yyyy-MM-dd")),
+                // KPI is saved against the salary month (first day of ToDate's month)
+                KPICache = GetKPICache(ToDate.ToString("yyyy-MM") + "-01"),
                 AdvanceDeductions = getAllAdvanceDeduction(FromDate, EmpId),
                 PunishmentDeductions = getAllPunishment(EmpId, FromDate),
-                HolidayList = getHollidayList(FromDate, CompanyId),
+                HolidayList = getHollidayList(FromDate, ToDate, CompanyId),
                 GrantOtCache = GetGrantOTCache(CompanyId, FromDate.ToString("yyyy-MM-dd"), ToDate.ToString("yyyy-MM-dd"))
             };
         }
@@ -658,10 +660,10 @@ namespace SigmaERP.classes
             salaryRecord.FestivalHoliday = dt.Rows.Count;
 
             double PresentSalary = salaryRecord.EmpPresentSalary;
-            if (salaryRecord.FromDate.Day > 1 || salaryRecord.ToDate.Day < salaryRecord.DaysInMonth)
+            // days actually covered; the salary period can cross months (e.g. 26th to 25th)
+            int TotalDays = (salaryRecord.ToDate.Date - salaryRecord.FromDate.Date).Days + 1;
+            if (TotalDays < salaryRecord.DaysInMonth)
             {
-
-                int TotalDays = (salaryRecord.ToDate.Day-salaryRecord.FromDate.Day) + 1;  // this line find out active days
 
                 salaryRecord.Activeday = TotalDays - salaryRecord.WeekendHoliday - salaryRecord.FestivalHoliday;
 
@@ -706,10 +708,10 @@ namespace SigmaERP.classes
             
 
             double PresentSalary = salaryRecord.EmpPresentSalary;
-            if (salaryRecord.FromDate.Day > 1 || salaryRecord.ToDate.Day < salaryRecord.DaysInMonth)
+            // days actually covered; the salary period can cross months (e.g. 26th to 25th)
+            int TotalDays = (salaryRecord.ToDate.Date - salaryRecord.FromDate.Date).Days + 1;
+            if (TotalDays < salaryRecord.DaysInMonth)
             {
-
-                int TotalDays = (salaryRecord.ToDate.Day - salaryRecord.FromDate.Day) + 1;  // this line find out active days
 
                 salaryRecord.Activeday = TotalDays - salaryRecord.WeekendHoliday - salaryRecord.FestivalHoliday;
 
@@ -1416,7 +1418,7 @@ namespace SigmaERP.classes
             try
             {
                 //EmpId = (EmpId == "0") ? "" : " and EmpId ='" + EmpId + "'";
-                CRUD.Execute("delete from Payroll_monthlysalarysheet_Compliances where  WHERE CompanyId = '" + CompanyId + @"' 
+                CRUD.Execute("delete from Payroll_monthlysalarysheet_Compliances WHERE CompanyId = '" + CompanyId + @"' 
                AND YearMonth = '" + ToDate.ToString("yyyy-MM") + @"-01' 
                AND EmpId IN (" + EmpIds + ")");
             }
@@ -1755,12 +1757,10 @@ namespace SigmaERP.classes
 
         }
 
-        private DataTable  getHollidayList(DateTime fromDate,string companyId)
+        // holidays inside the salary period (month setup may run e.g. 26th to 25th)
+        private DataTable  getHollidayList(DateTime fromDate, DateTime toDate, string companyId)
         {
-            DateTime firstDateOfMonth = new DateTime(fromDate.Year, fromDate.Month, 1);
-
-            DateTime lastDateOfMonth = firstDateOfMonth.AddMonths(1).AddDays(-1);
-            string query = $"select hw.hdate,has.salaryType,has.Multiplier,has.HolidayType from tblHolydayWork  hw inner join HolidayAllowanceSettings has on hw.HCode=has.HolidayId where has.companyId='0001' and has.isactive=1  and  hw.HDate >= '{firstDateOfMonth:yyyy-MM-dd}' AND hw.HDate < '{lastDateOfMonth:yyyy-MM-dd}'";
+            string query = $"select hw.hdate,has.salaryType,has.Multiplier,has.HolidayType from tblHolydayWork  hw inner join HolidayAllowanceSettings has on hw.HCode=has.HolidayId where has.companyId='{companyId}' and has.isactive=1  and  hw.HDate >= '{fromDate:yyyy-MM-dd}' AND hw.HDate <= '{toDate:yyyy-MM-dd}'";
             dt = new DataTable();
             dt = CRUD.ExecuteReturnDataTable(query);
             if (dt.Rows.Count > 0)
@@ -1776,7 +1776,7 @@ namespace SigmaERP.classes
         string empType,
         string dsgId,
         decimal grossSalary,
-    int daysInMonth,DateTime fromDate, DataTable holidayList)
+    int daysInMonth,DateTime fromDate, DateTime toDate, DataTable holidayList)
         {
             if (holidayList == null)
                 return (0, 0);
@@ -1784,7 +1784,7 @@ namespace SigmaERP.classes
             decimal amount = 0;
             decimal foodAllowance = 0;
 
-            DataTable attendanceDates = EmployeeWorkedInHoliday(empId,fromDate);
+            DataTable attendanceDates = EmployeeWorkedInHoliday(empId, fromDate, toDate);
 
             HashSet<DateTime> workedDates = attendanceDates.AsEnumerable()
                 .Select(r => Convert.ToDateTime(r["AttDate"]).Date)
@@ -1830,12 +1830,10 @@ namespace SigmaERP.classes
             return (holidayCount, amount);
         }
 
-        private DataTable EmployeeWorkedInHoliday(string empId, DateTime fromDate)
+        private DataTable EmployeeWorkedInHoliday(string empId, DateTime fromDate, DateTime toDate)
         {
-            DateTime startDate = new DateTime(fromDate.Year, fromDate.Month, 1);
-            DateTime endDate = startDate.AddMonths(1);
             string query = $@"SELECT CAST(AttDate AS DATE) AS AttDate FROM tblAttendanceRecord
-            WHERE EmpId = '{empId}'  AND HolidayCount = 1 AND AttDate >= '{startDate:yyyy-MM-dd}' AND AttDate < '{endDate:yyyy-MM-dd}'";
+            WHERE EmpId = '{empId}'  AND HolidayCount = 1 AND AttDate >= '{fromDate:yyyy-MM-dd}' AND AttDate <= '{toDate:yyyy-MM-dd}'";
             return CRUD.ExecuteReturnDataTable(query);
         }
 

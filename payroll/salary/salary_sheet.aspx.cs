@@ -165,6 +165,8 @@ namespace SigmaERP.payroll.salary
                 }
    
                 string Condition = "";
+   
+                string accessCondition = AccessControl.getEmpAccessCondition();
 
                 if (rblGenerateType.SelectedValue == "1")
                 {
@@ -205,7 +207,8 @@ namespace SigmaERP.payroll.salary
                 }
 
                 if(ddlUnit.SelectedValue!="0")
-                    Condition += "and unitId ='" + ddlShift.SelectedValue + "'";
+                    Condition += " and unitId ='" + ddlUnit.SelectedValue + "'";
+                Condition += accessCondition;
                 string getSQLCMD;
                 DataTable dt = new DataTable();
                 if (chkIsBankfordQatar.Checked)
@@ -330,7 +333,7 @@ namespace SigmaERP.payroll.salary
                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,Additional,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                " FROM   " + tableName + " " +
                                " where " +
-                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+ "') AND IsSeperationGeneration='0' " + holidayAllowance + "" +
+                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+ "') AND IsSeperationGeneration='0' " + AccessControl.getEmpAccessCondition() + " " + holidayAllowance + "" +
                                " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "";
                         }
@@ -341,7 +344,7 @@ namespace SigmaERP.payroll.salary
                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka,  PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                 " FROM   " + tableName + " " +
                                 " where " +
-                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " + holidayAllowance + " " + 
+                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " + AccessControl.getEmpAccessCondition() + " " + holidayAllowance + " " + 
                                 " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }
@@ -410,12 +413,12 @@ namespace SigmaERP.payroll.salary
                     {
                         getSQLCMD = @"SELECT pep.EmpId,pfs.EarnLeave,pfs.EarnLeaveAmount,pfs.MonthlyPayroll,pfs.NoticeDeduction_Amount,pfs.NoticeDeduction_Days,pfs.OtRate,pfs.RetirementBenefits_Amount,pfs.RetirementBenefits_Days,FORMAT(RetirementEffectiveDate, 'MMMM yyyy') AS RetirementEffectiveDate,pfs.ServiceBenefits_Amount,pfs.ServiceBenefits_Days,pfs.Total,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalWorkingDays, RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo,  pei.EmpNameBn, pei.EmpName, cmp.CompanyLogo,  CONVERT(VARCHAR(10), pes.EffectiveDate, 105) AS EmpResignDate,cmp.CompanyNameBangla, cmp.CompanyName, cmp.Address, cmp.AddressBangla, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dsg.DsgName, dpt.DptNameBn, dpt.DptName, grp.GNameBn, grp.GName, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pecs.BasicSalary, pecs.HouseRent, pecs.MedicalAllownce, pecs.FoodAllownce, pecs.ConvenceAllownce, pecs.OthersAllownce, pecs.EmpPresentSalary, pecs.PreBasicSalary, pecs.PreHouseRent, pecs.PreMedicalAllownce, pecs.PreFoodAllownce, pecs.PreConvenceAllownce, pecs.PreOthersAllownce, pecs.PreEmpSalary,pfs.StampDeduction,pfs.AttendanceBonus FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo AS cmp ON pei.CompanyId = cmp.CompanyId  LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN dbo.HRDGrade AS Grd ON pecs.GrdId = Grd.GradeID   left join Payroll_FinalSettlemnet as pfs on pecs.EmpId = pfs.EmpId left join Personnel_EmpSeparation as pes on pfs.EmpId=pes.EmpId and pfs.RegistrationId=pes.EmpSeparationId 
                   WHERE convert(varchar(7), pfs.RetirementEffectiveDate)='" + ddlSelectMonth.SelectedValue.Substring(0, 7) + @"' 
-and pfs.EmpTypeId='" + rblEmployeeType.SelectedValue + "' and pecs.DptId " + DepartmentList + " and pecs.IsActive=1 order by dsg.Ordering,pecs.CustomOrdering";
+and pfs.EmpTypeId='" + rblEmployeeType.SelectedValue + "' and pecs.DptId " + DepartmentList + " and pecs.IsActive=1" + AccessControl.getEmpAccessCondition("pecs.EmpId") + " order by dsg.Ordering,pecs.CustomOrdering";
                     }
                     else
                         getSQLCMD = @"SELECT pep.EmpId,pfs.EarnLeave,pfs.EarnLeaveAmount,pfs.MonthlyPayroll,pfs.NoticeDeduction_Amount,pfs.NoticeDeduction_Days,pfs.OtRate,pfs.RetirementBenefits_Amount,pfs.RetirementBenefits_Days,FORMAT(RetirementEffectiveDate, 'MMMM yyyy') AS RetirementEffectiveDate,pfs.ServiceBenefits_Amount,pfs.ServiceBenefits_Days,pfs.Total,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalOtAmount,pfs.TotalOtHours,pfs.TotalWorkingDays, RIGHT(pei.EmpCardNo, 6) + '(' + pei.EmpProximityNo + ')' AS EmpCardNo,  pei.EmpNameBn, pei.EmpName, cmp.CompanyLogo,  CONVERT(VARCHAR(10), pes.EffectiveDate, 105) AS EmpResignDate,cmp.CompanyNameBangla, cmp.CompanyName, cmp.Address, cmp.AddressBangla, CONVERT(VARCHAR(10), pep.DateOfBirth, 105) AS DateOfBirth, CONVERT(VARCHAR(10), pei.EmpJoiningDate, 105) AS EmpJoiningDate, dsg.DsgNameBn, dsg.DsgName, dpt.DptNameBn, dpt.DptName, grp.GNameBn, grp.GName, pep.Sex, pep.Age, pei.CompanyId, pei.EmpStatus, pecs.DptId, pecs.CustomOrdering, pecs.BasicSalary, pecs.HouseRent, pecs.MedicalAllownce, pecs.FoodAllownce, pecs.ConvenceAllownce, pecs.OthersAllownce, pecs.EmpPresentSalary, pecs.PreBasicSalary, pecs.PreHouseRent, pecs.PreMedicalAllownce, pecs.PreFoodAllownce, pecs.PreConvenceAllownce, pecs.PreOthersAllownce, pecs.PreEmpSalary,pfs.StampDeduction,pfs.AttendanceBonus FROM dbo.Personnel_EmployeeInfo AS pei LEFT JOIN dbo.Personnel_EmpPersonnal AS pep ON pei.EmpId = pep.EmpId INNER JOIN dbo.Personnel_EmpCurrentStatus AS pecs ON pei.EmpId = pecs.EmpId AND pecs.IsActive = 1 INNER JOIN HRD_CompanyInfo AS cmp ON pei.CompanyId = cmp.CompanyId  LEFT OUTER JOIN dbo.HRD_Department AS dpt ON pecs.DptId = dpt.DptId LEFT OUTER JOIN dbo.HRD_Designation AS dsg ON pecs.DsgId = dsg.DsgId LEFT OUTER JOIN dbo.HRD_Group AS grp ON pecs.GId = grp.GId LEFT OUTER JOIN dbo.HRDGrade AS Grd ON pecs.GrdId = Grd.GradeID   left join Payroll_FinalSettlemnet as pfs on pecs.EmpId = pfs.EmpId left join Personnel_EmpSeparation as pes on pfs.EmpId=pes.EmpId and pfs.RegistrationId=pes.EmpSeparationId 
                   WHERE convert(varchar(7), pfs.RetirementEffectiveDate)='" + ddlSelectMonth.SelectedValue.Substring(0, 7) + @"' 
-and (pecs.EmpCardNo LIKE '%" + txtEmpCardNo.Text.Trim() + "' OR pei.EmpProximityNo ='" + txtEmpCardNo.Text.Trim() + "') and pecs.IsActive=1";
+and (pecs.EmpCardNo LIKE '%" + txtEmpCardNo.Text.Trim() + "' OR pei.EmpProximityNo ='" + txtEmpCardNo.Text.Trim() + "') and pecs.IsActive=1" + AccessControl.getEmpAccessCondition("pecs.EmpId");
 
                     sqlDB.fillDataTable(getSQLCMD, dt = new DataTable());
                     if (dt.Rows.Count == 0)
@@ -554,7 +557,7 @@ select ep.NationIDCardNo, ecs.BankId, Isnull(ep.EmpVisaNo,'') as EmpVisaNo,ei.Em
 pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmount,0)-case when Isnull(ecs.IsVacation,0)= 1 then pms.EmpPresentSalary else  (pms.AdvanceDeduction + pms.AbsentDeduction+pms.othersdeduction) end as NetAmount,
   case when Isnull(ecs.IsVacation,0)= 1 then 0 else pms.TotalSalary end as TotalSalary,
   case when Isnull(ecs.IsVacation,0)= 1 then 'Vacation' else '' end as Note" +
-                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId left join bns on pms.Empid=bns.empid  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1  "+ empptype + " "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+" and "+ empStatus + "";
+                " from Payroll_MonthlySalarySheet pms inner join Personnel_EmployeeInfo ei on ei.EmpId = pms.EmpId  inner join Personnel_EmpCurrentStatus ecs on ei.EmpId = ecs.EmpId left join Personnel_EmpPersonnal ep on ei.EmpId = ep.EmpId left join Hrd_BankInfo bi on ecs.BankId = bi.BankId  left join Hrd_BankInfo pbi on ecs.PayerBankId=pbi.BankId left join bns on pms.Empid=bns.empid  where ecs.companyId in (" + ddlCompanyName.SelectedValue+") and ecs.Isactive = 1  "+ empptype + " "+ condition + " "+yearmonth+" and pms.DptId "+departmentList+" and "+ empStatus + "" + AccessControl.getEmpAccessCondition("pms.EmpId");
             sqlDB.fillDataTable(getSQLCMD, dt);
             if (dt.Rows.Count == 0)
             {
@@ -646,7 +649,7 @@ pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmo
                                " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName, PresentDay,WeekendHoliday,FestivalHoliday,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, HoliDayBillAmount,HolidayWorkingDays,HolidayTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                " FROM   " + tableName + " " +
                                " where " +
-                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+ "') AND IsSeperationGeneration='0' " + holidayAllowance + "" +
+                               " IsActive='1' " + yearMonth + " AND (EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' OR EmpProximityNo='"+txtEmpCardNo.Text.Trim()+ "') AND IsSeperationGeneration='0' " + AccessControl.getEmpAccessCondition() + " " + holidayAllowance + "" +
                                " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "";
                         }
@@ -657,7 +660,7 @@ pms.EmpPresentSalary+Isnull(ExtraOtAmount,0)+(pms.otherspay)+Isnull(bns.BonusAmo
                                 " DptId, CompanyId, DsgName, TotalSalary, GrdName, GId, GName,HoliDayBillAmount,HolidayWorkingDays,HolidayTaka,  PresentDay,WeekendHoliday,FestivalHoliday, PayableDays, Payable,round(NetPayable,0) as NetPayable, OthersAllownce, ProvidentFund, ProfitTax, LateFine, TiffinDays, TiffinTaka, TiffinBillAmount,CasualLeave,SickLeave,AnnualLeave,OfficialLeave,SalaryCount,DormitoryRent,TotalOverTime,TotalOtherOverTime,DaysInMonth,OthersPay,OthersDeduction,lwp as ShortLeave,AdvanceDeduction,LateDays,ConvenceAllownce,NightbilAmount,NightBillDays,convert(varchar(10), EmpJoiningDate,105) EmpJoiningDate,Stampdeduct,FoodAllownce,Activeday,EmpNetGross,SeparationTypeName,EmpNameBn, DptNameBn, DsgNameBn, GrdNameBangla " +
                                 " FROM   " + tableName + " " +
                                 " where " +
-                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " + holidayAllowance + " " + 
+                                " IsActive='1' " + yearMonth + " AND EmpCardNo Like '%" + txtEmpCardNo.Text.Trim() + "' AND IsSeperationGeneration='1' " + AccessControl.getEmpAccessCondition() + " " + holidayAllowance + " " + 
                                 " ORDER BY SftName, CONVERT(int,DptId),convert(int,Gid), CustomOrdering";
                             Session["__ReportTitle__"] = "[Separation]";
                         }

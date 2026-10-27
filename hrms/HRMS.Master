@@ -266,6 +266,16 @@
 
 
 
+                                             <% if (IsRouteExists("attendance/attendance-log"))
+                                                { %>
+                                            <li class="l_sidebar">
+                                                <a href="/hrms/attendance/attendance-log" runat="server" class="">
+                                                    <span class="menu-text">Attendance Log</span>
+                                                </a>
+                                            </li>
+                                            <% } %>
+
+
                                             <% if (IsRouteExists("attendance/month-setup"))
                                                 { %>
                                             <li class="l_sidebar">

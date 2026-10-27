@@ -18,6 +18,12 @@ namespace SigmaERP.hrms
                 {
                     HttpContext.Current.Response.Redirect("/hrms/login");
                 }
+                // "only me" users have their own dashboard; the logo, back buttons and default redirects all point here
+                if (Session["__UserDataAccessLevel__"]?.ToString() == "1")
+                {
+                    Response.RedirectToRoute(SigmaERP.classes.Routing.UserDashboardRoutName);
+                    return;
+                }
                 AccessControl.getDataAccessPermission(Session["__GetUserId__"].ToString());
             }
         }

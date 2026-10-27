@@ -147,6 +147,15 @@ namespace SigmaERP.attendance
                         ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                         return;
                     }
+                    if (!AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), ddlCompanyName.SelectedValue))
+                    {
+                        lblMessage.InnerText = AccessControl.isEmpCardExists(txtCardNo.Text.Trim(), ddlCompanyName.SelectedValue)
+                            ? "warning-> You have no permission on this Employee"
+                            : "warning-> No Attendance Record Found";
+                        txtCardNo.Focus();
+                        ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                        return;
+                    }
                 }
                 //----------------------------End-------------------------------
                 if (rblReportType.SelectedValue == "3")
@@ -213,6 +222,7 @@ namespace SigmaERP.attendance
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                unitCondition += AccessControl.getEmpAccessCondition();
                 string isregular = "";
                 if (chkIsRegular.Checked == true)
                 {
@@ -262,7 +272,7 @@ namespace SigmaERP.attendance
 
                 if (dt.Rows.Count == 0)
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
@@ -344,7 +354,7 @@ namespace SigmaERP.attendance
                 DataTable dt = classes.CRUD.ExecuteReturnDataTable(query);
                 if (dt == null || dt.Rows.Count == 0)
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
@@ -383,6 +393,7 @@ namespace SigmaERP.attendance
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                unitCondition += AccessControl.getEmpAccessCondition();
 
 
                 DataTable dt = new DataTable();
@@ -416,7 +427,7 @@ namespace SigmaERP.attendance
 
                 if (dt.Rows.Count == 0)
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                     return;
                 }
@@ -457,6 +468,7 @@ namespace SigmaERP.attendance
             {
 
                 string EmpTypeID = (rblEmpType.SelectedValue == "All") ? "" : " and EmpTypeId= " + rblEmpType.SelectedValue + "";
+                string accessCondition = AccessControl.getEmpAccessCondition();
                 string DepartmentList = "";
                 if (rblGenerateType.SelectedValue == "0")
                     DepartmentList = classes.commonTask.getDepartmentList(lstSelected);
@@ -477,14 +489,14 @@ namespace SigmaERP.attendance
                     }
 
                     sql = " Select EmpId,SubString(EmpCardNo,8,15)+' ( '+EmpProximityNo+' )' as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime, 1 as OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays,PaybleDays From v_tblAttendanceRecord " +
-                     " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "'  order by  ATTDate";
+                     " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "'" + accessCondition + "  order by  ATTDate";
                 }                  
                  
 
 
                 else                    
                     sql = " Select EmpId,SubString(EmpCardNo,8,15)+' ( '+EmpProximityNo+' )' as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,case when ODID >0 then ATTStatus+'(OD)' else ATTStatus end as ATTStatus,StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,1 as OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,TotalOverTime,TotalDays,PaybleDays From v_tblAttendanceRecord " +
-                        " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + "  Order By convert(int,DptId), CustomOrdering,Empid, ATTDate";
+                        " Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + "" + accessCondition + "  Order By convert(int,DptId), CustomOrdering,Empid, ATTDate";
                 //    sqlDB.fillDataTable("Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, StayTime )-convert(varchar(8),OtherOverTime,114)),'hh:mm:ss') ) else   StayTime end as StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime as TotalOverTime,TotalDays,OtherOverTime,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, OutHour+':'+OutMin+':'+OutSec )-convert(varchar(8),OtherOverTime,114)) +convert(datetime,'00:00:'+OutSec ),'HH:mm:ss')) else   OutHour+':'+OutMin+':'+OutSec end as OutTime From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' Group By EmpId,EmpCardNo,EmpName,SftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime,TotalDays,OtherOverTime order by  ATTDate  ", dt);
                 //else sqlDB.fillDataTable("Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, StayTime )-convert(varchar(8),OtherOverTime,114)),'hh:mm:ss') ) else   StayTime end as StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime as TotalOverTime,TotalDays,OtherOverTime,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, OutHour+':'+OutMin+':'+OutSec )-convert(varchar(8),OtherOverTime,114))+convert(datetime,'00:00:'+OutSec ),'HH:mm:ss') ) else   OutHour+':'+OutMin+':'+OutSec end as OutTime From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + " Group By EmpId,EmpCardNo,EmpName,SftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime,TotalDays,GId,CustomOrdering ,OtherOverTime Order By convert(int,DptId), CustomOrdering,Empid, ATTDate   ", dt);
                 sqlDB.fillDataTable(sql, dt);
@@ -494,14 +506,14 @@ namespace SigmaERP.attendance
                     DataTable dtSummary = new DataTable();
                    
 
-                    if (rblGenerateType.SelectedValue == "1") sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' group by EmpId", dtSummary);
-                    else sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' " + EmpTypeID + " and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " group by EmpId", dtSummary);
+                    if (rblGenerateType.SelectedValue == "1") sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' " + accessCondition + " group by EmpId", dtSummary);
+                    else sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' " + EmpTypeID + " and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + accessCondition + " group by EmpId", dtSummary);
                     Session["__dtSummary__"] = dtSummary;
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=JobCardReportActualMarico');", true);  //Open New Tab for Sever side code         
                 }
                 else
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                 }
             }
             catch { }
@@ -524,6 +536,8 @@ namespace SigmaERP.attendance
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                string accessCondition = AccessControl.getEmpAccessCondition();
+                unitCondition += accessCondition;
                 string IsRegularEmployee = "";
                 if(chkIsRegular.Checked == true)
                 {
@@ -589,17 +603,17 @@ namespace SigmaERP.attendance
                 if (dt.Rows.Count > 0)
                 {
                     DataTable dtSummary = new DataTable();
-                    //if (rblGenerateType.SelectedValue == "1") sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'C/L' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'S/L' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'M/L' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'E/L' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' group by EmpId", dtSummary);
-                    //else sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'C/L' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'S/L' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'M/L' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'E/L' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From  v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' " + EmpTypeID + " and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " group by EmpId", dtSummary);
+                    //if (rblGenerateType.SelectedValue == "1") sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'C/L' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'S/L' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'M/L' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'E/L' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' " + accessCondition + " group by EmpId", dtSummary);
+                    //else sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus = 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'C/L' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'S/L' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'M/L' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'E/L' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus = 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum(PaybleDays) AS 'APday' From  v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' " + EmpTypeID + " and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + accessCondition + " group by EmpId", dtSummary);
 
-                   if (rblGenerateType.SelectedValue == "1") sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus= 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus= 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum( CASE WHEN StateStatus= 'Present' then 1 else 0 end ) AS 'APday' From v_tblAttendanceRecord1 Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' group by EmpId", dtSummary);
-                    else sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus= 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus= 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum( CASE WHEN StateStatus= 'Present' then 1 else 0 end ) AS 'APday' From  v_tblAttendanceRecord1 Where CompanyId='" + ddlCompanyName.SelectedValue + "' " + EmpTypeID + " and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " group by EmpId", dtSummary);
+                   if (rblGenerateType.SelectedValue == "1") sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus= 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus= 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum( CASE WHEN StateStatus= 'Present' then 1 else 0 end ) AS 'APday' From v_tblAttendanceRecord1 Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' " + accessCondition + " group by EmpId", dtSummary);
+                    else sqlDB.fillDataTable("Select EmpId,SUM(CASE WHEN StateStatus= 'Absent' THEN 1 ELSE 0 END) AS 'Absent',SUM(CASE WHEN StateStatus = 'Casual Leave' THEN 1 ELSE 0 END) AS 'CL',SUM(CASE WHEN StateStatus = 'Sick Leave' THEN 1 ELSE 0 END) AS 'SL',SUM(CASE WHEN StateStatus = 'Maternity Leave' THEN 1 ELSE 0 END) AS 'ML',SUM(CASE WHEN StateStatus = 'Annual Leave' THEN 1 ELSE 0 END) AS 'EL',SUM(CASE WHEN StateStatus = 'Holiday' THEN 1 ELSE 0 END) AS 'Holiday',SUM(CASE WHEN StateStatus= 'Present' THEN 1 ELSE 0 END) AS 'Present',SUM(CASE WHEN StateStatus = 'Weekend' THEN 1 ELSE 0 END) AS 'Weekend',Sum( CASE WHEN StateStatus= 'Present' then 1 else 0 end ) AS 'APday' From  v_tblAttendanceRecord1 Where CompanyId='" + ddlCompanyName.SelectedValue + "' " + EmpTypeID + " and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + accessCondition + " group by EmpId", dtSummary);
                     Session["__dtSummary__"] = dtSummary;
                     ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "goToNewTabandWindow('/All Report/Report.aspx?for=JobCardReport');", true);  //Open New Tab for Sever side code         
                 }
                 else
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                 }
             }
             catch { }
@@ -624,6 +638,7 @@ namespace SigmaERP.attendance
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                unitCondition += AccessControl.getEmpAccessCondition();
                 string ShiftName = "";
                 if (ddlPermanentShift.SelectedValue != "0")
                 {
@@ -817,7 +832,7 @@ From v_tblAttendanceRecord as v left outer join h on v.ATTDate = h.HDate Where v
                 }
                 else
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                 }
             }
             catch { }
@@ -855,6 +870,7 @@ From v_tblAttendanceRecord as v left outer join h on v.ATTDate = h.HDate Where v
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                unitCondition += AccessControl.getEmpAccessCondition();
                 string ShiftName = "";
                 if (ddlPermanentShift.SelectedValue != "0")
                 {
@@ -920,6 +936,12 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                 //    sqlDB.fillDataTable("Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, StayTime )-convert(varchar(8),OtherOverTime,114)),'hh:mm:ss') ) else   StayTime end as StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime as TotalOverTime,TotalDays,OtherOverTime,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, OutHour+':'+OutMin+':'+OutSec )-convert(varchar(8),OtherOverTime,114)) +convert(datetime,'00:00:'+OutSec ),'HH:mm:ss')) else   OutHour+':'+OutMin+':'+OutSec end as OutTime From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and EmpCardNo Like'%" + txtCardNo.Text.Trim() + "' and MonthName='" + Month[1] + "-" + Month[0] + "' Group By EmpId,EmpCardNo,EmpName,SftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime,TotalDays,OtherOverTime order by  ATTDate  ", dt);
                 //else sqlDB.fillDataTable("Select EmpId,SubString(EmpCardNo,8,15) as EmpCardNo,EmpName,SftName,format(ATTDate,'dd-MM-yyyy') as ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, StayTime )-convert(varchar(8),OtherOverTime,114)),'hh:mm:ss') ) else   StayTime end as StayTime,OverTime,DptId,StateStatus,Convert(varchar(11),EmpJoiningDate,105) as EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime as TotalOverTime,TotalDays,OtherOverTime,case when (OtherOverTime<>'00:00:00') then ( FORMAT(( convert(datetime, OutHour+':'+OutMin+':'+OutSec )-convert(varchar(8),OtherOverTime,114))+convert(datetime,'00:00:'+OutSec ),'HH:mm:ss') ) else   OutHour+':'+OutMin+':'+OutSec end as OutTime From v_tblAttendanceRecord Where CompanyId='" + ddlCompanyName.SelectedValue + "' and MonthName='" + Month[1] + "-" + Month[0] + "' and DptId " + DepartmentList + " " + EmpTypeID + " Group By EmpId,EmpCardNo,EmpName,SftName,ATTDate,DptName,DsgName,MonthName,InHour,InMin,OutHour,OutMin,ATTStatus,StayTime,OverTime,DptId,StateStatus,EmpJoiningDate,GrdName,EmpType,InSec,OutSec,LateTime,OverTimeCheck,CompanyName,Address,GName,MonthId,BreakStartTime,BreakEndTime,OverTime,TotalDays,GId,CustomOrdering ,OtherOverTime Order By convert(int,DptId), CustomOrdering,Empid, ATTDate   ", dt);
                 sqlDB.fillDataTable(sql, dt);
+                if (dt.Rows.Count == 0)
+                {
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
 
                 //dt.Columns["ATTStatus"].ReadOnly = false;
                 //foreach (DataRow row in dt.Rows)
@@ -1020,7 +1042,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                 }
                 else
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                 }
             }
             catch(Exception ex) { }
@@ -1045,6 +1067,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                 {
                     unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
                 }
+                unitCondition += AccessControl.getEmpAccessCondition();
                 string ShiftName = "";
                 if (ddlPermanentShift.SelectedValue != "0")
                 {
@@ -1075,7 +1098,7 @@ DECLARE @maxStayTime VARCHAR(8) = '09:00:00' --for delivery(0043),Admin
                 }
                 else
                 {
-                    lblMessage.InnerText = "warning->No Attendance Available";
+                    lblMessage.InnerText = "warning->No Attendance Record Found";
                 }
             }
             catch { }

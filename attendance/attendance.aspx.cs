@@ -358,6 +358,12 @@ namespace SigmaERP.attendance
                   
                     // for checking essential validation ----------------------------
                     if (!InputValidationBasket()) return;
+                    // Find already checks this, but the card can be changed before Save
+                    if (!AccessControl.hasEmpcardPermission(txtEmpCardNo.Text.Trim(), ddlCompanyList.SelectedValue))
+                    {
+                        lblMessage.InnerText = "warning-> You have no access for this EmpCard !";
+                        return;
+                    }
                     string[] DayStatus = new string[9];
                     string InHur = "00"; string OutHur = "00";
                     DateTime AttDate = DateTime.Parse(commonTask.ddMMyyyyTo_yyyyMMdd(txtFromDate.Text.Trim()));
@@ -399,7 +405,12 @@ namespace SigmaERP.attendance
 
 
                     var response = PostManualAttendance(empIds: new List<string> { Get_Needed_EmployeeInfo[0] }, fromDate: AttDate.ToString("yyyy-MM-dd"), toDate: AttDate.ToString("yyyy-MM-dd"), companyId: ddlCompanyList.SelectedValue, inPunch: inPunchVal, outPunch: outPunchVal, AttStatus: attStatus);
-           
+                    if (response != null && response.Contains("\"statusCode\":403"))
+                    {
+                        lblMessage.InnerText = "warning-> You have no access for this EmpCard !";
+                        return;
+                    }
+
 
         
 
@@ -773,7 +784,8 @@ namespace SigmaERP.attendance
                 using (var client = new WebClient())
                 {
                     // ✅ Get token from session and add to header
-                    string token = Session["___token___"]?.ToString();
+                    // "___token___" is never set; login stores the API token as "__UserToken__"
+                    string token = (Session["__UserToken__"] ?? Session["___token___"])?.ToString();
                     if (!string.IsNullOrEmpty(token))
                         client.Headers.Add("Authorization", "Bearer " + token);
 

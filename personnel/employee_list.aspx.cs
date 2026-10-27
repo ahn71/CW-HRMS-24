@@ -403,7 +403,8 @@ namespace SigmaERP.personnel
                 {
                     queryCondition = " UnitId="+ddlUnit.SelectedValue+" and " + queryCondition;
                 }
-                query += queryCondition;
+                // data access applies to every search branch, including the department-only ones above
+                query += "1=1" + AccessControl.getEmpAccessCondition() + " and " + queryCondition;
                 sqlDB.fillDataTable(query,dt=new DataTable());
                 Session[EmployeeListCacheSessionKey] = dt;
                 dt = ApplySearchAnyFilter(dt);

@@ -1309,6 +1309,7 @@
     <Content Include="hrms\attendance\MonthlyAttendanceReportV1.aspx" />
     <Content Include="hrms\attendance\roster\roster-entry.aspx" />
     <Content Include="hrms\attendance\roster\roster-list.aspx" />
+    <Content Include="hrms\attendance\AttendancePunchLog.aspx" />
     <Content Include="hrms\attendance\SyncUnathorizedAttendance.aspx" />
     <Content Include="hrms\dashbordUser.aspx" />
     <Content Include="hrms\Leave\MonthwiseLeaveSummaryReport.aspx" />
@@ -3974,6 +3975,13 @@
     </Compile>
     <Compile Include="hrms\attendance\roster\roster-list.aspx.designer.cs">
       <DependentUpon>roster-list.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="hrms\attendance\AttendancePunchLog.aspx.cs">
+      <DependentUpon>AttendancePunchLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="hrms\attendance\AttendancePunchLog.aspx.designer.cs">
+      <DependentUpon>AttendancePunchLog.aspx</DependentUpon>
     </Compile>
     <Compile Include="hrms\attendance\SyncUnathorizedAttendance.aspx.cs">
       <DependentUpon>SyncUnathorizedAttendance.aspx</DependentUpon>

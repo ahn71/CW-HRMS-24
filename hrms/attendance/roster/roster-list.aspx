@@ -251,6 +251,22 @@
                                                 <div id="alertContainer" class="alert alert-info text-center mt-3" role="alert" style="height: 200px">
                                                     <strong>Note:</strong> Please select a start and end date to filter the roster.
                                                 </div>
+
+                                                <!-- Search any: filters the loaded roster by name, ID, shift, department, date... -->
+                                                <div id="rosterSearchContainer" style="display:none">
+                                                    <div class="input-group mb-15">
+                                                        <span class="input-group-text bg-white border-end-0">
+                                                            <i class="uil uil-search"></i>
+                                                        </span>
+                                                        <input type="text" id="txtSearchAnyRoster" class="form-control border-start-0 border-end-0" autocomplete="off"
+                                                            placeholder="Search any name, employee ID, emp. type, shift, department, roster date...">
+                                                        <button type="button" class="input-group-text bg-white" title="Clear search" onclick="clearRosterSearch()">
+                                                            <i class="fas fa-times text-muted"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div id="rosterSearchInfo" class="text-muted mb-10" style="display:none; font-size: 13px;"></div>
+                                                </div>
+
                                                 <div id="employeeContainer">
                                                       <table class="table mb-0 packagesTable table-borderless adv-table"
                                                     data-sorting="true" data-filtering="false" data-paging="true" data-paging-size="25">
@@ -504,23 +520,67 @@
                             $('.loaderparent').css('opacity', '1');
                             $('#DataSubmitContainer').show();
                              sessionStorage.setItem('__employeeRosterData__', JSON.stringify(response.data));
-                            bindTableData(response.data);
+                            $('#rosterSearchContainer').show();
+                            rosterMasterData = response.data || [];
+                            applyRosterSearch();
                         } else {
                             console.error('API Error:', response.message);
-                            bindTableData([]);
+                            rosterMasterData = [];
+                            applyRosterSearch();
                              $('.loaderDaily').hide();
                             $('.loaderparent').css('opacity', '1');
                         }
                     })
                     .catch(error => {
                         console.error('Network Error:', error);
-                        bindTableData([]);
+                        rosterMasterData = [];
+                        applyRosterSearch();
                          $('.loaderDaily').hide();
                          $('.loaderparent').css('opacity', '1');
                     });
             }
 
-      
+            // ===== Search any (client side, over the roster rows already loaded) =====
+            let rosterMasterData = [];
+            let rosterSearchTimer = null;
+            const rosterSearchSkipFields = ['userImage', 'select', 'serial', 'action', 'employeeImage'];
+
+            function applyRosterSearch() {
+                const term = ($('#txtSearchAnyRoster').val() || '').trim().toLowerCase();
+                const rows = term.length === 0
+                    ? rosterMasterData
+                    : rosterMasterData.filter(row => Object.keys(row).some(key =>
+                        rosterSearchSkipFields.indexOf(key) === -1
+                        && row[key] !== null && row[key] !== undefined
+                        && typeof row[key] !== 'object'
+                        && String(row[key]).toLowerCase().indexOf(term) !== -1));
+
+                const $info = $('#rosterSearchInfo');
+                if (term.length > 0) {
+                    $info.text(`Found ${rows.length} of ${rosterMasterData.length} row(s)`).show();
+                } else {
+                    $info.hide();
+                }
+                bindTableData(rows);
+            }
+
+            function clearRosterSearch() {
+                $('#txtSearchAnyRoster').val('');
+                applyRosterSearch();
+            }
+
+            $(document).on('input', '#txtSearchAnyRoster', function () {
+                clearTimeout(rosterSearchTimer);
+                rosterSearchTimer = setTimeout(applyRosterSearch, 200);
+            });
+
+            $(document).on('keydown', '#txtSearchAnyRoster', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    clearTimeout(rosterSearchTimer);
+                    applyRosterSearch();
+                }
+            });
 
             let allEmployeeData = [];
             const selectedEmployeeIds = new Set();

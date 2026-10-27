@@ -370,6 +370,9 @@
 
 
         $(document).ready(function () {
+            // The master page logo points to the admin dashboard; on this page keep the user here
+            $('.logo-area a.navbar-brand').attr('href', window.location.pathname + window.location.search);
+
             var initialDate = new Date();
             var options = { day: 'numeric', month: 'long', year: 'numeric' };
             var formattedDate = initialDate.toLocaleDateString('en-US', options);

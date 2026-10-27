@@ -80,6 +80,21 @@ namespace SigmaERP.attendance
 
         protected void btnPreview_Click(object sender, EventArgs e)
         {
+            string cardNo = txtCardNo.Text.Trim();
+            if (cardNo.Length > 0)
+            {
+                string companyId = (ddlCompany.SelectedValue == "0000") ? ViewState["__CompanyId__"].ToString() : ddlCompany.SelectedValue;
+                if (!AccessControl.hasEmpcardPermission(cardNo, companyId))
+                {
+                    lblMessage.InnerText = AccessControl.isEmpCardExists(cardNo, companyId)
+                        ? "warning-> You have no permission on this Employee"
+                        : "warning->No Attendance Record Found";
+                    txtCardNo.Focus();
+                    ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
+                    return;
+                }
+            }
+
             if (cbOutTimeMissingReport.Checked == true)
                 GenerateOutTimeMissingReport();
             else
@@ -127,6 +142,7 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            unitCondition += AccessControl.getEmpAccessCondition();
 
 
             string ShiftName = "";
@@ -181,7 +197,7 @@ namespace SigmaERP.attendance
                 sqlDB.fillDataTable("Select Format(ATTDate,'dd-MM-yyyy') as ATTDate,SubString(EmpCardNo,10,15)+' ('+EmpProximityNo+')' as EmpCardNo,EmpName,DsgName,InHour,InMin,OutHour,OutMin,InSec,OutSec,CompanyName,DptName,SftName,Address,ATTStatus,CompanyId,DptId,SftId,GId,GName From v_tblAttendanceRecord where ATTDate='" + y + "-" + m + "-" + d + "' and ActiveSalary='True' and IsActive=1 and CompanyId " + CompanyList + "  ANd InHour<>'00' and OutHour='00'  AND DptId " + DepartmentList + " " + EmpTypeID + " " + AttStatus + " " + ShiftName + " " + unitCondition + " order by convert(int,DptCode),convert(int,GId), convert(int,SftId),CustomOrdering ", dt = new DataTable()); }
             else
             {
-                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyList);
+                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyId);
                 if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
                 {
                     lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
@@ -201,7 +217,7 @@ namespace SigmaERP.attendance
 
             if (dt.Rows.Count == 0)
             {
-                lblMessage.InnerText = "warning->No Attendance Available";
+                lblMessage.InnerText = "warning->No Attendance Record Found";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 return;
             }
@@ -225,6 +241,7 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            unitCondition += AccessControl.getEmpAccessCondition();
 
 
             string ShiftName = "";
@@ -284,7 +301,7 @@ namespace SigmaERP.attendance
             }
             else
             {
-                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyList);
+                bool hasEmpCard = AccessControl.hasEmpcardPermission(txtCardNo.Text.Trim(), CompanyId);
                 if (txtCardNo.Text.Trim().Length < int.Parse(Session["__MinDigits__"].ToString()))
                 {
                     lblMessage.InnerText = "warning-> Please Type Valid Card Number!(Minimum " + Session["__MinDigits__"].ToString() + " Digits)";
@@ -304,7 +321,7 @@ namespace SigmaERP.attendance
 
             if (dt.Rows.Count == 0)
             {
-                lblMessage.InnerText = "warning->No Attendance Available";
+                lblMessage.InnerText = "warning->No Attendance Record Found";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 return;
             }
@@ -328,6 +345,7 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            unitCondition += AccessControl.getEmpAccessCondition();
             string ShiftName = "";
 
             if (ddlShift.SelectedValue != "0")
@@ -410,7 +428,7 @@ namespace SigmaERP.attendance
             sqlDB.fillDataTable(query, dt = new DataTable());
             if (dt.Rows.Count == 0)
             {
-                lblMessage.InnerText = "warning->No Attendance Available";
+                lblMessage.InnerText = "warning->No Attendance Record Found";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 return;
             }
@@ -435,6 +453,7 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            unitCondition += AccessControl.getEmpAccessCondition();
             string ShiftName = "";
 
             if (ddlShift.SelectedValue != "0")
@@ -518,7 +537,7 @@ namespace SigmaERP.attendance
             sqlDB.fillDataTable(query, dt = new DataTable());
             if (dt.Rows.Count == 0)
             {
-                lblMessage.InnerText = "warning->No Attendance Available";
+                lblMessage.InnerText = "warning->No Attendance Record Found";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 return;
             }
@@ -541,6 +560,7 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            unitCondition += AccessControl.getEmpAccessCondition();
 
             string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
             string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
@@ -583,7 +603,7 @@ namespace SigmaERP.attendance
 
             if (dt.Rows.Count == 0)
             {
-                lblMessage.InnerText = "warning->No Attendance Available";
+                lblMessage.InnerText = "warning->No Attendance Record Found";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 return;
             }
@@ -608,6 +628,7 @@ namespace SigmaERP.attendance
             {
                 unitCondition = " and UnitId=" + ddlUnit.SelectedValue;
             }
+            unitCondition += AccessControl.getEmpAccessCondition();
 
             string ShiftName = (ddlShift.SelectedValue == "0") ? "" : " and SftName='" + ddlShift.SelectedValue + "' ";
             string AttStatus = (rblAttStatus.SelectedValue == "All") ? "" : " and AttStatus='" + rblAttStatus.SelectedValue + "' ";
@@ -649,7 +670,7 @@ namespace SigmaERP.attendance
 
             if (dt.Rows.Count == 0)
             {
-                lblMessage.InnerText = "warning->No Attendance Available";
+                lblMessage.InnerText = "warning->No Attendance Record Found";
                 ScriptManager.RegisterStartupScript(this.Page, Page.GetType(), "call me", "load();", true);
                 return;
             }

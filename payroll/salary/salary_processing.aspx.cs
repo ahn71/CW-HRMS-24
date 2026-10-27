@@ -114,13 +114,14 @@ namespace SigmaERP.payroll.salary
             SalaryProcessing sp = new SalaryProcessing();
             string EmpID = (rbGenaratingType.SelectedValue == "0") ? "0" : ddlEmpCardNo.SelectedValue;
             string SelectDate = txtGenerateMonth.Text.Trim();
-         
+            string result;
+
             if (rblProcessOn.SelectedValue == "2")
             {
                 string[] MonthYear = ddlMonthID.SelectedValue.Split('-');
                 SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]), int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
 
-                sp.FinalSattlementProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, false, txtExceptedEmpCardNo.Text.Trim(), 0, ViewState["__salaryGenerateFor__"].ToString());
+                result = sp.FinalSattlementProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, false, txtExceptedEmpCardNo.Text.Trim(), 0, ViewState["__salaryGenerateFor__"].ToString());
             }
             else
             {
@@ -129,10 +130,17 @@ namespace SigmaERP.payroll.salary
                     string[] MonthYear = ddlMonthID.SelectedValue.Split('-');
                     SelectDate = DateTime.DaysInMonth(int.Parse(MonthYear[1]), int.Parse(MonthYear[0])).ToString() + "-" + MonthYear[0] + "-" + MonthYear[1];
                 }
-                sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, ckbLateDeduction.Checked, txtExceptedEmpCardNo.Text.Trim(), ViewState["__salaryGenerateFor__"].ToString());
+                result = sp.salaryProcessing(rblProcessOn.SelectedValue, ViewState["__UserId__"].ToString(), CompanyId, EmpID, SelectDate, ckbPF.Checked, ckbSpecialGrossPer.Checked, txtSpecialGrossPer.Text.Trim(), ckbAdvanceDeduction.Checked, ckbStampDeduction.Checked, ckbLateDeduction.Checked, txtExceptedEmpCardNo.Text.Trim(), ViewState["__salaryGenerateFor__"].ToString());
             }
 
-           
+            // processing returns "" on success, ",EmpId,EmpId" for employees that failed, or an error message
+            if (string.IsNullOrEmpty(result))
+                lblMessage.InnerText = "success->Salary processed successfully";
+            else if (result.StartsWith(","))
+                lblMessage.InnerText = "warning->Salary processed, but failed for EmpId: " + result.Trim(',');
+            else
+                lblMessage.InnerText = "error->" + result;
+
             loadExistingSalary(ViewState["__salaryGenerateFor__"].ToString());
             return;
 

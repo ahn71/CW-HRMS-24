@@ -636,7 +636,7 @@
             
          }
          function GetEmployee(companyId) {
-             ApiCall(getEmployeeUrl, token)
+             return ApiCall(getEmployeeUrl, token)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;
@@ -924,7 +924,7 @@
          function GetUserDepartment(selectedDepartmentIds = [], mode = 'add') {
              isUpdateMode = (mode === 'update'); // Set mode
 
-             ApiCallById(getUserDepartmentUrl, token ,CompanyID)
+             return ApiCallById(getUserDepartmentUrl, token ,CompanyID)
                  .then(function (response) {
                      if (response.statusCode === 200) {
                          var responseData = response.data;
@@ -940,7 +940,7 @@
                          $('#departmentCheckboxes').append(selectAllHtml);
 
                          // Ensure that selectedDepartmentIds are converted to strings (if needed)
-                         selectedDepartmentIds = selectedDepartmentIds.map(id => id.toString());
+                         selectedDepartmentIds = (selectedDepartmentIds || []).map(id => id.toString());
 
                          // Check if selectedDepartmentIds has values, and only apply checked logic if true
                          var hasSelectedDepartments = selectedDepartmentIds.length > 0;
@@ -958,6 +958,7 @@
 
                              $('#departmentCheckboxes').append(checkboxHtml);
                          });
+                         $('#selectAllDepartments').prop('checked', $('.departmentCheckbox').length > 0 && $('.departmentCheckbox').length === $('.departmentCheckbox:checked').length);
 
                          // Handle the select all functionality
                          $('#selectAllDepartments').on('change', function () {
@@ -1064,7 +1065,7 @@
          var PreviusPermissionsID = [];
          //var isEdit;
          function FetchDataRolesWise(moduleID ,isEdit) {
-             ApiCallById(getRolesByIdUrl, token, moduleID)
+             return ApiCallById(getRolesByIdUrl, token, moduleID)
                  .then(function (response) {
                      var data = response.data;
                      $('#lblHidenRolesId').val(data.userRoleId);
@@ -1077,6 +1078,7 @@
 
                          }
                          else {
+                             selectedIds = [];
                              GetUserDepartment([], 'add');
 
                          }
@@ -1394,8 +1396,8 @@
                  //IsEditData = true; // Set edit mode
 
                  // Populate form fields
-                 $('#ddlCompany').val(data.companyId).change();
-                 $('#lblHidenUserId').val(data.userId).data('role-id', data.userRoleID);
+                 $('#lblHidenUserId').val(data.userId).data('role-id', data.userRoleID).data('ref-emp', data.referenceID)
+                     .data('ref-emp-name', ((data.firstName || '') + ' ' + (data.lastName || '')).trim());
 
                  $('#txtFirstName').val(data.firstName);
                  $('#txtLastName').val(data.lastName);
@@ -1405,12 +1407,14 @@
                  $('#chkIsActive').prop('checked', data.isActive);
                  $('#chkIsGetUser').prop('checked', data.isGuestUser);
                  $('#chkIsAuthPerm').prop('checked', data.isApprovingAuthority);
-                 $('select[name="ddlReferenceEmp"]').val(data.referenceID).change();
 
                  // Handle additional/removed permissions
                  additionalPermissions = data.additionalPermissions ? JSON.parse(data.additionalPermissions) : [];
                  removedPermissions = data.removedPermissions ? JSON.parse(data.removedPermissions) : [];
-                 selectedIds = JSON.parse(data.dataAccessPermission);
+                 selectedIds = (data.dataAccessPermission ? JSON.parse(data.dataAccessPermission) : null) || [];
+
+                 // company change reloads employees, roles and departments, then selects this user's values
+                 $('#ddlCompany').val(data.companyId).change();
 
                  const GuestUser = data.isGuestUser;
                  $('#chkIsGetUser').prop('checked', GuestUser);
@@ -1440,11 +1444,20 @@
 
                     
                      await GetEmployee(selectedCompanyId);
+                     const refEmpId = $('#lblHidenUserId').data('ref-emp');
+                     if (refEmpId) {
+                         // employee may be inactive or outside the list; keep the assigned one selectable
+                         if ($('#ddlReferenceEmp option').filter(function () { return this.value == refEmpId; }).length === 0) {
+                             $('#ddlReferenceEmp').append(new Option($('#lblHidenUserId').data('ref-emp-name') || refEmpId, refEmpId));
+                         }
+                         $('#ddlReferenceEmp').val(refEmpId).trigger('change.select2');
+                     }
                      await GetStpPkgFeatures(selectedCompanyId);
 
                      await GetRoles(false, selectedCompanyId);
                      const userRoleId = $('#lblHidenUserId').data('role-id');
-                     $('select[name="ddlUserRole"]').val(userRoleId).change();
+                     // only refresh select2's display; the role change handler would reload departments unchecked
+                     $('select[name="ddlUserRole"]').val(userRoleId).trigger('change.select2');
 
                      await FetchDataRolesWise(userRoleId, true);
                  } catch (error) {
@@ -1558,6 +1571,8 @@
              //$('#txtUserEmail').val("");
              $('select[name="ddlUserRole"]').val('0').change();
              $('select[name="ddlReferenceEmp"]').val('0').change();
+             $('#lblHidenUserId').removeData('ref-emp').removeData('ref-emp-name');
+             selectedIds = [];
              $('#txtPermissionName').val("");
              $('#txtPermissionsUrl').val("");
              $('#txtPerPhysicalLocation').val("");

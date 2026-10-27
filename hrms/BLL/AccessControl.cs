@@ -120,7 +120,7 @@ namespace SigmaERP.hrms.BLL
                     }
                     else
                     {
-                        condition += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or  EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "' ";
+                        condition += " and (DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "') ";
                     }
                 }
                 else
@@ -171,7 +171,7 @@ namespace SigmaERP.hrms.BLL
             }
            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
             {
-                conditon += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "'";  //for custom and own department
+                conditon += " and (DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "')";  //for custom and own department
             }
 
             else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2")
@@ -222,30 +222,49 @@ namespace SigmaERP.hrms.BLL
         public static string hasOwnEmpIdWithOtherDepartment()
         {
             
-            // Fetch the session value dynamically when this method is called
-            string hasOtherDeptAccessButNotOwn =" or  EmpId=" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + "";
-            string hhh = HttpContext.Current.Session["__dataAccesPemission__"].ToString();
-            return hasOtherDeptAccessButNotOwn;
+            // was a top-level "or EmpId=<department list>" that widened the query; now restricts to the user's data access
+            return getEmpAccessCondition();
 
     }
 
 
+        // Append to a report WHERE clause so only employees inside the user's data access are returned
+        public static string getEmpAccessCondition(string empIdColumn = "EmpId")
+        {
+            var session = HttpContext.Current.Session;
+            string level = session["__dataAceesLevel__"] == null ? "" : session["__dataAceesLevel__"].ToString();
+            string empId = session["__empId__"] == null ? "" : session["__empId__"].ToString();
+
+            if (level == "3")   //for all department
+                return "";
+
+            string condition;
+            if (level == "4")   //for custom
+            {
+                condition = "DptId in(" + session["__dataAccesPemission__"] + ")";
+                if (session["__isGuestUser__"] == null || session["__isGuestUser__"].ToString() != "True")
+                    condition = "(" + condition + " or EmpId='" + empId + "')";
+            }
+            else if (level == "2")   //for own department
+                condition = "DptId='" + session["__dptId__"] + "'";
+            else   //only me
+                return " and " + empIdColumn + "='" + empId + "'";
+
+            return " and " + empIdColumn + " in (select EmpId from Personnel_EmpCurrentStatus where IsActive=1 and " + condition + ")";
+        }
+
+        // tells "no permission" apart from a card that does not exist at all
+        public static bool isEmpCardExists(string empCard, string companyId)
+        {
+            empCard = empCard.Replace("'", "''");
+            DataTable dt = CRUD.ExecuteReturnDataTable("select top 1 EmpId from v_Personnel_EmpCurrentStatus where (EmpCardNo like '%" + empCard + "' OR EmpProximityNo='" + empCard + "') and CompanyId='" + companyId.Replace("'", "''") + "'");
+            return dt != null && dt.Rows.Count > 0;
+        }
+
         public static bool hasEmpcardPermission(string empCard,string companyList)
         {
-            string conditon = " CompanyId in( '" + companyList + "')";
-            if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "3")
-            {
-                conditon += "";  //for all department 
-            }
-            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "4")
-            {
-                conditon += "and DptId in(" + HttpContext.Current.Session["__dataAccesPemission__"].ToString() + ") or EmpId='" + HttpContext.Current.Session["__empId__"].ToString() + "'";  //for custom
-            }
-
-            else if (HttpContext.Current.Session["__dataAceesLevel__"].ToString() == "2")   //for own department
-            {
-                conditon += " and DptId in(" + HttpContext.Current.Session["__dptId__"].ToString() + ") ";
-            }
+            // same rules as the report filters, including "only me" which used to allow every card
+            string conditon = " CompanyId in( '" + companyList + "')" + getEmpAccessCondition();
             string query = "select DptId,EmpcardNO from  v_Personnel_EmpCurrentStatus where (EmpcardNO like '%"+ empCard + "' OR EmpProximityNo ='"+empCard+"') and " + conditon + "";
             DataTable dt = CRUD.ExecuteReturnDataTable(query);
             if (dt.Rows.Count > 0)

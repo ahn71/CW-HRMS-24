@@ -894,13 +894,14 @@
                         resolve(data);
                     },
                     error: function (xhr, status, error) {
-                         console.log("Error Message for attendance proccess: ",xhrr)
+                         console.log("Error Message for attendance proccess: ",xhr)
                          console.log("Error Message for attendance proccess",error)
                         Swal.fire({
-                           
+
                             icon: 'warning',
                             title: 'Almost There!',
-                            text: 'Some issues occurred while processing attendance. Please retry or contact support if needed.',
+                            // server message first, e.g. no permission on a selected employee
+                            text: (xhr.responseJSON && xhr.responseJSON.message) || 'Some issues occurred while processing attendance. Please retry or contact support if needed.',
                             confirmButtonText: 'OK'
                         });
 

@@ -1,6 +1,7 @@
 ﻿using adviitRuntimeScripting;
 using ComplexScriptingSystem;
 using SigmaERP.classes;
+using SigmaERP.hrms.BLL;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -155,7 +156,7 @@ namespace SigmaERP.attendance
                     CmdSql = "select distinct cs.CompanyId,  cs.DptId, cs.SftId, cs.EmpName,cs.DptName,cs.DsgName," +
                         "cs.CompanyName,cs.Address,cio.Badgenumber,cio.CHECKTIME,FORMAT(cio.CHECKTIME,'dd-MM-yyy') as Sex,cs.SftName," +
                         " Month(cio.CHECKTIME) as DsgId from v_CHECKINOUT cio  inner join v_Personnel_EmpCurrentStatus cs on cio.Badgenumber=cs.EmpCardNo" +
-                        " where cs.EmpStatus in (1,8) " + EmpTypeID + " and cs.DptId " + DepartmentList + " " +
+                        " where cs.EmpStatus in (1,8) " + AccessControl.getEmpAccessCondition("cs.EmpId") + " " + EmpTypeID + " and cs.DptId " + DepartmentList + " " +
                         "  AND cio.CHECKTIME >='" + y + "-" + m + "-" + d + "' and cio.CHECKTIME<=(select dateadd(day,1,'" + y + "-" + m + "-" + d + "')) " +
                         " ";
                 else
@@ -163,7 +164,7 @@ namespace SigmaERP.attendance
                     CmdSql = "select distinct cs.Sex as Gender, cs.CompanyId,  cs.DptId, cs.SftId, cs.EmpName,cs.DptName,cs.DsgName," +
                       "cs.CompanyName,cs.Address,cio.Badgenumber,cio.CHECKTIME,FORMAT(cio.CHECKTIME,'dd-MM-yyy') as Sex,cs.SftName," +
                       " Month(cio.CHECKTIME) as DsgId from v_CHECKINOUT cio  inner join v_Personnel_EmpCurrentStatus cs on cio.Badgenumber=cs.EmpCardNo" +
-                      " where cs.EmpStatus in (1,8) and cs.EmpCardNo ='" + txtCardNo.Text.Trim() + "' AND cio.CHECKTIME >='" + y + "-" + m + "-" + d + "' and cio.CHECKTIME<=(select dateadd(day,1,'" + y + "-" + m + "-" + d + "')) " +
+                      " where cs.EmpStatus in (1,8) " + AccessControl.getEmpAccessCondition("cs.EmpId") + " and cs.EmpCardNo ='" + txtCardNo.Text.Trim() + "' AND cio.CHECKTIME >='" + y + "-" + m + "-" + d + "' and cio.CHECKTIME<=(select dateadd(day,1,'" + y + "-" + m + "-" + d + "')) " +
                       " ";
 
 
@@ -230,7 +231,7 @@ namespace SigmaERP.attendance
                     CmdSql = "select distinct cs.CompanyId,  cs.DptId, cs.SftId, cs.EmpNameBn EmpName,cs.DptNameBn DptName,cs.DsgNameBn DsgName,"+
                         "cs.CompanyNameBangla CompanyName,cs.AddressBangla Address,cio.Badgenumber,cio.CHECKTIME,FORMAT(cio.CHECKTIME,'dd-MM-yyy') as Sex,cs.SftNameBangla SftName,cs.MillNoBn EmpAttCard," +
                         " Month(cio.CHECKTIME) as DsgId from v_CHECKINOUT cio  inner join v_Personnel_EmpCurrentStatus cs on cio.Badgenumber=cs.EmpCardNo"+
-                        " where cs.EmpStatus in (1,8) " + EmpTypeID + " and cs.DptId " + DepartmentList + " " +
+                        " where cs.EmpStatus in (1,8) " + AccessControl.getEmpAccessCondition("cs.EmpId") + " " + EmpTypeID + " and cs.DptId " + DepartmentList + " " +
                         "  AND cio.CHECKTIME >='" + y + "-" + m + "-" + d + "' and cio.CHECKTIME<=(select dateadd(day,1,'" + y + "-" + m + "-" + d + "')) " +
                         " ";
                 else
@@ -238,7 +239,7 @@ namespace SigmaERP.attendance
                     CmdSql = "select distinct cs.Sex as Gender, cs.CompanyId,  cs.DptId, cs.SftId, cs.EmpNameBn EmpName,cs.DptNameBn DptName,cs.DsgNameBn DsgName," +
                       "cs.CompanyNameBangla CompanyName,cs.AddressBangla Address,cio.Badgenumber,cio.CHECKTIME,FORMAT(cio.CHECKTIME,'dd-MM-yyy') as Sex,cs.SftNameBangla SftName," +
                       " Month(cio.CHECKTIME) as DsgId from v_CHECKINOUT cio  inner join v_Personnel_EmpCurrentStatus cs on cio.Badgenumber=cs.EmpCardNo" +
-                      " where cs.EmpStatus in (1,8) and cs.EmpCardNo ='" + txtCardNo.Text.Trim() + "' AND cio.CHECKTIME >='" + y + "-" + m + "-" + d + "' and cio.CHECKTIME<=(select dateadd(day,1,'" + y + "-" + m + "-" + d + "')) " +
+                      " where cs.EmpStatus in (1,8) " + AccessControl.getEmpAccessCondition("cs.EmpId") + " and cs.EmpCardNo ='" + txtCardNo.Text.Trim() + "' AND cio.CHECKTIME >='" + y + "-" + m + "-" + d + "' and cio.CHECKTIME<=(select dateadd(day,1,'" + y + "-" + m + "-" + d + "')) " +
                       " ";
                    
                   

@@ -585,7 +585,7 @@
 
                                     <div class="card position-relative border-0 MaleFemale">
                                         <div class="card-header">
-                                            <h6>Staff Worker Ratio</h6>
+                                            <h6>Employee Type Ratio</h6>
                                         </div>
                                         <!-- ends: .card-header -->
                                         <div class="card-body cardBodyCenter">
@@ -609,20 +609,8 @@
                                                        
 
                                                     </div>
-                                                    <div class="session-wrap session-wrap--top--4">
-                                                        <div class="session-single">
-                                                            <div class="chart-label">
-                                                                <span class="label-dot staff"></span>
-                                                                Staff
-                                                            </div>
-                                                        </div>
-                                                        <div class="session-single">
-                                                            <div class="chart-label">
-                                                                <span class="label-dot worker"></span>
-                                                                Worker
-                                                            </div>
-                                                        </div>
-
+                                                    <!-- filled from the employee types in GetCurrentEmpStatus() -->
+                                                    <div id="empTypeLegend" class="session-wrap session-wrap--top--4" style="flex-wrap: wrap; row-gap: 6px;">
                                                     </div>
                                                 </div>
 
@@ -1448,12 +1436,24 @@
                     maleFemaleRatio = [malePercentage, femalePercentage];
                     DonutChart('.MaleFemaleRatio', maleFemaleRatio, 180, 180, ['Male', 'Female'], ['#02A3FE', '#EC49A6'], "60%");
 
-                    // Populate StaffWorkerRatio array
-                    StaffPercentage = response.staffPers;
-                    WorkerPercentage = response.workerpers;
-                    StaffWorkerRatio = [StaffPercentage, WorkerPercentage];
-                    // Pass the arrays to the DonutChart function
-                    DonutChart('.StapWorkerRatio', StaffWorkerRatio, 180, 180, ['Staff', 'Worker'], ['#385e97', '#fb6542'], "60%");
+                    // One slice and one legend item per employee type (HRD_EmployeeType)
+                    // older API builds only send staff/worker
+                    var empTypes = response.empTypes || [
+                        { empType: 'Staff', count: response.staff, pers: response.staffPers },
+                        { empType: 'Worker', count: response.worker, pers: response.workerpers }
+                    ];
+                    var empTypeColors = ['#fb6542', '#385e97', '#20c997', '#ffbb00', '#8e44ad', '#e83e8c', '#17a2b8', '#6c757d'];
+                    var colorOf = function (i) { return empTypeColors[i % empTypeColors.length]; };
+                    StaffWorkerRatio = empTypes.map(function (t) { return t.pers; });
+                    DonutChart('.StapWorkerRatio', StaffWorkerRatio, 180, 180, empTypes.map(function (t) { return t.empType; }), empTypes.map(function (t, i) { return colorOf(i); }), "60%");
+
+                    var $legend = $('#empTypeLegend').empty();
+                    empTypes.forEach(function (t, i) {
+                        var $label = $('<div class="chart-label"></div>')
+                            .append($('<span class="label-dot"></span>').css('background-color', colorOf(i)))
+                            .append(document.createTextNode(t.empType + ' (' + t.count + ')'));
+                        $legend.append($('<div class="session-single"></div>').append($label));
+                    });
 
                 })
                 .catch(function (error) {
